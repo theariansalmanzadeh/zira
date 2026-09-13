@@ -1,6 +1,60 @@
 @import "tailwindcss";
+@import "../src/shared/styles/theme-colors.css";
+@import "../src/shared/styles/theme-fonts.css";
+@import "../src/shared/styles/theme-spacing.css";
+@import "../src/shared/styles/theme-radius.css";
+@import "../src/shared/styles/theme-typography.css";
+@import "../src/shared/styles/breakpoints.css";
 
-:root {
+@font-face {
+  font-family: "YekanBakh";
+  src: url("/fonts/woff2/YekanBakh-Thin.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "YekanBakh";
+  src: url("/fonts/woff2/YekanBakh-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "YekanBakh";
+  src: url("/fonts/woff2/YekanBakh-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "YekanBakh";
+  src: url("/fonts/woff2/YekanBakh-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "YekanBakh";
+  src: url("/fonts/woff2/YekanBakh-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "YekanBakh";
+  src: url("/fonts/woff2/YekanBakh-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* :root {
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -10,7 +64,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
+} */
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -20,7 +74,37 @@
 }
 
 body {
-  background: var(--background);
+  background: var(--body-background-color);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "YekanBakh", Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: black;
+}
+
+.body-container {
+  @apply px-lg md:px-landing-xl;
+}
+
+@theme inline {
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(200%);
+    }
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
 }

@@ -1,0 +1,24 @@
+@theme {
+    /* Border radius variables */
+    --radius: 0.5rem;
+
+    --radius-button-sm: 8px;
+    --radius-button-md: 12px;
+    --radius-button-lg: 16px;
+    --radius-button-xl: 16px;
+    --radius-button-2xl: 20px;
+    --radius-button-3xl: 24px;
+    --radius-button-4xl: 28px;
+    --radius-button-5xl: 32px;
+    --radius-button-6xl: 36px;
+
+    --radius-card-sm: 12px;
+    --radius-card-md: 16px;
+    --radius-card-lg: 20px;
+    --radius-container-xl: 24px;
+    --radius-container-lg: 20px;
+    --radius-container-md: 16px;
+    --radius-container-sm: 12px;
+    --radius-container-xs: 8px;
+    --radius-button-lg: 16px;
+}

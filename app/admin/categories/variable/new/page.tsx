@@ -1,0 +1,16 @@
+import { Suspense } from 'react'
+import dynamic from 'next/dynamic'
+import TableLoadingSkeleton from '@/src/shared/components/loading/TableLoadingSkeleton'
+
+const AddAndUpdateVariable = dynamic(
+    () => import('@/src/routes/categories/variable/AddAndUpdateVariable'),
+    { loading: () => <TableLoadingSkeleton isPending /> }
+)
+
+export default function NewVariablePage() {
+    return (
+        <Suspense fallback={<TableLoadingSkeleton isPending />}>
+            <AddAndUpdateVariable />
+        </Suspense>
+    )
+}

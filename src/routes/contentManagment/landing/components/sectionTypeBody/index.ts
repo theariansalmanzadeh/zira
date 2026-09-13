@@ -1,0 +1,5 @@
+export { default } from './SectionTypeBody'
+export { default as BannerSlideBody } from './components/BannerSlideBody'
+export { default as BannerSlideCard } from './components/BannerSlideCard'
+export { default as ProductSlideCard } from './components/ProductSlideCard'
+export type { BannerSlideItem, ProductSlideItem } from './constants'

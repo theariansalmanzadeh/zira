@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>مدیریت سفارشات — زیرا مارکت</title>
+  <style>
+    /* =========================================================
+       Design tokens — mirrored from src/shared/styles/*
+       theme-colors / theme-typography / theme-spacing /
+       theme-radius / theme-shadow / theme-fonts
+       ========================================================= */
+    :root {
+      /* theme-colors.css */
+      --color-primary: #d74e54;
+      --color-primary-focused: #d74e5429;
+      --color-natural: #1f1f1f;
+      --color-natural-variant: #e6e1e5;
+      --color-error: #bf0329;
+      --color-warning: #f7941e;
+      --color-success: #006c50;
+      --color-success-container: #bbffe2;
+      --color-primary-container: #fbdfe1;
+      --color-info: #242f94;
+      --color-info-container: #ced1f3;
+      --color-link: #646464;
+      --color-inverse-surface: #292929;
+      --color-inverse-surface-variant: #e6e1e5;
+      --color-surface-container-lowest: #ffffff;
+      --color-surface-container-high: #f2f2f2;
+      --color-surface-container-highest: #e6e6e6;
+      --color-on-surface: #141414;
+      --color-on-surface-hover: rgba(0, 0, 0, 0.08);
+      --color-on-surface-variant: #484649;
+      --color-on-surface-cotainer: #002116;
+      --color-on-primary: #ffffff;
+      --color-on-primary-container: #430f12;
+      --color-on-info: #ffffff;
+      --color-on-info-container: #0c1031;
+      --color-on-inverse-surface: #f2f2f2;
+      --color-error-container: #ffedeb;
+      --color-on-error-container: #410007;
+      --color-on-success-container: #002116;
+      --color-warning-container: #fde3c4;
+      --color-on-warning-container: #3b2102;
+      --color-outline: #787878;
+      --color-outline-variant: #c7c7c7;
+      --color-background: var(--color-surface-container-high);
+      --color-card: var(--color-surface-container-lowest);
+      --body-background-color: var(--color-surface-container-lowest);
+      --scrollbar-background-color: #e3e3e3;
+      --scrollbar-background-thumb: var(--color-primary);
+
+      /* semantic aliases used by prototype screens */
+      --color-success-strong: #1f8a5b;
+      --color-success-soft: #e8f5ef;
+      --color-warning-strong: #c8841a;
+      --color-warning-soft: #fdf3e2;
+      --color-info-strong: #2a6fdb;
+      --color-info-soft: #e8f0fb;
+      --color-purple: #8e6cb0;
+      --color-purple-soft: #f1ecf7;
+      --color-muted: #9a9aa5;
+      --color-muted-soft: #f1f1f4;
+
+      /* theme-typography.css */
+      --text-label-sm: 12px;
+      --text-label-md: 14px;
+      --text-label-lg: 16px;
+      --text-body-sm: 12px;
+      --text-body-md: 14px;
+      --text-body-lg: 16px;
+      --text-title-sm: 14px;
+      --text-title-md: 16px;
+      --text-title-lg: 22px;
+      --text-headline-sm: 24px;
+      --text-headline-md: 28px;
+      --text-headline-lg: 32px;
+
+      /* theme-spacing.css */
+      --spacing-sm: 8px;
+      --spacing-md: 10px;
+      --spacing-lg: 12px;
+      --spacing-xl: 16px;
+      --spacing-2xl: 24px;
+      --spacing-3xl: 32px;
+      --spacing-4xl: 48px;
+      --spacing-layout: 40px;
+
+      /* theme-radius.css */
+      --radius-button-sm: 8px;
+      --radius-button-md: 12px;
+      --radius-button-lg: 16px;
+      --radius-card-sm: 12px;
+      --radius-card-md: 16px;
+      --radius-card-lg: 20px;
+      --radius-container-xl: 24px;
+      --radius-container-lg: 20px;
+      --radius-container-md: 16px;
+      --radius-container-sm: 12px;
+      --radius-container-xs: 8px;
+
+      /* theme-shadow.css */
+      --shadow-xl: #00000014;
+      --shadow-card: 0 1px 3px rgba(20, 20, 40, 0.05);
+      --shadow-primary: 0 4px 12px rgba(215, 78, 84, 0.26);
+
+      /* theme-fonts.css + app/globals.css */
+      --font-family-yekan: "YekanBakh", Arial, Helvetica, sans-serif;
+      --font-family-display: "Kalameh", "YekanBakh", Arial, Helvetica, sans-serif;
+      --font-family-oxanium: "Oxanium", sans-serif;
+      --font-family-helvetica: "Helvetica", "Helvetica Neue", Arial, sans-serif;
+    }
+
+    @font-face {
+      font-family: "YekanBakh";
+      src: url("./YekanBakh-Regular.woff") format("woff");
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "YekanBakh";
+      src: url("./YekanBakh-SemiBold.woff") format("woff");
+      font-weight: 600;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "YekanBakh";
+      src: url("./YekanBakh-Bold.woff") format("woff");
+      font-weight: 700;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Kalameh";
+      src: url("./Kalameh-Regular.ttf") format("truetype");
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Kalameh";
+      src: url("./Kalameh-Bold.ttf") format("truetype");
+      font-weight: 700;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Kalameh";
+      src: url("./Kalameh-ExtraBold.ttf") format("truetype");
+      font-weight: 800;
+      font-display: swap;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font-family-yekan);
+      background: var(--color-surface-container-high);
+      color: var(--color-on-surface-variant);
+      -webkit-font-smoothing: antialiased;
+    }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    input { font-family: inherit; }
+    h1, h2, h3 { font-family: var(--font-family-display); color: var(--color-on-surface); }
+    .tnum { font-variant-numeric: tabular-nums; }
+    ::-webkit-scrollbar { width: 9px; height: 9px; }
+    ::-webkit-scrollbar-thumb { background: var(--color-outline-variant); border-radius: 9px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes growBar { from { width: 0; } }
+    @keyframes toastIn {
+      from { transform: translateY(16px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .app {
+      display: flex;
+      flex-direction: row-reverse;
+      min-height: 100vh;
+      width: 100%;
+      direction: rtl;
+    }
+
+    /* Sidebar — aligned with SubSidebar visual language */
+    .sidebar {
+      width: 220px;
+      flex: none;
+      background: var(--color-surface-container-high);
+      padding: var(--spacing-sm);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      transition: width .2s ease, opacity .2s ease;
+    }
+    .sidebar-inner {
+      background: var(--color-surface-container-lowest);
+      border-radius: var(--radius-card-lg);
+      height: 100%;
+      padding: var(--spacing-sm);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-lg);
+      padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-lg);
+    }
+    .sidebar-brand-icon {
+      width: 42px; height: 42px;
+      border-radius: var(--radius-card-sm);
+      background: linear-gradient(150deg, #df6f73, var(--color-primary));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow-primary);
+      flex: none;
+    }
+    .sidebar-brand h2 {
+      font-size: var(--text-title-md);
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    .sidebar-brand p {
+      font-size: var(--text-label-sm);
+      color: var(--color-outline);
+      margin-top: 2px;
+    }
+    .nav-section-title {
+      font-size: var(--text-label-sm);
+      color: var(--color-outline);
+      padding: var(--spacing-sm) var(--spacing-xl);
+    }
+    .nav-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-sm) var(--spacing-xl);
+      border-radius: var(--radius-container-md);
+      font-size: var(--text-label-lg);
+      color: var(--color-outline);
+      transition: background .14s, color .14s;
+      text-align: right;
+    }
+    .nav-item:hover { background: var(--color-primary-focused); color: var(--color-primary); }
+    .nav-item.active {
+      background: var(--color-primary-focused);
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+    .nav-item .badge {
+      margin-right: auto;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--color-primary-container);
+      color: var(--color-primary);
+      border-radius: var(--radius-button-sm);
+      padding: 2px 8px;
+    }
+    .sidebar-user {
+      margin-top: auto;
+      padding: var(--spacing-lg) var(--spacing-xl);
+      border-top: 1px solid var(--color-outline-variant);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+    .avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: #c77fa6;
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px; flex: none;
+    }
+
+    /* Main */
+    .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-lg);
+      padding: var(--spacing-md) 22px;
+      border-bottom: 1px solid var(--color-outline-variant);
+      background: var(--color-surface-container-lowest);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .icon-btn {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      border: 1px solid var(--color-outline-variant);
+      background: var(--color-surface-container-lowest);
+      color: var(--color-on-surface-variant);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .icon-btn:hover { background: var(--color-surface-container-high); }
+    .crumbs {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; min-width: 0;
+    }
+    .crumbs .muted { color: var(--color-muted); font-weight: 500; white-space: nowrap; }
+    .crumbs .sep { color: var(--color-outline-variant); }
+    .crumbs .current {
+      color: var(--color-on-surface);
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .search-field {
+      position: relative;
+      width: 240px;
+      max-width: 38vw;
+    }
+    .search-field input {
+      width: 100%;
+      height: 38px;
+      background: var(--color-surface-container-high);
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 0 13px 0 38px;
+      font-size: 12.5px;
+      color: var(--color-on-surface-variant);
+      outline: none;
+    }
+    .search-field input:focus {
+      border-color: var(--color-primary);
+      background: var(--color-surface-container-lowest);
+    }
+    .search-field svg {
+      position: absolute; left: 12px; top: 11px; pointer-events: none;
+    }
+    .notif-wrap { position: relative; }
+    .notif-dot {
+      position: absolute; top: -5px; left: -5px;
+      min-width: 18px; height: 18px; padding: 0 4px;
+      border-radius: 9px;
+      background: var(--color-primary);
+      color: #fff;
+      font-size: 10.5px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid #fff;
+    }
+
+    .page {
+      padding: 26px 30px 40px;
+      animation: fadeUp .28s ease;
+    }
+    .page-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+    .page-head h1 {
+      font-size: var(--text-title-lg);
+      font-weight: 600;
+    }
+    .page-head p {
+      font-size: 13px;
+      color: var(--color-outline);
+      margin-top: 5px;
+    }
+    .actions { display: flex; align-items: center; gap: 10px; flex: none; flex-wrap: wrap; }
+
+    .pill-group {
+      display: flex;
+      align-items: center;
+      background: var(--color-surface-container-lowest);
+      border: 1px solid var(--color-outline-variant);
+      border-radius: 11px;
+      padding: 3px;
+      gap: 2px;
+      flex-wrap: wrap;
+    }
+    .pill {
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 9px;
+      color: var(--color-outline);
+      white-space: nowrap;
+    }
+    .pill.active {
+      background: var(--color-surface-container-lowest);
+      color: var(--color-on-surface);
+      box-shadow: 0 1px 2px rgba(0,0,0,.06);
+    }
+    .pill .count { margin-right: 6px; font-size: 11px; opacity: .7; }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: linear-gradient(150deg, #df6f73, var(--color-primary));
+      color: var(--color-on-primary);
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 10px 16px;
+      border-radius: 11px;
+      box-shadow: var(--shadow-primary);
+    }
+    .btn-primary:hover { filter: brightness(1.05); }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--color-surface-container-lowest);
+      border: 1px solid var(--color-outline-variant);
+      color: var(--color-on-surface-variant);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 9px 14px;
+      border-radius: 11px;
+    }
+    .btn-secondary:hover { background: var(--color-surface-container-high); }
+
+    .card {
+      background: var(--color-surface-container-lowest);
+      border-radius: var(--radius-card-md);
+      border: 1px solid #ececec;
+      box-shadow: var(--shadow-card);
+    }
+    .card-pad { padding: 18px 20px; }
+
+    /* KPI / Summary cards — match SummaryCard */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacing-xl);
+      margin-bottom: 18px;
+    }
+    .kpi {
+      text-align: right;
+      background: var(--color-surface-container-lowest);
+      border-radius: var(--radius-card-lg);
+      padding: var(--spacing-2xl);
+      box-shadow: none;
+      border: none;
+      display: block;
+      width: 100%;
+    }
+    .kpi:hover { background: color-mix(in srgb, var(--color-primary) 4%, white); }
+    .kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      flex-direction: row-reverse;
+    }
+    .kpi-icon {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-card-sm);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .kpi-value {
+      font-size: var(--text-headline-sm);
+      font-family: var(--font-family-display);
+      font-weight: 600;
+      color: var(--color-on-surface);
+      text-align: right;
+    }
+    .kpi-label {
+      font-size: var(--text-label-md);
+      color: var(--color-on-surface-variant);
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: var(--spacing-xl);
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-size: var(--text-title-md);
+      font-family: var(--font-family-display);
+      font-weight: 600;
+      color: var(--color-on-surface);
+    }
+    .alert-count {
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--color-error-container);
+      color: var(--color-primary);
+      border-radius: 8px;
+      padding: 3px 9px;
+    }
+    .alert-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-container-md);
+      background: var(--color-surface-container-lowest);
+      margin-bottom: var(--spacing-sm);
+    }
+    .alert-list {
+      background: var(--color-surface-container-high);
+      border-radius: var(--radius-container-md);
+      padding: var(--spacing-sm);
+      margin-top: var(--spacing-sm);
+    }
+    .alert-title { font-size: var(--text-label-lg); color: var(--color-on-surface); }
+    .alert-desc { font-size: var(--text-label-md); color: var(--color-outline); margin-top: 2px; }
+    .link-all {
+      width: 100%;
+      margin-top: var(--spacing-lg);
+      font-size: var(--text-label-md);
+      color: var(--color-on-surface-variant);
+      font-weight: 600;
+      text-align: center;
+      padding: 4px;
+    }
+    .link-all:hover { color: var(--color-primary); }
+
+    .status-row {
+      display: grid;
+      grid-template-columns: minmax(0, 150px) 1fr minmax(0, 120px);
+      align-items: center;
+      gap: var(--spacing-lg);
+      min-height: 40px;
+    }
+    .status-label { font-size: var(--text-label-lg); color: var(--color-on-surface); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .status-bar {
+      display: flex; align-items: center; gap: var(--spacing-sm);
+    }
+    .progress {
+      flex: 1;
+      height: 6px;
+      border-radius: 6px;
+      background: var(--color-surface-container-highest);
+      overflow: hidden;
+    }
+    .progress > span {
+      display: block;
+      height: 100%;
+      border-radius: 6px;
+      background: var(--color-success-strong);
+      animation: growBar .5s ease;
+    }
+    .status-pct { font-size: var(--text-label-sm); color: var(--color-outline); flex: none; }
+    .status-value { font-size: var(--text-label-md); color: var(--color-outline); text-align: left; }
+
+    .qa-title {
+      font-size: var(--text-title-md);
+      font-family: var(--font-family-display);
+      font-weight: 600;
+      margin: 4px 2px 12px;
+      color: var(--color-on-surface);
+    }
+    .qa-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .qa-item {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      background: var(--color-surface-container-lowest);
+      border-radius: var(--radius-card-sm);
+      padding: 16px;
+      text-align: right;
+      border: 1px solid transparent;
+    }
+    .qa-item:hover {
+      border-color: color-mix(in srgb, var(--color-primary) 35%, white);
+      box-shadow: 0 6px 16px rgba(215, 78, 84, 0.08);
+    }
+    .qa-icon {
+      width: 42px; height: 42px;
+      border-radius: var(--radius-card-sm);
+      display: flex; align-items: center; justify-content: center;
+      flex: none;
+      font-size: 19px;
+      background: var(--color-surface-container-high);
+    }
+    .qa-label { font-size: 13.5px; font-weight: 600; color: var(--color-on-surface); }
+    .qa-sub { font-size: 11.5px; color: var(--color-muted); margin-top: 2px; }
+
+    /* Tables */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .table-wrap { overflow: hidden; }
+    .table-scroll { overflow-x: auto; }
+    .table-min { min-width: 880px; }
+    .table-head, .table-row {
+      display: grid;
+      grid-template-columns: 130px 1.4fr 150px 70px 1fr 110px 1.2fr 40px;
+      align-items: center;
+    }
+    .table-head {
+      background: #fafafa;
+      border-bottom: 1px solid #efefef;
+    }
+    .table-head > div {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--color-muted);
+      padding: 13px 14px;
+      white-space: nowrap;
+    }
+    .table-head > div:first-child { padding-right: 18px; }
+    .table-row {
+      border-bottom: 1px solid #f4f4f4;
+      cursor: pointer;
+    }
+    .table-row:hover { background: #fcf6f6; }
+    .table-row > div { padding: 13px 14px; }
+    .table-row > div:first-child { padding-right: 18px; }
+    .id-link { font-size: 12.5px; font-weight: 700; color: var(--color-primary); }
+    .cust {
+      display: flex; align-items: center; gap: 9px;
+    }
+    .cust-av {
+      width: 32px; height: 32px;
+      border-radius: 9px;
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex: none;
+    }
+    .cust-name { font-size: 12.5px; font-weight: 600; color: var(--color-on-surface); white-space: nowrap; }
+    .lvl {
+      display: inline-flex;
+      margin-top: 3px;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 6px;
+      padding: 2px 7px;
+    }
+    .chip {
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 7px;
+      padding: 4px 10px;
+      white-space: nowrap;
+    }
+    .status-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .status-dot i {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .table-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 18px;
+      border-top: 1px solid #efefef;
+      flex-wrap: wrap;
+    }
+
+    /* Detail */
+    .detail-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .stepper {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      position: relative;
+      padding: 22px 26px;
+      margin-bottom: 16px;
+    }
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+    .step-dot {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700;
+      border: 2px solid var(--color-outline-variant);
+      background: #fff;
+      color: var(--color-muted);
+    }
+    .step-dot.done { background: var(--color-success-strong); border-color: var(--color-success-strong); color: #fff; }
+    .step-dot.current { border-color: var(--color-primary); color: var(--color-primary); }
+    .step-label { font-size: 12px; font-weight: 600; text-align: center; max-width: 96px; line-height: 1.5; color: var(--color-muted); }
+    .step-label.active { color: var(--color-on-surface); }
+    .step-time { font-size: 10.5px; color: var(--color-muted); }
+    .stepper-line {
+      position: absolute; top: 40px; right: 7%; left: 7%;
+      height: 2px; background: #ececec; z-index: 1;
+    }
+    .stepper-progress {
+      position: absolute; top: 40px; right: 7%;
+      height: 2px; background: var(--color-success-strong); z-index: 1;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1.55fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .shipment-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid #f2f2f2;
+    }
+    .meta-strip {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 13px 18px;
+      background: #fbfafb;
+      border-bottom: 1px solid #f2f2f2;
+    }
+    .meta-item { flex: 1; min-width: 120px; padding: 2px 0; }
+    .meta-item .lbl { font-size: 10.5px; color: var(--color-muted); margin-bottom: 4px; }
+    .meta-item .val { font-size: 12px; font-weight: 600; color: var(--color-on-surface-variant); }
+    .items-head, .items-row {
+      display: grid;
+      grid-template-columns: 1.6fr 110px 90px 70px 100px 72px 1fr;
+      align-items: center;
+    }
+    .items-head { background: #fafafa; }
+    .items-head > div {
+      font-size: 11px; font-weight: 700; color: var(--color-muted); padding: 9px 8px;
+    }
+    .items-head > div:first-child, .items-row > div:first-child { padding-right: 18px; }
+    .items-head > div:last-child, .items-row > div:last-child { padding-left: 18px; }
+    .items-row { border-top: 1px solid #f4f4f4; }
+    .items-row > div { padding: 11px 8px; font-size: 12px; }
+    .swatch {
+      width: 34px; height: 34px;
+      border-radius: 9px; flex: none;
+    }
+    .side-stack { display: flex; flex-direction: column; gap: 16px; }
+    .kv {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 12.5px;
+      border-top: 1px solid #f4f4f4;
+    }
+    .kv .k { color: var(--color-muted); }
+    .kv .v { font-weight: 600; color: var(--color-on-surface-variant); }
+    .timeline-item { display: flex; gap: 11px; }
+    .timeline-rail {
+      display: flex; flex-direction: column; align-items: center; flex: none;
+    }
+    .timeline-dot {
+      width: 11px; height: 11px; border-radius: 50%;
+      margin-top: 3px; border: 2px solid;
+    }
+    .timeline-line { width: 2px; flex: 1; min-height: 14px; background: #e8e8ec; }
+    .hidden { display: none !important; }
+
+    /* Create order wizard */
+    .wiz-stepper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+    .wiz-step {
+      display: flex;
+      align-items: center;
+    }
+    .wiz-step-inner {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .wiz-dot {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+      border: 2px solid var(--color-outline-variant);
+      background: #fff;
+      color: var(--color-muted);
+    }
+    .wiz-dot.done {
+      background: var(--color-success-strong);
+      border-color: var(--color-success-strong);
+      color: #fff;
+    }
+    .wiz-dot.current {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #fff;
+    }
+    .wiz-step-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--color-muted);
+      white-space: nowrap;
+    }
+    .wiz-step-label.active { color: var(--color-on-surface); }
+    .wiz-line {
+      width: 46px; height: 2px;
+      background: #ececec;
+      margin: 0 12px;
+    }
+    .wiz-line.done { background: var(--color-success-strong); }
+    .wiz-card {
+      padding: 26px 28px;
+      min-height: 340px;
+      border-radius: 18px;
+      box-shadow: 0 2px 8px rgba(20, 20, 40, 0.05);
+    }
+    .wiz-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 18px;
+    }
+    .wiz-title {
+      font-size: 15px;
+      font-family: var(--font-family-display);
+      font-weight: 600;
+      color: var(--color-on-surface);
+      margin-bottom: 4px;
+    }
+    .wiz-sub {
+      font-size: 12.5px;
+      color: var(--color-muted);
+      margin-bottom: 20px;
+    }
+    .cust-pick {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 13px 15px;
+      border-radius: 13px;
+      border: 1.5px solid #ececec;
+      background: #fff;
+      margin-bottom: 10px;
+      text-align: right;
+    }
+    .cust-pick:hover { border-color: #e0bcbe; }
+    .cust-pick.selected {
+      border-color: var(--color-primary);
+      background: #fdf6f6;
+    }
+    .cust-radio {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid #d4d4dc;
+      display: flex; align-items: center; justify-content: center;
+      flex: none;
+    }
+    .cust-pick.selected .cust-radio { border-color: var(--color-primary); }
+    .cust-radio-dot {
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      background: transparent;
+    }
+    .cust-pick.selected .cust-radio-dot { background: var(--color-primary); }
+    .cart-table { border: 1px solid #ececec; border-radius: 13px; overflow: hidden; }
+    .cart-head, .cart-row {
+      display: grid;
+      grid-template-columns: 1.7fr 120px 1fr 1fr 36px;
+      align-items: center;
+    }
+    .cart-head { background: #fafafa; }
+    .cart-head > div {
+      font-size: 11px; font-weight: 700; color: var(--color-muted);
+      padding: 10px 10px;
+    }
+    .cart-head > div:first-child, .cart-row > div:first-child { padding-right: 16px; }
+    .cart-head > div:nth-child(4), .cart-row > div:nth-child(4) { padding-left: 16px; }
+    .cart-row { border-top: 1px solid #f4f4f4; }
+    .cart-row > div { padding: 11px 10px; }
+    .qty-ctrl {
+      display: flex; align-items: center; gap: 6px; justify-content: center;
+    }
+    .qty-btn {
+      width: 26px; height: 26px;
+      border-radius: 8px;
+      border: 1px solid var(--color-outline-variant);
+      color: var(--color-outline);
+      font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .qty-btn:hover { background: var(--color-surface-container-high); }
+    .cart-total {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 16px;
+      padding: 14px 16px;
+      background: #fbfafb;
+      border-radius: 12px;
+    }
+    .pay-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .pay-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 14px;
+      border-radius: 14px;
+      border: 1.5px solid #ececec;
+      background: #fff;
+    }
+    .pay-card:hover { border-color: #e0bcbe; }
+    .pay-card.selected {
+      border-color: var(--color-primary);
+      background: #fdf6f6;
+    }
+    .pay-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 21px;
+    }
+    .cheque-box {
+      background: #fbfafb;
+      border-radius: 13px;
+      padding: 18px 20px;
+      animation: fadeUp .25s ease;
+    }
+    .cheque-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+    }
+    .field-label {
+      font-size: 11.5px;
+      color: var(--color-muted);
+      margin-bottom: 6px;
+    }
+    .field-input {
+      width: 100%;
+      height: 42px;
+      background: #fff;
+      border: 1px solid var(--color-outline-variant);
+      border-radius: 11px;
+      padding: 0 13px;
+      font-size: 13px;
+      outline: none;
+    }
+    .field-input:focus { border-color: var(--color-primary); }
+    .credit-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--color-info-soft);
+      border-radius: 13px;
+      padding: 16px 18px;
+      animation: fadeUp .25s ease;
+      font-size: 12.5px;
+      color: var(--color-info-strong);
+      line-height: 1.7;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+      margin-bottom: 20px;
+    }
+    .summary-tile {
+      background: #fbfafb;
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .summary-tile.total {
+      background: #fbeded;
+    }
+    .summary-tile .lbl {
+      font-size: 11.5px;
+      color: var(--color-muted);
+      margin-bottom: 6px;
+    }
+    .summary-tile.total .lbl { color: var(--color-primary); }
+    .summary-tile .val {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--color-on-surface);
+    }
+    .summary-tile.total .val {
+      font-size: 15px;
+      font-family: var(--font-family-display);
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+    .otp-box {
+      background: #fff;
+      border: 1.5px solid #ececec;
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+    }
+    .otp-digits {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      direction: ltr;
+    }
+    .otp-digit {
+      width: 50px; height: 58px;
+      border-radius: 13px;
+      border: 1.5px solid #ececec;
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 700;
+      color: var(--color-on-surface);
+    }
+    .otp-digit.filled { border-color: #d4d4dc; }
+    .otp-digit.active {
+      border-color: var(--color-primary);
+      background: #fdf6f6;
+    }
+    .link-primary {
+      font-size: 11.5px;
+      color: var(--color-primary);
+      font-weight: 700;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      background: var(--color-inverse-surface);
+      color: var(--color-on-inverse-surface);
+      padding: 13px 20px;
+      border-radius: 13px;
+      box-shadow: 0 12px 34px rgba(0,0,0,.3);
+      animation: toastIn .25s ease;
+      direction: rtl;
+    }
+    .toast-icon {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--color-success-strong); color: #fff;
+      font-size: 13px; font-weight: 700; flex: none;
+    }
+
+    .sidebar-backdrop {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(20,20,32,.42);
+      z-index: 75;
+    }
+    .sidebar-backdrop.show { display: block; }
+
+    @media (max-width: 1024px) {
+      .sidebar {
+        position: fixed; top: 0; right: 0; z-index: 80;
+        transform: translateX(106%);
+        transition: transform .24s ease;
+        box-shadow: -12px 0 40px rgba(0,0,0,.18);
+        background: transparent;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .page { padding: 18px 16px 40px !important; }
+      .dash-grid, .detail-grid { grid-template-columns: 1fr !important; }
+      .crumb-root { display: none; }
+    }
+    @media (max-width: 760px) {
+      .kpi-grid, .qa-grid { grid-template-columns: 1fr 1fr !important; }
+      .crumb-group { display: none; }
+      .search-field { display: none; }
+      .pay-grid { grid-template-columns: 1fr !important; }
+      .cheque-grid { grid-template-columns: 1fr !important; }
+      .summary-grid { grid-template-columns: 1fr !important; }
+      .cart-head, .cart-row { grid-template-columns: 1.4fr 110px 1fr 36px; }
+      .cart-head > div:nth-child(3), .cart-row > div:nth-child(3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div id="backdrop" class="sidebar-backdrop" onclick="closeNav()"></div>
+
+    <main class="main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:13px;min-width:0">
+          <button class="icon-btn" onclick="toggleNav()" title="منو" aria-label="منو">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          </button>
+          <div class="crumbs">
+            <span class="muted crumb-root">زیرا مارکت</span>
+            <span class="sep crumb-root">/</span>
+            <span class="muted crumb-group" id="crumbGroup">مدیریت سفارشات</span>
+            <span class="sep crumb-group">/</span>
+            <span class="current" id="crumbPage">داشبورد سفارشات</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex:none">
+          <div class="search-field crumb-group">
+            <input placeholder="جستجوی سفارش، مشتری یا کد…" />
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9a9aa5" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+          </div>
+          <div class="notif-wrap">
+            <button class="icon-btn" onclick="toast('اعلان‌ها باز شد.')" title="اعلان‌ها">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+              <span class="notif-dot">۵</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- DASHBOARD -->
+      <section id="view-dashboard" class="page">
+        <div class="page-head">
+          <div>
+            <h1>داشبورد سفارشات</h1>
+            <p>نمای کلی سفارش‌ها، وضعیت و عملکرد — دوره: این ماه</p>
+          </div>
+          <div class="actions">
+            <div class="pill-group" id="periodPills">
+              <button class="pill active" data-period="0">ماه</button>
+              <button class="pill" data-period="1">هفته</button>
+              <button class="pill" data-period="2">امروز</button>
+              <button class="pill" onclick="toast('بازه سفارشی اعمال شد.')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-left:4px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                بازه دلخواه
+              </button>
+            </div>
+            <button class="btn-primary" onclick="go('create')">
+              <span style="font-size:17px;line-height:1">+</span>ثبت سفارش جدید
+            </button>
+          </div>
+        </div>
+
+        <div class="kpi-grid" id="kpiGrid"></div>
+
+        <div class="dash-grid">
+          <div class="card card-pad">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+              <div class="section-title">هشدارها</div>
+              <span class="alert-count">۴ مورد</span>
+            </div>
+            <div class="alert-list" id="alertList"></div>
+            <button class="link-all" onclick="toast('صفحه همه هشدارها باز شد.')">مشاهده همه هشدارها</button>
+          </div>
+          <div class="card card-pad">
+            <div class="section-title" style="margin-bottom:16px">سفارش‌ها به تفکیک وضعیت</div>
+            <div id="statusList" style="display:flex;flex-direction:column;gap:12px;padding-top:8px"></div>
+          </div>
+        </div>
+
+        <div class="qa-title">دسترسی سریع</div>
+        <div class="qa-grid" id="qaGrid"></div>
+      </section>
+
+      <!-- LIST -->
+      <section id="view-list" class="page hidden">
+        <div class="page-head">
+          <div>
+            <h1>لیست سفارش‌ها</h1>
+            <p>ثبت و پیگیری سفارش‌های مشتریان — <span id="listTotal">۱۰</span> سفارش</p>
+          </div>
+          <div class="actions">
+            <button class="btn-secondary" onclick="toast('خروجی اکسل از نمای فعلی آماده شد.')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-success-strong)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="m9 13 2 2 4-4"/></svg>
+              خروجی اکسل
+            </button>
+            <button class="btn-primary" onclick="go('create')"><span style="font-size:17px;line-height:1">+</span>ثبت سفارش جدید</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <div class="pill-group" id="listFilters"></div>
+          <div class="search-field" style="flex:1;min-width:200px;max-width:300px">
+            <input placeholder="جستجو با شناسه سفارش یا مشتری…" />
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9a9aa5" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+          </div>
+          <button class="icon-btn" onclick="toast('پنل فیلتر پیشرفته باز شد.')" title="فیلتر">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4-2v-4Z"/></svg>
+          </button>
+          <button class="icon-btn" onclick="toast('تنظیمات ستون‌ها باز شد.')" title="ستون‌ها">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v16H3zM9 4v16M15 4v16"/></svg>
+          </button>
+        </div>
+        <div class="card table-wrap">
+          <div class="table-scroll">
+            <div class="table-min">
+              <div class="table-head">
+                <div>شناسه سفارش</div>
+                <div>مشتری</div>
+                <div>تاریخ ثبت</div>
+                <div style="text-align:center">اقلام</div>
+                <div style="text-align:left">جمع کل (تومان)</div>
+                <div style="text-align:center">نوع تسویه</div>
+                <div>وضعیت</div>
+                <div></div>
+              </div>
+              <div id="orderRows"></div>
+            </div>
+          </div>
+          <div class="table-foot">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:12px;color:var(--color-muted)">تعداد ردیف</span>
+              <div class="pill-group">
+                <button class="pill active">۱۰</button>
+                <button class="pill">۲۵</button>
+                <button class="pill">۵۰</button>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <span class="tnum" style="font-size:12px;color:var(--color-muted)">۱–۱۰ از ۲۶۷</span>
+              <div style="display:flex;gap:4px">
+                <button class="icon-btn" style="width:32px;height:32px" onclick="toast('صفحه قبلی.')">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+                </button>
+                <button class="icon-btn" style="width:32px;height:32px" onclick="toast('صفحه بعدی.')">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DETAIL -->
+      <section id="view-detail" class="page hidden">
+        <div class="detail-head">
+          <button class="btn-secondary" onclick="go('list')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+            بازگشت
+          </button>
+          <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0">
+            <h1 class="tnum" dir="ltr" id="detailId" style="font-size:21px;font-weight:600">PO-982032</h1>
+            <span class="status-dot" id="detailStatus" style="background:var(--color-success-soft);border-radius:9px;padding:6px 12px;color:var(--color-success-strong)">
+              <i style="background:var(--color-success-strong)"></i>در حال آماده‌سازی
+            </span>
+          </div>
+          <div class="actions">
+            <button class="btn-secondary" onclick="toast('فاکتور برای چاپ آماده شد.')">چاپ فاکتور</button>
+            <button class="btn-primary" onclick="toast('حالت ویرایش سفارش فعال شد.')">ویرایش سفارش</button>
+          </div>
+        </div>
+
+        <div class="card stepper">
+          <div class="stepper-line"></div>
+          <div class="stepper-progress" style="width:50%"></div>
+          <div class="step"><div class="step-dot done">✓</div><div class="step-label active">ثبت سفارش</div><div class="step-time">۰۹/۱۲ ۱۸:۲۳</div></div>
+          <div class="step"><div class="step-dot done">✓</div><div class="step-label active">تایید حسابدار</div><div class="step-time">۰۹/۱۲ ۱۹:۰۱</div></div>
+          <div class="step"><div class="step-dot current">۳</div><div class="step-label active">آماده‌سازی</div><div class="step-time">۰۹/۱۲ ۲۰:۱۵</div></div>
+          <div class="step"><div class="step-dot">۴</div><div class="step-label">آماده ارسال</div><div class="step-time">—</div></div>
+          <div class="step"><div class="step-dot">۵</div><div class="step-label">تکمیل</div><div class="step-time">—</div></div>
+        </div>
+
+        <div class="detail-grid">
+          <div class="side-stack" id="shipments"></div>
+          <div class="side-stack">
+            <div class="card card-pad">
+              <div class="section-title" style="margin-bottom:14px">مشتری</div>
+              <div class="cust" style="margin-bottom:14px">
+                <div class="cust-av" style="width:46px;height:46px;border-radius:13px;font-size:18px;background:#c7a87c">آ</div>
+                <div>
+                  <div style="font-size:14px;font-weight:700;color:var(--color-on-surface)">آرا صفوی</div>
+                  <span class="lvl" style="color:#c8841a;background:#fbf0e2">طلایی</span>
+                </div>
+              </div>
+              <div class="kv"><span class="k">شماره تماس</span><span class="v tnum" dir="ltr">۰۹۱۲ ۴۴۸ ۲۲۰۱</span></div>
+              <div class="kv" style="align-items:flex-start"><span class="k">آدرس تحویل</span><span class="v" style="text-align:left;line-height:1.7">تهران، ولنجک، خ ۱۹، پلاک ۸</span></div>
+            </div>
+            <div class="card card-pad">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+                <div class="section-title">تسویه</div>
+                <span class="chip" style="color:var(--color-success-strong);background:var(--color-success-soft)">نقدی</span>
+              </div>
+              <div class="kv" style="border:none;padding-top:0"><span class="k">جمع اقلام</span><span class="v tnum">۷٬۳۲۱٬۱۰۱</span></div>
+              <div class="kv" style="border:none"><span class="k">تخفیف</span><span class="v tnum" style="color:var(--color-success-strong)">−۲۹۲٬۸۴۴</span></div>
+              <div class="kv"><span class="k">مالیات بر ارزش افزوده</span><span class="v tnum">۶۵۸٬۸۹۹</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding-top:8px">
+                <span style="font-size:13px;font-weight:700;color:var(--color-on-surface)">مبلغ نهایی</span>
+                <span class="tnum" style="font-size:16px;font-family:var(--font-family-display);font-weight:600;color:var(--color-primary)">۷٬۹۸۰٬۰۰۰</span>
+              </div>
+            </div>
+            <div class="card card-pad">
+              <div class="section-title" style="margin-bottom:14px">تاریخچه سفارش</div>
+              <div id="timeline"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- REQUESTS -->
+      <section id="view-requests" class="page hidden">
+        <div class="page-head">
+          <div>
+            <h1>درخواست‌های پیش‌سفارش</h1>
+            <p>مدیریت پیش‌سفارش‌ها، واریز بیعانه و تایید نهایی</p>
+          </div>
+        </div>
+        <div class="toolbar">
+          <div class="pill-group" id="reqFilters"></div>
+        </div>
+        <div class="card table-wrap">
+          <div class="table-scroll">
+            <div style="min-width:840px">
+              <div class="table-head" style="grid-template-columns:120px 1.4fr 150px 1fr 1fr 1.1fr 40px">
+                <div>شناسه</div>
+                <div>مشتری</div>
+                <div>تاریخ درخواست</div>
+                <div style="text-align:left">مبلغ کل</div>
+                <div style="text-align:left">بیعانه</div>
+                <div>وضعیت</div>
+                <div></div>
+              </div>
+              <div id="reqRows"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CREATE ORDER WIZARD -->
+      <section id="view-create" class="page hidden">
+        <div class="detail-head">
+          <button class="btn-secondary" onclick="go('list')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+            انصراف
+          </button>
+          <h1 style="font-size:21px;font-weight:600">ثبت سفارش جدید</h1>
+        </div>
+
+        <div style="max-width:920px;margin:0 auto">
+          <div id="wizStepper" class="wiz-stepper"></div>
+
+          <div class="card card-pad wiz-card">
+            <div id="wizBody"></div>
+          </div>
+
+          <div class="wiz-footer">
+            <button id="wizBackBtn" class="btn-secondary" onclick="wizBack()">مرحله قبل</button>
+            <button class="btn-primary" onclick="wizNext()">
+              <span id="wizNextLabel">مرحله بعد</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-inner">
+        <div class="sidebar-brand">
+          <div class="sidebar-brand-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.2l2.3 12.4a1.6 1.6 0 0 0 1.6 1.3h8.7a1.6 1.6 0 0 0 1.6-1.2L21.5 7H5.3"/></svg>
+          </div>
+          <div>
+            <h2>مدیریت سفارشات</h2>
+            <p>ثبت و پیگیری سفارش‌ها</p>
+          </div>
+        </div>
+        <nav style="flex:1;overflow:auto">
+          <div class="nav-section-title">نمای کلی</div>
+          <button class="nav-item active" data-route="dashboard" onclick="go('dashboard')">داشبورد سفارشات</button>
+          <button class="nav-item" data-route="list" onclick="go('list')">لیست سفارش‌ها</button>
+          <div class="nav-section-title">پیش‌سفارش‌ها</div>
+          <button class="nav-item" data-route="requests" onclick="go('requests')">
+            درخواست‌ها
+            <span class="badge">۷</span>
+          </button>
+          <div class="nav-section-title">عملیات</div>
+          <button class="nav-item" data-route="create" onclick="go('create')">ثبت سفارش جدید</button>
+        </nav>
+        <div class="sidebar-user">
+          <div class="avatar">س</div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--color-on-surface)">سارا محمدی</div>
+            <div style="font-size:11px;color:var(--color-outline)">مسئول ثبت سفارش</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div id="toast" class="toast hidden"><span class="toast-icon">✓</span><span id="toastMsg"></span></div>
+
+  <script>
+    const fa = (n) => String(n).replace(/[0-9]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[d]);
+    const grp = (n) => fa(String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '٬'));
+    const swatches = ['#D98EA8','#8FB6D6','#C7A87C','#9CC3A0','#B79AD0','#E0A07A','#7FBFBF','#D69CA0','#C99AA0','#8E9CC9'];
+    const levels = { gold:['طلایی','#C8841A','#FBF0E2'], silver:['نقره‌ای','#7C8A99','#EEF1F4'], bronze:['برنزی','#A9744B','#F4ECE3'] };
+    const statuses = {
+      prep:['در حال آماده‌سازی','#1F8A5B'],
+      ready:['آماده ارسال','#8E6CB0'],
+      wait:['در انتظار آماده‌سازی','#C8841A'],
+      done:['تکمیل شد','#7C8A99'],
+    };
+    const pays = {
+      cash:['نقدی','#1F8A5B','#E8F5EF'],
+      cheque:['چکی','#8E6CB0','#F1ECF7'],
+      credit:['اعتباری','#2A6FDB','#E8F0FB'],
+    };
+
+    const orders = [
+      {id:'PO-982032', cust:'آرا صفوی', lvl:'gold', date:'۱۴۰۴/۰۹/۱۲ - ۱۸:۲۳', items:34, total:7980000, pay:'cash', status:'prep'},
+      {id:'PO-982031', cust:'مهرا داد', lvl:'silver', date:'۱۴۰۴/۰۹/۱۲ - ۱۷:۰۵', items:43, total:14893000, pay:'credit', status:'done'},
+      {id:'PO-982030', cust:'اردلان صفوی', lvl:'gold', date:'۱۴۰۴/۰۹/۱۱ - ۱۴:۴۰', items:124, total:62000000, pay:'credit', status:'done'},
+      {id:'PO-982028', cust:'مهیزار آدالان', lvl:'gold', date:'۱۴۰۴/۰۹/۱۱ - ۱۱:۱۲', items:27, total:142000000, pay:'cash', status:'prep'},
+      {id:'PO-982025', cust:'آترین کشاورز', lvl:'bronze', date:'۱۴۰۴/۰۹/۱۰ - ۱۹:۳۰', items:82, total:92819000, pay:'credit', status:'ready'},
+      {id:'PO-982023', cust:'مرجان محمدی', lvl:'gold', date:'۱۴۰۴/۰۹/۱۰ - ۱۶:۱۸', items:15, total:87000000, pay:'credit', status:'wait'},
+      {id:'PO-982021', cust:'داریوش طالبی', lvl:'gold', date:'۱۴۰۴/۰۹/۰۹ - ۱۳:۴۵', items:32, total:62000000, pay:'cheque', status:'wait'},
+      {id:'PO-982020', cust:'عماد شیرازی', lvl:'bronze', date:'۱۴۰۴/۰۹/۰۹ - ۱۰:۰۰', items:65, total:92819000, pay:'credit', status:'ready'},
+      {id:'PO-982018', cust:'شهرزاد امینی', lvl:'bronze', date:'۱۴۰۴/۰۹/۰۸ - ۱۸:۵۰', items:48, total:21879000, pay:'cheque', status:'ready'},
+      {id:'PO-982015', cust:'سارا صامت', lvl:'silver', date:'۱۴۰۴/۰۹/۰۸ - ۰۹:۱۵', items:92, total:82000000, pay:'cheque', status:'prep'},
+    ];
+
+    const titles = {
+      dashboard: 'داشبورد سفارشات',
+      list: 'لیست سفارش‌ها',
+      detail: 'جزئیات سفارش',
+      requests: 'درخواست‌های پیش‌سفارش',
+      create: 'ثبت سفارش جدید',
+    };
+
+    let listFilter = 0;
+    let reqFilter = 0;
+    let toastTimer;
+    let wizStep = 0;
+    let wizCust = 0;
+    let wizPay = -1;
+    let wizQty = [12, 6, 24];
+    const wizCustomers = [
+      { name: 'آرا صفوی', phone: '۰۹۱۲ ۴۴۸ ۲۲۰۱', lvl: 'gold' },
+      { name: 'مرجان محمدی', phone: '۰۹۳۵ ۱۲۰ ۸۸۴۵', lvl: 'silver' },
+      { name: 'داریوش طالبی', phone: '۰۹۱۰ ۷۷۲ ۰۰۹۸', lvl: 'gold' },
+    ];
+    const wizCartDefs = [
+      { name: 'ست لباس خواب ساتن', unit: 398000 },
+      { name: 'سوتین بدون فنر دانتل', unit: 286000 },
+      { name: 'شورت نخی زنانه (پک ۳ عددی)', unit: 172000 },
+    ];
+    const wizPayDefs = [
+      { label: 'نقدی', sub: 'پرداخت کامل هنگام تحویل', icon: '💵', iconBg: 'var(--color-success-soft)', iconFg: 'var(--color-success-strong)' },
+      { label: 'چکی', sub: 'پرداخت با چک مدت‌دار', icon: '🧾', iconBg: 'var(--color-purple-soft)', iconFg: 'var(--color-purple)' },
+      { label: 'اعتباری', sub: 'از سقف اعتبار مشتری', icon: '💳', iconBg: 'var(--color-info-soft)', iconFg: 'var(--color-info-strong)' },
+    ];
+    const wizStepDefs = ['مشتری', 'اقلام', 'تسویه', 'تایید'];
+
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.add('hidden'), 2600);
+    }
+
+    function toggleNav() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('backdrop').classList.toggle('show');
+    }
+    function closeNav() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('backdrop').classList.remove('show');
+    }
+
+    function go(route, detailId) {
+      if (route === 'create') {
+        wizStep = 0;
+        wizPay = -1;
+        wizQty = [12, 6, 24];
+        renderCreate();
+      }
+      ['dashboard','list','detail','requests','create'].forEach((r) => {
+        document.getElementById('view-' + r).classList.toggle('hidden', r !== route);
+      });
+      document.querySelectorAll('.nav-item').forEach((el) => {
+        const active = el.dataset.route === route || (route === 'detail' && el.dataset.route === 'list');
+        el.classList.toggle('active', active);
+      });
+      document.getElementById('crumbPage').textContent = titles[route] || route;
+      if (route === 'detail' && detailId) {
+        document.getElementById('detailId').textContent = detailId;
+        const o = orders.find((x) => x.id === detailId) || orders[0];
+        const st = statuses[o.status];
+        const statusEl = document.getElementById('detailStatus');
+        statusEl.style.color = st[1];
+        statusEl.style.background = st[1] + '18';
+        statusEl.innerHTML = '<i style="background:' + st[1] + '"></i>' + st[0];
+      }
+      closeNav();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderDashboard() {
+      const kpis = [
+        { label: 'تعداد سفارش‌ها', value: 267, bg: 'var(--color-surface-container-high)', fg: 'var(--color-on-surface-variant)' },
+        { label: 'در انتظار تایید', value: 19, bg: 'var(--color-warning-container)', fg: 'var(--color-on-warning-container)' },
+        { label: 'در حال آماده‌سازی', value: 27, bg: 'var(--color-success-container)', fg: 'var(--color-on-success-container)' },
+        { label: 'درخواست پیش‌سفارش', value: 7, bg: 'var(--color-info-container)', fg: 'var(--color-info)' },
+      ];
+      document.getElementById('kpiGrid').innerHTML = kpis.map((k) => `
+        <button class="kpi" onclick="go('list')">
+          <div class="kpi-top">
+            <div class="kpi-icon" style="background:${k.bg};color:${k.fg}">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.2l2.3 12.4a1.6 1.6 0 0 0 1.6 1.3h8.7a1.6 1.6 0 0 0 1.6-1.2L21.5 7H5.3"/></svg>
+            </div>
+          </div>
+          <div class="kpi-value tnum">${fa(k.value)}</div>
+          <div class="kpi-label">${k.label}</div>
+        </button>
+      `).join('');
+
+      const alerts = [
+        { title: '۲۴ سفارش در انتظار تایید حسابدار', description: 'قدیمی‌ترین: ۶ ساعت پیش' },
+        { title: '۵ پیش‌سفارش در انتظار بیعانه', description: 'مهلت بیعانه تا امروز' },
+        { title: 'سفارش PO-982020 موجودی ناکافی', description: '۲ قلم نیاز به تامین' },
+        { title: '۳ فاکتور نزدیک تاریخ تسویه', description: 'در ۲ روز آینده' },
+      ];
+      document.getElementById('alertList').innerHTML = alerts.map((a) => `
+        <div class="alert-row">
+          <div class="text-right">
+            <div class="alert-title">${a.title}</div>
+            <div class="alert-desc">${a.description}</div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-outline)" stroke-width="2" stroke-linecap="round"><path d="m14 6-6 6 6 6"/></svg>
+        </div>
+      `).join('');
+
+      const statusItems = [
+        { label: 'تهران مرکزی', percent: 62, value: '۲.۹ میلیارد' },
+        { label: 'شعبه کرج', percent: 30, value: '۱.۳ میلیارد' },
+        { label: 'شعبه اصفهان', percent: 4, value: '۴۸۰ میلیون' },
+        { label: 'شعبه مشهد', percent: 2, value: '۱۵۰ میلیون' },
+        { label: 'تهران غرب', percent: 2, value: '۱۲۰ میلیون' },
+      ];
+      document.getElementById('statusList').innerHTML = statusItems.map((s) => `
+        <div class="status-row">
+          <span class="status-label">${s.label}</span>
+          <div class="status-bar">
+            <div class="progress"><span style="width:${s.percent}%"></span></div>
+            <span class="status-pct">${fa(s.percent)}٪</span>
+          </div>
+          <span class="status-value">${s.value}</span>
+        </div>
+      `).join('');
+
+      const qa = [
+        { label: 'لیست سفارش‌ها', sub: '۲۶۷ سفارش', route: 'list', icon: '📋' },
+        { label: 'پیش‌سفارش‌ها', sub: '۷ درخواست', route: 'requests', icon: '📌' },
+        { label: 'ثبت سفارش', sub: 'سفارش جدید', route: 'create', icon: '＋' },
+        { label: 'هشدارها', sub: '۴ مورد', route: 'dashboard', icon: '⚠️' },
+      ];
+      document.getElementById('qaGrid').innerHTML = qa.map((q) => `
+        <button class="qa-item" onclick="go('${q.route}')">
+          <div class="qa-icon">${q.icon}</div>
+          <div>
+            <div class="qa-label">${q.label}</div>
+            <div class="qa-sub">${q.sub}</div>
+          </div>
+        </button>
+      `).join('');
+    }
+
+    function renderList() {
+      const filters = [
+        { label: 'همه', match: () => true },
+        { label: 'آماده‌سازی', match: (o) => o.status === 'prep' || o.status === 'wait' },
+        { label: 'آماده ارسال', match: (o) => o.status === 'ready' },
+        { label: 'تکمیل', match: (o) => o.status === 'done' },
+        { label: 'مرجوعی', match: () => false },
+      ];
+      document.getElementById('listFilters').innerHTML = filters.map((f, i) => `
+        <button class="pill ${listFilter === i ? 'active' : ''}" onclick="listFilter=${i};renderList()">
+          ${f.label}<span class="count">${fa(orders.filter(f.match).length)}</span>
+        </button>
+      `).join('');
+
+      const rows = orders.filter(filters[listFilter].match);
+      document.getElementById('listTotal').textContent = fa(rows.length);
+      document.getElementById('orderRows').innerHTML = rows.map((o, i) => {
+        const lv = levels[o.lvl];
+        const st = statuses[o.status];
+        const pay = pays[o.pay];
+        return `
+          <div class="table-row" onclick="go('detail','${o.id}')">
+            <div><span class="id-link tnum" dir="ltr">${o.id}</span></div>
+            <div>
+              <div class="cust">
+                <div class="cust-av" style="background:${swatches[i % swatches.length]}">${o.cust.charAt(0)}</div>
+                <div>
+                  <div class="cust-name">${o.cust}</div>
+                  <span class="lvl" style="color:${lv[1]};background:${lv[2]}">${lv[0]}</span>
+                </div>
+              </div>
+            </div>
+            <div><span class="tnum" style="font-size:12px;color:var(--color-outline);white-space:nowrap" dir="ltr">${o.date}</span></div>
+            <div style="text-align:center"><span class="tnum" style="font-size:12.5px;font-weight:600">${fa(o.items)}</span></div>
+            <div style="text-align:left"><span class="tnum" style="font-size:13px;font-weight:700;color:var(--color-on-surface)">${grp(o.total)}</span></div>
+            <div style="text-align:center"><span class="chip" style="color:${pay[1]};background:${pay[2]}">${pay[0]}</span></div>
+            <div><span class="status-dot" style="color:${st[1]}"><i style="background:${st[1]}"></i>${st[0]}</span></div>
+            <div><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c4c4cc" stroke-width="2" stroke-linecap="round"><path d="m14 6-6 6 6 6"/></svg></div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderDetailExtras() {
+      const catalog = [
+        {name:'ست لباس خواب ساتن', sku:'63-7352', brand:'زرین‌پال', color:'زرشکی', colorHex:'#7A1F2B', size:'M', qty:12, unit:398000},
+        {name:'شورت نخی زنانه (پک ۳ عددی)', sku:'41-2088', brand:'پنتی', color:'مشکی', colorHex:'#1c1c1c', size:'L', qty:6, unit:172000},
+        {name:'سوتین بدون فنر دانتل', sku:'58-9013', brand:'آرمیس', color:'کرم', colorHex:'#E8D9C0', size:'۹۰', qty:24, unit:286000},
+        {name:'ربدوشامبر حریر بلند', sku:'77-3140', brand:'ناربن', color:'یاسی', colorHex:'#C9A8D4', size:'فری', qty:10, unit:512000},
+        {name:'تاپ و شلوارک مودال', sku:'29-6677', brand:'رزا', color:'طوسی', colorHex:'#9AA0A6', size:'XL', qty:30, unit:344000},
+      ];
+      const ships = [
+        {
+          title: 'مرسوله ۱ از ۲',
+          status: 'تحویل شده به مشتری',
+          stFg: 'var(--color-success-strong)',
+          stBg: 'var(--color-success-soft)',
+          items: catalog.slice(0, 3),
+          info: [
+            ['کد پیگیری', 'TPX-۹۴۸۲۰۳۱', 'var(--color-info-strong)'],
+            ['نوع ارسال', 'فوری — تیپاکس', 'var(--color-on-surface-variant)'],
+            ['تاریخ تحویل مرسوله', 'چهارشنبه ۱۴۰۴/۰۹/۱۷', 'var(--color-on-surface-variant)'],
+            ['هزینه ارسال', 'رایگان', 'var(--color-on-surface-variant)'],
+            ['مبلغ مرسوله', '۴٬۸۲۰٬۰۰۰ ت', 'var(--color-on-surface)'],
+          ],
+        },
+        {
+          title: 'مرسوله ۲ از ۲',
+          status: 'در حال آماده‌سازی',
+          stFg: 'var(--color-warning-strong)',
+          stBg: 'var(--color-warning-soft)',
+          items: catalog.slice(3, 5),
+          info: [
+            ['کد پیگیری', '—', 'var(--color-info-strong)'],
+            ['نوع ارسال', 'پست پیشتاز', 'var(--color-on-surface-variant)'],
+            ['تاریخ تحویل مرسوله', 'شنبه ۱۴۰۴/۰۹/۲۰', 'var(--color-on-surface-variant)'],
+            ['هزینه ارسال', '۸۵٬۰۰۰ ت', 'var(--color-on-surface-variant)'],
+            ['مبلغ مرسوله', '۳٬۱۶۰٬۰۰۰ ت', 'var(--color-on-surface)'],
+          ],
+        },
+      ];
+
+      document.getElementById('shipments').innerHTML = ships.map((sh, si) => `
+        <div class="card" style="overflow:hidden">
+          <div class="shipment-head">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:32px;height:32px;border-radius:9px;background:${sh.stBg};color:${sh.stFg};display:flex;align-items:center;justify-content:center">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-4l-3-4h-4v8h2"/><circle cx="7.5" cy="17.5" r="1.6"/><circle cx="17.5" cy="17.5" r="1.6"/></svg>
+              </div>
+              <div style="font-size:13.5px;font-weight:700;color:var(--color-on-surface)">${sh.title}</div>
+            </div>
+            <span class="chip" style="color:${sh.stFg};background:${sh.stBg}">${sh.status}</span>
+          </div>
+          <div class="meta-strip">
+            ${sh.info.map((f) => `<div class="meta-item"><div class="lbl">${f[0]}</div><div class="val tnum" style="color:${f[2]}">${f[1]}</div></div>`).join('')}
+          </div>
+          <div class="table-scroll">
+            <div style="min-width:560px">
+              <div class="items-head">
+                <div>کالا</div><div>شناسه کالا</div><div>برند</div>
+                <div style="text-align:center">تعداد</div>
+                <div style="text-align:center">رنگ</div>
+                <div style="text-align:center">سایز</div>
+                <div style="text-align:left">جمع قیمت</div>
+              </div>
+              ${sh.items.map((it, j) => `
+                <div class="items-row">
+                  <div><div style="display:flex;align-items:center;gap:10px"><div class="swatch" style="background:${swatches[si * 3 + j]}"></div><div style="font-size:12.5px;font-weight:600;color:var(--color-on-surface);white-space:nowrap">${it.name}</div></div></div>
+                  <div><span class="tnum" style="font-size:11.5px;color:var(--color-outline)" dir="ltr">${it.sku}</span></div>
+                  <div style="color:var(--color-on-surface-variant)">${it.brand}</div>
+                  <div class="tnum" style="text-align:center;font-weight:600">${fa(it.qty)}</div>
+                  <div style="text-align:center"><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:11px;height:11px;border-radius:50%;background:${it.colorHex};border:1px solid #00000014"></span>${it.color}</span></div>
+                  <div style="text-align:center"><span class="tnum" style="font-size:11.5px;font-weight:600;background:var(--color-muted-soft);border-radius:6px;padding:3px 9px">${it.size}</span></div>
+                  <div class="tnum" style="text-align:left;font-weight:700;color:var(--color-on-surface)">${grp(it.qty * it.unit)}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      const timeline = [
+        { title: 'سفارش ثبت شد توسط سارا محمدی', time: '۱۴۰۴/۰۹/۱۲ - ۱۸:۲۳', color: 'var(--color-success-strong)' },
+        { title: 'تایید حسابدار', time: '۱۴۰۴/۰۹/۱۲ - ۱۹:۰۱', color: 'var(--color-success-strong)' },
+        { title: 'شروع آماده‌سازی مرسوله ۱', time: '۱۴۰۴/۰۹/۱۲ - ۲۰:۱۵', color: 'var(--color-primary)' },
+        { title: 'در انتظار آماده‌سازی مرسوله ۲', time: '—', color: 'var(--color-outline-variant)' },
+      ];
+      document.getElementById('timeline').innerHTML = timeline.map((t, i) => `
+        <div class="timeline-item">
+          <div class="timeline-rail">
+            <span class="timeline-dot" style="background:${t.color};border-color:color-mix(in srgb, ${t.color} 30%, white)"></span>
+            <span class="timeline-line" style="${i === timeline.length - 1 ? 'background:transparent' : ''}"></span>
+          </div>
+          <div style="padding-bottom:14px">
+            <div style="font-size:12.5px;font-weight:600;color:var(--color-on-surface-variant)">${t.title}</div>
+            <div class="tnum" dir="ltr" style="font-size:11px;color:var(--color-muted);margin-top:2px;text-align:right">${t.time}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderRequests() {
+      const defs = [
+        {id:'PRE-4408', cust:'آرا صفوی', date:'۱۴۰۴/۰۹/۱۲', total:48000000, dep:14400000, status:'paid'},
+        {id:'PRE-4407', cust:'سپهر کیانی', date:'۱۴۰۴/۰۹/۱۱', total:92000000, dep:0, status:'awaiting'},
+        {id:'PRE-4406', cust:'نگار رستمی', date:'۱۴۰۴/۰۹/۱۱', total:31500000, dep:0, status:'awaiting'},
+        {id:'PRE-4405', cust:'بهرام اکبری', date:'۱۴۰۴/۰۹/۱۰', total:120000000, dep:36000000, status:'confirmed'},
+        {id:'PRE-4404', cust:'لیلا موسوی', date:'۱۴۰۴/۰۹/۰۹', total:18000000, dep:0, status:'rejected'},
+        {id:'PRE-4403', cust:'کاوه حیدری', date:'۱۴۰۴/۰۹/۰۸', total:64000000, dep:19200000, status:'confirmed'},
+      ];
+      const stMap = {
+        awaiting: ['منتظر واریز بیعانه', '#C8841A'],
+        paid: ['بیعانه واریز شده', '#2A6FDB'],
+        confirmed: ['تایید شده', '#1F8A5B'],
+        rejected: ['رد شده', '#9a9aa5'],
+      };
+      const filters = [
+        { label: 'همه', match: () => true },
+        { label: 'منتظر واریز', match: (r) => r.status === 'awaiting' },
+        { label: 'تایید شده', match: (r) => r.status === 'confirmed' || r.status === 'paid' },
+        { label: 'رد شده', match: (r) => r.status === 'rejected' },
+      ];
+      document.getElementById('reqFilters').innerHTML = filters.map((f, i) => `
+        <button class="pill ${reqFilter === i ? 'active' : ''}" onclick="reqFilter=${i};renderRequests()">
+          ${f.label}<span class="count">${fa(defs.filter(f.match).length)}</span>
+        </button>
+      `).join('');
+      const rows = defs.filter(filters[reqFilter].match);
+      document.getElementById('reqRows').innerHTML = rows.map((r, i) => {
+        const st = stMap[r.status];
+        return `
+          <div class="table-row" style="grid-template-columns:120px 1.4fr 150px 1fr 1fr 1.1fr 40px" onclick="toast('جزئیات پیش‌سفارش ${r.id}')">
+            <div><span class="tnum" dir="ltr" style="font-size:12.5px;font-weight:700;color:var(--color-info-strong)">${r.id}</span></div>
+            <div><div class="cust"><div class="cust-av" style="background:${swatches[(i+4)%swatches.length]}">${r.cust.charAt(0)}</div><span class="cust-name">${r.cust}</span></div></div>
+            <div><span class="tnum" style="font-size:12px;color:var(--color-outline)" dir="ltr">${r.date}</span></div>
+            <div style="text-align:left"><span class="tnum" style="font-weight:700;color:var(--color-on-surface)">${grp(r.total)}</span></div>
+            <div style="text-align:left"><span class="tnum" style="font-weight:600;color:${r.dep ? 'var(--color-success-strong)' : 'var(--color-muted)'}">${r.dep ? grp(r.dep) : '—'}</span></div>
+            <div><span class="status-dot" style="color:${st[1]}"><i style="background:${st[1]}"></i>${st[0]}</span></div>
+            <div><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c4c4cc" stroke-width="2"><path d="m14 6-6 6 6 6"/></svg></div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function cartTotals() {
+      let sum = 0;
+      let count = 0;
+      wizCartDefs.forEach((c, i) => {
+        const q = wizQty[i] || 0;
+        sum += q * c.unit;
+        count += q;
+      });
+      return { sum, count };
+    }
+
+    function wizPickCust(i) {
+      wizCust = i;
+      renderCreate();
+    }
+
+    function wizInc(i) {
+      wizQty[i] += 1;
+      renderCreate();
+    }
+
+    function wizDec(i) {
+      wizQty[i] = Math.max(1, wizQty[i] - 1);
+      renderCreate();
+    }
+
+    function wizRemove(i) {
+      toast('کالا از سبد حذف شد.');
+    }
+
+    function wizPickPay(i) {
+      wizPay = i;
+      renderCreate();
+    }
+
+    function wizBack() {
+      wizStep = Math.max(0, wizStep - 1);
+      renderCreate();
+    }
+
+    function wizNext() {
+      if (wizStep === 2 && wizPay < 0) {
+        toast('لطفاً نوع تسویه را انتخاب کنید.');
+        return;
+      }
+      if (wizStep >= 3) {
+        toast('سفارش با موفقیت ثبت شد ✓');
+        listFilter = 0;
+        renderList();
+        go('list');
+        return;
+      }
+      wizStep += 1;
+      renderCreate();
+    }
+
+    function renderCreate() {
+      const stepHtml = wizStepDefs.map((label, i) => {
+        const done = i < wizStep;
+        const cur = i === wizStep;
+        const mark = done ? '✓' : fa(i + 1);
+        const dotCls = done ? 'done' : cur ? 'current' : '';
+        const labelCls = done || cur ? 'active' : '';
+        const line = i < wizStepDefs.length - 1
+          ? `<span class="wiz-line ${done ? 'done' : ''}"></span>`
+          : '';
+        return `
+          <div class="wiz-step">
+            <div class="wiz-step-inner">
+              <div class="wiz-dot ${dotCls}">${mark}</div>
+              <span class="wiz-step-label ${labelCls}">${label}</span>
+            </div>
+            ${line}
+          </div>
+        `;
+      }).join('');
+      document.getElementById('wizStepper').innerHTML = stepHtml;
+
+      const backBtn = document.getElementById('wizBackBtn');
+      backBtn.style.visibility = wizStep === 0 ? 'hidden' : 'visible';
+      document.getElementById('wizNextLabel').textContent =
+        wizStep === 3 ? 'ثبت نهایی سفارش' : 'مرحله بعد';
+
+      let body = '';
+
+      if (wizStep === 0) {
+        body = `
+          <div style="animation:fadeUp .3s ease">
+            <div class="wiz-title">انتخاب مشتری</div>
+            <div class="wiz-sub">مشتری ثبت‌شده را جستجو کنید یا مشتری جدید بسازید.</div>
+            <div class="search-field" style="width:100%;max-width:none;margin-bottom:16px">
+              <input placeholder="جستجوی نام، کد مشتری یا شماره تماس…" style="height:46px;border-radius:12px;padding:0 15px 0 42px;font-size:13px" />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9a9aa5" stroke-width="1.9" stroke-linecap="round" style="top:14px;left:14px"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+            </div>
+            ${wizCustomers.map((c, i) => {
+              const lv = levels[c.lvl];
+              const sel = wizCust === i;
+              return `
+                <button class="cust-pick ${sel ? 'selected' : ''}" onclick="wizPickCust(${i})">
+                  <div class="cust-av" style="width:42px;height:42px;border-radius:12px;font-size:16px;background:${swatches[i]}">${c.name.charAt(0)}</div>
+                  <div style="flex:1;min-width:0;text-align:right">
+                    <div style="font-size:13.5px;font-weight:700;color:var(--color-on-surface)">${c.name}</div>
+                    <div class="tnum" dir="ltr" style="font-size:11.5px;color:var(--color-muted);margin-top:3px;text-align:right">${c.phone}</div>
+                  </div>
+                  <span class="lvl" style="color:${lv[1]};background:${lv[2]};margin:0">${lv[0]}</span>
+                  <span class="cust-radio"><span class="cust-radio-dot"></span></span>
+                </button>
+              `;
+            }).join('')}
+            <button class="link-primary" style="display:flex;align-items:center;gap:7px;margin-top:6px;font-size:12.5px" onclick="toast('فرم ثبت مشتری جدید باز شد.')">
+              <span style="font-size:16px">+</span>ثبت مشتری جدید
+            </button>
+          </div>
+        `;
+      }
+
+      if (wizStep === 1) {
+        const { sum, count } = cartTotals();
+        body = `
+          <div style="animation:fadeUp .3s ease">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+              <div>
+                <div class="wiz-title" style="margin-bottom:3px">افزودن اقلام</div>
+                <div style="font-size:12.5px;color:var(--color-muted)">کالاها را به سبد سفارش اضافه کنید.</div>
+              </div>
+              <button class="btn-primary" style="padding:9px 14px;font-size:12.5px" onclick="toast('پنل انتخاب کالا باز شد.')">
+                <span style="font-size:15px">+</span>افزودن کالا
+              </button>
+            </div>
+            <div class="cart-table">
+              <div class="cart-head">
+                <div>کالا</div>
+                <div style="text-align:center">تعداد</div>
+                <div style="text-align:left">قیمت واحد</div>
+                <div style="text-align:left">جمع</div>
+                <div></div>
+              </div>
+              ${wizCartDefs.map((c, i) => `
+                <div class="cart-row">
+                  <div>
+                    <div style="display:flex;align-items:center;gap:10px">
+                      <div class="swatch" style="background:${swatches[i]}"></div>
+                      <div style="font-size:12.5px;font-weight:600;color:var(--color-on-surface)">${c.name}</div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="qty-ctrl">
+                      <button class="qty-btn" onclick="wizDec(${i})">−</button>
+                      <span class="tnum" style="font-size:13px;font-weight:700;width:26px;text-align:center">${fa(wizQty[i])}</span>
+                      <button class="qty-btn" onclick="wizInc(${i})">+</button>
+                    </div>
+                  </div>
+                  <div class="tnum" style="text-align:left;font-size:12px;color:var(--color-outline)">${grp(c.unit)}</div>
+                  <div class="tnum" style="text-align:left;font-size:12.5px;font-weight:700;color:var(--color-on-surface)">${grp(wizQty[i] * c.unit)}</div>
+                  <div>
+                    <button class="icon-btn" style="width:28px;height:28px;border:none;color:#c4c4cc" onclick="wizRemove(${i})" title="حذف">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            <div class="cart-total">
+              <span style="font-size:13px;font-weight:600;color:var(--color-outline)">جمع اقلام (${fa(count)} قلم)</span>
+              <span class="tnum" style="font-size:16px;font-family:var(--font-family-display);font-weight:600;color:var(--color-on-surface)">${grp(sum)}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      if (wizStep === 2) {
+        body = `
+          <div style="animation:fadeUp .3s ease">
+            <div class="wiz-title">نوع تسویه</div>
+            <div class="wiz-sub">روش پرداخت سفارش را انتخاب کنید.</div>
+            <div class="pay-grid">
+              ${wizPayDefs.map((p, i) => {
+                const sel = wizPay === i;
+                return `
+                  <button class="pay-card ${sel ? 'selected' : ''}" onclick="wizPickPay(${i})">
+                    <div class="pay-icon" style="background:${p.iconBg};color:${p.iconFg}">${p.icon}</div>
+                    <div style="font-size:13.5px;font-weight:700;color:${sel ? 'var(--color-primary)' : 'var(--color-on-surface)'}">${p.label}</div>
+                    <div style="font-size:11px;color:var(--color-muted);text-align:center;line-height:1.6">${p.sub}</div>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+            ${wizPay === 1 ? `
+              <div class="cheque-box">
+                <div style="font-size:13px;font-weight:600;margin-bottom:14px;color:var(--color-on-surface-variant)">اطلاعات چک</div>
+                <div class="cheque-grid">
+                  <div>
+                    <div class="field-label">شماره چک</div>
+                    <input class="field-input" dir="ltr" placeholder="۱۲۳۴۵۶" style="text-align:right" />
+                  </div>
+                  <div>
+                    <div class="field-label">تاریخ سررسید</div>
+                    <input class="field-input" placeholder="۱۴۰۴/۱۰/۱۵" />
+                  </div>
+                  <div style="grid-column:1/-1">
+                    <div class="field-label">بانک</div>
+                    <input class="field-input" placeholder="ملت" />
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+            ${wizPay === 2 ? `
+              <div class="credit-box">
+                <div style="width:38px;height:38px;border-radius:11px;background:#fff;color:var(--color-info-strong);display:flex;align-items:center;justify-content:center;flex:none">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <div>سقف اعتبار مشتری <b class="tnum">۲۰۰٬۰۰۰٬۰۰۰</b> تومان — مانده پس از این سفارش <b class="tnum">۵۸٬۰۰۰٬۰۰۰</b> تومان</div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      if (wizStep === 3) {
+        const { sum, count } = cartTotals();
+        const payName = ['نقدی', 'چکی', 'اعتباری'][wizPay] || '—';
+        const otpVals = ['۸', '۳', '', ''];
+        body = `
+          <div style="animation:fadeUp .3s ease">
+            <div class="wiz-title">تایید و ثبت نهایی</div>
+            <div class="wiz-sub">جزئیات سفارش را بررسی و با کد پیامک‌شده تایید کنید.</div>
+            <div class="summary-grid">
+              <div class="summary-tile">
+                <div class="lbl">مشتری</div>
+                <div class="val">${wizCustomers[wizCust].name}</div>
+              </div>
+              <div class="summary-tile">
+                <div class="lbl">تعداد اقلام</div>
+                <div class="val tnum">${fa(count)} قلم</div>
+              </div>
+              <div class="summary-tile">
+                <div class="lbl">نوع تسویه</div>
+                <div class="val">${payName}</div>
+              </div>
+              <div class="summary-tile total">
+                <div class="lbl">مبلغ نهایی</div>
+                <div class="val tnum">${grp(Math.round(sum * 1.09))}</div>
+              </div>
+            </div>
+            <div class="otp-box">
+              <div style="font-size:13px;font-weight:600;color:var(--color-on-surface-variant);margin-bottom:6px">کد تایید پیامک‌شده را وارد کنید</div>
+              <div class="tnum" dir="ltr" style="font-size:11.5px;color:var(--color-muted);margin-bottom:16px">کد ۴ رقمی به شماره ۰۹۱۲ ••• ۲۲۰۱ ارسال شد</div>
+              <div class="otp-digits">
+                ${otpVals.map((d, i) => `
+                  <div class="otp-digit tnum ${i === 2 ? 'active' : d ? 'filled' : ''}">${d}</div>
+                `).join('')}
+              </div>
+              <button class="link-primary" onclick="toast('کد تایید مجدداً ارسال شد.')">ارسال مجدد کد (${fa(38)} ثانیه)</button>
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById('wizBody').innerHTML = body;
+    }
+
+    document.getElementById('periodPills').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-period]');
+      if (!btn) return;
+      document.querySelectorAll('#periodPills [data-period]').forEach((b) => b.classList.toggle('active', b === btn));
+    });
+
+    renderDashboard();
+    renderList();
+    renderDetailExtras();
+    renderRequests();
+    renderCreate();
+    go('dashboard');
+  </script>
+</body>
+</html>

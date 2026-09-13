@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>مدیریت محتوا — زیرا مارکت</title>
+  <style>
+    /* =========================================================
+       Design tokens — mirrored from src/shared/styles/*
+       theme-colors / theme-typography / theme-spacing /
+       theme-radius / theme-shadow / theme-fonts
+       ========================================================= */
+    :root {
+      /* theme-colors.css */
+      --color-primary: #d74e54;
+      --color-primary-focused: #d74e5429;
+      --color-natural: #1f1f1f;
+      --color-natural-variant: #e6e1e5;
+      --color-error: #bf0329;
+      --color-warning: #f7941e;
+      --color-success: #006c50;
+      --color-success-container: #bbffe2;
+      --color-primary-container: #fbdfe1;
+      --color-info: #242f94;
+      --color-info-container: #ced1f3;
+      --color-link: #646464;
+      --color-inverse-surface: #292929;
+      --color-inverse-surface-variant: #e6e1e5;
+      --color-surface-container-lowest: #ffffff;
+      --color-surface-container-high: #f2f2f2;
+      --color-surface-container-highest: #e6e6e6;
+      --color-on-surface: #141414;
+      --color-on-surface-hover: rgba(0, 0, 0, 0.08);
+      --color-on-surface-variant: #484649;
+      --color-on-surface-cotainer: #002116;
+      --color-on-primary: #ffffff;
+      --color-on-primary-container: #430f12;
+      --color-on-info: #ffffff;
+      --color-on-info-container: #0c1031;
+      --color-on-inverse-surface: #f2f2f2;
+      --color-error-container: #ffedeb;
+      --color-on-error-container: #410007;
+      --color-on-success-container: #002116;
+      --color-warning-container: #fde3c4;
+      --color-on-warning-container: #3b2102;
+      --color-outline: #787878;
+      --color-outline-variant: #c7c7c7;
+      --color-background: var(--color-surface-container-high);
+      --color-card: var(--color-surface-container-lowest);
+      --body-background-color: var(--color-surface-container-lowest);
+      --scrollbar-background-color: #e3e3e3;
+      --scrollbar-background-thumb: var(--color-primary);
+
+      /* semantic aliases used by prototype screens */
+      --color-success-strong: #1f8a5b;
+      --color-success-soft: #e8f5ef;
+      --color-warning-strong: #c8841a;
+      --color-warning-soft: #fdf3e2;
+      --color-info-strong: #2a6fdb;
+      --color-info-soft: #e8f0fb;
+      --color-purple: #8e6cb0;
+      --color-purple-soft: #f1ecf7;
+      --color-muted: #9a9aa5;
+      --color-muted-soft: #f1f1f4;
+
+      /* theme-typography.css */
+      --text-label-sm: 12px;
+      --text-label-md: 14px;
+      --text-label-lg: 16px;
+      --text-body-sm: 12px;
+      --text-body-md: 14px;
+      --text-body-lg: 16px;
+      --text-title-sm: 14px;
+      --text-title-md: 16px;
+      --text-title-lg: 22px;
+      --text-headline-sm: 24px;
+      --text-headline-md: 28px;
+      --text-headline-lg: 32px;
+
+      /* theme-spacing.css */
+      --spacing-sm: 8px;
+      --spacing-md: 10px;
+      --spacing-lg: 12px;
+      --spacing-xl: 16px;
+      --spacing-2xl: 24px;
+      --spacing-3xl: 32px;
+      --spacing-4xl: 48px;
+      --spacing-layout: 40px;
+
+      /* theme-radius.css */
+      --radius-button-sm: 8px;
+      --radius-button-md: 12px;
+      --radius-button-lg: 16px;
+      --radius-card-sm: 12px;
+      --radius-card-md: 16px;
+      --radius-card-lg: 20px;
+      --radius-container-xl: 24px;
+      --radius-container-lg: 20px;
+      --radius-container-md: 16px;
+      --radius-container-sm: 12px;
+      --radius-container-xs: 8px;
+
+      /* theme-shadow.css */
+      --shadow-xl: #00000014;
+      --shadow-card: 0 1px 3px rgba(20, 20, 40, 0.05);
+      --shadow-primary: 0 4px 12px rgba(215, 78, 84, 0.26);
+
+      /* theme-fonts.css + app/globals.css */
+      --font-family-yekan: "YekanBakh", Arial, Helvetica, sans-serif;
+      --font-family-display: "Kalameh", "YekanBakh", Arial, Helvetica, sans-serif;
+      --font-family-oxanium: "Oxanium", sans-serif;
+      --font-family-helvetica: "Helvetica", "Helvetica Neue", Arial, sans-serif;
+    }
+
+    @font-face {
+      font-family: "YekanBakh";
+      src: url("./YekanBakh-Regular.woff") format("woff");
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "YekanBakh";
+      src: url("./YekanBakh-SemiBold.woff") format("woff");
+      font-weight: 600;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "YekanBakh";
+      src: url("./YekanBakh-Bold.woff") format("woff");
+      font-weight: 700;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Kalameh";
+      src: url("./Kalameh-Regular.ttf") format("truetype");
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Kalameh";
+      src: url("./Kalameh-Bold.ttf") format("truetype");
+      font-weight: 700;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Kalameh";
+      src: url("./Kalameh-ExtraBold.ttf") format("truetype");
+      font-weight: 800;
+      font-display: swap;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font-family-yekan);
+      background: var(--color-surface-container-high);
+      color: var(--color-on-surface-variant);
+      -webkit-font-smoothing: antialiased;
+    }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    input { font-family: inherit; }
+    h1, h2, h3 { font-family: var(--font-family-display); color: var(--color-on-surface); }
+    .tnum { font-variant-numeric: tabular-nums; }
+    ::-webkit-scrollbar { width: 9px; height: 9px; }
+    ::-webkit-scrollbar-thumb { background: var(--color-outline-variant); border-radius: 9px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes growBar { from { width: 0; } }
+    @keyframes toastIn {
+      from { transform: translateY(16px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .app {
+      display: flex;
+      flex-direction: row-reverse;
+      min-height: 100vh;
+      width: 100%;
+      direction: rtl;
+    }
+
+    /* Sidebar — aligned with SubSidebar visual language */
+    .sidebar {
+      width: 220px;
+      flex: none;
+      background: var(--color-surface-container-high);
+      padding: var(--spacing-sm);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      transition: width .2s ease, opacity .2s ease;
+    }
+    .sidebar-inner {
+      background: var(--color-surface-container-lowest);
+      border-radius: var(--radius-card-lg);
+      height: 100%;
+      padding: var(--spacing-sm);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-lg);
+      padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-lg);
+    }
+    .sidebar-brand-icon {
+      width: 42px; height: 42px;
+      border-radius: var(--radius-card-sm);
+      background: linear-gradient(150deg, #df6f73, var(--color-primary));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow-primary);
+      flex: none;
+    }
+    .sidebar-brand h2 {
+      font-size: var(--text-title-md);
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    .sidebar-brand p {
+      font-size: var(--text-label-sm);
+      color: var(--color-outline);
+      margin-top: 2px;
+    }
+    .nav-section-title {
+      font-size: var(--text-label-sm);
+      color: var(--color-outline);
+      padding: var(--spacing-sm) var(--spacing-xl);
+    }
+    .nav-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-sm) var(--spacing-xl);
+      border-radius: var(--radius-container-md);
+      font-size: var(--text-label-lg);
+      color: var(--color-outline);
+      transition: background .14s, color .14s;
+      text-align: right;
+    }
+    .nav-item:hover { background: var(--color-primary-focused); color: var(--color-primary); }
+    .nav-item.active {
+      background: var(--color-primary-focused);
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+    .nav-item .badge {
+      margin-right: auto;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--color-primary-container);
+      color: var(--color-primary);
+      border-radius: var(--radius-button-sm);
+      padding: 2px 8px;
+    }
+    .sidebar-user {
+      margin-top: auto;
+      padding: var(--spacing-lg) var(--spacing-xl);
+      border-top: 1px solid var(--color-outline-variant);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+    .avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: #c77fa6;
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px; flex: none;
+    }
+
+    /* Main */
+    .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-lg);
+      padding: var(--spacing-md) 22px;
+      border-bottom: 1px solid var(--color-outline-variant);
+      background: var(--color-surface-container-lowest);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .icon-btn {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      border: 1px solid var(--color-outline-variant);
+      background: var(--color-surface-container-lowest);
+      color: var(--color-on-surface-variant);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .icon-btn:hover { background: var(--color-surface-container-high); }
+    .crumbs {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; min-width: 0;
+    }
+    .crumbs .muted { color: var(--color-muted); font-weight: 500; white-space: nowrap; }
+    .crumbs .sep { color: var(--color-outline-variant); }
+    .crumbs .current {
+      color: var(--color-on-surface);
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .search-field {
+      position: relative;
+      width: 240px;
+      max-width: 38vw;
+    }
+    .search-field input {
+      width: 100%;
+      height: 38px;
+      background: var(--color-surface-container-high);
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 0 13px 0 38px;
+      font-size: 12.5px;
+      color: var(--color-on-surface-variant);
+      outline: none;
+    }
+    .search-field input:focus {
+      border-color: var(--color-primary);
+      background: var(--color-surface-container-lowest);
+    }
+    .search-field svg {
+      position: absolute; left: 12px; top: 11px; pointer-events: none;
+    }
+    .notif-wrap { position: relative; }
+    .notif-dot {
+      position: absolute; top: -5px; left: -5px;
+      min-width: 18px; height: 18px; padding: 0 4px;
+      border-radius: 9px;
+      background: var(--color-primary);
+      color: #fff;
+      font-size: 10.5px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid #fff;
+    }
+
+    .page {
+      padding: 26px 30px 40px;
+      animation: fadeUp .28s ease;
+    }
+    .page-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+    .page-head h1 {
+      font-size: var(--text-title-lg);
+      font-weight: 600;
+    }
+    .page-head p {
+      font-size: 13px;
+      color: var(--color-outline);
+      margin-top: 5px;
+    }
+    .actions { display: flex; align-items: center; gap: 10px; flex: none; flex-wrap: wrap; }
+
+    .pill-group {
+      display: flex;
+      align-items: center;
+      background: var(--color-surface-container-lowest);
+      border: 1px solid var(--color-outline-variant);
+      border-radius: 11px;
+      padding: 3px;
+      gap: 2px;
+      flex-wrap: wrap;
+    }
+    .pill {
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 9px;
+      color: var(--color-outline);
+      white-space: nowrap;
+    }
+    .pill.active {
+      background: var(--color-surface-container-lowest);
+      color: var(--color-on-surface);
+      box-shadow: 0 1px 2px rgba(0,0,0,.06);
+    }
+    .pill .count { margin-right: 6px; font-size: 11px; opacity: .7; }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: linear-gradient(150deg, #df6f73, var(--color-primary));
+      color: var(--color-on-primary);
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 10px 16px;
+      border-radius: 11px;
+      box-shadow: var(--shadow-primary);
+    }
+    .btn-primary:hover { filter: brightness(1.05); }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--color-surface-container-lowest);
+      border: 1px solid var(--color-outline-variant);
+      color: var(--color-on-surface-variant);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 9px 14px;
+      border-radius: 11px;
+    }
+    .btn-secondary:hover { background: var(--color-surface-container-high); }
+
+    .card {
+      background: var(--color-surface-container-lowest);
+      border-radius: var(--radius-card-md);
+      border: 1px solid #ececec;
+      box-shadow: var(--shadow-card);
+    }
+    .card-pad { padding: 18px 20px; }
+
+    /* KPI / Summary cards — match SummaryCard */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacing-xl);
+      margin-bottom: 18px;
+    }
+    .kpi {
+      text-align: right;
+      background: var(--color-surface-container-lowest);
+      border-radius: var(--radius-card-lg);
+      padding: var(--spacing-2xl);
+      box-shadow: none;
+      border: none;
+      display: block;
+      width: 100%;
+    }
+    .kpi:hover { background: color-mix(in srgb, var(--color-primary) 4%, white); }
+    .kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      flex-direction: row-reverse;
+    }
+    .kpi-icon {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-card-sm);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .kpi-value {
+      font-size: var(--text-headline-sm);
+      font-family: var(--font-family-display);
+      font-weight: 600;
+      color: var(--color-on-surface);
+      text-align: right;
+    }
+    .kpi-label {
+      font-size: var(--text-label-md);
+      color: var(--color-on-surface-variant);
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: var(--spacing-xl);
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-size: var(--text-title-md);
+      font-family: var(--font-family-display);
+      font-weight: 600;
+      color: var(--color-on-surface);
+    }
+    .alert-count {
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--color-error-container);
+      color: var(--color-primary);
+      border-radius: 8px;
+      padding: 3px 9px;
+    }
+    .alert-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-container-md);
+      background: var(--color-surface-container-lowest);
+      margin-bottom: var(--spacing-sm);
+    }
+    .alert-list {
+      background: var(--color-surface-container-high);
+      border-radius: var(--radius-container-md);
+      padding: var(--spacing-sm);
+      margin-top: var(--spacing-sm);
+    }
+    .alert-title { font-size: var(--text-label-lg); color: var(--color-on-surface); }
+    .alert-desc { font-size: var(--text-label-md); color: var(--color-outline); margin-top: 2px; }
+    .link-all {
+      width: 100%;
+      margin-top: var(--spacing-lg);
+      font-size: var(--text-label-md);
+      color: var(--color-on-surface-variant);
+      font-weight: 600;
+      text-align: center;
+      padding: 4px;
+    }
+    .link-all:hover { color: var(--color-primary); }
+
+    .status-row {
+      display: grid;
+      grid-template-columns: minmax(0, 150px) 1fr minmax(0, 120px);
+      align-items: center;
+      gap: var(--spacing-lg);
+      min-height: 40px;
+    }
+    .status-label { font-size: var(--text-label-lg); color: var(--color-on-surface); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .status-bar {
+      display: flex; align-items: center; gap: var(--spacing-sm);
+    }
+    .progress {
+      flex: 1;
+      height: 6px;
+      border-radius: 6px;
+      background: var(--color-surface-container-highest);
+      overflow: hidden;
+    }
+    .progress > span {
+      display: block;
+      height: 100%;
+      border-radius: 6px;
+      background: var(--color-success-strong);
+      animation: growBar .5s ease;
+    }
+    .status-pct { font-size: var(--text-label-sm); color: var(--color-outline); flex: none; }
+    .status-value { font-size: var(--text-label-md); color: var(--color-outline); text-align: left; }
+
+    .qa-title {
+      font-size: var(--text-title-md);
+      font-family: var(--font-family-display);
+      font-weight: 600;
+      margin: 4px 2px 12px;
+      color: var(--color-on-surface);
+    }
+    .qa-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .qa-item {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      background: var(--color-surface-container-lowest);
+      border-radius: var(--radius-card-sm);
+      padding: 16px;
+      text-align: right;
+      border: 1px solid transparent;
+    }
+    .qa-item:hover {
+      border-color: color-mix(in srgb, var(--color-primary) 35%, white);
+      box-shadow: 0 6px 16px rgba(215, 78, 84, 0.08);
+    }
+    .qa-icon {
+      width: 42px; height: 42px;
+      border-radius: var(--radius-card-sm);
+      display: flex; align-items: center; justify-content: center;
+      flex: none;
+      font-size: 19px;
+      background: var(--color-surface-container-high);
+    }
+    .qa-label { font-size: 13.5px; font-weight: 600; color: var(--color-on-surface); }
+    .qa-sub { font-size: 11.5px; color: var(--color-muted); margin-top: 2px; }
+
+    /* Tables */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .table-wrap { overflow: hidden; }
+    .table-scroll { overflow-x: auto; }
+    .table-min { min-width: 880px; }
+    .table-head, .table-row {
+      display: grid;
+      grid-template-columns: 130px 1.4fr 150px 70px 1fr 110px 1.2fr 40px;
+      align-items: center;
+    }
+    .table-head {
+      background: #fafafa;
+      border-bottom: 1px solid #efefef;
+    }
+    .table-head > div {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--color-muted);
+      padding: 13px 14px;
+      white-space: nowrap;
+    }
+    .table-head > div:first-child { padding-right: 18px; }
+    .table-row {
+      border-bottom: 1px solid #f4f4f4;
+      cursor: pointer;
+    }
+    .table-row:hover { background: #fcf6f6; }
+    .table-row > div { padding: 13px 14px; }
+    .table-row > div:first-child { padding-right: 18px; }
+    .id-link { font-size: 12.5px; font-weight: 700; color: var(--color-primary); }
+    .cust {
+      display: flex; align-items: center; gap: 9px;
+    }
+    .cust-av {
+      width: 32px; height: 32px;
+      border-radius: 9px;
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex: none;
+    }
+    .cust-name { font-size: 12.5px; font-weight: 600; color: var(--color-on-surface); white-space: nowrap; }
+    .lvl {
+      display: inline-flex;
+      margin-top: 3px;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 6px;
+      padding: 2px 7px;
+    }
+    .chip {
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 7px;
+      padding: 4px 10px;
+      white-space: nowrap;
+    }
+    .status-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .status-dot i {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .table-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 18px;
+      border-top: 1px solid #efefef;
+      flex-wrap: wrap;
+    }
+
+    /* Detail */
+    .detail-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .stepper {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      position: relative;
+      padding: 22px 26px;
+      margin-bottom: 16px;
+    }
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+    .step-dot {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700;
+      border: 2px solid var(--color-outline-variant);
+      background: #fff;
+      color: var(--color-muted);
+    }
+    .step-dot.done { background: var(--color-success-strong); border-color: var(--color-success-strong); color: #fff; }
+    .step-dot.current { border-color: var(--color-primary); color: var(--color-primary); }
+    .step-label { font-size: 12px; font-weight: 600; text-align: center; max-width: 96px; line-height: 1.5; color: var(--color-muted); }
+    .step-label.active { color: var(--color-on-surface); }
+    .step-time { font-size: 10.5px; color: var(--color-muted); }
+    .stepper-line {
+      position: absolute; top: 40px; right: 7%; left: 7%;
+      height: 2px; background: #ececec; z-index: 1;
+    }
+    .stepper-progress {
+      position: absolute; top: 40px; right: 7%;
+      height: 2px; background: var(--color-success-strong); z-index: 1;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1.55fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .shipment-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid #f2f2f2;
+    }
+    .meta-strip {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 13px 18px;
+      background: #fbfafb;
+      border-bottom: 1px solid #f2f2f2;
+    }
+    .meta-item { flex: 1; min-width: 120px; padding: 2px 0; }
+    .meta-item .lbl { font-size: 10.5px; color: var(--color-muted); margin-bottom: 4px; }
+    .meta-item .val { font-size: 12px; font-weight: 600; color: var(--color-on-surface-variant); }
+    .items-head, .items-row {
+      display: grid;
+      grid-template-columns: 1.6fr 110px 90px 70px 100px 72px 1fr;
+      align-items: center;
+    }
+    .items-head { background: #fafafa; }
+    .items-head > div {
+      font-size: 11px; font-weight: 700; color: var(--color-muted); padding: 9px 8px;
+    }
+    .items-head > div:first-child, .items-row > div:first-child { padding-right: 18px; }
+    .items-head > div:last-child, .items-row > div:last-child { padding-left: 18px; }
+    .items-row { border-top: 1px solid #f4f4f4; }
+    .items-row > div { padding: 11px 8px; font-size: 12px; }
+    .swatch {
+      width: 34px; height: 34px;
+      border-radius: 9px; flex: none;
+    }
+    .side-stack { display: flex; flex-direction: column; gap: 16px; }
+    .kv {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 12.5px;
+      border-top: 1px solid #f4f4f4;
+    }
+    .kv .k { color: var(--color-muted); }
+    .kv .v { font-weight: 600; color: var(--color-on-surface-variant); }
+    .timeline-item { display: flex; gap: 11px; }
+    .timeline-rail {
+      display: flex; flex-direction: column; align-items: center; flex: none;
+    }
+    .timeline-dot {
+      width: 11px; height: 11px; border-radius: 50%;
+      margin-top: 3px; border: 2px solid;
+    }
+    .timeline-line { width: 2px; flex: 1; min-height: 14px; background: #e8e8ec; }
+    .hidden { display: none !important; }
+
+    /* Create order wizard */
+    .wiz-stepper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+    .wiz-step {
+      display: flex;
+      align-items: center;
+    }
+    .wiz-step-inner {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .wiz-dot {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+      border: 2px solid var(--color-outline-variant);
+      background: #fff;
+      color: var(--color-muted);
+    }
+    .wiz-dot.done {
+      background: var(--color-success-strong);
+      border-color: var(--color-success-strong);
+      color: #fff;
+    }
+    .wiz-dot.current {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #fff;
+    }
+    .wiz-step-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--color-muted);
+      white-space: nowrap;
+    }
+    .wiz-step-label.active { color: var(--color-on-surface); }
+    .wiz-line {
+      width: 46px; height: 2px;
+      background: #ececec;
+      margin: 0 12px;
+    }
+    .wiz-line.done { background: var(--color-success-strong); }
+    .wiz-card {
+      padding: 26px 28px;
+      min-height: 340px;
+      border-radius: 18px;
+      box-shadow: 0 2px 8px rgba(20, 20, 40, 0.05);
+    }
+    .wiz-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 18px;
+    }
+    .wiz-title {
+      font-size: 15px;
+      font-family: var(--font-family-display);
+      font-weight: 600;
+      color: var(--color-on-surface);
+      margin-bottom: 4px;
+    }
+    .wiz-sub {
+      font-size: 12.5px;
+      color: var(--color-muted);
+      margin-bottom: 20px;
+    }
+    .cust-pick {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 13px 15px;
+      border-radius: 13px;
+      border: 1.5px solid #ececec;
+      background: #fff;
+      margin-bottom: 10px;
+      text-align: right;
+    }
+    .cust-pick:hover { border-color: #e0bcbe; }
+    .cust-pick.selected {
+      border-color: var(--color-primary);
+      background: #fdf6f6;
+    }
+    .cust-radio {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid #d4d4dc;
+      display: flex; align-items: center; justify-content: center;
+      flex: none;
+    }
+    .cust-pick.selected .cust-radio { border-color: var(--color-primary); }
+    .cust-radio-dot {
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      background: transparent;
+    }
+    .cust-pick.selected .cust-radio-dot { background: var(--color-primary); }
+    .cart-table { border: 1px solid #ececec; border-radius: 13px; overflow: hidden; }
+    .cart-head, .cart-row {
+      display: grid;
+      grid-template-columns: 1.7fr 120px 1fr 1fr 36px;
+      align-items: center;
+    }
+    .cart-head { background: #fafafa; }
+    .cart-head > div {
+      font-size: 11px; font-weight: 700; color: var(--color-muted);
+      padding: 10px 10px;
+    }
+    .cart-head > div:first-child, .cart-row > div:first-child { padding-right: 16px; }
+    .cart-head > div:nth-child(4), .cart-row > div:nth-child(4) { padding-left: 16px; }
+    .cart-row { border-top: 1px solid #f4f4f4; }
+    .cart-row > div { padding: 11px 10px; }
+    .qty-ctrl {
+      display: flex; align-items: center; gap: 6px; justify-content: center;
+    }
+    .qty-btn {
+      width: 26px; height: 26px;
+      border-radius: 8px;
+      border: 1px solid var(--color-outline-variant);
+      color: var(--color-outline);
+      font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .qty-btn:hover { background: var(--color-surface-container-high); }
+    .cart-total {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 16px;
+      padding: 14px 16px;
+      background: #fbfafb;
+      border-radius: 12px;
+    }
+    .pay-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .pay-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 14px;
+      border-radius: 14px;
+      border: 1.5px solid #ececec;
+      background: #fff;
+    }
+    .pay-card:hover { border-color: #e0bcbe; }
+    .pay-card.selected {
+      border-color: var(--color-primary);
+      background: #fdf6f6;
+    }
+    .pay-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 21px;
+    }
+    .cheque-box {
+      background: #fbfafb;
+      border-radius: 13px;
+      padding: 18px 20px;
+      animation: fadeUp .25s ease;
+    }
+    .cheque-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+    }
+    .field-label {
+      font-size: 11.5px;
+      color: var(--color-muted);
+      margin-bottom: 6px;
+    }
+    .field-input {
+      width: 100%;
+      height: 42px;
+      background: #fff;
+      border: 1px solid var(--color-outline-variant);
+      border-radius: 11px;
+      padding: 0 13px;
+      font-size: 13px;
+      outline: none;
+    }
+    .field-input:focus { border-color: var(--color-primary); }
+    .credit-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--color-info-soft);
+      border-radius: 13px;
+      padding: 16px 18px;
+      animation: fadeUp .25s ease;
+      font-size: 12.5px;
+      color: var(--color-info-strong);
+      line-height: 1.7;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+      margin-bottom: 20px;
+    }
+    .summary-tile {
+      background: #fbfafb;
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .summary-tile.total {
+      background: #fbeded;
+    }
+    .summary-tile .lbl {
+      font-size: 11.5px;
+      color: var(--color-muted);
+      margin-bottom: 6px;
+    }
+    .summary-tile.total .lbl { color: var(--color-primary); }
+    .summary-tile .val {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--color-on-surface);
+    }
+    .summary-tile.total .val {
+      font-size: 15px;
+      font-family: var(--font-family-display);
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+    .otp-box {
+      background: #fff;
+      border: 1.5px solid #ececec;
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+    }
+    .otp-digits {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      direction: ltr;
+    }
+    .otp-digit {
+      width: 50px; height: 58px;
+      border-radius: 13px;
+      border: 1.5px solid #ececec;
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 700;
+      color: var(--color-on-surface);
+    }
+    .otp-digit.filled { border-color: #d4d4dc; }
+    .otp-digit.active {
+      border-color: var(--color-primary);
+      background: #fdf6f6;
+    }
+    .link-primary {
+      font-size: 11.5px;
+      color: var(--color-primary);
+      font-weight: 700;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      background: var(--color-inverse-surface);
+      color: var(--color-on-inverse-surface);
+      padding: 13px 20px;
+      border-radius: 13px;
+      box-shadow: 0 12px 34px rgba(0,0,0,.3);
+      animation: toastIn .25s ease;
+      direction: rtl;
+    }
+    .toast-icon {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--color-success-strong); color: #fff;
+      font-size: 13px; font-weight: 700; flex: none;
+    }
+
+    .sidebar-backdrop {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(20,20,32,.42);
+      z-index: 75;
+    }
+    .sidebar-backdrop.show { display: block; }
+
+    @media (max-width: 1024px) {
+      .sidebar {
+        position: fixed; top: 0; right: 0; z-index: 80;
+        transform: translateX(106%);
+        transition: transform .24s ease;
+        box-shadow: -12px 0 40px rgba(0,0,0,.18);
+        background: transparent;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .page { padding: 18px 16px 40px !important; }
+      .dash-grid, .detail-grid { grid-template-columns: 1fr !important; }
+      .crumb-root { display: none; }
+    }
+    @media (max-width: 760px) {
+      .kpi-grid, .qa-grid { grid-template-columns: 1fr 1fr !important; }
+      .crumb-group { display: none; }
+      .search-field { display: none; }
+      .pay-grid { grid-template-columns: 1fr !important; }
+      .cheque-grid { grid-template-columns: 1fr !important; }
+      .summary-grid { grid-template-columns: 1fr !important; }
+      .cart-head, .cart-row { grid-template-columns: 1.4fr 110px 1fr 36px; }
+      .cart-head > div:nth-child(3), .cart-row > div:nth-child(3) { display: none; }
+    }
+  
+    textarea { resize: vertical; }
+    @keyframes drawerIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes pop { from { transform: scale(.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    .sidebar {
+      width: 262px; flex: none;
+      background: var(--color-surface-container-lowest);
+      border-left: 1px solid var(--color-outline-variant);
+      position: sticky; top: 0; height: 100vh;
+      display: flex; flex-direction: column;
+      transition: width .2s ease, opacity .2s ease, transform .24s ease;
+    }
+    .sidebar.collapsed { width: 0; min-width: 0; border: none; overflow: hidden; opacity: 0; pointer-events: none; }
+    .sidebar-nav { flex: 1; overflow-y: auto; padding: 6px 12px 18px; }
+    .nav-group-label { font-size: 11px; color: var(--color-muted); font-weight: 700; padding: 14px 8px 6px; }
+    .nav-link {
+      width: 100%; display: flex; align-items: center; gap: 10px;
+      padding: 9px 10px; border-radius: 11px; font-size: 13.5px; font-weight: 600;
+      transition: all .14s; text-align: right; color: #5a5a64;
+    }
+    .nav-link:hover { background: var(--color-surface-container-high); }
+    .nav-link.active { background: var(--color-primary-container); color: var(--color-primary); }
+    .nav-link .nav-badge { margin-right: auto; font-size: 11px; font-weight: 700; border-radius: 8px; padding: 2px 8px; }
+
+    .rowh:hover { background: #fcf6f6 !important; }
+    .blkcard:hover { border-color: color-mix(in srgb, var(--color-primary) 35%, white) !important; box-shadow: 0 6px 18px rgba(215,78,84,.09) !important; }
+    .home-grid { display: grid; grid-template-columns: 1fr 290px; gap: 16px; align-items: start; }
+    .two-col { display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px; align-items: start; }
+    .cert-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .blog-add-grid { display: grid; grid-template-columns: 1fr 320px; gap: 16px; align-items: start; }
+    .faq-table-head, .faq-table-row { display: grid; grid-template-columns: 54px 1fr 170px 120px 96px; align-items: center; }
+    .blog-table-head, .blog-table-row { display: grid; grid-template-columns: 110px 1.6fr 1fr 140px 100px 96px; align-items: center; }
+    .tag { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; border-radius: 7px; padding: 4px 10px; white-space: nowrap; }
+    .tag-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .overlay { position: fixed; inset: 0; z-index: 70; direction: rtl; }
+    .overlay-backdrop { position: absolute; inset: 0; background: rgba(20,20,32,.45); animation: fadeIn .2s ease; }
+    .drawer {
+      position: absolute; top: 0; left: 0; height: 100%; width: min(480px, 100%);
+      background: var(--color-surface-container-lowest); display: flex; flex-direction: column;
+      box-shadow: 12px 0 40px rgba(0,0,0,.2); animation: drawerIn .26s ease;
+    }
+    .modal {
+      width: min(540px, 100%); background: var(--color-surface-container-lowest);
+      border-radius: 18px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.3); animation: pop .2s ease;
+    }
+    .modal-sm { width: min(400px, 100%); }
+    .modal-center {
+      position: fixed; inset: 0; z-index: 86; direction: rtl;
+      background: rgba(20,20,32,.5); display: flex; align-items: center; justify-content: center; padding: 24px;
+      animation: fadeIn .18s ease;
+    }
+    .field-label { font-size: 12px; color: var(--color-outline); font-weight: 600; display: block; margin-bottom: 7px; }
+    .field-input {
+      width: 100%; height: 42px; background: var(--color-surface-container-lowest);
+      border: 1px solid #e6e6ea; border-radius: 10px; padding: 0 13px; font-size: 13px;
+      color: var(--color-on-surface-variant); outline: none;
+    }
+    .field-input:focus { border-color: var(--color-primary); }
+    .field-textarea {
+      width: 100%; min-height: 100px; background: var(--color-surface-container-lowest);
+      border: 1px solid #e6e6ea; border-radius: 11px; padding: 12px 14px; font-size: 13px;
+      line-height: 2; color: var(--color-on-surface-variant); outline: none;
+    }
+    .field-textarea:focus { border-color: var(--color-primary); }
+    .rt-toolbar { display: flex; align-items: center; gap: 2px; background: var(--color-surface-container-high); border-radius: 9px; padding: 4px; margin-bottom: 10px; width: fit-content; flex-wrap: wrap; }
+    .rt-btn { width: 30px; height: 28px; border-radius: 6px; color: var(--color-outline); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+    .rt-btn:hover { background: var(--color-surface-container-lowest); color: var(--color-on-surface); }
+    .filter-pill {
+      display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600;
+      padding: 8px 14px; border-radius: 10px; border: 1px solid #e6e6ea; white-space: nowrap;
+    }
+    .hidden { display: none !important; }
+
+    @media (min-width: 1025px) {
+      .sidebar.collapsed { width: 0 !important; min-width: 0; border: none; overflow: hidden; opacity: 0; pointer-events: none; }
+      .crumb-root { display: inline; }
+    }
+    @media (max-width: 1024px) {
+      .sidebar { position: fixed !important; top: 0 !important; right: 0 !important; z-index: 80; transform: translateX(106%); box-shadow: -12px 0 40px rgba(0,0,0,.18); background: var(--color-surface-container-lowest); }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-backdrop.show { display: block; }
+      .page { padding: 18px 16px 40px !important; }
+      .home-grid, .two-col { grid-template-columns: 1fr !important; }
+      .crumb-root { display: none; }
+    }
+    @media (max-width: 760px) {
+      .crumb-group { display: none; }
+      .kpi-grid { grid-template-columns: 1fr 1fr !important; }
+      .cert-grid { grid-template-columns: 1fr 1fr !important; }
+      .blog-add-grid { grid-template-columns: 1fr !important; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div id="backdrop" class="sidebar-backdrop" onclick="closeNav()"></div>
+
+    <main class="main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:13px;min-width:0">
+          <button class="icon-btn" onclick="toggleNav()" title="نمایش/پنهان‌سازی منو" aria-label="منو">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          </button>
+          <div class="crumbs">
+            <span class="muted crumb-root">زیرا مارکت</span>
+            <span class="sep crumb-root">/</span>
+            <span class="muted crumb-group" id="crumbGroup">نمای کلی</span>
+            <span class="sep crumb-group">/</span>
+            <span class="current" id="crumbPage">داشبورد محتوا</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex:none">
+          <button class="btn-secondary crumb-group" onclick="openPreview()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            پیش‌نمایش فروشگاه
+          </button>
+          <div class="notif-wrap">
+            <button class="icon-btn" onclick="toggleNotif()" title="اعلان‌ها">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+              <span class="notif-dot">۴</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div id="screenRoot"></div>
+    </main>
+
+    <aside id="sidebar" class="sidebar"></aside>
+  </div>
+
+  <div id="overlayRoot"></div>
+
+  <script>
+(function () {
+  'use strict';
+
+  const state = {
+    route: 'dashboard',
+    homeBlocks: [
+      { id: 'slide', name: 'اسلایدشو اصلی', kind: 'slide', desc: '۳ بنر', status: 'pub', updated: '۲ ساعت پیش' },
+      { id: 'new', name: 'کالاهای جدید', kind: 'prod', desc: '۸ کالا', status: 'pub', updated: 'دیروز' },
+      { id: 'best', name: 'کالای پرفروش', kind: 'prod', desc: '۶ کالا', status: 'pub', updated: '۳ روز پیش' },
+      { id: 'brand', name: 'معرفی برند', kind: 'text', desc: 'متن + CTA', status: 'pub', updated: 'هفته گذشته' },
+      { id: 'process', name: 'فرآیند تولید', kind: 'text', desc: 'متن', status: 'draft', updated: '۱ ساعت پیش' },
+      { id: 'collection', name: 'معرفی کالکشن', kind: 'prod', desc: '۱۲ کالا', status: 'pub', updated: '۴ روز پیش' },
+      { id: 'special', name: 'فروش‌های ویژه', kind: 'prod', desc: '۵ کالا', status: 'draft', updated: '۳۰ دقیقه پیش' },
+      { id: 'promo', name: 'پیام تبلیغاتی', kind: 'text', desc: 'بنر متنی', status: 'hidden', updated: '۲ هفته پیش' },
+    ],
+    editorOpen: false, editId: null, editSel: {},
+    secKind: 'about',
+    faqCat: 0, faqOpenId: null, faqAddOpen: false, faqAddCat: 0,
+    blogCat: 0,
+    certTab: 0, certVis: {},
+    previewOpen: false,
+    confirmOpen: false, confirmMsg: '', confirmFn: null,
+    notifOpen: false, navCollapsed: false, navOpen: false,
+    toast: '', toastOpen: false, toastKind: 'ok',
+  };
+
+  let toastTimer = null;
+
+  function fa(n) { return String(n).replace(/[0-9]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+  function grp(n) { return fa(String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '٬')); }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  function stop(e) { e.stopPropagation(); }
+
+  function toast(msg, kind) {
+    state.toast = msg; state.toastOpen = true; state.toastKind = kind || 'ok';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { state.toastOpen = false; renderOverlays(); }, 2600);
+    renderOverlays();
+  }
+
+  function status(s) {
+    const m = {
+      pub: ['منتشرشده', 'var(--color-success-strong)', 'var(--color-success-soft)'],
+      draft: ['پیش‌نویس', 'var(--color-warning-strong)', 'var(--color-warning-soft)'],
+      hidden: ['مخفی', '#7C8A99', '#EEF1F4'],
+    };
+    return m[s];
+  }
+
+  function sw(i) { return ['#D98EA8', '#8FB6D6', '#C7A87C', '#9CC3A0', '#B79AD0', '#E0A07A', '#7FBFBF', '#D69CA0', '#C99AA0', '#8E9CC9'][i % 10]; }
+  function grad(i) { return ['linear-gradient(135deg,#F1ECF7,#E3D6F0)', 'linear-gradient(135deg,#E8F0FB,#D5E4F7)', 'linear-gradient(135deg,#FBF0E2,#F5E2C8)', 'linear-gradient(135deg,#E8F5EF,#D2Ede0)', 'linear-gradient(135deg,#FBEDED,#F7D9D9)', 'linear-gradient(135deg,#EEF1F4,#E0E6EC)'][i % 6]; }
+  function softBg(i) { return ['#FBEDED', '#E8F0FB', '#FDF3E2', '#F1ECF7', '#E8F5EF', '#FBF0E2', '#EEF1F4', '#F4ECE3'][i % 8]; }
+
+  function productDefs() {
+    return [
+      { name: 'ست لباس خواب ساتن', price: 398000 },
+      { name: 'سوتین بدون فنر دانتل', price: 286000 },
+      { name: 'ربدوشامبر حریر بلند', price: 512000 },
+      { name: 'پیراهن خواب ویسکوز', price: 345000 },
+      { name: 'لگ راحتی مودال', price: 198000 },
+      { name: 'بوکسر مردانه نخی', price: 224000 },
+      { name: 'تاپ بندی کشی', price: 142000 },
+      { name: 'شورت زنانه نخی', price: 168000 },
+    ];
+  }
+
+  function rtToolsHtml(onClick) {
+    const tools = [{ g: 'B', t: 'درشت' }, { g: 'I', t: 'مورب' }, { g: 'U', t: 'زیرخط' }, { g: '•', t: 'فهرست' }, { g: '🔗', t: 'پیوند' }, { g: '❝', t: 'نقل‌قول' }];
+    return `<div class="rt-toolbar">${tools.map((t) => `<button type="button" class="rt-btn" title="${t.t}" onclick="${onClick}">${t.g}</button>`).join('')}</div>`;
+  }
+
+  function toRoute(route) {
+    state.route = route; state.notifOpen = false; state.navOpen = false;
+    render();
+  }
+
+  window.go_dashboard = () => toRoute('dashboard');
+  window.go_home = () => toRoute('home');
+  window.go_about = () => { state.route = 'sections'; state.secKind = 'about'; state.notifOpen = false; state.navOpen = false; render(); };
+  window.go_coop = () => { state.route = 'sections'; state.secKind = 'coop'; state.notifOpen = false; state.navOpen = false; render(); };
+  window.go_contact = () => toRoute('contact');
+  window.go_faq = () => toRoute('faq');
+  window.go_blog = () => toRoute('blog');
+  window.go_blogAdd = () => toRoute('blogAdd');
+  window.go_certs = () => toRoute('certs');
+
+  window.toggleNav = () => { state.navCollapsed = !state.navCollapsed; state.navOpen = !state.navOpen; renderChrome(); };
+  window.closeNav = () => { state.navOpen = false; renderChrome(); };
+  window.toggleNotif = () => { state.notifOpen = !state.notifOpen; renderOverlays(); };
+  window.closeNotif = () => { state.notifOpen = false; renderOverlays(); };
+  window.openPreview = () => { state.previewOpen = true; state.notifOpen = false; renderOverlays(); };
+  window.closePreview = () => { state.previewOpen = false; renderOverlays(); };
+  window.publishAll = () => {
+    state.homeBlocks = state.homeBlocks.map((b) => (b.status === 'draft' ? { ...b, status: 'pub' } : b));
+    toast('همه تغییرات منتشر شد ✓');
+    render();
+  };
+  window.exportList = () => toast('خروجی اکسل از نمای فعلی آماده شد.');
+
+  window.moveBlock = (idx, dir) => {
+    const a = [...state.homeBlocks]; const j = idx + dir;
+    if (j < 0 || j >= a.length) return;
+    [a[idx], a[j]] = [a[j], a[idx]];
+    state.homeBlocks = a; render();
+  };
+  window.toggleVis = (id) => {
+    state.homeBlocks = state.homeBlocks.map((b) => b.id === id ? { ...b, status: b.status === 'hidden' ? 'draft' : 'hidden' } : b);
+    toast('وضعیت نمایش بلوک تغییر کرد.'); render();
+  };
+  window.openEditor = (id) => {
+    const b = state.homeBlocks.find((x) => x.id === id);
+    const sel = {};
+    if (b && b.kind === 'prod') productDefs().forEach((_, i) => { sel[i] = i < 4; });
+    state.editorOpen = true; state.editId = id; state.editSel = sel; state.notifOpen = false;
+    renderOverlays();
+  };
+  window.closeEditor = () => { state.editorOpen = false; renderOverlays(); };
+  window.toggleProd = (i) => { state.editSel = { ...state.editSel, [i]: !state.editSel[i] }; renderOverlays(); };
+  window.saveBlock = () => {
+    setBlockStatus('draft'); toast('بلوک به‌عنوان پیش‌نویس ذخیره شد.'); state.editorOpen = false; render();
+  };
+  window.publishBlock = () => {
+    setBlockStatus('pub'); toast('بلوک منتشر شد ✓'); state.editorOpen = false; render();
+  };
+  function setBlockStatus(st) {
+    const id = state.editId;
+    state.homeBlocks = state.homeBlocks.map((b) => b.id === id ? { ...b, status: st, updated: 'هم‌اکنون' } : b);
+  }
+
+  window.setFaqCat = (i) => { state.faqCat = i; state.faqOpenId = null; render(); };
+  window.toggleFaq = (gi) => { state.faqOpenId = state.faqOpenId === gi ? null : gi; render(); };
+  window.openFaqAdd = () => { state.faqAddOpen = true; state.faqAddCat = 0; renderOverlays(); };
+  window.closeFaqAdd = () => { state.faqAddOpen = false; renderOverlays(); };
+  window.submitFaq = () => { state.faqAddOpen = false; toast('سوال جدید ثبت شد ✓'); render(); };
+  window.setFaqAddCat = (i) => { state.faqAddCat = i; renderOverlays(); };
+
+  window.setBlogCat = (i) => { state.blogCat = i; render(); };
+  window.setCertTab = (i) => { state.certTab = i; render(); };
+  window.toggleCert = (key) => {
+    const vis = state.certVis[key] !== false;
+    state.certVis = { ...state.certVis, [key]: !vis }; render();
+  };
+
+  window.openConfirm = (msg, fnName) => {
+    state.confirmOpen = true; state.confirmMsg = msg; state.confirmFn = fnName;
+    renderOverlays();
+  };
+  window.closeConfirm = () => { state.confirmOpen = false; renderOverlays(); };
+  window.doConfirm = () => {
+    const fn = state.confirmFn; state.confirmOpen = false;
+    if (fn === 'delFaq') toast('سوال حذف شد.', 'warn');
+    else if (fn === 'delBlog') toast('مقاله حذف شد.', 'warn');
+    else if (fn === 'delCert') toast('سند حذف شد.', 'warn');
+    render();
+  };
+
+  function routeGroup() {
+    const r = state.route;
+    if (r === 'dashboard') return 'نمای کلی';
+    if (['home', 'sections', 'contact'].includes(r)) return 'صفحات فروشگاه';
+    if (['faq', 'blog', 'blogAdd'].includes(r)) return 'محتوای پویا';
+    return 'اسناد و گواهی‌ها';
+  }
+  function routeTitle() {
+    const r = state.route, sk = state.secKind;
+    if (r === 'sections') return sk === 'about' ? 'درباره ما' : 'همکاری با ما';
+    const m = { dashboard: 'داشبورد محتوا', home: 'صفحه اصلی', contact: 'تماس با ما', faq: 'سوالات متداول', blog: 'وبلاگ', blogAdd: 'افزودن مقاله', certs: 'گواهی‌ها و مجوزها' };
+    return m[r] || '';
+  }
+
+  function faqDefs() {
+    return [
+      { q: 'جنس محصولات زیرا از چه پارچه‌هایی است؟', a: 'بیشتر محصولات از پنبه، مودال و ویسکوز با کیفیت درجه یک تولید می‌شوند که نرمی و دوام بالایی دارند.', cat: 0, date: '۱۴۰۴/۰۹/۱۰' },
+      { q: 'جدول سایزبندی محصولات کجاست؟', a: 'در هر صفحه محصول جدول سایز اختصاصی قرار دارد؛ همچنین راهنمای کلی سایز در بخش وبلاگ موجود است.', cat: 1, date: '۱۴۰۴/۰۹/۰۴' },
+      { q: 'تفاوت مدل‌های سوتین بدون فنر و فنردار چیست؟', a: 'مدل بدون فنر راحتی بیشتری برای استفاده روزانه دارد و مدل فنردار فرم‌دهی بهتری ارائه می‌دهد.', cat: 2, date: '۱۴۰۴/۰۸/۲۸' },
+      { q: 'نحوه مراقبت و شست‌وشوی محصولات چگونه است؟', a: 'شست‌وشو با آب سرد، پرهیز از خشک‌کن داغ و اتوی ملایم برای حفظ کیفیت پارچه توصیه می‌شود.', cat: 3, date: '۱۴۰۴/۰۸/۲۰' },
+      { q: 'آیا امکان سفارش عمده با تخفیف وجود دارد؟', a: 'بله، عمده‌فروشان پس از تایید پروانه کسب از قیمت‌گذاری پلکانی و تخفیف ویژه بهره‌مند می‌شوند.', cat: 0, date: '۱۴۰۴/۰۸/۱۲' },
+      { q: 'پارچه محصولات ضدحساسیت است؟', a: 'محصولات خط پنبه‌ای ما با رنگ‌های استاندارد و بدون مواد حساسیت‌زا تولید می‌شوند.', cat: 3, date: '۱۴۰۴/۰۸/۰۱' },
+    ];
+  }
+  function faqCatLabels() { return ['جنس محصولات', 'اندازه‌ها و سایزها', 'تفاوت مدل‌ها', 'پارچه و مراقبت']; }
+  function faqCatColor(i) { return [['var(--color-primary)', 'var(--color-primary-container)'], ['var(--color-info-strong)', 'var(--color-info-soft)'], ['var(--color-purple)', 'var(--color-purple-soft)'], ['var(--color-success-strong)', 'var(--color-success-soft)']][i]; }
+
+  function blogDefs() {
+    return [
+      { code: 'BL-1042', title: 'راهنمای انتخاب سایز سوتین', subject: 'آموزش خرید', cat: 0, date: '۱۴۰۴/۰۹/۱۲', views: 1840 },
+      { code: 'BL-1038', title: 'تفاوت پارچه مودال و ویسکوز', subject: 'شناخت پارچه', cat: 0, date: '۱۴۰۴/۰۹/۰۵', views: 1320 },
+      { code: 'BL-1031', title: 'نکات بهداشتی نگهداری لباس زیر', subject: 'سلامت', cat: 1, date: '۱۴۰۴/۰۸/۲۸', views: 2670 },
+      { code: 'BL-1025', title: 'پوشاک مناسب دوران بارداری', subject: 'بارداری', cat: 2, date: '۱۴۰۴/۰۸/۲۰', views: 980 },
+      { code: 'BL-1019', title: 'چگونه لباس راحتی باکیفیت بخریم', subject: 'آموزش خرید', cat: 0, date: '۱۴۰۴/۰۸/۱۲', views: 1510 },
+      { code: 'BL-1007', title: 'مراقبت از پوست در فصل سرد', subject: 'سلامت', cat: 1, date: '۱۴۰۴/۰۸/۰۱', views: 740 },
+    ];
+  }
+  function blogCatLabels() { return ['پارچه‌ها', 'بهداشت و سلامت', 'نکات بارداری']; }
+  function blogCatColor(i) { return [['var(--color-purple)', 'var(--color-purple-soft)'], ['var(--color-success-strong)', 'var(--color-success-soft)'], ['var(--color-primary)', 'var(--color-primary-container)']][i]; }
+
+  function certDefs() {
+    return {
+      cert: [
+        { title: 'گواهی استاندارد ملی نساجی', date: '۱۴۰۴/۰۶/۱۲', type: 'PDF' },
+        { title: 'گواهی کنترل کیفیت محصول', date: '۱۴۰۴/۰۵/۲۸', type: 'IMG' },
+        { title: 'گواهی عضویت اتحادیه پوشاک', date: '۱۴۰۴/۰۴/۱۰', type: 'PDF' },
+        { title: 'تاییدیه آزمایشگاه پارچه', date: '۱۴۰۴/۰۳/۲۲', type: 'PDF' },
+      ],
+      lic: [
+        { title: 'مجوز بهره‌برداری تولید', date: '۱۴۰۴/۰۲/۱۵', type: 'PDF' },
+        { title: 'پروانه کسب صنفی', date: '۱۴۰۳/۱۲/۰۸', type: 'IMG' },
+        { title: 'استاندارد ISO 9001', date: '۱۴۰۳/۱۱/۲۰', type: 'PDF' },
+      ],
+    };
+  }
+
+  // ——— render helpers continued in part 2 ———
+  window._cmState = state;
+  window._cmRender = render;
+
+  function renderDashboard() {
+    const bl = state.homeBlocks;
+    const pub = bl.filter((b) => b.status === 'pub').length;
+    const dr = bl.filter((b) => b.status === 'draft').length;
+    const kpis = [
+      { value: '۶', unit: 'از ۸', label: 'صفحات منتشرشده', tag: 'فعال', tagFg: 'var(--color-success-strong)', tagBg: 'var(--color-success-soft)', bg: 'var(--color-success-soft)', fg: 'var(--color-success-strong)', go: 'go_dashboard()' },
+      { value: fa(pub + dr), unit: 'بلوک', label: 'بلوک صفحه اصلی', tag: fa(dr) + ' پیش‌نویس', tagFg: 'var(--color-warning-strong)', tagBg: 'var(--color-warning-soft)', bg: 'var(--color-primary-container)', fg: 'var(--color-primary)', go: 'go_home()' },
+      { value: '۲۴', unit: 'مقاله', label: 'مقالات وبلاگ', tag: '۳ دسته', tagFg: 'var(--color-info-strong)', tagBg: 'var(--color-info-soft)', bg: 'var(--color-info-soft)', fg: 'var(--color-info-strong)', go: 'go_blog()' },
+      { value: '۳۸', unit: 'سوال', label: 'سوالات متداول', tag: '۴ گروه', tagFg: 'var(--color-purple)', tagBg: 'var(--color-purple-soft)', bg: 'var(--color-purple-soft)', fg: 'var(--color-purple)', go: 'go_faq()' },
+    ];
+    const sdef = [
+      { name: 'صفحه اصلی', icon: '🏠', s: 'pub', updated: '۲ ساعت پیش', go: 'go_home()' },
+      { name: 'درباره ما', icon: 'ℹ️', s: 'pub', updated: 'هفته گذشته', go: 'go_about()' },
+      { name: 'همکاری با ما', icon: '🤝', s: 'draft', updated: '۱ روز پیش', go: 'go_coop()' },
+      { name: 'سوالات متداول', icon: '❓', s: 'pub', updated: '۳ روز پیش', go: 'go_faq()' },
+      { name: 'وبلاگ', icon: '📝', s: 'pub', updated: 'دیروز', go: 'go_blog()' },
+      { name: 'تماس با ما', icon: '📞', s: 'pub', updated: '۲ هفته پیش', go: 'go_contact()' },
+      { name: 'گواهی‌ها', icon: '🏅', s: 'pub', updated: 'ماه گذشته', go: 'go_certs()' },
+      { name: 'مجوزها و استانداردها', icon: '📜', s: 'draft', updated: '۵ روز پیش', go: 'go_certs()' },
+    ];
+    const activity = [
+      { title: 'بلوک «فروش‌های ویژه» ویرایش شد', by: 'نگار سلیمی', time: '۳۰ دقیقه پیش', bg: 'var(--color-warning-soft)', fg: 'var(--color-warning-strong)' },
+      { title: 'مقاله «راهنمای انتخاب سایز سوتین» منتشر شد', by: 'تیم محتوا', time: '۲ ساعت پیش', bg: 'var(--color-success-soft)', fg: 'var(--color-success-strong)' },
+      { title: 'سوال جدید در گروه «پارچه و مراقبت» افزوده شد', by: 'نگار سلیمی', time: 'دیروز', bg: 'var(--color-purple-soft)', fg: 'var(--color-purple)' },
+      { title: 'گواهی استاندارد نساجی به‌روزرسانی شد', by: 'واحد کیفیت', time: '۳ روز پیش', bg: 'var(--color-info-soft)', fg: 'var(--color-info-strong)' },
+      { title: 'اطلاعات تماس فروشگاه ویرایش شد', by: 'نگار سلیمی', time: 'هفته گذشته', bg: 'var(--color-primary-container)', fg: 'var(--color-primary)' },
+    ];
+    const hasDrafts = dr > 0;
+    return `
+      <section class="page" data-screen="dashboard">
+        <div class="page-head">
+          <div><h1>داشبورد محتوا</h1><p>مدیریت محتوای فروشگاه و پورتال عمده‌فروشی زیرا مارکت</p></div>
+          <div class="actions">${hasDrafts ? `<button class="btn-primary" onclick="publishAll()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>انتشار همه تغییرات</button>` : ''}</div>
+        </div>
+        <div class="qa-title">خلاصه محتوا</div>
+        <div class="kpi-grid">${kpis.map((k) => `
+          <button class="kpi card" onclick="${k.go}" style="cursor:pointer;border:1px solid #ececec">
+            <div class="kpi-top"><div class="kpi-icon" style="background:${k.bg};color:${k.fg}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/></svg></div>
+            <span class="tag" style="color:${k.tagFg};background:${k.tagBg}">${k.tag}</span></div>
+            <div style="display:flex;align-items:baseline;gap:5px"><div class="kpi-value">${k.value}</div><span style="font-size:12px;color:var(--color-muted)">${k.unit}</span></div>
+            <div class="kpi-label">${k.label}</div>
+          </button>`).join('')}</div>
+        <div class="two-col">
+          <div class="card card-pad">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><div class="section-title">وضعیت صفحات فروشگاه</div><span style="font-size:11.5px;color:var(--color-muted)">۸ سطح محتوا</span></div>
+            ${sdef.map((x, i) => { const st = status(x.s); return `
+              <button onclick="${x.go}" style="display:flex;align-items:center;gap:12px;width:100%;text-align:right;padding:11px 0;border-bottom:1px solid #f4f4f4">
+                <div style="width:36px;height:36px;border-radius:10px;background:${softBg(i)};display:flex;align-items:center;justify-content:center;flex:none">${x.icon}</div>
+                <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--color-on-surface)">${x.name}</div><div style="font-size:11px;color:var(--color-muted);margin-top:2px">آخرین به‌روزرسانی: ${x.updated}</div></div>
+                <span class="tag" style="color:${st[1]};background:${st[2]}"><span class="tag-dot" style="background:${st[1]}"></span>${st[0]}</span>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c4c4cc" stroke-width="2"><path d="m14 6-6 6 6 6"/></svg>
+              </button>`; }).join('')}
+          </div>
+          <div class="card card-pad">
+            <div class="section-title" style="margin-bottom:6px">فعالیت‌های اخیر</div>
+            ${activity.map((a) => `
+              <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-bottom:1px solid #f4f4f4">
+                <div style="width:30px;height:30px;border-radius:50%;background:${a.bg};color:${a.fg};display:flex;align-items:center;justify-content:center;flex:none"><span style="width:7px;height:7px;border-radius:50%;background:currentColor"></span></div>
+                <div style="flex:1"><div style="font-size:12.5px;font-weight:600;color:var(--color-on-surface-variant);line-height:1.6">${a.title}</div><div style="font-size:11px;color:var(--color-muted);margin-top:3px">${a.by} · ${a.time}</div></div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function blockIcon(kind) {
+    if (kind === 'slide') return '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="m2 14 5-4 4 3 4-4 7 5"/></svg>';
+    if (kind === 'prod') return '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg>';
+    return '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7V5h16v2M9 5v14M7 19h4"/></svg>';
+  }
+
+  function renderHome() {
+    const bl = state.homeBlocks;
+    const iconMap = { slide: ['var(--color-primary-container)', 'var(--color-primary)'], prod: ['var(--color-info-soft)', 'var(--color-info-strong)'], text: ['var(--color-purple-soft)', 'var(--color-purple)'] };
+    return `
+      <section class="page" data-screen="home">
+        <div class="page-head">
+          <div><h1>صفحه اصلی فروشگاه</h1><p>بلوک‌های صفحه نخست را ویرایش، مرتب و منتشر کنید — ${fa(bl.length)} بلوک</p></div>
+          <div class="actions">
+            <button class="btn-secondary" onclick="openPreview()">پیش‌نمایش</button>
+            <button class="btn-primary" onclick="publishAll()">انتشار تغییرات</button>
+          </div>
+        </div>
+        <div class="home-grid">
+          <div style="display:flex;flex-direction:column;gap:11px">${bl.map((b, i) => {
+            const st = status(b.status); const ic = iconMap[b.kind]; const last = i === bl.length - 1;
+            return `<div class="blkcard card" style="padding:14px 16px;display:flex;align-items:center;gap:13px">
+              <div style="display:flex;flex-direction:column;gap:2px;flex:none">
+                <button onclick="moveBlock(${i},-1)" style="width:24px;height:20px;color:${i === 0 ? '#dcdce2' : 'var(--color-muted)'}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 15 6-6 6 6"/></svg></button>
+                <button onclick="moveBlock(${i},1)" style="width:24px;height:20px;color:${last ? '#dcdce2' : 'var(--color-muted)'}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></button>
+              </div>
+              <div style="width:44px;height:44px;border-radius:12px;background:${ic[0]};color:${ic[1]};display:flex;align-items:center;justify-content:center;flex:none">${blockIcon(b.kind)}</div>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap"><span style="font-size:14px;font-weight:700;color:var(--color-on-surface)">${b.name}</span><span class="tag" style="color:${st[1]};background:${st[2]};font-size:10.5px"><span class="tag-dot" style="background:${st[1]};width:5px;height:5px"></span>${st[0]}</span></div>
+                <div style="font-size:11.5px;color:var(--color-muted);margin-top:4px">${b.desc} · ویرایش ${b.updated}</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:4px;flex:none">
+                <button class="icon-btn" style="width:34px;height:34px;border:none;color:${b.status === 'hidden' ? '#c4c4cc' : 'var(--color-success-strong)'}" onclick="toggleVis('${b.id}')" title="${b.status === 'hidden' ? 'نمایش بلوک' : 'مخفی کردن بلوک'}">${b.status === 'hidden' ? '👁‍🗨' : '👁'}</button>
+                <button onclick="openEditor('${b.id}')" style="display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--color-primary);background:var(--color-primary-container);padding:8px 14px;border-radius:9px">ویرایش</button>
+              </div>
+            </div>`;
+          }).join('')}</div>
+          <div style="position:sticky;top:74px;display:flex;flex-direction:column;gap:14px">
+            <div class="card card-pad">
+              <div class="section-title" style="font-size:13.5px;margin-bottom:14px">وضعیت انتشار</div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;justify-content:space-between"><span style="font-size:12.5px;color:var(--color-outline)">● منتشرشده</span><span class="tnum" style="font-weight:700">${fa(bl.filter((b) => b.status === 'pub').length)}</span></div>
+                <div style="display:flex;justify-content:space-between"><span style="font-size:12.5px;color:var(--color-outline)">● پیش‌نویس</span><span class="tnum" style="font-weight:700">${fa(bl.filter((b) => b.status === 'draft').length)}</span></div>
+                <div style="display:flex;justify-content:space-between"><span style="font-size:12.5px;color:var(--color-outline)">● مخفی</span><span class="tnum" style="font-weight:700">${fa(bl.filter((b) => b.status === 'hidden').length)}</span></div>
+              </div>
+            </div>
+            <div class="card" style="background:#FBFAFB;padding:16px;font-size:11.5px;color:var(--color-outline);line-height:1.85">ترتیب بلوک‌ها همان ترتیب نمایش در صفحه اصلی فروشگاه است. تغییرات تا زمان «انتشار» در حالت پیش‌نویس باقی می‌مانند.</div>
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function renderSections() {
+    const k = state.secKind;
+    const aboutSecs = [
+      { name: 'معرفی برند', body: 'زیرا مارکت، برندی پیشرو در تولید پوشاک راحتی و زیرپوش با تمرکز بر کیفیت پارچه و دوام محصول.', s: 'pub' },
+      { name: 'درباره شرکت', body: 'شرکت زیرا در سال ۱۳۹۲ تاسیس شد و امروز یکی از بزرگ‌ترین تامین‌کنندگان پوشاک راحتی عمده در کشور است.', s: 'pub' },
+      { name: 'سابقه و افتخارات', body: 'بیش از یک دهه فعالیت، دریافت استاندارد ملی نساجی و همکاری با بیش از ۱٬۰۰۰ فروشگاه.', s: 'pub' },
+      { name: 'محصولات', body: 'دسته‌بندی محصولات شامل لباس خواب، زیرپوش، لباس راحتی و پوشاک منزل برای تمام رده‌های سنی.', s: 'draft' },
+      { name: 'همکاران', body: 'شبکه گسترده‌ای از عمده‌فروشان و فروشگاه‌های زنجیره‌ای در سراسر کشور.', s: 'pub' },
+    ];
+    const coopSecs = [
+      { name: 'معرفی همکاری', body: 'فرصت همکاری با زیرا مارکت برای عمده‌فروشان و فروشگاه‌داران با شرایط ویژه و پشتیبانی اختصاصی.', s: 'pub' },
+      { name: 'مراحل همکاری', body: '۱. ثبت درخواست ۲. بررسی پروانه کسب ۳. تایید و تخصیص سطح اعتبار ۴. شروع سفارش‌گذاری.', s: 'pub' },
+      { name: 'شرایط همکاری', body: 'داشتن پروانه کسب معتبر و حداقل یک سال سابقه فعالیت در حوزه پوشاک.', s: 'draft' },
+      { name: 'قوانین عمده‌فروشی', body: 'قیمت‌گذاری پلکانی بر اساس حجم سفارش و سطح همکاری مشتری.', s: 'pub' },
+      { name: 'شرایط تسویه حساب', body: 'امکان تسویه نقدی، چکی و اعتباری بر اساس سطح خوش‌حسابی مشتری.', s: 'pub' },
+      { name: 'حداقل سفارش', body: 'حداقل مبلغ سفارش برای عمده‌فروشان ۵ میلیون تومان است.', s: 'draft' },
+    ];
+    const defs = k === 'about' ? aboutSecs : coopSecs;
+    const title = k === 'about' ? 'درباره ما' : 'همکاری با ما';
+    const subtitle = k === 'about' ? 'بخش‌های صفحه «درباره ما» را ویرایش و منتشر کنید' : 'شرایط، مراحل و قوانین همکاری عمده‌فروشی';
+    return `
+      <section class="page" data-screen="sections">
+        <div class="page-head">
+          <div><h1>${title}</h1><p>${subtitle}</p></div>
+          <div class="actions"><button class="btn-secondary" onclick="openPreview()">پیش‌نمایش</button><button class="btn-primary" onclick="publishAll()">انتشار تغییرات</button></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;max-width:880px">${defs.map((x, i) => {
+          const st = status(x.s);
+          return `<div class="card" style="overflow:hidden">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #f2f2f2">
+              <div style="display:flex;align-items:center;gap:10px"><span class="tnum" style="width:26px;height:26px;border-radius:8px;background:var(--color-primary-container);color:var(--color-primary);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">${fa(i + 1)}</span><span style="font-size:14px;font-weight:600;color:var(--color-on-surface)">${x.name}</span></div>
+              <span class="tag" style="color:${st[1]};background:${st[2]};font-size:10.5px"><span class="tag-dot" style="background:${st[1]};width:5px;height:5px"></span>${st[0]}</span>
+            </div>
+            <div style="padding:14px 18px">${rtToolsHtml("toast('قالب‌بندی اعمال شد.')")}
+              <textarea class="field-textarea">${esc(x.body)}</textarea>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px"><span style="font-size:11px;color:var(--color-muted)">${fa(x.body.length)} نویسه</span>
+              <button class="btn-secondary" onclick="toast('بخش «${esc(x.name)}» ذخیره شد.')">ذخیره پیش‌نویس</button></div>
+            </div>
+          </div>`;
+        }).join('')}${k === 'coop' ? `
+          <div class="card card-pad">
+            <div class="section-title" style="margin-bottom:4px">فایل راهنمای همکاری</div>
+            <p style="font-size:12px;color:var(--color-muted);margin-bottom:14px">فایل PDF شرایط و قوانین همکاری برای دانلود توسط متقاضیان عمده‌فروشی.</p>
+            <div style="display:flex;align-items:center;gap:13px;flex-wrap:wrap">
+              <div style="display:flex;align-items:center;gap:11px;background:#FBFAFB;border:1px solid #ececec;border-radius:12px;padding:11px 14px;flex:1;min-width:240px">
+                <div style="width:38px;height:38px;border-radius:10px;background:var(--color-error-container);color:var(--color-primary);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">PDF</div>
+                <div><div style="font-size:12.5px;font-weight:700">راهنمای-همکاری-عمده.pdf</div><div style="font-size:11px;color:var(--color-muted);margin-top:2px">۱٫۴ مگابایت · بارگذاری ۱۴۰۴/۰۸/۲۲</div></div>
+              </div>
+              <button class="btn-secondary" onclick="toast('انتخاب فایل راهنما.')">جایگزینی فایل</button>
+            </div>
+          </div>` : ''}</div>
+      </section>`;
+  }
+
+  function renderContact() {
+    const phones = [
+      { label: 'تلفن ثابت ۱', value: '۰۲۱ ۶۶۷۸ ۹۰۱۲' }, { label: 'تلفن ثابت ۲', value: '۰۲۱ ۶۶۷۸ ۹۰۱۳' },
+      { label: 'موبایل ۱', value: '+98 912 345 6789' }, { label: 'موبایل ۲ (پشتیبانی)', value: '+98 935 120 8845' },
+    ];
+    const socials = [
+      { label: 'اینستاگرام', icon: '📷', value: 'instagram.com/ziramarket', bg: 'var(--color-primary-container)', fg: 'var(--color-primary)' },
+      { label: 'تلگرام', icon: '✈️', value: 't.me/ziramarket', bg: 'var(--color-info-soft)', fg: 'var(--color-info-strong)' },
+      { label: 'واتس‌اپ', icon: '💬', value: 'wa.me/989123456789', bg: 'var(--color-success-soft)', fg: 'var(--color-success-strong)' },
+      { label: 'وب‌سایت', icon: '🌐', value: 'ziramarket.ir', bg: 'var(--color-purple-soft)', fg: 'var(--color-purple)' },
+    ];
+    return `
+      <section class="page" data-screen="contact">
+        <div class="page-head">
+          <div><h1>تماس با ما</h1><p>اطلاعات تماس فروشگاه — در فوتر و صفحه تماس عمومی نمایش داده می‌شود</p></div>
+          <button class="btn-primary" onclick="toast('اطلاعات تماس ذخیره و منتشر شد ✓')">ذخیره و انتشار</button>
+        </div>
+        <div class="two-col" style="max-width:980px;grid-template-columns:1.4fr 1fr">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div class="card card-pad"><div class="section-title" style="margin-bottom:16px">شماره‌های تماس</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">${phones.map((f) => `<div><label class="field-label">${f.label}</label><input class="field-input" dir="ltr" value="${f.value}" style="text-align:right"></div>`).join('')}</div>
+            </div>
+            <div class="card card-pad"><div class="section-title" style="margin-bottom:16px">شبکه‌های اجتماعی</div>
+              ${socials.map((s) => `<div style="display:flex;align-items:center;gap:11px;margin-bottom:12px"><div style="width:38px;height:38px;border-radius:10px;background:${s.bg};color:${s.fg};display:flex;align-items:center;justify-content:center">${s.icon}</div><div style="flex:1"><div style="font-size:11px;color:var(--color-muted);margin-bottom:5px">${s.label}</div><input class="field-input" dir="ltr" value="${s.value}" style="height:38px;text-align:left"></div></div>`).join('')}
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div class="card card-pad">
+              <div class="section-title" style="margin-bottom:16px">ایمیل و ساعات کاری</div>
+              <label class="field-label">ایمیل پشتیبانی</label><input class="field-input" dir="ltr" value="info@ziramarket.ir" style="text-align:left;margin-bottom:14px">
+              <label class="field-label">ساعات کاری</label><input class="field-input" value="شنبه تا چهارشنبه ۹ تا ۱۸ — پنجشنبه ۹ تا ۱۳">
+            </div>
+            <div class="card card-pad">
+              <div class="section-title" style="margin-bottom:16px">آدرس</div>
+              <textarea class="field-textarea" style="min-height:78px">تهران، خیابان آزادی، نبش خیابان بهبودی، پلاک ۱۲، طبقه ۳، واحد ۸ — کد پستی ۱۴۵۷۹۸۳۴۵۶</textarea>
+              <div style="margin-top:12px;height:120px;border-radius:11px;background:linear-gradient(135deg,#eef1f4,#e3e8ed);border:1px solid #e6e6ea;display:flex;align-items:center;justify-content:center;color:#a9b2bb;gap:8px;font-size:12.5px">📍 موقعیت روی نقشه</div>
+            </div>
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function renderFaq() {
+    const defs = faqDefs(); const labels = faqCatLabels();
+    const all = [{ label: 'همه' }].concat(labels.map((l) => ({ label: l })));
+    const cats = all.map((c, i) => {
+      const sel = state.faqCat === i;
+      const cnt = i === 0 ? defs.length : defs.filter((d) => d.cat === i - 1).length;
+      return `<button class="filter-pill" onclick="setFaqCat(${i})" style="border-color:${sel ? 'var(--color-primary)' : '#e6e6ea'};background:${sel ? 'var(--color-primary-container)' : '#fff'};color:${sel ? 'var(--color-primary)' : '#777'}">${c.label}<span class="tnum" style="font-size:11px;background:${sel ? '#fff' : 'var(--color-muted-soft)'};color:${sel ? 'var(--color-primary)' : '#999'};border-radius:6px;padding:1px 7px">${fa(cnt)}</span></button>`;
+    }).join('');
+    const filtered = defs.map((d, gi) => ({ ...d, gi })).filter((d) => state.faqCat === 0 || d.cat === state.faqCat - 1);
+    const rows = filtered.map((d, i) => {
+      const cc = faqCatColor(d.cat); const open = state.faqOpenId === d.gi;
+      return `<div style="border-bottom:1px solid #f4f4f4">
+        <div class="rowh faq-table-row" onclick="toggleFaq(${d.gi})" style="cursor:pointer">
+          <div class="tnum" style="padding:13px 18px;font-size:12px;color:var(--color-muted)">${fa(i + 1)}</div>
+          <div style="padding:13px 10px;display:flex;align-items:center;gap:9px"><span style="color:${open ? 'var(--color-primary)' : '#b3b3bd'};transform:rotate(${open ? '180deg' : '0deg'});transition:transform .2s">▼</span><span style="font-size:13px;font-weight:600;color:var(--color-on-surface)">${d.q}</span></div>
+          <div style="padding:13px 10px"><span class="tag" style="color:${cc[0]};background:${cc[1]}">${labels[d.cat]}</span></div>
+          <div dir="ltr" class="tnum" style="padding:13px 10px;font-size:12px;color:var(--color-outline);text-align:right">${d.date}</div>
+          <div style="padding:13px 10px;display:flex;justify-content:center;gap:4px" onclick="event.stopPropagation()">
+            <button class="icon-btn" style="width:30px;height:30px;border:none" onclick="toast('ویرایش سوال باز شد.')" title="ویرایش">✎</button>
+            <button class="icon-btn" style="width:30px;height:30px;border:none" onclick="openConfirm('این سوال برای همیشه حذف می‌شود. آیا مطمئن هستید؟','delFaq')" title="حذف">🗑</button>
+          </div>
+        </div>
+        ${open ? `<div style="padding:4px 18px 18px 52px"><div style="background:#FBFAFB;border:1px solid #f0f0f0;border-radius:11px;padding:13px 16px;font-size:12.5px;color:#666;line-height:2.1">${d.a}</div></div>` : ''}
+      </div>`;
+    }).join('');
+    return `
+      <section class="page" data-screen="faq">
+        <div class="page-head">
+          <div><h1>سوالات متداول</h1><p>مدیریت پرسش و پاسخ‌های فروشگاه — ${fa(defs.length)} سوال</p></div>
+          <div class="actions"><button class="btn-secondary" onclick="exportList()">خروجی اکسل</button><button class="btn-primary" onclick="openFaqAdd()"><span style="font-size:17px">+</span>ثبت سوال جدید</button></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">${cats}</div>
+        <div class="card" style="overflow:hidden">
+          <div class="faq-table-head" style="background:#fafafa;border-bottom:1px solid #efefef">
+            <div style="font-size:11.5px;font-weight:700;color:var(--color-muted);padding:13px 18px">ردیف</div>
+            <div style="font-size:11.5px;font-weight:700;color:var(--color-muted);padding:13px 10px">سوال</div>
+            <div style="font-size:11.5px;font-weight:700;color:var(--color-muted);padding:13px 10px">گروه مرتبط</div>
+            <div style="font-size:11.5px;font-weight:700;color:var(--color-muted);padding:13px 10px">تاریخ ایجاد</div>
+            <div style="font-size:11.5px;font-weight:700;color:var(--color-muted);padding:13px 10px;text-align:center">عملیات</div>
+          </div>${rows}
+        </div>
+      </section>`;
+  }
+
+  function renderBlog() {
+    const defs = blogDefs(); const labels = blogCatLabels();
+    const all = [{ label: 'همه' }].concat(labels.map((l) => ({ label: l })));
+    const cats = all.map((c, i) => {
+      const sel = state.blogCat === i;
+      return `<button class="filter-pill" onclick="setBlogCat(${i})" style="border-color:${sel ? 'var(--color-primary)' : '#e6e6ea'};background:${sel ? 'var(--color-primary-container)' : '#fff'};color:${sel ? 'var(--color-primary)' : '#777'}">${c.label}</button>`;
+    }).join('');
+    const filtered = defs.filter((d) => state.blogCat === 0 || d.cat === state.blogCat - 1);
+    const rows = filtered.map((d, i) => {
+      const cc = blogCatColor(d.cat);
+      return `<div class="rowh blog-table-row" style="border-bottom:1px solid #f4f4f4">
+        <div dir="ltr" class="tnum" style="padding:12px 18px;font-size:12px;color:var(--color-outline);text-align:right">${d.code}</div>
+        <div style="padding:12px 10px;display:flex;align-items:center;gap:11px"><div style="width:42px;height:42px;border-radius:10px;background:${grad(i)};flex:none"></div><div><div style="font-size:12.5px;font-weight:700;color:var(--color-on-surface)">${d.title}</div><div style="font-size:11px;color:var(--color-muted)">${d.subject}</div></div></div>
+        <div style="padding:12px 10px"><span class="tag" style="color:${cc[0]};background:${cc[1]}">${labels[d.cat]}</span></div>
+        <div dir="ltr" class="tnum" style="padding:12px 10px;font-size:12px;color:var(--color-outline);text-align:right">${d.date}</div>
+        <div class="tnum" style="padding:12px 10px;text-align:center;font-weight:600">${grp(d.views)}</div>
+        <div style="padding:12px 10px;display:flex;justify-content:center;gap:4px">
+          <button class="icon-btn" style="width:30px;height:30px;border:none" onclick="go_blogAdd()" title="ویرایش">✎</button>
+          <button class="icon-btn" style="width:30px;height:30px;border:none" onclick="openConfirm('مقاله «${esc(d.title)}» حذف می‌شود.','delBlog')" title="حذف">🗑</button>
+        </div>
+      </div>`;
+    }).join('');
+    return `
+      <section class="page" data-screen="blog">
+        <div class="page-head">
+          <div><h1>وبلاگ</h1><p>مدیریت مقالات و محتوای آموزشی فروشگاه — ${fa(defs.length)} مقاله</p></div>
+          <div class="actions"><button class="btn-secondary" onclick="exportList()">خروجی اکسل</button><button class="btn-primary" onclick="go_blogAdd()"><span style="font-size:17px">+</span>افزودن مقاله</button></div>
+        </div>
+        <div class="toolbar">
+          <div class="search-field" style="width:240px"><input placeholder="جستجوی مقاله…"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9a9aa5" stroke-width="1.9"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">${cats}</div>
+        </div>
+        <div class="card" style="overflow:hidden"><div style="overflow-x:auto"><div style="min-width:860px">
+          <div class="blog-table-head" style="background:#fafafa;border-bottom:1px solid #efefef">
+            <div style="font-size:11.5px;font-weight:700;color:var(--color-muted);padding:13px 18px">کد مقاله</div>
+            <div style="font-size:11.5px;font-weight:700;color:var(--color-muted);padding:13px 10px">نام مقاله</div>
+            <div style="font-size:11.5px;font-weight:700;color:var(--color-muted);padding:13px 10px">دسته‌بندی</div>
+            <div style="font-size:11.5px;font-weight:700;color:var(--color-muted);padding:13px 10px">تاریخ ایجاد</div>
+            <div style="font-size:11.5px;font-weight:700;color:var(--color-muted);padding:13px 10px;text-align:center">بازدید</div>
+            <div style="font-size:11.5px;font-weight:700;color:var(--color-muted);padding:13px 10px;text-align:center">عملیات</div>
+          </div>${rows}
+        </div></div></div>
+      </section>`;
+  }
+
+  function renderBlogAdd() {
+    const addCats = blogCatLabels().map((l, i) => { const cc = blogCatColor(i); return `<span class="tag" style="color:${cc[0]};background:${cc[1]};border:1px solid ${cc[1]}">${l}</span>`; }).join('');
+    return `
+      <section class="page" data-screen="blogAdd">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap">
+          <button class="btn-secondary" onclick="go_blog()">← بازگشت به وبلاگ</button>
+          <h1 style="font-size:20px;flex:1">افزودن مقاله جدید</h1>
+        </div>
+        <div class="blog-add-grid">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div class="card card-pad">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+                <div><label class="field-label">نام مقاله</label><input class="field-input" placeholder="عنوان مقاله را وارد کنید"></div>
+                <div><label class="field-label">موضوع</label><input class="field-input" placeholder="موضوع اصلی مقاله"></div>
+              </div>
+              <label class="field-label">خلاصه متن</label><textarea class="field-textarea" style="min-height:64px" placeholder="چکیده‌ای کوتاه…"></textarea>
+            </div>
+            <div class="card card-pad">
+              <label class="field-label">محتوای مقاله</label>${rtToolsHtml("toast('قالب‌بندی اعمال شد.')")}
+              <textarea class="field-textarea" style="min-height:230px" placeholder="متن کامل مقاله…"></textarea>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div class="card card-pad">
+              <div class="section-title" style="font-size:13.5px;margin-bottom:12px">تصویر شاخص</div>
+              <button onclick="toast('انتخاب تصویر شاخص.')" style="width:100%;height:130px;border:2px dashed color-mix(in srgb,var(--color-primary) 35%,white);border-radius:12px;background:#FBF7F7;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--color-primary)">📷 بارگذاری تصویر</button>
+            </div>
+            <div class="card card-pad">
+              <div class="section-title" style="font-size:13.5px;margin-bottom:14px">دسته‌بندی و فراداده</div>
+              <label class="field-label">دسته‌بندی</label>
+              <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px">${addCats}<button onclick="toast('فرم افزودن دسته‌بندی باز شد.')" style="font-size:11.5px;font-weight:700;color:var(--color-primary);border:1px dashed color-mix(in srgb,var(--color-primary) 35%,white);border-radius:8px;padding:5px 11px">+ افزودن دسته</button></div>
+              <label class="field-label">برچسب‌ها</label><input class="field-input" style="height:40px;margin-bottom:14px" placeholder="برچسب‌ها با ویرگول جدا شوند">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div><label class="field-label">نویسنده</label><input class="field-input" style="height:40px" value="تیم محتوا"></div>
+                <div><label class="field-label">منبع</label><input class="field-input" style="height:40px" placeholder="اختیاری"></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px">
+              <button class="btn-primary" style="flex:1;justify-content:center" onclick="go_blog();toast('مقاله ثبت و منتشر شد ✓')">ثبت و انتشار</button>
+              <button class="btn-secondary" onclick="go_blog()">انصراف</button>
+            </div>
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function renderCerts() {
+    const tabs = ['گواهی‌ها', 'مجوزها و استانداردها'];
+    const tabHtml = tabs.map((l, i) => `<button onclick="setCertTab(${i})" style="font-size:12.5px;font-weight:600;padding:8px 18px;border-radius:9px;background:${state.certTab === i ? '#fff' : 'transparent'};color:${state.certTab === i ? 'var(--color-on-surface)' : '#8a8a95'};box-shadow:${state.certTab === i ? '0 1px 2px rgba(0,0,0,.06)' : 'none'}">${l}</button>`).join('');
+    const list = state.certTab === 0 ? certDefs().cert : certDefs().lic;
+    const uploadLabel = state.certTab === 0 ? 'بارگذاری گواهی جدید' : 'بارگذاری مجوز جدید';
+    const cards = list.map((c, i) => {
+      const key = state.certTab + '-' + i; const vis = state.certVis[key] !== false;
+      return `<div class="card" style="overflow:hidden;display:flex;flex-direction:column">
+        <div style="height:130px;background:${softBg(i + 2)};display:flex;align-items:center;justify-content:center;position:relative">
+          <div style="width:54px;height:66px;border-radius:6px;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.12);color:var(--color-primary)">📄</div>
+          <span style="position:absolute;top:10px;right:10px;font-size:10px;font-weight:800;color:#fff;background:rgba(0,0,0,.32);border-radius:6px;padding:3px 8px">${c.type}</span>
+        </div>
+        <div style="padding:14px 15px;flex:1;display:flex;flex-direction:column">
+          <div style="font-size:13px;font-weight:700;color:var(--color-on-surface);line-height:1.6">${c.title}</div>
+          <div style="font-size:11px;color:var(--color-muted);margin-top:4px">بارگذاری ${c.date}</div>
+          <div style="flex:1"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid #f2f2f2">
+            <button onclick="toggleCert('${key}')" style="display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:${vis ? 'var(--color-success-strong)' : 'var(--color-muted)'}">
+              <span style="width:30px;height:18px;border-radius:9px;background:${vis ? 'var(--color-success-strong)' : '#d4d4dc'};position:relative;display:inline-block"><span style="position:absolute;top:2px;${vis ? 'right:2px' : 'left:2px'};width:14px;height:14px;border-radius:50%;background:#fff"></span></span>${vis ? 'نمایش در سایت' : 'مخفی'}
+            </button>
+            <div style="display:flex;gap:2px">
+              <button class="icon-btn" style="width:30px;height:30px;border:none" onclick="toast('سند باز شد.')" title="مشاهده">👁</button>
+              <button class="icon-btn" style="width:30px;height:30px;border:none" onclick="openConfirm('سند «${esc(c.title)}» حذف می‌شود.','delCert')" title="حذف">🗑</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    return `
+      <section class="page" data-screen="certs">
+        <div class="page-head">
+          <div><h1>گواهی‌ها و مجوزها</h1><p>مدیریت گواهی‌نامه‌ها و مجوزهای نمایش‌داده‌شده در فروشگاه</p></div>
+          <button class="btn-primary" onclick="toast('انتخاب فایل سند.')">بارگذاری سند</button>
+        </div>
+        <div class="pill-group" style="width:fit-content;margin-bottom:18px">${tabHtml}</div>
+        <div class="cert-grid">
+          <button onclick="toast('انتخاب فایل سند.')" style="border:2px dashed color-mix(in srgb,var(--color-primary) 35%,white);border-radius:16px;background:#FBF7F7;min-height:230px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--color-primary)">
+            <div style="width:48px;height:48px;border-radius:14px;background:var(--color-primary-container);display:flex;align-items:center;justify-content:center;font-size:24px">+</div>
+            <span style="font-size:13px;font-weight:600">${uploadLabel}</span>
+            <span style="font-size:10.5px;color:var(--color-muted)">PDF یا تصویر · حداکثر ۵ مگابایت</span>
+          </button>${cards}
+        </div>
+      </section>`;
+  }
+
+  function navIcon(type) {
+    const icons = {
+      dash: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
+      home: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>',
+      about: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>',
+      coop: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>',
+      contact: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.4 2.1L8 9.6a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.4c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2Z"/></svg>',
+      faq: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg>',
+      blog: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',
+      cert: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="9" r="6"/><path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5"/></svg>',
+    };
+    return icons[type] || '';
+  }
+
+  function renderSidebar() {
+    const r = state.route; const sk = state.secKind;
+    const on = (active) => active ? 'active' : '';
+    const groups = [
+      { label: 'نمای کلی', items: [{ label: 'داشبورد محتوا', icon: 'dash', go: 'go_dashboard()', active: r === 'dashboard' }] },
+      { label: 'صفحات فروشگاه', items: [
+        { label: 'صفحه اصلی', icon: 'home', go: 'go_home()', active: r === 'home' },
+        { label: 'درباره ما', icon: 'about', go: 'go_about()', active: r === 'sections' && sk === 'about' },
+        { label: 'همکاری با ما', icon: 'coop', go: 'go_coop()', active: r === 'sections' && sk === 'coop' },
+        { label: 'تماس با ما', icon: 'contact', go: 'go_contact()', active: r === 'contact' },
+      ]},
+      { label: 'محتوای پویا', items: [
+        { label: 'سوالات متداول', icon: 'faq', go: 'go_faq()', active: r === 'faq', badge: '۳۸', badgeBg: 'var(--color-purple-soft)', badgeFg: 'var(--color-purple)' },
+        { label: 'وبلاگ', icon: 'blog', go: 'go_blog()', active: r === 'blog' || r === 'blogAdd' },
+      ]},
+      { label: 'اسناد و گواهی‌ها', items: [
+        { label: 'گواهی‌ها و مجوزها', icon: 'cert', go: 'go_certs()', active: r === 'certs' },
+      ]},
+    ];
+    const cls = 'sidebar' + (state.navCollapsed ? ' collapsed' : '') + (state.navOpen ? ' open' : '');
+    document.getElementById('sidebar').className = cls;
+    document.getElementById('sidebar').innerHTML = `
+      <div class="sidebar-brand" style="padding:20px 18px 16px;display:flex;align-items:center;gap:11px">
+        <div class="sidebar-brand-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 9v11"/></svg></div>
+        <div><h2 style="font-size:16px">مدیریت محتوا</h2><p>زیرا مارکت</p></div>
+      </div>
+      <nav class="sidebar-nav">${groups.map((g) => `
+        <div class="nav-group-label">${g.label}</div>
+        ${g.items.map((it) => `
+          <button class="nav-link ${on(it.active)}" onclick="${it.go}">
+            ${navIcon(it.icon)}<span style="flex:1;text-align:right">${it.label}</span>
+            ${it.badge ? `<span class="nav-badge" style="background:${it.badgeBg};color:${it.badgeFg}">${it.badge}</span>` : ''}
+          </button>`).join('')}
+      `).join('')}</nav>
+      <div class="sidebar-user">
+        <div class="avatar" style="background:#8FB6D6">ن</div>
+        <div><div style="font-size:13px;font-weight:600">نگار سلیمی</div><div style="font-size:11px;color:var(--color-outline)">مدیر محتوا</div></div>
+      </div>`;
+    document.getElementById('backdrop').className = 'sidebar-backdrop' + (state.navOpen ? ' show' : '');
+  }
+
+  function editDrawerContent() {
+    const b = state.homeBlocks.find((x) => x.id === state.editId);
+    if (!b) return '';
+    const iconMap = { slide: ['var(--color-primary-container)', 'var(--color-primary)'], prod: ['var(--color-info-soft)', 'var(--color-info-strong)'], text: ['var(--color-purple-soft)', 'var(--color-purple)'] };
+    const ic = iconMap[b.kind];
+    let body = '';
+    if (b.kind === 'slide') {
+      const banners = [
+        { title: 'بنر کالکشن پاییز', cta: 'مشاهده کالکشن', thumb: 'linear-gradient(120deg,#DF6F73,#D74E54)' },
+        { title: 'بنر فروش ویژه', cta: 'خرید با تخفیف', thumb: 'linear-gradient(120deg,#8E6CB0,#6E4F94)' },
+        { title: 'بنر محصولات جدید', cta: 'تازه‌ها', thumb: 'linear-gradient(120deg,#3FA776,#1F8A5B)' },
+      ];
+      body = `<div style="font-size:12.5px;font-weight:600;margin-bottom:12px">بنرهای اسلایدشو</div>
+        ${banners.map((bn) => `<div style="display:flex;align-items:center;gap:12px;border:1px solid #ececec;border-radius:12px;padding:10px;margin-bottom:10px">
+          <div style="width:74px;height:46px;border-radius:8px;background:${bn.thumb};flex:none"></div>
+          <div style="flex:1"><div style="font-size:12.5px;font-weight:700">${bn.title}</div><div style="font-size:11px;color:var(--color-muted)">CTA: ${bn.cta}</div></div>
+          <button onclick="toast('بنر حذف شد.')" style="color:var(--color-muted)">✕</button>
+        </div>`).join('')}
+        <button onclick="toast('انتخاب فایل بنر.')" style="width:100%;height:88px;border:2px dashed color-mix(in srgb,var(--color-primary) 35%,white);border-radius:12px;background:#FBF7F7;color:var(--color-primary);font-weight:600">بارگذاری بنر جدید</button>`;
+    } else if (b.kind === 'prod') {
+      const sel = state.editSel;
+      const selCount = Object.values(sel).filter(Boolean).length;
+      body = `<div style="display:flex;justify-content:space-between;margin-bottom:12px"><div style="font-size:12.5px;font-weight:600">کالاهای منتخب</div><span class="tnum" style="font-size:11px;font-weight:700;color:var(--color-primary);background:var(--color-primary-container);border-radius:7px;padding:3px 9px">${fa(selCount)} کالا</span></div>
+        ${productDefs().map((p, i) => `<button onclick="toggleProd(${i})" style="display:flex;align-items:center;gap:11px;border:1.5px solid ${sel[i] ? 'var(--color-primary)' : '#ececec'};background:${sel[i] ? 'var(--color-primary-container)' : '#fff'};border-radius:11px;padding:9px 11px;width:100%;text-align:right;margin-bottom:8px">
+          <div style="width:40px;height:40px;border-radius:9px;background:${sw(i)};flex:none"></div>
+          <div style="flex:1"><div style="font-size:12.5px;font-weight:700">${p.name}</div><div class="tnum" style="font-size:11px;color:var(--color-muted)">${grp(p.price)} تومان</div></div>
+          <span style="width:22px;height:22px;border-radius:7px;border:2px solid ${sel[i] ? 'var(--color-primary)' : '#d4d4dc'};background:${sel[i] ? 'var(--color-primary)' : 'transparent'};color:#fff;display:flex;align-items:center;justify-content:center">${sel[i] ? '✓' : ''}</span>
+        </button>`).join('')}`;
+    } else {
+      const m = {
+        brand: ['معرفی برند زیرا', 'زیرا مارکت تولیدکننده پوشاک راحتی و زیرپوش با بیش از یک دهه تجربه است.', 'درباره ما', '/about'],
+        process: ['فرآیند تولید', 'از انتخاب پارچه تا بسته‌بندی نهایی، هر مرحله با کنترل کیفیت دقیق انجام می‌شود.', 'مشاهده فرآیند', '/process'],
+        promo: ['ارسال رایگان عمده', 'برای سفارش‌های بالای ۲۰ میلیون تومان، ارسال به سراسر کشور رایگان است.', 'ثبت سفارش', '/wholesale'],
+      }[b.id] || ['عنوان بلوک', 'متن نمونه', 'دکمه', '/'];
+      body = `<label class="field-label">عنوان بلوک</label><input class="field-input" value="${m[0]}" style="margin-bottom:14px">
+        <label class="field-label">متن</label><textarea class="field-textarea" style="min-height:130px;margin-bottom:16px">${m[1]}</textarea>
+        <div class="card" style="padding:14px;background:#FBFAFB"><div style="font-size:12px;font-weight:600;margin-bottom:12px">دکمه فراخوان (CTA)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">
+            <div><label style="font-size:11px;color:var(--color-muted)">عنوان دکمه</label><input class="field-input" style="height:38px" value="${m[2]}"></div>
+            <div><label style="font-size:11px;color:var(--color-muted)">مقصد</label><input class="field-input" dir="ltr" style="height:38px;text-align:left" value="${m[3]}"></div>
+          </div>
+        </div>`;
+    }
+    return `
+      <div class="overlay" onclick="closeEditor()">
+        <div class="overlay-backdrop"></div>
+        <div class="drawer" onclick="event.stopPropagation()">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #ececec">
+            <div style="display:flex;align-items:center;gap:11px">
+              <div style="width:38px;height:38px;border-radius:11px;background:${ic[0]};color:${ic[1]};display:flex;align-items:center;justify-content:center">${blockIcon(b.kind)}</div>
+              <div><div style="font-size:15px;font-weight:600">ویرایش بلوک</div><div style="font-size:11.5px;color:var(--color-muted)">${b.name}</div></div>
+            </div>
+            <button class="icon-btn" onclick="closeEditor()">✕</button>
+          </div>
+          <div style="flex:1;overflow-y:auto;padding:18px 20px">${body}</div>
+          <div style="display:flex;gap:10px;padding:14px 20px;border-top:1px solid #ececec">
+            <button onclick="publishBlock()" style="flex:1;padding:12px;border-radius:12px;background:linear-gradient(150deg,#3FA776,var(--color-success-strong));color:#fff;font-weight:500">انتشار</button>
+            <button class="btn-secondary" onclick="saveBlock()">ذخیره پیش‌نویس</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function renderOverlays() {
+    let html = '';
+    if (state.notifOpen) {
+      const notifs = [
+        { icon: '📝', bg: 'var(--color-warning-soft)', fg: 'var(--color-warning-strong)', title: '۲ بلوک صفحه اصلی در حالت پیش‌نویس', sub: 'تغییرات هنوز منتشر نشده‌اند.', time: '۳۰ دقیقه پیش', go: "closeNotif();go_home()" },
+        { icon: '❓', bg: 'var(--color-purple-soft)', fg: 'var(--color-purple)', title: '۳ سوال جدید از مشتریان دریافت شد', sub: 'برای افزودن به سوالات متداول بررسی کنید.', time: '۲ ساعت پیش', go: "closeNotif();go_faq()" },
+        { icon: '📜', bg: 'var(--color-info-soft)', fg: 'var(--color-info-strong)', title: 'مجوز استاندارد در حالت پیش‌نویس است', sub: 'برای نمایش در سایت منتشر کنید.', time: 'دیروز', go: "closeNotif();go_certs()" },
+        { icon: '✅', bg: 'var(--color-success-soft)', fg: 'var(--color-success-strong)', title: 'مقاله «راهنمای انتخاب سایز» منتشر شد', sub: '۱٬۸۴۰ بازدید تاکنون.', time: '۲ روز پیش', go: "closeNotif();go_blog()" },
+      ];
+      html += `<div class="overlay" onclick="closeNotif()">
+        <div onclick="event.stopPropagation()" style="position:absolute;top:56px;left:20px;width:min(360px,calc(100vw - 32px));max-height:72vh;background:#fff;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 18px 50px rgba(0,0,0,.22);border:1px solid #ececec">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid #ececec"><div style="font-size:15px;font-weight:700">اعلان‌ها</div><span style="font-size:12px;color:#fff;background:var(--color-primary);border-radius:8px;padding:3px 9px;font-weight:700">۴ جدید</span></div>
+          <div style="flex:1;overflow-y:auto">${notifs.map((n) => `
+            <div onclick="${n.go}" style="display:flex;align-items:flex-start;gap:12px;padding:14px 18px;border-bottom:1px solid #f4f4f4;cursor:pointer">
+              <div style="width:36px;height:36px;border-radius:10px;background:${n.bg};color:${n.fg};display:flex;align-items:center;justify-content:center;font-size:16px">${n.icon}</div>
+              <div><div style="font-size:13px;font-weight:700">${n.title}</div><div style="font-size:12px;color:var(--color-muted);margin-top:3px;line-height:1.6">${n.sub}</div><div style="font-size:11px;color:#b8b8c0;margin-top:5px">${n.time}</div></div>
+            </div>`).join('')}</div>
+          <button onclick="closeNotif()" style="padding:13px;font-size:12.5px;color:var(--color-primary);font-weight:700;border-top:1px solid #ececec;width:100%">علامت‌گذاری همه به‌عنوان خوانده‌شده</button>
+        </div>
+      </div>`;
+    }
+    if (state.editorOpen) html += editDrawerContent();
+    if (state.faqAddOpen) {
+      const cats = faqCatLabels().map((l, i) => {
+        const sel = state.faqAddCat === i; const cc = faqCatColor(i);
+        return `<button onclick="setFaqAddCat(${i})" style="font-size:12px;font-weight:600;padding:7px 13px;border-radius:9px;border:1.5px solid ${sel ? cc[0] : '#e6e6ea'};background:${sel ? cc[1] : '#fff'};color:${sel ? cc[0] : '#777'}">${l}</button>`;
+      }).join('');
+      html += `<div class="modal-center" onclick="closeFaqAdd()"><div class="modal" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid #ececec">
+          <div style="font-size:15px;font-weight:600">ثبت سوال جدید</div>
+          <button class="icon-btn" onclick="closeFaqAdd()">✕</button>
+        </div>
+        <div style="padding:20px 22px">
+          <label class="field-label">گروه مرتبط</label><div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px">${cats}</div>
+          <label class="field-label">سوال</label><input class="field-input" placeholder="متن سوال را وارد کنید" style="margin-bottom:16px">
+          <label class="field-label">پاسخ</label><textarea class="field-textarea" placeholder="پاسخ کامل را بنویسید"></textarea>
+        </div>
+        <div style="display:flex;gap:10px;padding:14px 22px;border-top:1px solid #ececec">
+          <button class="btn-primary" style="flex:1;justify-content:center" onclick="submitFaq()">ثبت سوال</button>
+          <button class="btn-secondary" onclick="closeFaqAdd()">انصراف</button>
+        </div>
+      </div></div>`;
+    }
+    if (state.previewOpen) {
+      const previewProducts = productDefs().slice(0, 3).map((p, i) => ({ name: p.name, price: grp(p.price), sw: sw(i) }));
+      html += `<div class="modal-center" onclick="closePreview()"><div class="modal" style="width:min(420px,100%);max-height:90vh;display:flex;flex-direction:column" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid #ececec">
+          <div style="display:flex;align-items:center;gap:9px"><span style="width:9px;height:9px;border-radius:50%;background:var(--color-success-strong)"></span><span style="font-size:12.5px;font-weight:700">پیش‌نمایش فروشگاه</span></div>
+          <button class="icon-btn" onclick="closePreview()">✕</button>
+        </div>
+        <div style="flex:1;overflow-y:auto;background:#f4f4f6">
+          <div style="background:#fff;padding:12px 16px;display:flex;justify-content:space-between;border-bottom:1px solid #eee"><div style="font-weight:700;color:var(--color-primary)">زیرا مارکت</div><span style="color:var(--color-muted)">🔍 🛒</span></div>
+          <div style="margin:12px;height:150px;border-radius:14px;background:linear-gradient(120deg,#DF6F73,var(--color-primary));padding:20px;color:#fff">
+            <div style="font-size:17px;font-weight:700;margin-bottom:6px">کالکشن پاییز ۱۴۰۴</div>
+            <div style="font-size:11.5px;opacity:.92;line-height:1.7">جدیدترین مجموعه پوشاک راحتی با تخفیف ویژه</div>
+            <button style="margin-top:12px;font-size:11px;font-weight:700;background:#fff;color:var(--color-primary);padding:7px 14px;border-radius:8px">مشاهده کالکشن</button>
+          </div>
+          <div style="padding:4px 12px 12px"><div style="font-size:13px;font-weight:700;margin-bottom:10px">کالاهای جدید</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">${previewProducts.map((p) => `
+              <div style="background:#fff;border-radius:11px;overflow:hidden;border:1px solid #eee"><div style="height:74px;background:${p.sw}"></div><div style="padding:7px 8px"><div style="font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div><div class="tnum" style="font-size:9.5px;color:var(--color-primary);font-weight:700">${p.price} ت</div></div></div>`).join('')}
+          </div></div>
+          <div style="margin:0 12px 12px;background:#fff;border-radius:14px;padding:16px;border:1px solid #eee;text-align:center">
+            <div style="font-size:13px;font-weight:700;margin-bottom:7px">معرفی برند زیرا</div>
+            <div style="font-size:11px;color:var(--color-outline);line-height:1.9">تولیدکننده پوشاک راحتی و زیرپوش با بیش از یک دهه تجربه.</div>
+            <button style="margin-top:12px;font-size:11px;font-weight:700;background:var(--color-primary-container);color:var(--color-primary);padding:8px 16px;border-radius:9px">درباره ما</button>
+          </div>
+        </div>
+      </div></div>`;
+    }
+    if (state.confirmOpen) {
+      html += `<div class="modal-center" onclick="closeConfirm()"><div class="modal modal-sm" onclick="event.stopPropagation()">
+        <div style="padding:24px 22px 8px;text-align:center">
+          <div style="width:56px;height:56px;border-radius:50%;background:var(--color-error-container);color:var(--color-primary);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px">🗑</div>
+          <div style="font-size:16px;font-weight:600;margin-bottom:7px">حذف محتوا</div>
+          <div style="font-size:12.5px;color:var(--color-muted);line-height:1.9">${state.confirmMsg}</div>
+        </div>
+        <div style="display:flex;gap:10px;padding:18px 22px">
+          <button class="btn-primary" style="flex:1" onclick="doConfirm()">حذف</button>
+          <button class="btn-secondary" style="flex:1" onclick="closeConfirm()">انصراف</button>
+        </div>
+      </div></div>`;
+    }
+    if (state.toastOpen) {
+      const iconBg = state.toastKind === 'warn' ? 'var(--color-warning-strong)' : 'var(--color-success-strong)';
+      const icon = state.toastKind === 'warn' ? '!' : '✓';
+      html += `<div class="toast"><span class="toast-icon" style="background:${iconBg}">${icon}</span><span style="font-size:13px;font-weight:600">${state.toast}</span></div>`;
+    }
+    document.getElementById('overlayRoot').innerHTML = html;
+  }
+
+  function renderChrome() {
+    document.getElementById('crumbGroup').textContent = routeGroup();
+    document.getElementById('crumbPage').textContent = routeTitle();
+    renderSidebar();
+  }
+
+  function renderScreen() {
+    const map = {
+      dashboard: renderDashboard,
+      home: renderHome,
+      sections: renderSections,
+      contact: renderContact,
+      faq: renderFaq,
+      blog: renderBlog,
+      blogAdd: renderBlogAdd,
+      certs: renderCerts,
+    };
+    document.getElementById('screenRoot').innerHTML = (map[state.route] || renderDashboard)();
+  }
+
+  function render() {
+    renderChrome();
+    renderScreen();
+    renderOverlays();
+  }
+
+  window.toast = toast;
+  render();
+})();
+
+  </script>
+</body>
+</html>

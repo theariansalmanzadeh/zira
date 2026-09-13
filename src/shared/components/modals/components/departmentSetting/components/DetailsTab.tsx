@@ -1,0 +1,80 @@
+'use client'
+
+import { Avatar, AvatarFallback, AvatarImage } from '@shared/components/ui/Avatar'
+import { Button } from '@shared/components/ui/button'
+import { Icon } from '@shared/components/Icons/Icon'
+import type { DepartmentDetails } from '../types'
+
+type DetailsTabProps = {
+    details: DepartmentDetails
+    onEdit?: () => void
+}
+
+const Field = ({ label, value }: { label: string; value: string }) => (
+    <div className="flex min-w-0 flex-col gap-1 text-right">
+        <span className="text-label-md text-outline">{label}</span>
+        <span className="text-label-lg text-on-surface-variant">{value}</span>
+    </div>
+)
+
+const ManagerField = ({
+    label,
+    name,
+    avatarUrl,
+}: {
+    label: string
+    name: string
+    avatarUrl?: string
+}) => (
+    <div className="flex min-w-0 flex-col gap-1 text-right">
+        <span className="text-label-md text-outline">{label}</span>
+        <div className="flex flex-row items-center gap-2">
+            <Avatar size="sm" className="bg-surface-container-highest">
+                {avatarUrl && <AvatarImage src={avatarUrl} alt={name} />}
+                <AvatarFallback className="bg-surface-container-highest text-on-surface-variant">
+                    {name.charAt(0)}
+                </AvatarFallback>
+            </Avatar>
+            <span className="text-label-lg text-on-surface-variant">{name}</span>
+        </div>
+    </div>
+)
+
+const DetailsTab = ({ details, onEdit }: DetailsTabProps) => {
+    return (
+        <div className="flex flex-1 flex-col gap-4 rounded-card-md bg-surface-container-high p-3">
+            <div className="rounded-card-md bg-surface-container-lowest p-4">
+                <div className="grid grid-cols-2 gap-6">
+                    <Field label="نام دپارتمان" value={details.name} />
+                    <Field label="شناسه" value={details.id} />
+                    <Field label="بخش مربوطه" value={details.section} />
+                    <ManagerField
+                        label="مسئول دپارتمان"
+                        name={details.managerName}
+                        avatarUrl={details.managerAvatarUrl}
+                    />
+                    <Field label="پاسخ SLA" value={details.slaResponse} />
+                    <Field label="ساعت پاسخ‌گویی" value={details.responseHours} />
+                    <Field label="وضعیت" value={details.status} />
+                    <div className="col-span-2">
+                        <Field label="توضیحات" value={details.description} />
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex justify-end">
+                <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-card-md border-outline bg-surface-container-lowest px-4"
+                    onClick={onEdit}
+                >
+                    <Icon label="edit" className="size-4" />
+                    ویرایش
+                </Button>
+            </div>
+        </div>
+    )
+}
+
+export default DetailsTab

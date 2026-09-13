@@ -1,0 +1,64 @@
+export type BaseModalProps = {
+  closeModal: () => void;
+  data?: unknown;
+};
+
+export type {
+  SelectUserAndGroupsModalData,
+  SelectUserItem,
+  SelectGroupItem,
+} from '../components/selectUserAndGroups/types'
+
+import type { SelectUserAndGroupsModalData } from '../components/selectUserAndGroups/types'
+
+export type SelectUserAndGroupsModalProps = {
+  closeModal: () => void;
+  data?: SelectUserAndGroupsModalData | null;
+};
+
+export type AddEmployeeModalData = SelectUserAndGroupsModalData
+
+export type AddEmployeeModalProps = {
+  closeModal: () => void;
+  data?: AddEmployeeModalData | null;
+};
+
+export type { TableHeaderItem, TableSettingsModalData } from '../components/tableSettings/types'
+
+export type {
+  LocationGoodsModalData,
+  LocationGoodsRowData,
+} from '../components/locationGoods/types'
+
+export type TableSettingsModalProps = {
+  closeModal: () => void;
+  data?: import('../components/tableSettings/types').TableSettingsModalData | null;
+};
+
+export const ModalTypes = {
+  // ADDED_TO_CART: "ADDED_TO_CART",
+  // LOGOUT: "LOGOUT",
+  DEPARTMENT_SETTINGS: "DEPARTMENT_SETTINGS",
+  GROUP_SETTINGS: "GROUP_SETTINGS",
+  INVENTORY_SETTINGS: "INVENTORY_SETTINGS",
+  SELECT_USER_AND_GROUPS: "SELECT_USER_AND_GROUPS",
+  ADD_EMPLOYEE: "ADD_EMPLOYEE",
+  DELETE_PERMISSION: "DELETE_PERMISSION",
+  CONFIRM_ACCESS: "CONFIRM_ACCESS",
+  TABLE_SETTINGS: "TABLE_SETTINGS",
+  SELECT_PRODUCT: "SELECT_PRODUCT",
+  FILTER_PRODUCT: "FILTER_PRODUCT",
+  LOCATION_GOODS: "LOCATION_GOODS",
+  SELL_INVOICE: "SELL_INVOICE",
+  EDIT_CUSTOMER: "EDIT_CUSTOMER",
+  CHANGE_CUSTOMER_LEVEL: "CHANGE_CUSTOMER_LEVEL",
+  ADD_CUSTOMER: "ADD_CUSTOMER",
+  ADD_NEW_FAQ: "ADD_NEW_FAQ",
+  ADD_BANNER: "ADD_BANNER",
+  ADD_PRODUCT_BY_CATEGORY: "ADD_PRODUCT_BY_CATEGORY",
+  ADD_PRODUCT: "ADD_PRODUCT",
+  CATEGORY_DETAIL: "CATEGORY_DETAIL",
+  CHANGE_WAREHOUSE_GRADE: "CHANGE_WAREHOUSE_GRADE",
+} as const;
+
+export type ModalType = (typeof ModalTypes)[keyof typeof ModalTypes];

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>نوع تسویه — آکاردئون و چک‌باکس</title>
+  <style>
+    :root {
+      --color-primary: #d74e54;
+      --color-primary-focused: #d74e5429;
+      --color-primary-container: #fbdfe1;
+      --color-on-primary: #ffffff;
+      --color-on-primary-container: #430f12;
+      --color-surface-container-lowest: #ffffff;
+      --color-surface-container-high: #f2f2f2;
+      --color-surface-container-highest: #e6e6e6;
+      --color-on-surface: #141414;
+      --color-on-surface-variant: #484649;
+      --color-outline: #787878;
+      --color-outline-variant: #c7c7c7;
+      --color-success: #006c50;
+      --color-success-container: #bbffe2;
+      --color-on-success-container: #002116;
+      --color-info: #242f94;
+      --color-info-container: #ced1f3;
+      --color-on-info-container: #0c1031;
+      --color-success-strong: #1f8a5b;
+      --color-success-soft: #e8f5ef;
+      --color-info-strong: #2a6fdb;
+      --color-info-soft: #e8f0fb;
+      --color-purple: #8e6cb0;
+      --color-purple-soft: #f1ecf7;
+      --color-muted: #9a9aa5;
+      --text-label-sm: 12px;
+      --text-label-md: 14px;
+      --text-label-lg: 16px;
+      --text-title-md: 16px;
+      --text-title-lg: 22px;
+      --radius-card-sm: 12px;
+      --radius-card-md: 16px;
+      --radius-button-sm: 8px;
+      --radius-container-md: 16px;
+      --font-family-display: "Kalameh", "YekanBakh", Arial, Helvetica, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-family-display);
+      background: var(--color-surface-container-high);
+      color: var(--color-on-surface);
+      min-height: 100vh;
+      padding: 32px 16px;
+    }
+    button, input { font-family: inherit; }
+    button { cursor: pointer; background: none; border: none; }
+    .tnum { font-variant-numeric: tabular-nums; }
+
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      background: var(--color-surface-container-lowest);
+      border-radius: var(--radius-card-md);
+      padding: 28px 24px;
+    }
+    .wiz-title {
+      font-size: var(--text-title-md);
+      font-weight: 600;
+      color: var(--color-on-surface);
+    }
+    .wiz-sub {
+      margin-top: 4px;
+      margin-bottom: 22px;
+      font-size: var(--text-label-md);
+      color: var(--color-outline);
+    }
+
+    .pay-accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pay-item {
+      border: 1.5px solid var(--color-outline-variant);
+      border-radius: var(--radius-card-sm);
+      background: var(--color-surface-container-lowest);
+      overflow: hidden;
+      transition: border-color .16s, background .16s;
+    }
+    .pay-item.checked {
+      border-color: var(--color-primary);
+      background: #fdf6f6;
+    }
+    .pay-head {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+      text-align: right;
+    }
+    .pay-check {
+      width: 20px;
+      height: 20px;
+      flex: none;
+      border-radius: 6px;
+      border: 1.5px solid var(--color-outline);
+      background: var(--color-surface-container-lowest);
+      display: grid;
+      place-content: center;
+      color: var(--color-on-primary);
+      transition: background .14s, border-color .14s;
+    }
+    .pay-item.checked .pay-check {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+    .pay-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex: none;
+    }
+    .pay-copy { flex: 1; min-width: 0; }
+    .pay-copy .label {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--color-on-surface);
+    }
+    .pay-item.checked .pay-copy .label { color: var(--color-primary); }
+    .pay-copy .sub {
+      margin-top: 3px;
+      font-size: 11.5px;
+      color: var(--color-muted);
+      line-height: 1.6;
+    }
+    .chevron {
+      width: 18px;
+      height: 18px;
+      flex: none;
+      color: var(--color-outline);
+      transition: transform .2s;
+    }
+    .pay-item.open .chevron { transform: rotate(180deg); }
+
+    .pay-body {
+      display: none;
+      padding: 0 18px 18px;
+      animation: fadeUp .22s ease;
+    }
+    .pay-item.open .pay-body { display: block; }
+
+    .items-table {
+      border: 1px solid #f0f0f0;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .items-head,
+    .items-row {
+      display: grid;
+      grid-template-columns: 1.6fr 70px 1fr 1fr;
+      gap: 8px;
+      align-items: center;
+    }
+    .items-head {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-muted);
+      padding: 10px 14px;
+      background: #fbfafb;
+    }
+    .items-row {
+      padding: 12px 14px;
+      border-top: 1px solid #f4f4f4;
+      font-size: 12.5px;
+      color: var(--color-on-surface-variant);
+    }
+    .items-row .name { font-weight: 600; color: var(--color-on-surface); }
+    .items-total {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+      padding: 12px 14px;
+      background: #fbfafb;
+      border-radius: 12px;
+      font-size: 13px;
+    }
+    .items-total .sum {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-on-surface);
+    }
+
+    .cheque-box {
+      margin-top: 14px;
+      background: #fbfafb;
+      border-radius: 13px;
+      padding: 16px 18px;
+    }
+    .cheque-box .title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: var(--color-on-surface-variant);
+    }
+    .cheque-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+    }
+    .field-label {
+      font-size: 11.5px;
+      color: var(--color-muted);
+      margin-bottom: 6px;
+    }
+    .field-input {
+      width: 100%;
+      height: 42px;
+      background: #fff;
+      border: 1px solid var(--color-outline-variant);
+      border-radius: 11px;
+      padding: 0 13px;
+      font-size: 13px;
+      outline: none;
+    }
+    .field-input:focus { border-color: var(--color-primary); }
+
+    .credit-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+      background: var(--color-info-soft);
+      border-radius: 13px;
+      padding: 16px 18px;
+      font-size: 12.5px;
+      color: var(--color-info-strong);
+      line-height: 1.7;
+    }
+    .credit-box .icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: #fff;
+      color: var(--color-info-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+    }
+
+    .hint {
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--color-muted);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (max-width: 640px) {
+      .items-head, .items-row { grid-template-columns: 1.4fr 50px 1fr; }
+      .items-head > div:nth-child(3),
+      .items-row > div:nth-child(3) { display: none; }
+      .cheque-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="wiz-title">نوع تسویه</div>
+    <div class="wiz-sub">روش پرداخت سفارش را انتخاب کنید. با تیک زدن هر روش، اقلام مربوط به آن نمایش داده می‌شود.</div>
+
+    <div class="pay-accordion" id="payAccordion"></div>
+    <div class="hint" id="payHint"></div>
+  </div>
+
+  <script>
+    const faDigits = '۰۱۲۳۴۵۶۷۸۹';
+    const fa = (n) => String(n).replace(/\d/g, (d) => faDigits[d]);
+    const grp = (n) => fa(Math.round(n).toLocaleString('en-US').replace(/,/g, '٬'));
+
+    const payDefs = [
+      {
+        id: 'cash',
+        label: 'نقدی',
+        sub: 'پرداخت کامل هنگام تحویل',
+        icon: '💵',
+        iconBg: 'var(--color-success-soft)',
+        iconFg: 'var(--color-success-strong)',
+        items: [
+          { name: 'ست لباس خواب ساتن', qty: 12, unit: 398000 },
+          { name: 'سوتین بدون فنر دانتل', qty: 6, unit: 286000 },
+        ],
+      },
+      {
+        id: 'cheque',
+        label: 'چکی',
+        sub: 'پرداخت با چک مدت‌دار',
+        icon: '🧾',
+        iconBg: 'var(--color-purple-soft)',
+        iconFg: 'var(--color-purple)',
+        items: [
+          { name: 'شورت نخی زنانه (پک ۳ عددی)', qty: 24, unit: 172000 },
+        ],
+      },
+      {
+        id: 'credit',
+        label: 'اعتباری',
+        sub: 'از سقف اعتبار مشتری',
+        icon: '💳',
+        iconBg: 'var(--color-info-soft)',
+        iconFg: 'var(--color-info-strong)',
+        items: [
+          { name: 'بادی کبریتی', qty: 8, unit: 245000 },
+        ],
+      },
+    ];
+
+    const checked = { cash: false, cheque: false, credit: false };
+
+    function itemsTable(items) {
+      const sum = items.reduce((acc, item) => acc + item.qty * item.unit, 0);
+      return `
+        <div class="items-table">
+          <div class="items-head">
+            <div>کالا</div>
+            <div style="text-align:center">تعداد</div>
+            <div style="text-align:left">قیمت واحد</div>
+            <div style="text-align:left">جمع</div>
+          </div>
+          ${items.map((item) => `
+            <div class="items-row">
+              <div class="name">${item.name}</div>
+              <div class="tnum" style="text-align:center">${fa(item.qty)}</div>
+              <div class="tnum" style="text-align:left">${grp(item.unit)}</div>
+              <div class="tnum" style="text-align:left;font-weight:700;color:var(--color-on-surface)">${grp(item.qty * item.unit)}</div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="items-total">
+          <span>جمع این روش (${fa(items.reduce((a, i) => a + i.qty, 0))} قلم)</span>
+          <span class="sum tnum">${grp(sum)}</span>
+        </div>
+      `;
+    }
+
+    function extraFields(def) {
+      if (def.id === 'cheque') {
+        return `
+          <div class="cheque-box">
+            <div class="title">اطلاعات چک</div>
+            <div class="cheque-grid">
+              <div>
+                <div class="field-label">شماره چک</div>
+                <input class="field-input" dir="ltr" placeholder="۱۲۳۴۵۶" style="text-align:right" />
+              </div>
+              <div>
+                <div class="field-label">تاریخ سررسید</div>
+                <input class="field-input" placeholder="۱۴۰۴/۱۰/۱۵" />
+              </div>
+              <div style="grid-column:1/-1">
+                <div class="field-label">بانک</div>
+                <input class="field-input" placeholder="ملت" />
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      if (def.id === 'credit') {
+        return `
+          <div class="credit-box">
+            <div class="icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div>سقف اعتبار مشتری <b class="tnum">۲۰۰٬۰۰۰٬۰۰۰</b> تومان — مانده پس از این سفارش <b class="tnum">۵۸٬۰۰۰٬۰۰۰</b> تومان</div>
+          </div>
+        `;
+      }
+      return '';
+    }
+
+    function render() {
+      document.getElementById('payAccordion').innerHTML = payDefs.map((def) => {
+        const isChecked = checked[def.id];
+        return `
+          <div class="pay-item ${isChecked ? 'checked open' : ''}" data-id="${def.id}">
+            <button class="pay-head" type="button" onclick="togglePay('${def.id}')">
+              <span class="pay-check" aria-hidden="true">
+                ${isChecked ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>' : ''}
+              </span>
+              <span class="pay-icon" style="background:${def.iconBg};color:${def.iconFg}">${def.icon}</span>
+              <span class="pay-copy">
+                <span class="label">${def.label}</span>
+                <span class="sub">${def.sub}</span>
+              </span>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="pay-body">
+              ${itemsTable(def.items)}
+              ${extraFields(def)}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const selected = payDefs.filter((d) => checked[d.id]).map((d) => d.label);
+      document.getElementById('payHint').textContent = selected.length
+        ? 'روش‌های انتخاب‌شده: ' + selected.join('، ')
+        : 'هنوز روش تسویه‌ای انتخاب نشده است.';
+    }
+
+    function togglePay(id) {
+      checked[id] = !checked[id];
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>

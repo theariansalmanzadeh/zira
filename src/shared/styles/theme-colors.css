@@ -1,0 +1,108 @@
+@theme {
+    --color-primary: #d74e54;
+    --color-primary-focused: #d74e5429;
+    --color-primary-hovered: #fbdfe166;
+    --color-natural: #1f1f1f;
+    --color-natural-variant: #e6e1e5;
+    --color-error: #bf0329;
+    --color-warning: #f7941e;
+    --color-success: #006c50;
+    --color-success-container: #bbffe2;
+    --color-primary-container: #fbdfe1;
+    --color-info: #242f94;
+    --color-info-container: #ced1f3;
+    --color-link: #646464;
+
+    /* Inverse color variables */
+    --color-inverse-surface: #292929;
+    --color-inverse-surface-variant: #e6e1e5;
+
+    /* On color variables */
+    --color-surface-container-lowest: #ffffff;
+    --color-surface-container-high: #f2f2f2;
+    --color-surface-container-highest: #e6e6e6;
+    --color-on-surface: #141414;
+    --color-on-surface-hover: rgba(0, 0, 0, 8%);
+    --color-on-surface-variant: #484649;
+    --color-on-surface-cotainer: #002116;
+    --color-on-primary: #ffffff;
+    --color-on-primary-container: #430f12;
+    --color-on-info: #ffffff;
+    --color-on-info-container: #0c1031;
+    --color-on-inverse-surface: #f2f2f2;
+    --color-error-container: #ffedeb;
+    --color-on-error-container: #410007;
+    --color-success-container: #bbffe2;
+    --color-on-success-container: #002116;
+    --color-warning-container: #fde3c4;
+    --color-on-warning-container: #3b2102;
+
+    /* Outline color */
+    --color-outline: #787878;
+    --color-outline-variant: #c7c7c7;
+
+    /* Shadcn UI colors */
+    --color-background: var(--color-surface-container-high);
+    --color-foreground: 0 0% 3.9%;
+    --color-card: var(--color-surface-container-lowest);
+    --color-card-foreground: 0 0% 3.9%;
+    --color-popover: var(--color-surface-container-lowest);
+    --color-popover-foreground: var(--color-on-surface-variant);
+    --color-popover-ring: var(--color-on-surface);
+    --color-primary-foreground: 0 0% 98%;
+    --color-secondary: 0 0% 96.1%;
+    --color-secondary-foreground: 0 0% 9%;
+    --color-muted: 0 0% 96.1%;
+    --color-muted-foreground: 0 0% 45.1%;
+    --color-accent: 0 0% 96.1%;
+    --color-accent-foreground: 0 0% 9%;
+    --color-destructive: 0 84.2% 60.2%;
+    --color-destructive-foreground: 0 0% 98%;
+    --color-border: 0 0% 89.8%;
+    --color-input: var(--color-surface-container-high);
+    --color-ring: 0 0% 3.9%;
+    --color-chart-1: 12 76% 61%;
+    --color-chart-2: 173 58% 39%;
+    --color-chart-3: 197 37% 24%;
+    --color-chart-4: 43 74% 66%;
+    --color-chart-5: 27 87% 67%;
+    --color-scrollbar-color: var(--primary);
+    --color-scrollbar-background-color: #e3e3e3;
+
+    --scrollbar-background-color: #e3e3e3;
+    --scrollbar-background-thumb: var(--color-primary);
+
+    --body-background-color: var(--color-surface-container-lowest);
+}
+
+@layer base {
+    .dark {
+        /* Shadcn UI colors - dark mode */
+        --color-background: 0 0% 3.9%;
+        --color-foreground: 0 0% 98%;
+        --color-card: 0 0% 3.9%;
+        --color-card-foreground: 0 0% 98%;
+        --color-popover: 0 0% 3.9%;
+        --color-popover-foreground: 0 0% 98%;
+        --color-primary: 0 0% 98%;
+        --color-primary-foreground: 0 0% 9%;
+        --color-secondary: 0 0% 14.9%;
+        --color-secondary-foreground: 0 0% 98%;
+        --color-muted: 0 0% 14.9%;
+        --color-muted-foreground: 0 0% 63.9%;
+        --color-accent: 0 0% 14.9%;
+        --color-accent-foreground: 0 0% 98%;
+        --color-destructive: 0 62.8% 30.6%;
+        --color-destructive-foreground: 0 0% 98%;
+        --color-border: 0 0% 14.9%;
+        --color-input: var(--color-surface-container-high);
+        --color-ring: 0 0% 83.1%;
+        --color-chart-1: 220 70% 50%;
+        --color-chart-2: 160 60% 45%;
+        --color-chart-3: 30 80% 55%;
+        --color-chart-4: 280 65% 60%;
+        --color-chart-5: 340 75% 55%;
+
+        --body-background-color: var(--color-inverse-surface);
+    }
+}

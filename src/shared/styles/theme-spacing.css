@@ -1,0 +1,26 @@
+@theme {
+  /* Padding spacing variables */
+  --spacing-sm: 8px;
+  --spacing-md: 10px;
+  --spacing-lg: 12px;
+  --spacing-xl: 16px;
+  --spacing-2xl: 24px;
+  --spacing-3xl: 32px;
+  --spacing-4xl: 48px;
+  --spacing-5xl: 56px;
+  --spacing-6xl: 64px;
+  --spacing-7xl: 72px;
+  --spacing-8xl: 80px;
+  --spacing-9xl: 88px;
+  --spacing-10xl: 96px;
+  --spacing-11xl: 104px;
+  --spacing-12xl: 120px;
+
+  --spacing-layout: 40px;
+
+  --spacing-landing-xl: 120px;
+  --spacing-landing-lg: 96px;
+  --spacing-landing-md: 72px;
+  --spacing-landing-sm: 48px;
+  --spacing-landing-xs: 24px;
+}
