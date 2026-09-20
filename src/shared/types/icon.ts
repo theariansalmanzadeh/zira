@@ -514,6 +514,7 @@ export type IconLabel =
   | "moneyBag300Linear"
   | "moneyBag400Broken"
   | "moneyBag400Linear"
+  | "monitor"
   | "more"
   | "moreHorizontal300Broken"
   | "moreHorizontal300Linear"

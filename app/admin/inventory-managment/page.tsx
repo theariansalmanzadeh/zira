@@ -33,12 +33,25 @@ const ChangeAddress = dynamic(
     () => import('@/src/routes/inventoryManagment/changeAddress/ChangeAddress'),
     { loading: () => <TableLoadingSkeleton isPending /> }
 )
+const StockTaking = dynamic(
+    () => import('@/src/routes/inventoryManagment/stockTaking/StockTaking'),
+    { loading: () => <TableLoadingSkeleton isPending /> }
+)
 const StockReturn = dynamic(
     () => import('@/src/routes/inventoryManagment/stockReturn/StockReturn'),
     { loading: () => <TableLoadingSkeleton isPending /> }
 )
 const WasteTable = dynamic(
     () => import('@/src/routes/inventoryManagment/waste/WasteTable'),
+    { loading: () => <TableLoadingSkeleton isPending /> }
+)
+const QuantityReview = dynamic(
+    () => import('@/src/routes/inventoryManagment/quantityReview/QuantityReview'),
+    { loading: () => <TableLoadingSkeleton isPending /> }
+)
+const FinancialReview = dynamic(
+    () =>
+        import('@/src/routes/inventoryManagment/financialReview/FinancialReview'),
     { loading: () => <TableLoadingSkeleton isPending /> }
 )
 
@@ -51,8 +64,11 @@ const INVENTORY_PAGE_COMPONENTS: Partial<
     'preparation-exit': PreparationExit,
     transfer: Transfer,
     'change-address': ChangeAddress,
+    stocktaking: StockTaking,
     'stock-returns': StockReturn,
     waste: WasteTable,
+    'quantity-review': QuantityReview,
+    'financial-review': FinancialReview,
 }
 
 async function InventoryManagmentPage({

@@ -1,6 +1,8 @@
 import { IconLabel } from '@/src/shared/types/icon'
 import type { TableFilterItem } from '@/src/shared/store/table-actions-store'
 import type { SubSidebarSection } from '@/src/shared/components/sidebar/content/types'
+import { ModalTypes } from '@/src/shared/components/modals/types'
+import { useModalStore } from '@/src/shared/store/modal-store'
 
 export const CUSTOMERS_SUB_SIDEBAR_SECTIONS: readonly SubSidebarSection[] = [
     {
@@ -33,6 +35,7 @@ export type HeadingButton = {
 export type SectionHeading = {
     title: string
     subtitle?: string
+    hasBackButton?: boolean
     buttons?: HeadingButton[]
     showPeriodToggle?: boolean
     showDateRange?: boolean
@@ -121,7 +124,26 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
             },
         ],
     },
-    details: null,
+    details: {
+        title: 'جزئیات مشتری',
+        hasBackButton: true,
+        buttons: [
+            {
+                label: 'تخصیص بازاریاب',
+                icon: 'account400Linear',
+                variant: 'outline',
+            },
+            {
+                label: 'ویرایش پروفایل',
+                icon: 'editSquare400Linear',
+                variant: 'primary',
+                action: () =>
+                    useModalStore
+                        .getState()
+                        .openModal(ModalTypes.EDIT_CUSTOMER),
+            },
+        ],
+    },
 }
 
 export const getCustomersSectionKey = (sub: string): CustomersSubParam =>

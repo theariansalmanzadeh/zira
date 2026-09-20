@@ -52,7 +52,7 @@ const CalendarButton = ({
                         type="button"
                         variant="default-high"
                         disabled={disabled}
-                        className="h-10 w-full justify-start gap-2 rounded-container-lg px-3 font-normal"
+                        className="h-auto w-full justify-start gap-2 rounded-container-lg px-3 py-3 font-normal"
                     >
                         <span
                             className={cn(

@@ -17,6 +17,7 @@ export const ALLOWED_URLS: Record<string, string> = {
     customers: "/admin/customers",
     "content-managment": "/admin/content-managment",
     "user-management": "/admin/user-management",
+    events: "/admin/events",
 };
 
 export const PUBLIC_ROUTES = {

@@ -87,6 +87,14 @@ const TableListLayoutInner = ({
             )}
         >
             <div className="bg-surface-container-lowest flex flex-row items-center justify-between gap-2 pb-2">
+                {defaultSearchOpen && hasSearch && (
+                    <div className="min-w-0 flex-1">
+                        <Search
+                            defaultOpen
+                            placeholder={searchPlaceholder}
+                        />
+                    </div>
+                )}
                 {hasHeaderActions && (
                     <ToggleGroup
                         type="single"
@@ -104,14 +112,6 @@ const TableListLayoutInner = ({
                             </ToggleGroupItem>
                         ))}
                     </ToggleGroup>
-                )}
-                {defaultSearchOpen && hasSearch && (
-                    <div className="min-w-0 flex-1">
-                        <Search
-                            defaultOpen
-                            placeholder={searchPlaceholder}
-                        />
-                    </div>
                 )}
                 {(hasSearch || hasFilter || hasTableSettings || hasSort || hasExpand) && (
                     <div

@@ -113,3 +113,31 @@ export const QUICK_ACCESS_ITEMS = [
         href: '/admin/inventory-managment?sub=preparation-exit',
     },
 ]
+
+export type TransferSummaryItem = {
+    id: string
+    origin: string
+    destination: string
+    status: 'transferred' | 'pending' | 'in-transit'
+}
+
+export const TRANSFER_SUMMARY_ITEMS: TransferSummaryItem[] = [
+    {
+        id: 'TRF-3301',
+        origin: 'مرکزی تهران',
+        destination: 'شعبه کرج',
+        status: 'transferred',
+    },
+    {
+        id: 'TRF-3300',
+        origin: 'مرکزی تهران',
+        destination: 'شعبه اصفهان',
+        status: 'pending',
+    },
+    {
+        id: 'TRF-3299',
+        origin: 'شعبه کرج',
+        destination: 'مرکزی تهران',
+        status: 'in-transit',
+    },
+]

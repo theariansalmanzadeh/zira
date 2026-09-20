@@ -272,4 +272,11 @@ export const ROUTE_CONFIGS = {
             { label: "تکمیل شده", value: "completed" },
         ],
     },
+    events: {
+        TOGGLE_BUTTON_VALUE: [
+            { label: "همه رخدادها", value: "all" },
+            { label: "حساس", value: "sensitive" },
+            { label: "ناموفق", value: "failed" },
+        ],
+    },
 }

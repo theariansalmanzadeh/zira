@@ -5,6 +5,7 @@ import { ACCOUNTING_SUB_SIDEBAR_SECTIONS } from "@/src/routes/Accounting/constan
 import { INVENTORY_SUB_SIDEBAR_SECTIONS } from "@/src/routes/inventoryManagment/constants"
 import { CUSTOMERS_SUB_SIDEBAR_SECTIONS } from "@/src/routes/customers/constants"
 import { CONTENT_SUB_SIDEBAR_SECTIONS } from "@/src/routes/contentManagment/constants"
+import { EVENTS_SUB_SIDEBAR_SECTIONS } from "@/src/routes/events/constants"
 import { LOCAL_SUB_SIDEBAR_CONTENT } from "./localSubSidebars"
 import type { SubSidebarContent } from "./types"
 
@@ -108,6 +109,13 @@ export const SIDEBAR_CONTENT: {
         icon: "notification",
         link: "/admin/notification",
     },
+    {
+        title: "events",
+        faLabel: "رخدادها",
+        breadcrumb: "رخدادها",
+        icon: "history400Linear",
+        link: "/admin/events",
+    },
 ]
 
 export const SUB_SIDEBAR_CONTENT: Record<string, SubSidebarContent> = {
@@ -153,5 +161,12 @@ export const SUB_SIDEBAR_CONTENT: Record<string, SubSidebarContent> = {
         faLabel: 'مدیریت محتوا',
         subheader: 'زیرا مارکت',
         itemsList: CONTENT_SUB_SIDEBAR_SECTIONS,
+    },
+    events: {
+        headerIcon: 'history400Linear',
+        header: 'رخدادها',
+        faLabel: 'رخدادها',
+        subheader: 'ثبت و پایش رخدادهای سامانه',
+        itemsList: EVENTS_SUB_SIDEBAR_SECTIONS,
     },
 }

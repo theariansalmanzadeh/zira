@@ -17,7 +17,7 @@ import {
 const CustomersLayoutContent = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const { push } = useRouter()
+    const { back, push } = useRouter()
     const [period, setPeriod] = useState('month')
     const isCustomersRoot =
         pathname === '/admin/customers' || pathname === '/admin/customers/'
@@ -39,6 +39,9 @@ const CustomersLayoutContent = ({ children }: { children: React.ReactNode }) => 
         <div className="flex flex-col gap-3" dir="rtl">
             {heading && (
                 <HeadingWithActions>
+                    {heading.hasBackButton && (
+                        <HeadingWithActions.BackButton onClick={() => back()} />
+                    )}
                     <HeadingWithActions.Title>{heading.title}</HeadingWithActions.Title>
                     {heading.subtitle && (
                         <HeadingWithActions.SubTitle>

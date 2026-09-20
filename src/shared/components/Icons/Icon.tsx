@@ -37,6 +37,7 @@ export const Icon = ({
 
   const fillClassName = fill && !isSvgFillValue(fill) ? fill : undefined;
   const svgFill = fill && isSvgFillValue(fill) ? fill : "currentColor";
+  const isStrokeIcon = svgFill === "none";
 
   return (
     <svg
@@ -45,6 +46,10 @@ export const Icon = ({
       width={size}
       height={size}
       fill={svgFill}
+      stroke={isStrokeIcon ? "currentColor" : undefined}
+      strokeWidth={isStrokeIcon ? 2 : undefined}
+      strokeLinecap={isStrokeIcon ? "round" : undefined}
+      strokeLinejoin={isStrokeIcon ? "round" : undefined}
       className={cn("shrink-0 size-6", className, fillClassName)}
       style={styles}
       aria-hidden

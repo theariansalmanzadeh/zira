@@ -1,99 +1,157 @@
-"use client";
+'use client'
 
-import { formatFaDateTime } from "@/src/shared/libs/formatter";
-import IconButton from "@/src/shared/components/ui/IconButton";
-import { useTable } from "@/src/shared/context/TableProvider";
-import { Avatar, AvatarFallback } from "@/src/shared/components/ui/Avatar";
-import { Pill, PillVariants } from "@/src/shared/components/ui/Pill";
-import {
-    TableCell,
-    TableRow as UiTableRow,
-} from "@/src/shared/components/ui/Table";
-import { VariantProps } from "class-variance-authority";
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { formatFaDateTime } from '@/src/shared/libs/formatter'
+import IconButton from '@/src/shared/components/ui/IconButton'
+import { useTable } from '@/src/shared/context/TableProvider'
+import { Avatar, AvatarFallback } from '@/src/shared/components/ui/Avatar'
+import { Button } from '@/src/shared/components/ui/button'
+import { Pill, PillVariants } from '@/src/shared/components/ui/Pill'
+import { VariantProps } from 'class-variance-authority'
+import { cn } from '@shared/libs/utils'
+import { EXPANDED_ITEM_COLUMNS, ITEM_GRID_CLASS } from '../constants'
+import type { StockReturnRowData, StockReturnStatus } from '../types'
 
-export type StockReturnStatus =
-    | "returned-to-stock"
-    | "awaiting-receipt"
-    | "quality-check";
-
-export type StockReturnFilterTab = "all" | "under-review" | "awaiting-receipt";
-
-export type StockReturnRowData = {
-    id: string;
-    customerName: string;
-    consignmentId: string;
-    itemCount: string;
-    status: StockReturnStatus;
-    registeredAt: string;
-    filterTab?: Exclude<StockReturnFilterTab, "all">;
-};
+export type {
+    StockReturnFilterTab,
+    StockReturnItem,
+    StockReturnRowData,
+    StockReturnStatus,
+} from '../types'
 
 const STATUS_CONFIG: Record<
     StockReturnStatus,
-    { text: string; variant: VariantProps<typeof PillVariants>["variant"] }
+    { text: string; variant: VariantProps<typeof PillVariants>['variant'] }
 > = {
-    "returned-to-stock": { text: "بازگشت به موجودی", variant: "success" },
-    "awaiting-receipt": { text: "در انتظار دریافت", variant: "warning" },
-    "quality-check": { text: "در حال بررسی کیفیت", variant: "info" },
-};
+    'returned-to-stock': { text: 'بازگشت به موجودی', variant: 'success' },
+    'awaiting-receipt': { text: 'در انتظار دریافت', variant: 'warning' },
+    'quality-check': { text: 'در حال بررسی کیفیت', variant: 'info' },
+}
 
 export type TableRowProps = {
-    data: StockReturnRowData;
-};
+    data: StockReturnRowData
+}
 
 const TableRow = ({ data }: TableRowProps) => {
-    const { TableColoumn } = useTable();
-    const { id, customerName, consignmentId, itemCount, status, registeredAt } =
-        data;
-    const statusConfig = STATUS_CONFIG[status];
+    const { push } = useRouter()
+    const { TableColoumn, visibleTableColoumn } = useTable()
+    const [isExpanded, setIsExpanded] = useState(false)
+    const {
+        id,
+        customerName,
+        consignmentId,
+        itemCount,
+        status,
+        registeredAt,
+        items = [],
+    } = data
+    const statusConfig = STATUS_CONFIG[status]
+    const gridTemplateColumns = visibleTableColoumn
+        .map((_, index) =>
+            index === visibleTableColoumn.length - 1 ? 'auto' : 'minmax(0, 1fr)'
+        )
+        .join(' ')
 
     return (
-        <>
-            <UiTableRow className="[&>*]:text-on-surface-variant [&>*]:text-label-lg [&>*]:font-normal">
-                {TableColoumn[0]?.isChecked && <TableCell>{id}</TableCell>}
+        <div className='flex flex-col gap-1' dir='rtl'>
+            <div
+                className='grid items-center gap-3 rounded-card-md bg-surface-container-lowest px-4 py-3 text-label-lg font-normal text-on-surface-variant'
+                style={{ gridTemplateColumns }}
+            >
+                {TableColoumn[0]?.isChecked && <div>{id}</div>}
                 {TableColoumn[1]?.isChecked && (
-                    <TableCell>
-                        <div className="flex flex-row-reverse items-center justify-end gap-2">
-                            <span>{customerName}</span>
-                            <Avatar size="sm">
-                                <AvatarFallback className="bg-surface-container-highest text-label-sm text-on-surface-variant">
-                                    {customerName.charAt(0)}
-                                </AvatarFallback>
-                            </Avatar>
-                        </div>
-                    </TableCell>
+                    <div className='flex flex-row items-center gap-2'>
+                        <Avatar size='sm'>
+                            <AvatarFallback className='bg-surface-container-highest text-label-sm text-on-surface-variant'>
+                                {customerName.charAt(0)}
+                            </AvatarFallback>
+                        </Avatar>
+                        <span>{customerName}</span>
+                    </div>
                 )}
-                {TableColoumn[2]?.isChecked && (
-                    <TableCell>{consignmentId}</TableCell>
-                )}
-                {TableColoumn[3]?.isChecked && (
-                    <TableCell>{itemCount}</TableCell>
-                )}
+                {TableColoumn[2]?.isChecked && <div>{consignmentId}</div>}
+                {TableColoumn[3]?.isChecked && <div>{itemCount}</div>}
                 {TableColoumn[4]?.isChecked && (
-                    <TableCell>
+                    <div>
                         <Pill
                             variant={statusConfig.variant}
                             text={statusConfig.text}
                             hasDot
-                            className="border-0"
+                            className='border-0'
                         />
-                    </TableCell>
+                    </div>
                 )}
                 {TableColoumn[5]?.isChecked && (
-                    <TableCell>{formatFaDateTime(registeredAt)}</TableCell>
+                    <div>{formatFaDateTime(registeredAt)}</div>
                 )}
                 {TableColoumn[6]?.isChecked && (
-                    <TableCell className="w-[1%] whitespace-nowrap">
+                    <div className='flex justify-end'>
                         <IconButton
-                            icon="chevronLeft300Linear"
-                            iconClassName="size-6!"
+                            icon='chevronLeft300Linear'
+                            iconClassName={cn(
+                                'size-6! transition-transform',
+                                isExpanded && '-rotate-90'
+                            )}
+                            onClick={() => setIsExpanded((prev) => !prev)}
                         />
-                    </TableCell>
+                    </div>
                 )}
-            </UiTableRow>
-            <div className="py-1" />
-        </>
-    );
-};
+            </div>
 
-export default TableRow;
+            {isExpanded && (
+                <div className='rounded-card-md bg-surface-container-lowest p-3'>
+                    <div
+                        className={cn(
+                            ITEM_GRID_CLASS,
+                            'px-2 py-2 text-label-md font-medium text-outline'
+                        )}
+                    >
+                        {EXPANDED_ITEM_COLUMNS.map((column) => (
+                            <div key={column.id}>{column.label}</div>
+                        ))}
+                    </div>
+
+                    <div className='flex flex-col gap-2'>
+                        {items.map((item) => (
+                            <div
+                                key={item.id}
+                                className={cn(
+                                    ITEM_GRID_CLASS,
+                                    'rounded-card-sm bg-surface-container-high/40 px-2 py-2.5 text-label-lg text-on-surface-variant'
+                                )}
+                            >
+                                <div>{item.productName}</div>
+                                <div>{item.unit}</div>
+                                <div>{item.declaredQty}</div>
+                                <div className='flex flex-row items-center justify-end gap-2'>
+                                    <Button
+                                        type='button'
+                                        variant='ghost'
+                                        className='rounded-button-md bg-success-container px-4 text-label-sm text-on-success-container hover:bg-success-container/80'
+                                        onClick={() =>
+                                            push(
+                                                `/admin/inventory-managment/stock-returns/${id}`
+                                            )
+                                        }
+                                    >
+                                        تایید و ثبت دریافت
+                                    </Button>
+                                    <Button
+                                        type='button'
+                                        variant='ghost'
+                                        className='rounded-button-md bg-error-container px-4 text-label-sm text-error hover:bg-error-container/80'
+                                    >
+                                        رد
+                                    </Button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    )
+}
+
+export default TableRow

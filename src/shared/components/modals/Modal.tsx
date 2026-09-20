@@ -91,6 +91,21 @@ const ChangeWarehouseGrade = dynamic(
   () => import('./components/ChangeWarehouseGrade'),
   { ssr: false }
 );
+const InventoryProducts = dynamic(
+  () =>
+    import('./components/inventoryProducts').then(
+      (mod) => mod.InventoryProducts
+    ),
+  { ssr: false }
+);
+const GoodEntryDetails = dynamic(
+  () => import('./components/GoodEntryDetails'),
+  { ssr: false }
+);
+const ProductDetails = dynamic(
+  () => import('./components/ProductDetails'),
+  { ssr: false }
+);
 
 const MODAL_COMPONENTS: Record<
   ModalType,
@@ -117,6 +132,9 @@ const MODAL_COMPONENTS: Record<
   [ModalTypes.ADD_PRODUCT]: AddProduct,
   [ModalTypes.CATEGORY_DETAIL]: CategoryDetail,
   [ModalTypes.CHANGE_WAREHOUSE_GRADE]: ChangeWarehouseGrade,
+  [ModalTypes.INVENTORY_PRODUCTS]: InventoryProducts,
+  [ModalTypes.GOOD_ENTRY_DETAILS]: GoodEntryDetails,
+  [ModalTypes.PRODUCT_DETAILS]: ProductDetails,
 };
 
 const MODAL_CONFIG: Record<
@@ -230,6 +248,24 @@ const MODAL_CONFIG: Record<
       'min-w-[720px]! max-h-[90vh] w-full max-w-[780px]! overflow-y-auto border-0 sm:max-w-[780px]!',
   },
   [ModalTypes.CHANGE_WAREHOUSE_GRADE]: {
+    showCloseButton: true,
+    className:
+      'min-w-[640px]! max-h-[90vh] w-full max-w-[720px]! overflow-y-auto border-0 sm:max-w-[720px]!',
+  },
+  [ModalTypes.INVENTORY_PRODUCTS]: {
+    title: 'انتخاب از موجودی انبار',
+    showCloseButton: true,
+    className:
+      'min-w-[1200px]! max-h-[90vh] w-full max-w-[1200px]! overflow-y-auto border-0 sm:max-w-[1200px]!',
+  },
+  [ModalTypes.GOOD_ENTRY_DETAILS]: {
+    title: 'جزئیات ورود کالا',
+    showCloseButton: true,
+    className:
+      'min-w-[720px]! max-h-[90vh] w-full max-w-[780px]! overflow-y-auto border-0 sm:max-w-[780px]!',
+  },
+  [ModalTypes.PRODUCT_DETAILS]: {
+    title: 'مشخصات کالا',
     showCloseButton: true,
     className:
       'min-w-[640px]! max-h-[90vh] w-full max-w-[720px]! overflow-y-auto border-0 sm:max-w-[720px]!',

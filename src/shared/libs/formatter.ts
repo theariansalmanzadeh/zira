@@ -87,6 +87,31 @@ export const formatFaDate = (
     return `${day}/${month}/${year}`
 }
 
+const DEFAULT_FA_TIME_OPTIONS: Intl.DateTimeFormatOptions = {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+}
+
+/**
+ * Formats an ISO datetime string or `Date` to Persian `HH:mm`
+ * (e.g. `۱۰:۴۲`) via `Intl.DateTimeFormat('fa-IR')`.
+ */
+export const formatFaTime = (
+    value: string | Date,
+    options?: Intl.DateTimeFormatOptions
+): string => {
+    const date = value instanceof Date ? value : new Date(value)
+    if (Number.isNaN(date.getTime())) {
+        return typeof value === 'string' ? value : ''
+    }
+
+    return new Intl.DateTimeFormat('fa-IR', {
+        ...DEFAULT_FA_TIME_OPTIONS,
+        ...options,
+    }).format(date)
+}
+
 /**
  * Formats an ISO datetime string as `DD/MM/YYYY - HH:mm` in Persian digits.
  */
@@ -100,10 +125,7 @@ export const formatFaDateTime = (
     }
 
     const datePart = formatFaDate(date, options)
-    const timePart = new Intl.DateTimeFormat('fa-IR', {
-        hour: '2-digit',
-        minute: '2-digit',
-    }).format(date)
+    const timePart = formatFaTime(date, options)
 
     return `${datePart} - ${timePart}`
 }

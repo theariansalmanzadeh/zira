@@ -15,6 +15,7 @@ import {
 } from './constants'
 import RankingCard from '@/src/shared/components/ui/RankingCard'
 import QuickAccessCard from '@/src/shared/components/quickAccessCard'
+import TransferSummary from './components/TransferSummary'
 
 const INVENTORY_RANKING_ITEMS = [
     {
@@ -110,10 +111,13 @@ const InventoryDashboard = () => {
                 />
             </div>
             <div className='col-span-12 lg:col-span-6'>
+                <TransferSummary />
+            </div>
+            <div className='col-span-12'>
                 <QuickAccessCard>
                     <QuickAccessCard.Header>دسترسی سریع</QuickAccessCard.Header>
                     <QuickAccessCard.Content>
-                        <QuickAccessCard.List className="grid grid-cols-2 gap-2">
+                        <QuickAccessCard.List className="grid grid-cols-2 gap-2 lg:grid-cols-4">
                             {QUICK_ACCESS_ITEMS.map((item) => (
                                 <QuickAccessCard.Item
                                     key={item.label}

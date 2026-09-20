@@ -6,18 +6,24 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import HeadingWithActions from '@/src/shared/components/ui/HeadingWithActions'
 import { Button } from '@/src/shared/components/ui/button'
+import { Pill } from '@/src/shared/components/ui/Pill'
 import {
-    getInventorySectionKey,
+    getInventorySectionKeyFromPath,
     sectionToHeading,
 } from '@/src/routes/inventoryManagment/constants'
 
-const InventoryManagmentLayoutContent = ({ children }: { children: React.ReactNode }) => {
+const InventoryManagmentLayoutContent = ({
+    children,
+}: {
+    children: React.ReactNode
+}) => {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const { push } = useRouter()
+    const { back, push } = useRouter()
     const isInventoryRoot =
-        pathname === '/admin/inventory-managment' || pathname === '/admin/inventory-managment/'
-    const sectionKey = getInventorySectionKey(searchParams.get('sub') || '')
+        pathname === '/admin/inventory-managment' ||
+        pathname === '/admin/inventory-managment/'
+    const sectionKey = getInventorySectionKeyFromPath(pathname, searchParams)
     const heading = sectionToHeading[sectionKey]
 
     useEffect(() => {
@@ -32,8 +38,25 @@ const InventoryManagmentLayoutContent = ({ children }: { children: React.ReactNo
         <div className='flex flex-col gap-3' dir='rtl'>
             {heading && (
                 <HeadingWithActions>
-                    <HeadingWithActions.Title>{heading.title}</HeadingWithActions.Title>
-                    <HeadingWithActions.SubTitle>{heading.subtitle}</HeadingWithActions.SubTitle>
+                    {heading.hasBackButton && (
+                        <HeadingWithActions.BackButton onClick={() => back()} />
+                    )}
+                    <HeadingWithActions.Title>
+                        <span className='inline-flex flex-wrap items-center gap-2'>
+                            {heading.title}
+                            {heading.statusPill && (
+                                <Pill
+                                    text={heading.statusPill}
+                                    variant='tonal'
+                                    hasDot
+                                    className='border-0'
+                                />
+                            )}
+                        </span>
+                    </HeadingWithActions.Title>
+                    <HeadingWithActions.SubTitle>
+                        {heading.subtitle}
+                    </HeadingWithActions.SubTitle>
 
                     {heading.buttons && heading.buttons.length > 0 && (
                         <HeadingWithActions.ButtonWrapper>
@@ -41,7 +64,10 @@ const InventoryManagmentLayoutContent = ({ children }: { children: React.ReactNo
                                 const content = (
                                     <>
                                         {button.icon && (
-                                            <Icon label={button.icon} className='size-6!' />
+                                            <Icon
+                                                label={button.icon}
+                                                className='size-6!'
+                                            />
                                         )}
                                         <span
                                             className={
@@ -62,7 +88,9 @@ const InventoryManagmentLayoutContent = ({ children }: { children: React.ReactNo
                                             variant={button.variant}
                                             asChild
                                         >
-                                            <Link href={button.href}>{content}</Link>
+                                            <Link href={button.href}>
+                                                {content}
+                                            </Link>
                                         </Button>
                                     )
                                 }
@@ -86,9 +114,15 @@ const InventoryManagmentLayoutContent = ({ children }: { children: React.ReactNo
     )
 }
 
-const InventoryManagmentLayout = ({ children }: { children: React.ReactNode }) => (
+const InventoryManagmentLayout = ({
+    children,
+}: {
+    children: React.ReactNode
+}) => (
     <Suspense fallback={null}>
-        <InventoryManagmentLayoutContent>{children}</InventoryManagmentLayoutContent>
+        <InventoryManagmentLayoutContent>
+            {children}
+        </InventoryManagmentLayoutContent>
     </Suspense>
 )
 

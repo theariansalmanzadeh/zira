@@ -62,6 +62,8 @@ export type SectionHeading = {
     title: string
     subtitle: string
     buttons?: HeadingButton[]
+    statusPill?: string
+    hasBackButton?: boolean
 }
 
 export const sectionToHeading: Record<string, SectionHeading | null> = {
@@ -82,6 +84,18 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
                 label: 'انبار جدید',
                 icon: 'addSm400Broken',
                 variant: 'primary',
+                href: '/admin/inventory-managment/new',
+            },
+        ],
+    },
+    'inventory-new': {
+        title: 'انبار جدید',
+        subtitle: 'تعریف انبار و ساختار آدرس‌دهی',
+        buttons: [
+            {
+                label: 'بازگشت به فهرست',
+                variant: 'outline',
+                href: '/admin/inventory-managment?sub=list',
             },
         ],
     },
@@ -98,6 +112,7 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
                 label: 'انبار جدید',
                 icon: 'addSm400Broken',
                 variant: 'primary',
+                href: '/admin/inventory-managment/new',
             },
         ],
     },
@@ -134,8 +149,14 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
                 label: 'تغییر آدرس جدید',
                 icon: 'addSm400Broken',
                 variant: 'primary',
+                href: '/admin/inventory-managment/change-address/new',
             },
         ],
+    },
+    'change-address-new': {
+        title: 'تغییر آدرس جدید',
+        subtitle: 'جابه‌جایی کالا میان آدرس‌های یک انبار',
+        hasBackButton: true,
     },
     stocktaking: {
         title: 'انبارگردانی',
@@ -147,15 +168,34 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
                 variant: 'outline',
             },
             {
-                label: 'شروع انبارگردانی جدید',
+                label: 'ثبت انبارگردانی جدید',
                 icon: 'addSm400Broken',
                 variant: 'primary',
+                href: '/admin/inventory-managment/stocktaking/new',
+            },
+        ],
+    },
+    'stocktaking-new': {
+        title: 'انبارگردانی جدید',
+        subtitle: 'SC-1404-12-15',
+        statusPill: 'پیش‌نویس',
+        hasBackButton: true,
+        buttons: [
+            {
+                label: 'بازگشت به فهرست',
+                variant: 'outline',
+                href: '/admin/inventory-managment?sub=stocktaking',
             },
         ],
     },
     'stock-returns': {
         title: 'مرجوعی',
         subtitle: 'مدیریت مرجوعی‌های انبار',
+    },
+    'stock-return-details': {
+        title: 'جزئیات مرجوعی',
+        subtitle: 'ثبت دریافت و تخصیص آدرس کالا در انبار',
+        hasBackButton: true,
     },
     waste: {
         title: 'ضایعات',
@@ -164,11 +204,54 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
     'financial-review': {
         title: 'مرور مبلغی انبار',
         subtitle: 'گزارش مبلغی موجودی و عملیات انبار',
+        buttons: [
+            {
+                label: 'خروجی اکسل',
+                icon: 'export300Linear',
+                variant: 'outline',
+            },
+        ],
     },
     'quantity-review': {
         title: 'مرور تعدادی انبار',
         subtitle: 'گزارش تعدادی موجودی و عملیات انبار',
+        buttons: [
+            {
+                label: 'خروجی اکسل',
+                icon: 'export300Linear',
+                variant: 'outline',
+            },
+        ],
     },
 }
 
 export const getInventorySectionKey = (sub: string) => sub || 'dashboard'
+
+export const getInventorySectionKeyFromPath = (
+    pathname: string,
+    searchParams: Pick<URLSearchParams, 'get'>
+): string => {
+    if (pathname.startsWith('/admin/inventory-managment/stocktaking/new')) {
+        return 'stocktaking-new'
+    }
+    if (pathname.startsWith('/admin/inventory-managment/change-address/new')) {
+        return 'change-address-new'
+    }
+    if (pathname.startsWith('/admin/inventory-managment/stock-returns/')) {
+        return 'stock-return-details'
+    }
+    if (pathname.startsWith('/admin/inventory-managment/new')) {
+        return 'inventory-new'
+    }
+    if (pathname.startsWith('/admin/inventory-managment/details/')) {
+        return 'list'
+    }
+
+    const isInventoryRoot =
+        pathname === '/admin/inventory-managment' ||
+        pathname === '/admin/inventory-managment/'
+
+    if (!isInventoryRoot) return 'dashboard'
+
+    return getInventorySectionKey(searchParams.get('sub') || '')
+}
