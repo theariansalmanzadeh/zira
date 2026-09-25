@@ -14,7 +14,7 @@ import {
     TableRow,
 } from '@/src/shared/components/ui/Table'
 import { ModalTypes } from '@/src/shared/components/modals/types'
-import type { AddProductItem } from '@/src/shared/components/modals/components/AddProduct'
+import type { AddProductItem } from '@/src/shared/components/modals/components/addProduct'
 import { formatFaNumber, formatPrice } from '@/src/shared/libs/formatter'
 import { useModalStore } from '@/src/shared/store/modal-store'
 import {

@@ -17,7 +17,7 @@ import {
 const BranchesLayoutContent = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const { push } = useRouter()
+    const { back, push } = useRouter()
     const [period, setPeriod] = useState('month')
     const isBranchesRoot = pathname === '/admin/branches' || pathname === '/admin/branches/'
     const sectionKey = isBranchesRoot
@@ -27,15 +27,17 @@ const BranchesLayoutContent = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         if (!isBranchesRoot) return
-        const url = new URL(window.location.href)
-        const sub = url.searchParams.get('sub') || 'dashboard'
-        push(`?sub=${sub}`)
-    }, [pathname, push])
+        if (searchParams.get('sub')) return
+        push('?sub=dashboard')
+    }, [isBranchesRoot, searchParams, push])
 
     return (
         <div className='flex flex-col gap-3' dir='rtl'>
             {heading && (
                 <HeadingWithActions>
+                    {heading.hasBackButton && (
+                        <HeadingWithActions.BackButton onClick={() => back()} />
+                    )}
                     <HeadingWithActions.Title>{heading.title}</HeadingWithActions.Title>
                     <HeadingWithActions.SubTitle>{heading.subtitle}</HeadingWithActions.SubTitle>
 

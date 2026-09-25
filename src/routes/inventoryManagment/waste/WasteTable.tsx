@@ -1,12 +1,10 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { Table, TableBody } from '@/src/shared/components/ui/Table'
-import { ROUTE_CONFIGS } from '@/src/shared/constants/routeConfigs'
-import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
-import TableHeader from './components/TableHeader'
-import TableRow, { type WasteFilterTab, type WasteRowData } from './components/TableRow'
-import { TABLE_COLOUMN } from './constants'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/shared/components/ui/Tabs'
+import { formatFaNumber } from '@/src/shared/libs/formatter'
+import AdminSection from './components/AdminSection'
+import InventorSection from './components/InventorSection'
+import { type WasteRowData } from './components/TableRow'
 
 export const WASTE_DUMMY: WasteRowData[] = [
     {
@@ -18,6 +16,11 @@ export const WASTE_DUMMY: WasteRowData[] = [
         totalAmount: '-',
         status: 'under-review',
         filterTab: 'under-review',
+        warehouseName: 'انبار مرکزی تهران',
+        warehouseAddress: 'A-R1-S1-B01',
+        warehouseNote: 'آسیب‌دیدگی در بسته‌بندی',
+        responsibleName: 'علی رضایی',
+        lossAmount: 480000,
     },
     {
         id: 'SCR-449',
@@ -28,6 +31,11 @@ export const WASTE_DUMMY: WasteRowData[] = [
         totalAmount: '-',
         status: 'under-review',
         filterTab: 'under-review',
+        warehouseName: 'انبار مرکزی تهران',
+        warehouseAddress: 'A-R2-S1-B03',
+        warehouseNote: 'پارگی در انبار',
+        responsibleName: 'مریم کریمی',
+        lossAmount: 320000,
     },
     {
         id: 'SCR-448',
@@ -38,6 +46,11 @@ export const WASTE_DUMMY: WasteRowData[] = [
         totalAmount: '1,200,000',
         status: 'approved',
         filterTab: 'approved',
+        warehouseName: 'انبار کرج',
+        warehouseAddress: 'B-R1-S2-B02',
+        warehouseNote: 'تایید خسارت انبار',
+        responsibleName: 'حسین محمدی',
+        lossAmount: 1200000,
     },
     {
         id: 'SCR-447',
@@ -48,35 +61,39 @@ export const WASTE_DUMMY: WasteRowData[] = [
         totalAmount: '-',
         status: 'rejected',
         filterTab: 'rejected',
+        warehouseName: 'انبار اصفهان',
+        warehouseAddress: 'C-R1-S1-B01',
+        warehouseNote: 'مغایرت در علت ضایعات',
+        responsibleName: 'علی رضایی',
+        lossAmount: 0,
     },
 ]
 
 const WasteTable = ({ data = WASTE_DUMMY }: { data?: WasteRowData[] }) => {
-    const [statusFilter] = useState<WasteFilterTab>('all')
-
-    const filteredData = useMemo(() => {
-        if (statusFilter === 'all') return data
-        return data.filter((item) => item.filterTab === statusFilter)
-    }, [data, statusFilter])
-
     return (
         <div className='flex flex-col gap-3' dir='rtl'>
-            <TableListLayout
-                TableColoumn={TABLE_COLOUMN}
-                value={statusFilter}
-                toggleButtonValue={ROUTE_CONFIGS.waste.TOGGLE_BUTTON_VALUE}
-            >
-                <div className='rounded-card-lg bg-surface-container-high p-2'>
-                    <Table className='border-collapse border-spacing-y-4'>
-                        <TableHeader />
-                        <TableBody>
-                            {filteredData.map((item) => (
-                                <TableRow key={item.id} data={item} />
-                            ))}
-                        </TableBody>
-                    </Table>
-                </div>
-            </TableListLayout>
+            <Tabs defaultValue='inventory' dir='rtl' className='w-full gap-4'>
+                <TabsList className='h-auto w-full justify-start border-outline-variant bg-transparent'>
+                    <TabsTrigger value='inventory' className='gap-2'>
+                        بخش انباردار
+                        <span className='flex size-6 items-center justify-center rounded-full bg-surface-container-highest text-label-sm text-on-surface-variant'>
+                            {formatFaNumber(data.length)}
+                        </span>
+                    </TabsTrigger>
+                    <TabsTrigger value='admin' className='gap-2'>
+                        بخش ادمین انبار
+                        <span className='flex size-6 items-center justify-center rounded-full bg-surface-container-highest text-label-sm text-on-surface-variant'>
+                            {formatFaNumber(data.length)}
+                        </span>
+                    </TabsTrigger>
+                </TabsList>
+                <TabsContent value='inventory'>
+                    <InventorSection items={data} />
+                </TabsContent>
+                <TabsContent value='admin'>
+                    <AdminSection items={data} />
+                </TabsContent>
+            </Tabs>
         </div>
     )
 }

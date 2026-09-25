@@ -18,6 +18,31 @@ export const LOCAL_SUB_SIDEBAR_CONTENT: Record<
                 ],
             },
             {
+                title: 'مدیریت موجودی',
+                links: [
+                    {
+                        label: 'موجودی شعب و انبارها',
+                        href: '/admin/branches?sub=branch-stock',
+                    },
+                    {
+                        label: 'پیگیری انتقال بین انبار',
+                        href: '/admin/branches?sub=warehouse-transfer-tracking',
+                    },
+                    {
+                        label: 'گردش کالا',
+                        href: '/admin/branches?sub=product-turnover',
+                    },
+                    {
+                        label: 'انتقال بین شعب',
+                        href: '/admin/branches?sub=branch-transfer',
+                    },
+                    {
+                        label: 'قیمت‌گذاری مجدد',
+                        href: '/admin/branches?sub=repricing',
+                    },
+                ],
+            },
+            {
                 title: 'گزارش‌ها',
                 links: [
                     { label: 'گزارش کارکرد شعب', href: '/admin/branches?sub=report' },

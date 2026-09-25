@@ -6,8 +6,7 @@ import { Icon } from '@/src/shared/components/Icons/Icon'
 import { formatFaDate } from '@/src/shared/libs/formatter'
 import { cn } from '@shared/libs/utils'
 import { LICENSE_FILE_TYPE_STYLES, type LicenseCardData } from '../constants'
-import { useModalStore } from '@/src/shared/store/modal-store'
-import { ModalTypes } from '@/src/shared/components/modals/types'
+import { useRouter } from 'next/navigation'
 
 type LicenseCardProps = {
     data: LicenseCardData
@@ -28,11 +27,9 @@ const LicenseCard = ({
 }: LicenseCardProps) => {
     const { title, code, issuer, issuedAt, fileType, visibleOnSite } = data
     const fileStyles = LICENSE_FILE_TYPE_STYLES[fileType]
-    const { openModal } = useModalStore()
+    const { push } = useRouter()
     const onOpen = () => {
-        openModal(ModalTypes.VIEW_LICENSE, {
-            data,
-        })
+        push(`/admin/content-managment/liecense/${data.id}`)
     }
     return (
         <div

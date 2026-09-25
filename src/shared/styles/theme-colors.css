@@ -11,6 +11,8 @@
     --color-primary-container: #fbdfe1;
     --color-info: #242f94;
     --color-info-container: #ced1f3;
+    --color-yellow: #b8860b;
+    --color-yellow-container: #fff3c4;
     --color-link: #646464;
 
     /* Inverse color variables */
@@ -36,6 +38,8 @@
     --color-on-success-container: #002116;
     --color-warning-container: #fde3c4;
     --color-on-warning-container: #3b2102;
+    --color-on-yellow: #ffffff;
+    --color-on-yellow-container: #3b2f02;
 
     /* Outline color */
     --color-outline: #787878;

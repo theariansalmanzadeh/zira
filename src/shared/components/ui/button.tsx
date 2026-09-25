@@ -25,9 +25,13 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         outline:
-          "bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-black/8",
+          "bg-surface-container-lowest border border-outline-variant text-on-surface-variant! hover:bg-black/8",
         glass:
           "bg-white/16 backdrop-blur-[16px] text-surface-container-lowest rounded-button-lg",
+        success:
+          "border-0 bg-success-container text-success hover:bg-success-container/80",
+        error:
+          "border-0 bg-error-container text-error hover:bg-error-container/80",
       },
       size: {
         default: "h-10 px-4 py-2",

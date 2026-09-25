@@ -1,4 +1,4 @@
-import StepperStatus from '@/src/shared/components/ui/StepperStatus'
+import StepperStatus from '@/src/shared/components/StepperStatus/StepperStatus'
 import OrderItemsDetail from './components/orderItemsDetail'
 import OrderInfoCard from './components/OrderInfoCard'
 import RecipientInfoCard from './components/RecipientInfoCard'

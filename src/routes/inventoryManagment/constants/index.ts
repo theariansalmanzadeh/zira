@@ -12,7 +12,9 @@ export const INVENTORY_SUB_SIDEBAR_SECTIONS = [
         title: 'عملیات کالا',
         links: [
             { label: 'ورود کالا / رسید انبار', href: '/admin/inventory-managment?sub=goods-entry' },
+            { label: 'رسید انبار', href: '/admin/inventory-managment?sub=warehouse-receipt' },
             { label: 'آماده‌سازی و خروج کالا', href: '/admin/inventory-managment?sub=preparation-exit' },
+            { label: 'وضعیت مرسوله‌ها', href: '/admin/inventory-managment?sub=shipment-status' },
             { label: 'انتقال بین انبار', href: '/admin/inventory-managment?sub=transfer' },
             { label: 'تغییر آدرس کالا', href: '/admin/inventory-managment?sub=change-address' },
         ],
@@ -38,7 +40,9 @@ export const INVENTORY_SUB_PARAMS = [
     'dashboard',
     'list',
     'goods-entry',
+    'warehouse-receipt',
     'preparation-exit',
+    'shipment-status',
     'transfer',
     'change-address',
     'stocktaking',
@@ -116,9 +120,22 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
             },
         ],
     },
+    'goods-entry-details': {
+        title: 'جزئیات فاکتور',
+        subtitle: 'اطلاعات درخواست ورود کالا و آدرس تخصیص‌یافته',
+        hasBackButton: true,
+    },
+    'warehouse-receipt': {
+        title: 'رسید انبار',
+        subtitle: 'پیگیری رسیدهای انبار در جریان و فهرست رسیدها',
+    },
     'preparation-exit': {
         title: 'آماده‌سازی و خروج کالا',
         subtitle: 'آماده‌سازی و ثبت خروج کالا از انبار',
+    },
+    'shipment-status': {
+        title: 'وضعیت مرسوله‌ها',
+        subtitle: 'پیگیری وضعیت آماده‌سازی، ارسال و تحویل مرسوله‌ها',
     },
     transfer: {
         title: 'انتقال بین انبار',
@@ -200,6 +217,19 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
     waste: {
         title: 'ضایعات',
         subtitle: 'ثبت و پیگیری ضایعات انبار',
+        buttons: [
+            {
+                label: 'ثبت ضایعات جدید',
+                icon: 'addSm400Broken',
+                variant: 'primary',
+                href: '/admin/inventory-managment/waste/new',
+            },
+        ],
+    },
+    'waste-new': {
+        title: 'ثبت ضایعات جدید',
+        subtitle: 'اعلام کالایی که کیفیت خود را از دست داده است',
+        hasBackButton: true,
     },
     'financial-review': {
         title: 'مرور مبلغی انبار',
@@ -231,11 +261,17 @@ export const getInventorySectionKeyFromPath = (
     pathname: string,
     searchParams: Pick<URLSearchParams, 'get'>
 ): string => {
+    if (pathname.startsWith('/admin/inventory-managment/goods-entry/')) {
+        return 'goods-entry-details'
+    }
     if (pathname.startsWith('/admin/inventory-managment/stocktaking/new')) {
         return 'stocktaking-new'
     }
     if (pathname.startsWith('/admin/inventory-managment/change-address/new')) {
         return 'change-address-new'
+    }
+    if (pathname.startsWith('/admin/inventory-managment/waste/new')) {
+        return 'waste-new'
     }
     if (pathname.startsWith('/admin/inventory-managment/stock-returns/')) {
         return 'stock-return-details'

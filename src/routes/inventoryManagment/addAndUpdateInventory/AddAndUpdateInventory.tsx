@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Stepper from './components/Stepper'
 import GeneralInfoForm from './components/GeneralInfoForm'
 import ManagerForm from './components/ManagerForm'
-import MapAddressForm from './components/MapAddressForm'
+import MapAddressForm from './components/mapAddressForm/MapAddressForm'
 import { INVENTORY_STEPS } from './constants'
 
 const AddAndUpdateInventory = () => {
@@ -27,7 +27,14 @@ const AddAndUpdateInventory = () => {
                     </Stepper.List>
                 </Stepper>
             </div>
-            <div className='col-span-1 md:col-span-6' dir='rtl'>
+            <div
+                className={
+                    activeStep === 3
+                        ? 'col-span-1 md:col-span-8'
+                        : 'col-span-1 md:col-span-8'
+                }
+                dir='rtl'
+            >
                 {activeStep === 1 && (
                     <GeneralInfoForm setActiveStep={setActiveStep} />
                 )}

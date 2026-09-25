@@ -8,7 +8,7 @@ import { Textarea } from '@/src/shared/components/ui/TextArea'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 import { cn } from '@shared/libs/utils'
 import type { WarehouseGradeLevel } from '@/src/routes/categories/productDetail/types'
-import type { BaseModalProps } from '../../types'
+import type { BaseModalProps } from '../types'
 
 export type ChangeWarehouseGradePayload = {
     quantity: number

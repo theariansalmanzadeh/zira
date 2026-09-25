@@ -39,14 +39,21 @@ export interface PillProps
   VariantProps<typeof PillVariants> {
   text: string;
   hasDot?: boolean;
+  dotColor?: string;
   icon?: IconLabel
   onClose?: () => void
 }
 
-function Pill({ className, variant, text, hasDot, icon, onClose, ...props }: PillProps) {
+function Pill({ className, variant, text, hasDot, dotColor, icon, onClose, ...props }: PillProps) {
   return (
     <div className={cn(PillVariants({ variant }), className)} {...props}>
-      {hasDot && <span className="w-1.5 h-1.5 rounded-full" id="dot" />}
+      {hasDot && (
+        <span
+          className={cn('rounded-full', dotColor ? 'size-3' : 'size-1.5')}
+          id="dot"
+          style={dotColor ? { backgroundColor: dotColor } : undefined}
+        />
+      )}
       {icon && <Icon label={icon} />}
       <span className="text-nowrap font-regular">{text}</span>
       {onClose && (

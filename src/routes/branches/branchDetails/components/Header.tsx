@@ -1,21 +1,34 @@
+'use client'
+
+import { useRouter } from 'next/navigation'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { Button } from '@/src/shared/components/ui/button'
+import IconButton from '@/src/shared/components/ui/IconButton'
 import { Pill } from '@/src/shared/components/ui/Pill'
-import React from 'react'
 
 const Header = () => {
+    const { back } = useRouter()
+
     return (
-        <div className='flex flex-row items-center justify-between mb-3'>
-            <div className='flex flex-col gap-2'>
-                <div className='flex flex-row items-center gap-2'>
-                    <span className='text-title-md font-medium text-on-surface'>
-                        انبار مرکزی تهران
+        <div className='mb-3 flex flex-row items-center justify-between'>
+            <div className='flex flex-row items-center gap-2'>
+                <IconButton
+                    icon='arrorwRight400Broken'
+                    variant='ghost'
+                    iconClassName='size-6! text-on-surface-variant'
+                    onClick={() => back()}
+                />
+                <div className='flex flex-col gap-2'>
+                    <div className='flex flex-row items-center gap-2'>
+                        <span className='text-title-md font-medium text-on-surface'>
+                            انبار مرکزی تهران
+                        </span>
+                        <Pill text='فعال' variant='success' />
+                    </div>
+                    <span className='text-label-md text-on-surface-variant'>
+                        WH-1001
                     </span>
-                    <Pill text='فعال' variant='success' />
                 </div>
-                <span className='text-label-md text-on-surface-variant'>
-                    WH-1001
-                </span>
             </div>
             <div className='flex flex-row items-center gap-2'>
                 <Button variant='outline' size='sm'>

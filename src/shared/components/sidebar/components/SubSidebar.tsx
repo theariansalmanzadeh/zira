@@ -31,6 +31,20 @@ const isLinkActive = (
     const hrefSub = getSubFromHref(href)
     const pathOnly = href.split('?')[0]
 
+    if (hrefSub === 'product-turnover') {
+        return (
+            (pathname === pathOnly && currentSub === hrefSub) ||
+            pathname.startsWith('/admin/branches/product-turnover/')
+        )
+    }
+
+    if (hrefSub === 'branch-transfer') {
+        return (
+            (pathname === pathOnly && currentSub === hrefSub) ||
+            pathname.startsWith('/admin/branches/branch-transfer/')
+        )
+    }
+
     if (hrefSub) {
         return pathname === pathOnly && currentSub === hrefSub
     }

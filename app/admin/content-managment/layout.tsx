@@ -12,6 +12,7 @@ import {
     type HeadingButton,
 } from '@/src/routes/contentManagment/constants'
 import { OPEN_ADD_FAQ_EVENT } from '@/src/routes/contentManagment/faq/constants'
+import { getLiecenseDetails } from '@/src/routes/contentManagment/liecenseDetails/constants'
 
 const ContentManagmentLayoutContent = ({
     children,
@@ -45,6 +46,29 @@ const ContentManagmentLayoutContent = ({
 
         if (button.actionKey === 'add-faq') {
             window.dispatchEvent(new Event(OPEN_ADD_FAQ_EVENT))
+            return
+        }
+
+        const liecenseId = pathname.match(
+            /\/admin\/content-managment\/liecense\/([^/]+)\/?$/
+        )?.[1]
+
+        if (!liecenseId || liecenseId === 'new') return
+
+        if (button.actionKey === 'edit-liecense') {
+            push(`/admin/content-managment/liecense/new?id=${liecenseId}`)
+            return
+        }
+
+        if (button.actionKey === 'download-liecense') {
+            const data = getLiecenseDetails(liecenseId)
+            const extension = data.previewUrl.split('.').pop() || 'jpg'
+            const link = document.createElement('a')
+            link.href = data.previewUrl
+            link.download = `${data.code}.${extension}`
+            document.body.appendChild(link)
+            link.click()
+            link.remove()
         }
     }
 

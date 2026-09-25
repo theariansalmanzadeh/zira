@@ -10,6 +10,7 @@ import { ModalTypes } from '@/src/shared/components/modals/types'
 import {
     DEFAULT_CATEGORIES,
     type AddNewFaqModalData,
+    type AddNewFaqPayload,
     type CategoryOption,
 } from '@/src/shared/components/modals/components/addNewFaq/schema'
 import TableHeader from './components/TableHeader'
@@ -19,6 +20,7 @@ import {
     FAQ_DUMMY,
     FAQ_TOGGLE_BUTTON_VALUE,
     OPEN_ADD_FAQ_EVENT,
+    UPSERT_FAQ_EVENT,
     TABLE_COLOUMN,
     filterFaqs,
     type FaqCategoryId,
@@ -69,44 +71,19 @@ const FaqContent = () => {
                 : 'material'
 
         openModal(ModalTypes.ADD_NEW_FAQ, {
-            isEditing: false,
             defaultValues: {
                 categoryId: defaultCategoryId,
-            },
-            onSubmit: ({ categoryId, categoryLabel, question, answer }) => {
-                const isKnownCategory = categoryId in FAQ_CATEGORY_LABELS
-
-                setItems((prev) => [
-                    {
-                        id: String(Date.now()),
-                        question,
-                        answer,
-                        category: isKnownCategory ? categoryId : categoryLabel,
-                        createdAt: '2025-12-21T00:00:00.000Z',
-                        visible: true,
-                    },
-                    ...prev,
-                ])
             },
         } satisfies AddNewFaqModalData)
     }
 
     const openEditFaqModal = (item: FaqRowData) => {
         openModal(ModalTypes.ADD_NEW_FAQ, {
-            isEditing: true,
+            id: item.id,
             defaultValues: {
                 categoryId: resolveCategoryId(item.category),
                 question: item.question,
                 answer: item.answer,
-            },
-            onSubmit: ({ categoryId, categoryLabel, question, answer }) => {
-                const isKnownCategory = categoryId in FAQ_CATEGORY_LABELS
-
-                updateItem(item.id, {
-                    question,
-                    answer,
-                    category: isKnownCategory ? categoryId : categoryLabel,
-                })
             },
         } satisfies AddNewFaqModalData)
     }
@@ -116,6 +93,42 @@ const FaqContent = () => {
         window.addEventListener(OPEN_ADD_FAQ_EVENT, handleOpen)
         return () => window.removeEventListener(OPEN_ADD_FAQ_EVENT, handleOpen)
     }, [activeCategory, openModal])
+
+    useEffect(() => {
+        const handleUpsert = (event: Event) => {
+            const payload = (event as CustomEvent<AddNewFaqPayload>).detail
+            if (!payload) return
+
+            const isKnownCategory = payload.categoryId in FAQ_CATEGORY_LABELS
+            const category = isKnownCategory
+                ? payload.categoryId
+                : payload.categoryLabel
+
+            if (payload.id) {
+                updateItem(payload.id, {
+                    question: payload.question,
+                    answer: payload.answer,
+                    category,
+                })
+                return
+            }
+
+            setItems((prev) => [
+                {
+                    id: String(Date.now()),
+                    question: payload.question,
+                    answer: payload.answer,
+                    category,
+                    createdAt: '2025-12-21T00:00:00.000Z',
+                    visible: true,
+                },
+                ...prev,
+            ])
+        }
+
+        window.addEventListener(UPSERT_FAQ_EVENT, handleUpsert)
+        return () => window.removeEventListener(UPSERT_FAQ_EVENT, handleUpsert)
+    }, [])
 
     return (
         <div className="flex flex-col gap-3" dir="rtl">

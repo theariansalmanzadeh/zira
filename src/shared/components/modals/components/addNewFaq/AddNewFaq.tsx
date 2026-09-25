@@ -14,13 +14,14 @@ import {
     getAddNewFaqDefaultValues,
     type AddNewFaqFormValues,
     type AddNewFaqModalData,
+    type AddNewFaqPayload,
 } from './schema'
 
 export type { AddNewFaqModalData, AddNewFaqPayload } from './schema'
 
 const AddNewFaq = ({ closeModal, data }: BaseModalProps) => {
     const modalData = (data as AddNewFaqModalData | null | undefined) ?? {}
-    const isEditing = Boolean(modalData.isEditing)
+    const isEditing = Boolean(modalData.id)
 
     const {
         control,
@@ -31,7 +32,7 @@ const AddNewFaq = ({ closeModal, data }: BaseModalProps) => {
     } = useForm<AddNewFaqFormValues>({
         resolver: zodResolver(addNewFaqFormSchema),
         defaultValues: getAddNewFaqDefaultValues(modalData.defaultValues),
-        mode: 'onChange',
+        mode: 'onSubmit',
     })
 
     const [categories, categoryId, isAddingCategory] = useWatch({
@@ -62,12 +63,13 @@ const AddNewFaq = ({ closeModal, data }: BaseModalProps) => {
         )
         if (!category) return
 
-        modalData.onSubmit?.({
+        const payload: AddNewFaqPayload = {
+            id: modalData.id,
             categoryId: category.id,
             categoryLabel: category.label,
             question: values.question.trim(),
             answer: values.answer.trim(),
-        })
+        }
         closeModal()
     }
 

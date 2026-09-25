@@ -1,4 +1,4 @@
-import StepperStatus from '@/src/shared/components/ui/StepperStatus'
+import StepperStatus from '@/src/shared/components/StepperStatus/StepperStatus'
 import ProductRequest from './components/ProductRequest'
 import PaymentSummary from './components/PaymentSummary'
 import PaymentDetails from './components/PaymentDetails'

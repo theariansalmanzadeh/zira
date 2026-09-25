@@ -43,10 +43,6 @@ const SelectProduct = dynamic(
   () => import('./components/selectProduct').then((mod) => mod.SelectProduct),
   { ssr: false }
 );
-const FilterProduct = dynamic(
-  () => import('./components/filterProduct').then((mod) => mod.FilterProduct),
-  { ssr: false }
-);
 const LocationGoods = dynamic(
   () => import('./components/locationGoods').then((mod) => mod.LocationGoods),
   { ssr: false }
@@ -80,7 +76,7 @@ const AddProductByCategory = dynamic(
   { ssr: false }
 );
 const AddProduct = dynamic(
-  () => import('./components/AddProduct'),
+  () => import('./components/addProduct'),
   { ssr: false }
 );
 const CategoryDetail = dynamic(
@@ -106,6 +102,22 @@ const ProductDetails = dynamic(
   () => import('./components/ProductDetails'),
   { ssr: false }
 );
+const BranchAllowance = dynamic(
+  () => import('./components/branchAllowance'),
+  { ssr: false }
+);
+const AllowedProducts = dynamic(
+  () => import('./components/allowedProducts'),
+  { ssr: false }
+);
+const PosBranchDetails = dynamic(
+  () => import('./components/posBranchDetails'),
+  { ssr: false }
+);
+const SizeGuidness = dynamic(
+  () => import('./components/sizeGuidness'),
+  { ssr: false }
+);
 
 const MODAL_COMPONENTS: Record<
   ModalType,
@@ -120,7 +132,6 @@ const MODAL_COMPONENTS: Record<
   [ModalTypes.ADD_EMPLOYEE]: SelectUserAndGroups,
   [ModalTypes.TABLE_SETTINGS]: TableSettings,
   [ModalTypes.SELECT_PRODUCT]: SelectProduct,
-  [ModalTypes.FILTER_PRODUCT]: FilterProduct,
   [ModalTypes.LOCATION_GOODS]: LocationGoods,
   [ModalTypes.SELL_INVOICE]: SellInvoice,
   [ModalTypes.EDIT_CUSTOMER]: EditCustomer,
@@ -135,6 +146,10 @@ const MODAL_COMPONENTS: Record<
   [ModalTypes.INVENTORY_PRODUCTS]: InventoryProducts,
   [ModalTypes.GOOD_ENTRY_DETAILS]: GoodEntryDetails,
   [ModalTypes.PRODUCT_DETAILS]: ProductDetails,
+  [ModalTypes.BRANCH_ALLOWANCE]: BranchAllowance,
+  [ModalTypes.ALLOWED_PRODUCTS]: AllowedProducts,
+  [ModalTypes.POS_BRANCH_DETAILS]: PosBranchDetails,
+  [ModalTypes.SIZE_GUIDNESS]: SizeGuidness,
 };
 
 const MODAL_CONFIG: Record<
@@ -184,10 +199,6 @@ const MODAL_CONFIG: Record<
   [ModalTypes.SELECT_PRODUCT]: {
     showCloseButton: true,
     className: 'max-h-[90vh] max-w-full overflow-y-auto border-0 sm:max-w-[1120px]',
-  },
-  [ModalTypes.FILTER_PRODUCT]: {
-    showCloseButton: true,
-    className: 'min-w-[360px]! max-h-[90vh] max-w-full overflow-y-auto border-0 sm:max-w-[480px]!',
   },
   [ModalTypes.LOCATION_GOODS]: {
     showCloseButton: true,
@@ -270,6 +281,30 @@ const MODAL_CONFIG: Record<
     className:
       'min-w-[640px]! max-h-[90vh] w-full max-w-[720px]! overflow-y-auto border-0 sm:max-w-[720px]!',
   },
+  [ModalTypes.BRANCH_ALLOWANCE]: {
+    title: 'مجوزهای شعبه',
+    showCloseButton: true,
+    className:
+      'min-w-[520px]! max-h-[90vh] w-full max-w-[560px]! overflow-y-auto border-0 sm:max-w-[560px]!',
+  },
+  [ModalTypes.ALLOWED_PRODUCTS]: {
+    title: 'کالاهای مجاز',
+    showCloseButton: true,
+    className:
+      'min-w-[1060px]! max-h-[90vh] w-full max-w-[1060px]! overflow-y-auto border-0 sm:max-w-[1060px]!',
+  },
+  [ModalTypes.POS_BRANCH_DETAILS]: {
+    title: 'دستگاه‌های POS',
+    showCloseButton: true,
+    className:
+      'min-w-[1180px]! max-h-[90vh] w-full max-w-[1180px]! overflow-y-auto border-0 sm:max-w-[1180px]!',
+  },
+  [ModalTypes.SIZE_GUIDNESS]: {
+    title: '',
+    showCloseButton: false,
+    className:
+      'min-w-0! max-h-[90vh] w-full max-w-[720px]! overflow-y-auto border-0 px-5 py-6 sm:max-w-[720px]!',
+  },
 };
 
 const Modal = () => {
@@ -302,7 +337,7 @@ const Modal = () => {
         {modalConfig.title && (
           <DialogTitle>
             {activeModal === ModalTypes.ADD_NEW_FAQ &&
-              (data as { isEditing?: boolean } | null)?.isEditing
+              (data as { id?: string } | null)?.id
               ? 'ویرایش سوال'
               : modalConfig.title}
           </DialogTitle>

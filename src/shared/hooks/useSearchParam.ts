@@ -31,5 +31,30 @@ export function useSearchParam() {
         [pathname, router, searchParams]
     );
 
-    return { addSearchParam, removeSearchParam };
+    const setSearchParams = useCallback(
+        (
+            updates: Record<string, string | null | undefined>,
+            options?: { replace?: boolean }
+        ) => {
+            const params = new URLSearchParams(searchParams.toString());
+
+            Object.entries(updates).forEach(([key, value]) => {
+                if (value == null || value === "") {
+                    params.delete(key);
+                } else {
+                    params.set(key, value);
+                }
+            });
+
+            const nextPath = buildPathWithParams(pathname, params);
+            if (options?.replace) {
+                router.replace(nextPath);
+            } else {
+                router.push(nextPath);
+            }
+        },
+        [pathname, router, searchParams]
+    );
+
+    return { addSearchParam, removeSearchParam, setSearchParams };
 }

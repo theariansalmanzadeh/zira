@@ -283,3 +283,123 @@ export const DISCREPANCY_TABLE_DUMMY: DiscrepancyTableItem[] = [
 
 export const DISCREPANCY_GRID_CLASS =
     'grid grid-cols-[minmax(0,0.55fr)_minmax(0,1.4fr)_minmax(0,0.7fr)_minmax(0,0.9fr)_minmax(0,0.9fr)_minmax(0,1.1fr)_minmax(0,1fr)_minmax(0,1.1fr)] items-center gap-3'
+
+export const COUNT2_FILTER_TOGGLE = [
+    { label: 'مغایرت‌ها', value: 'discrepancies' },
+    { label: 'همه', value: 'all' },
+] as const
+
+export type Count2Filter = 'all' | 'discrepancies'
+
+export const COUNT2_TABLE_COLOUMN: TableFilterItem[] = [
+    { id: 'row', header_label: 'ردیف', isChecked: true },
+    { id: 'productName', header_label: 'نام محصول', isChecked: true },
+    { id: 'productCode', header_label: 'کد محصول', isChecked: true },
+    { id: 'unit', header_label: 'واحد', isChecked: true },
+    { id: 'warehouse', header_label: 'انبار', isChecked: true },
+    { id: 'address', header_label: 'آدرس در انبار', isChecked: true },
+    { id: 'systemStock', header_label: 'موجودی سیستم', isChecked: true },
+    { id: 'count1', header_label: 'شمارش ۱', isChecked: true },
+    {
+        id: 'discrepancy',
+        header_label: 'مغایرت شمارش ۱',
+        isChecked: true,
+    },
+    { id: 'count2', header_label: 'شمارش ۲', isChecked: true },
+]
+
+export const COUNT2_TABLE_COLUMNS = [
+    { id: 'row', label: 'ردیف' },
+    { id: 'productName', label: 'نام محصول' },
+    { id: 'productCode', label: 'کد محصول' },
+    { id: 'unit', label: 'واحد' },
+    { id: 'warehouse', label: 'انبار' },
+    { id: 'address', label: 'آدرس در انبار' },
+    { id: 'systemStock', label: 'موجودی سیستم' },
+    { id: 'count1', label: 'شمارش ۱' },
+    { id: 'discrepancy', label: 'مغایرت شمارش ۱' },
+    { id: 'count2', label: 'شمارش ۲' },
+] as const
+
+export type Count2TableItem = {
+    id: string
+    row: number
+    productName: string
+    productCode: string
+    unit: string
+    warehouse: string
+    address: string
+    systemStock: number
+    count1: number
+    discrepancy: number
+    count2: string
+}
+
+export const COUNT2_TABLE_DUMMY: Count2TableItem[] = [
+    {
+        id: '1',
+        row: 1,
+        productName: 'لباس خواب ساتن',
+        productCode: '7352-63',
+        unit: 'عدد',
+        warehouse: 'مرکزی تهران',
+        address: 'A-R1-S2-B03',
+        systemStock: 420,
+        count1: 420,
+        discrepancy: 0,
+        count2: '420',
+    },
+    {
+        id: '2',
+        row: 2,
+        productName: 'شورت زنانه نخی',
+        productCode: '7352-71',
+        unit: 'عدد',
+        warehouse: 'مرکزی تهران',
+        address: 'A-R1-S2-B04',
+        systemStock: 35,
+        count1: 31,
+        discrepancy: -4,
+        count2: '31',
+    },
+]
+
+export const COUNT2_GRID_CLASS =
+    'grid grid-cols-[minmax(0,0.5fr)_minmax(0,1.3fr)_minmax(0,0.9fr)_minmax(0,0.6fr)_minmax(0,1fr)_minmax(0,1.1fr)_minmax(0,0.9fr)_minmax(0,0.8fr)_minmax(0,1.1fr)_minmax(0,1fr)] items-center gap-3'
+
+export const COUNT2_DISCREPANCY_REPORT_COLUMNS = [
+    { id: 'row', label: 'ردیف' },
+    { id: 'productName', label: 'نام محصول' },
+    { id: 'unit', label: 'واحد' },
+    { id: 'stock', label: 'موجودی' },
+    { id: 'count1', label: 'شمارش ۱' },
+    { id: 'count2', label: 'شمارش ۲' },
+    { id: 'discrepancy2', label: 'مغایرت شمارش ۲' },
+] as const
+
+export type Count2DiscrepancyReportItem = {
+    id: string
+    row: number
+    productName: string
+    unit: string
+    stock: number
+    count1: number
+    count2: number
+    discrepancy2: number
+}
+
+export const COUNT2_DISCREPANCY_REPORT_DUMMY: Count2DiscrepancyReportItem[] = [
+    {
+        id: '1',
+        row: 1,
+        productName: 'شورت زنانه نخی',
+        unit: 'عدد',
+        stock: 35,
+        count1: 31,
+        count2: 33,
+        discrepancy2: -2,
+    },
+]
+
+export const COUNT2_DISCREPANCY_REPORT_GRID_CLASS =
+    'grid grid-cols-[minmax(0,0.5fr)_minmax(0,1.5fr)_minmax(0,0.7fr)_minmax(0,0.9fr)_minmax(0,0.9fr)_minmax(0,0.9fr)_minmax(0,1.2fr)] items-center gap-3'

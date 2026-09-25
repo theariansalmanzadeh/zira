@@ -126,7 +126,7 @@ const ManagerForm = ({ setActiveStep }: ManagerFormProps) => {
                     type='button'
                     variant='outline'
                     size='lg'
-                    className='text-label-lg'
+                    className='text-label-lg '
                     onClick={() => setActiveStep(1)}
                 >
                     بازگشت

@@ -2,9 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import IconButton from '@/src/shared/components/ui/IconButton'
-import StepperStatus, {
-    type StepperStatusStep,
-} from '@/src/shared/components/ui/StepperStatus'
+import StepperStatus from '@/src/shared/components/StepperStatus/StepperStatus'
 import NewFactorProvider, {
     useNewFactorContext,
 } from './provider/NewFactorProvider'
@@ -13,6 +11,7 @@ import CustomerStep from './components/CustomerStep'
 import ItemsStep from './components/ItemsStep'
 import Summary from './components/Summary'
 import ActionButtons from './components/ActionButtons'
+import { StepperStatusStep } from '@/src/shared/components/StepperStatus/types'
 
 const NewFactorContent = () => {
     const { back } = useRouter()

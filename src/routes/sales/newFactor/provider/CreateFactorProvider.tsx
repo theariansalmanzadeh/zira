@@ -7,16 +7,16 @@ import React, {
     useMemo,
     useState,
 } from 'react'
-import type { CartItem, CreateFactorContextValue } from '../types'
+import type { CartItem, NewFactorContextValue } from '../types'
 import {
     FACTOR_CUSTOMERS,
     INITIAL_CART_ITEMS,
-    SETTLEMENT_OPTIONS,
+    SETTLEMENT_TYPE_OPTIONS,
     TAX_RATE,
     WAREHOUSE_OPTIONS,
 } from '../constants'
 
-const CreateFactorContext = createContext<CreateFactorContextValue | null>(null)
+const CreateFactorContext = createContext<NewFactorContextValue | null>(null)
 
 export function useCreateFactorContext() {
     const context = useContext(CreateFactorContext)
@@ -44,7 +44,7 @@ const CreateFactorProvider = ({ children }: CreateFactorProviderProps) => {
         WAREHOUSE_OPTIONS[0]?.value ?? ''
     )
     const [settlementType, setSettlementType] = useState(
-        SETTLEMENT_OPTIONS[0]?.value ?? ''
+        SETTLEMENT_TYPE_OPTIONS[0]?.value ?? ''
     )
 
     const goNext = useCallback(() => {

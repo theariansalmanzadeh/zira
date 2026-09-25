@@ -37,7 +37,7 @@ const StepperStatus = ({ steps, className, indexBased = false }: StepperStatusPr
                             key={step.id}
                             className='flex min-w-0 flex-1 flex-row items-start'
                         >
-                            <div className='flex min-w-0 flex-1 flex-col items-center gap-2'>
+                            <div className='flex min-w-0 max-w-fit px-4 flex-1 flex-col items-center gap-2'>
                                 <div
                                     className={cn(
                                         'flex size-10 shrink-0 items-center justify-center rounded-card-sm',

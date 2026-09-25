@@ -19,12 +19,19 @@ import { useSearchParams } from "next/navigation";
 import TableLoadingSkeleton from "@/src/shared/components/loading/TableLoadingSkeleton";
 import TableProvider, { useTable } from "@/src/shared/context/TableProvider";
 import { cn } from "@/src/shared/libs/utils";
+import { formatFaNumber } from "@/src/shared/libs/formatter";
+
+type ToggleButtonItem = {
+    label: string;
+    value: string;
+    count?: number;
+};
 
 type TableListLayoutProps = {
     children: React.ReactNode;
     value?: string;
     TableColoumn?: TableFilterItem[];
-    toggleButtonValue?: { label: string; value: string }[];
+    toggleButtonValue?: ToggleButtonItem[];
     hasHeaderActions?: boolean;
     isCardLayout?: boolean;
     className?: string;
@@ -107,8 +114,14 @@ const TableListLayoutInner = ({
                             <ToggleGroupItem
                                 key={item.value}
                                 value={item.value}
+                                className="gap-2"
                             >
-                                {item.label}
+                                <span>{item.label}</span>
+                                {item.count != null && (
+                                    <span className="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-surface-container-highest text-label-sm text-on-surface-variant group-data-[state=on]/toggle:bg-error-container group-data-[state=on]/toggle:text-error">
+                                        {formatFaNumber(item.count)}
+                                    </span>
+                                )}
                             </ToggleGroupItem>
                         ))}
                     </ToggleGroup>

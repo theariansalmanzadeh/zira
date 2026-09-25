@@ -29,6 +29,7 @@ export const addNewFaqFormSchema = z.object({
 export type AddNewFaqFormValues = z.infer<typeof addNewFaqFormSchema>
 
 export type AddNewFaqPayload = {
+    id?: string
     categoryId: string
     categoryLabel: string
     question: string
@@ -36,9 +37,8 @@ export type AddNewFaqPayload = {
 }
 
 export type AddNewFaqModalData = {
-    isEditing?: boolean
+    id?: string
     defaultValues?: Partial<AddNewFaqFormValues>
-    onSubmit?: (payload: AddNewFaqPayload) => void
 }
 
 export const ADD_NEW_FAQ_DEFAULT_VALUES: AddNewFaqFormValues = {

@@ -1,7 +1,7 @@
 export type {
     StepperStepStatus as StepStatus,
     StepperStatusStep as PreOrderStatusStep,
-} from '@/src/shared/components/ui/StepperStatus'
+} from '@/src/shared/components/StepperStatus/types'
 
 export type OrderItemRowData = {
     id: string

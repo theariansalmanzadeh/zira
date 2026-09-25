@@ -17,12 +17,20 @@ const InventoryList = dynamic(
     () => import('@/src/routes/inventoryManagment/inventoryList/InventoryList'),
     { loading: () => <TableLoadingSkeleton isPending /> }
 )
+const WarehouseReceipt = dynamic(
+    () => import('@/src/routes/inventoryManagment/warehouseReceipt/WarehouseReceipt'),
+    { loading: () => <TableLoadingSkeleton isPending /> }
+)
 const InventoryInvoice = dynamic(
     () => import('@/src/routes/inventoryManagment/inventoryInvoice/InventoryInvoice'),
     { loading: () => <TableLoadingSkeleton isPending /> }
 )
 const PreparationExit = dynamic(
     () => import('@/src/routes/inventoryManagment/preparationExit/PreparationExit'),
+    { loading: () => <TableLoadingSkeleton isPending /> }
+)
+const ShipmentStatus = dynamic(
+    () => import('@/src/routes/inventoryManagment/shipmentStatus/ShipmentStatus'),
     { loading: () => <TableLoadingSkeleton isPending /> }
 )
 const Transfer = dynamic(
@@ -61,7 +69,9 @@ const INVENTORY_PAGE_COMPONENTS: Partial<
     dashboard: InventoryDashboard,
     list: InventoryList,
     'goods-entry': InventoryInvoice,
+    'warehouse-receipt': WarehouseReceipt,
     'preparation-exit': PreparationExit,
+    'shipment-status': ShipmentStatus,
     transfer: Transfer,
     'change-address': ChangeAddress,
     stocktaking: StockTaking,

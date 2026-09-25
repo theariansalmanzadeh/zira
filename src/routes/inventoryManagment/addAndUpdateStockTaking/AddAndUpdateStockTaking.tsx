@@ -3,7 +3,9 @@
 import { useState } from 'react'
 import StepperStatus from '@/src/shared/components/StepperStatus/StepperStatus'
 import { useSearchParam } from '@/src/shared/hooks/useSearchParam'
+import Count2RegistrationTable from './components/Count2RegistrationTable'
 import CountRegistrationTable from './components/CountRegistrationTable'
+import Finalizing from './components/Finalizing'
 import InitialStockTakingForm from './components/InitialStockTakingForm'
 import Summary from './components/Summary'
 import {
@@ -65,13 +67,18 @@ const AddAndUpdateStockTaking = () => {
                 />
             )}
 
-            {activeStep !== STOCK_TAKING_STEPS.initial &&
-                activeStep !== STOCK_TAKING_STEPS.count1 &&
-                activeStep !== STOCK_TAKING_STEPS.discrepancy && (
-                    <div className='rounded-card-lg bg-surface-container-lowest p-6 text-label-lg text-outline'>
-                        مرحله بعد به‌زودی
-                    </div>
-                )}
+            {activeStep === STOCK_TAKING_STEPS.count2 && (
+                <Count2RegistrationTable
+                    onBack={() => goToStep(STOCK_TAKING_STEPS.discrepancy)}
+                    onContinue={() => goToStep(STOCK_TAKING_STEPS.finalize)}
+                />
+            )}
+
+            {activeStep === STOCK_TAKING_STEPS.finalize && (
+                <Finalizing
+                    onBack={() => goToStep(STOCK_TAKING_STEPS.count2)}
+                />
+            )}
         </div>
     )
 }

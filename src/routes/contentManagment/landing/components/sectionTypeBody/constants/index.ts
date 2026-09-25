@@ -1,4 +1,4 @@
-import type { LandingSectionStatus } from '../../types'
+import type { LandingSectionStatus } from '../../../types'
 
 export type BannerSlideItem = {
     id: string

@@ -8,7 +8,6 @@ import {
     TableRow as UiTableRow,
 } from '@/src/shared/components/ui/Table'
 import { useTable } from '@/src/shared/context/TableProvider'
-import { Icon } from '@/src/shared/components/Icons/Icon'
 import { formatFaNumber, formatFaDate } from '@/src/shared/libs/formatter'
 import { cn } from '@shared/libs/utils'
 import { getFaqCategoryPill, type FaqRowData } from '../constants'
@@ -31,14 +30,21 @@ const TableRow = ({
     isExpanded = false,
     onToggleExpand,
     onVisibleChange,
+    onEdit,
+    onDelete,
 }: TableRowProps) => {
     const { TableColoumn } = useTable()
-    const { question, answer, category, createdAt, visible } = data
+    const { id, question, answer, category, createdAt, visible } = data
     const categoryPill = getFaqCategoryPill(category)
     const visibleColumns = TableColoumn.filter((column) => column.isChecked)
     const { openModal } = useModalStore()
-    const onEdit = () => {
+    const handleEdit = () => {
+        if (onEdit) {
+            onEdit()
+            return
+        }
         openModal(ModalTypes.ADD_NEW_FAQ, {
+            id,
             defaultValues: {
                 isAddingCategory: false,
                 question,
@@ -47,7 +53,8 @@ const TableRow = ({
             },
         })
     }
-    const onDelete = () => {
+    const handleDelete = () => {
+        onDelete?.()
     }
 
     return (
@@ -66,14 +73,22 @@ const TableRow = ({
                 )}
                 {TableColoumn[1]?.isChecked && (
                     <TableCell>
-                        <div className="flex items-center gap-2 whitespace-normal">
-                            <Icon
-                                label="chevronDown400Linear"
-                                className={cn(
-                                    'size-4! shrink-0 text-outline transition-transform',
-                                    !isExpanded && '-rotate-90'
-                                )}
-                            />
+                        <div className="flex items-center gap-1.5 whitespace-normal">
+                            <span
+                                onClick={(event) => event.stopPropagation()}
+                                onKeyDown={(event) => event.stopPropagation()}
+                            >
+                                <IconButton
+                                    icon="chevronUp400Linear"
+                                    variant="ghost"
+                                    className="size-8! shrink-0"
+                                    iconClassName={cn(
+                                        'size-4! text-outline transition-transform',
+                                        !isExpanded && '-rotate-180'
+                                    )}
+                                    onClick={onToggleExpand}
+                                />
+                            </span>
                             <span className="text-on-surface">{question}</span>
                         </div>
                     </TableCell>
@@ -110,14 +125,14 @@ const TableRow = ({
                                 variant="ghost"
                                 className="size-9!"
                                 iconClassName="size-5! text-outline"
-                                onClick={onDelete}
+                                onClick={handleDelete}
                             />
                             <IconButton
                                 icon="editSquare400Linear"
                                 variant="ghost"
                                 className="size-9!"
                                 iconClassName="size-5! text-outline"
-                                onClick={onEdit}
+                                onClick={handleEdit}
                             />
                         </div>
                     </TableCell>

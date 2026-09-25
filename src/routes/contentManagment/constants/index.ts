@@ -45,6 +45,7 @@ export const CONTENT_SUB_PARAMS = [
     'certificates',
     'liecense',
     'liecense-new',
+    'liecense-details',
 ] as const
 
 export type ContentSubParam = (typeof CONTENT_SUB_PARAMS)[number]
@@ -54,7 +55,13 @@ export type HeadingButton = {
     icon?: IconLabel
     href?: string
     action?: () => void
-    actionKey?: 'add-faq' | 'export-excel' | 'preview' | 'publish'
+    actionKey?:
+        | 'add-faq'
+        | 'export-excel'
+        | 'preview'
+        | 'publish'
+        | 'edit-liecense'
+        | 'download-liecense'
     variant: 'primary' | 'default' | 'outline'
 }
 
@@ -90,10 +97,26 @@ export const sectionToHeading: Record<ContentSubParam, SectionHeading> = {
     about: {
         title: 'درباره ما',
         subtitle: 'بخش‌های صفحه «درباره ما» را ویرایش و منتشر کنید',
+        buttons: [
+            {
+                label: 'انتشار تغییرات',
+                icon: 'arrowUpward400Linear',
+                actionKey: 'publish',
+                variant: 'primary',
+            },
+        ],
     },
     'work-with-us': {
         title: 'همکاری با ما',
         subtitle: 'شرایط، مراحل و قوانین همکاری عمده‌فروشی',
+        buttons: [
+            {
+                label: 'انتشار تغییرات',
+                icon: 'arrowUpward400Linear',
+                actionKey: 'publish',
+                variant: 'primary',
+            },
+        ],
     },
     faq: {
         title: 'سوالات متداول',
@@ -169,6 +192,24 @@ export const sectionToHeading: Record<ContentSubParam, SectionHeading> = {
         title: 'بارگذاری گواهی جدید',
         subtitle: 'فیلدهای ستاره‌دار الزامی هستند',
     },
+    'liecense-details': {
+        title: 'جزئیات سند',
+        subtitle: 'اطلاعات صدور و فایل مجوز',
+        buttons: [
+            {
+                label: 'ویرایش',
+                icon: 'editSquare400Linear',
+                actionKey: 'edit-liecense',
+                variant: 'primary',
+            },
+            {
+                label: 'دانلود',
+                icon: 'download400Linear',
+                actionKey: 'download-liecense',
+                variant: 'outline',
+            },
+        ],
+    },
 }
 
 export const getContentSectionKey = (sub: string): ContentSubParam =>
@@ -182,6 +223,9 @@ export const getContentSectionKeyFromPath = (
 ): ContentSubParam | null => {
     if (pathname.startsWith('/admin/content-managment/liecense/new')) {
         return 'liecense-new'
+    }
+    if (/^\/admin\/content-managment\/liecense\/[^/]+\/?$/.test(pathname)) {
+        return 'liecense-details'
     }
     if (
         pathname === '/admin/content-managment/liecense' ||

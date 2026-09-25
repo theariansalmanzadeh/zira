@@ -12,7 +12,6 @@ import { VariantProps } from 'class-variance-authority'
 import { cn } from '@shared/libs/utils'
 import { EXPANDED_ITEM_COLUMNS, ITEM_GRID_CLASS } from '../constants'
 import type { StockReturnRowData, StockReturnStatus } from '../types'
-
 export type {
     StockReturnFilterTab,
     StockReturnItem,
@@ -47,6 +46,13 @@ const TableRow = ({ data }: TableRowProps) => {
         items = [],
     } = data
     const statusConfig = STATUS_CONFIG[status]
+    const showActions = statusConfig.variant === 'info'
+    const expandedColumns = showActions
+        ? EXPANDED_ITEM_COLUMNS
+        : EXPANDED_ITEM_COLUMNS.filter((column) => column.id !== 'action')
+    const expandedGridClass = showActions
+        ? ITEM_GRID_CLASS
+        : 'grid grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)] items-center gap-3'
     const gridTemplateColumns = visibleTableColoumn
         .map((_, index) =>
             index === visibleTableColoumn.length - 1 ? 'auto' : 'minmax(0, 1fr)'
@@ -103,11 +109,11 @@ const TableRow = ({ data }: TableRowProps) => {
                 <div className='rounded-card-md bg-surface-container-lowest p-3'>
                     <div
                         className={cn(
-                            ITEM_GRID_CLASS,
+                            expandedGridClass,
                             'px-2 py-2 text-label-md font-medium text-outline'
                         )}
                     >
-                        {EXPANDED_ITEM_COLUMNS.map((column) => (
+                        {expandedColumns.map((column) => (
                             <div key={column.id}>{column.label}</div>
                         ))}
                     </div>
@@ -117,34 +123,36 @@ const TableRow = ({ data }: TableRowProps) => {
                             <div
                                 key={item.id}
                                 className={cn(
-                                    ITEM_GRID_CLASS,
+                                    expandedGridClass,
                                     'rounded-card-sm bg-surface-container-high/40 px-2 py-2.5 text-label-lg text-on-surface-variant'
                                 )}
                             >
                                 <div>{item.productName}</div>
                                 <div>{item.unit}</div>
                                 <div>{item.declaredQty}</div>
-                                <div className='flex flex-row items-center justify-end gap-2'>
-                                    <Button
-                                        type='button'
-                                        variant='ghost'
-                                        className='rounded-button-md bg-success-container px-4 text-label-sm text-on-success-container hover:bg-success-container/80'
-                                        onClick={() =>
-                                            push(
-                                                `/admin/inventory-managment/stock-returns/${id}`
-                                            )
-                                        }
-                                    >
-                                        تایید و ثبت دریافت
-                                    </Button>
-                                    <Button
-                                        type='button'
-                                        variant='ghost'
-                                        className='rounded-button-md bg-error-container px-4 text-label-sm text-error hover:bg-error-container/80'
-                                    >
-                                        رد
-                                    </Button>
-                                </div>
+                                {showActions && (
+                                    <div className='flex flex-row items-center justify-end gap-2'>
+                                        <Button
+                                            type='button'
+                                            variant='ghost'
+                                            className='rounded-button-md bg-success-container px-4 text-label-sm text-on-success-container hover:bg-success-container/80'
+                                            onClick={() =>
+                                                push(
+                                                    `/admin/inventory-managment/stock-returns/${id}`
+                                                )
+                                            }
+                                        >
+                                            تایید و ثبت دریافت
+                                        </Button>
+                                        <Button
+                                            type='button'
+                                            variant='ghost'
+                                            className='rounded-button-md bg-error-container px-4 text-label-sm text-error hover:bg-error-container/80'
+                                        >
+                                            رد
+                                        </Button>
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>

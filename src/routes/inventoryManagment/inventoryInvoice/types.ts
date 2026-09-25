@@ -10,6 +10,8 @@ export type InventoryInvoiceDetailItem = {
     id: string
     size: string
     color: string
+    colorHex: string
+    materialHex: string
     model: string
     material: string
     labels: string

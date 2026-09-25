@@ -23,6 +23,7 @@ const ProductsList = () => {
                         discount={product.discount}
                         isLoggedIn={product.isLoggedIn || false}
                         image={product.image}
+                        status={product.status}
                     />
                 ))}
             </ProductsLayout>

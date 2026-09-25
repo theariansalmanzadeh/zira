@@ -3,6 +3,7 @@ import type { VariantProps } from 'class-variance-authority'
 import type { PillVariants } from '@/src/shared/components/ui/Pill'
 
 export const OPEN_ADD_FAQ_EVENT = 'content-managment:open-add-faq'
+export const UPSERT_FAQ_EVENT = 'content-managment:upsert-faq'
 
 export type FaqCategoryId =
     | 'all'

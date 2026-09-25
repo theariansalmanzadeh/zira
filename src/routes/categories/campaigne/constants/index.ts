@@ -33,7 +33,7 @@ export const CAMPAIGN_STATUS_VARIANT: Record<
 > = {
     active: 'success',
     inactive: 'error',
-    archive: 'default',
+    archive: 'tonal',
     draft: 'warning',
 }
 

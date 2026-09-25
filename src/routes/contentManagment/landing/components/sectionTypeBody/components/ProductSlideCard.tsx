@@ -4,6 +4,7 @@ import IconButton from '@/src/shared/components/ui/IconButton'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 import { cn } from '@shared/libs/utils'
 import type { ProductSlideItem } from '../constants'
+import { Icon } from '@/src/shared/components/Icons/Icon'
 
 type ProductSlideCardProps = {
     data: ProductSlideItem
@@ -56,19 +57,26 @@ const ProductSlideCard = ({
                             {formatFaNumber(data.discountPercent!)}٪
                         </span>
                     ) : null}
-                    <span
-                        className={cn(
-                            'text-label-lg font-bold',
-                            hasDiscount ? 'text-success' : 'text-on-surface'
-                        )}
-                    >
-                        {formatFaNumber(data.price)} تومان
-                    </span>
+                    <div className='flex items-center gap-1'>
+                        <span
+                            className={cn(
+                                'text-label-lg font-bold',
+                                hasDiscount ? 'text-success' : 'text-on-surface'
+                            )}
+                        >
+                            {formatFaNumber(data.price)}
+                        </span>
+                        <Icon label='currency' className='size-4.5! text-on-surface-variant' />
+                    </div>
                 </div>
                 {hasDiscount ? (
-                    <span className="text-label-sm text-outline line-through">
-                        {formatFaNumber(data.originalPrice!)} تومان
-                    </span>
+                    <div className='flex items-center gap-1'>
+
+                        <span className="text-label-sm text-outline line-through">
+                            {formatFaNumber(data.originalPrice!)}
+                        </span>
+                        <Icon label='currency' className='size-4.5! text-on-surface-variant' />
+                    </div>
                 ) : null}
             </div>
 

@@ -1,13 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import IconButton from '@/src/shared/components/ui/IconButton'
 import { useTable } from '@/src/shared/context/TableProvider'
 import { Pill, PillVariants } from '@/src/shared/components/ui/Pill'
-import { formatFaDate } from '@/src/shared/libs/formatter'
 import { VariantProps } from 'class-variance-authority'
-import { cn } from '@shared/libs/utils'
-import { DETAIL_COLUMNS, DETAIL_GRID_CLASS } from '../constants'
 import type {
     InventoryInvoiceRowData,
     InventoryInvoiceStatus,
@@ -33,9 +30,10 @@ export type TableRowProps = {
 }
 
 const TableRow = ({ data }: TableRowProps) => {
+    const router = useRouter()
     const { TableColoumn, visibleTableColoumn } = useTable()
-    const [isExpanded, setIsExpanded] = useState(false)
     const {
+        id,
         productCode,
         mainCategory,
         subCategory,
@@ -43,10 +41,8 @@ const TableRow = ({ data }: TableRowProps) => {
         size,
         model,
         status,
-        details,
     } = data
     const statusConfig = STATUS_CONFIG[status]
-    const detail = details[0]
     const gridTemplateColumns = visibleTableColoumn
         .map((_, index) =>
             index === visibleTableColoumn.length - 1 ? 'auto' : 'minmax(0, 1fr)'
@@ -79,48 +75,16 @@ const TableRow = ({ data }: TableRowProps) => {
                     <div className='flex justify-end'>
                         <IconButton
                             icon='chevronLeft300Linear'
-                            iconClassName={cn(
-                                'size-6! transition-transform',
-                                isExpanded && '-rotate-90'
-                            )}
-                            onClick={() => setIsExpanded((prev) => !prev)}
+                            iconClassName='size-6!'
+                            onClick={() =>
+                                router.push(
+                                    `/admin/inventory-managment/goods-entry/${id}`
+                                )
+                            }
                         />
                     </div>
                 )}
             </div>
-
-            {isExpanded && (
-                <div className='overflow-x-auto rounded-card-md bg-surface-container-lowest p-3'>
-                    <div
-                        className={cn(
-                            DETAIL_GRID_CLASS,
-                            'min-w-[1100px] px-2 py-2 text-label-md font-medium text-outline'
-                        )}
-                    >
-                        {DETAIL_COLUMNS.map((column) => (
-                            <div key={column.id}>{column.label}</div>
-                        ))}
-                    </div>
-
-                    <div
-                        className={cn(
-                            DETAIL_GRID_CLASS,
-                            'min-w-[1100px] rounded-card-sm bg-surface-container-high/40 px-2 py-2.5 text-label-lg text-on-surface-variant'
-                        )}
-                    >
-                        <div>{detail.size}</div>
-                        <div>{detail.color}</div>
-                        <div>{detail.material}</div>
-                        <div>{detail.labels}</div>
-                        <div>{detail.supplier}</div>
-                        <div>{detail.warehouseName}</div>
-                        <div>{formatFaDate(detail.requestDate, { timeZone: 'UTC' })}</div>
-                        <div>{formatFaDate(detail.receiveDate, { timeZone: 'UTC' })}</div>
-                        <div>{detail.countedQty}</div>
-                        <div>{detail.productAddress}</div>
-                    </div>
-                </div>
-            )}
         </div>
     )
 }

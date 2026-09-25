@@ -17,6 +17,8 @@ export const ROUTE_CONFIGS = {
             { label: "لیست کالا", value: "products" },
             { label: "نقشه انبار", value: "warehouseMap" },
             { label: "کارمندان", value: "employees" },
+            { label: "صندوق ها", value: "cashRegisters" },
+            { label: "حساب های بانکی", value: "bankAccounts" },
         ],
     },
     prePurchase: {
@@ -226,6 +228,26 @@ export const ROUTE_CONFIGS = {
             { label: "در انتظار", value: "pending" },
             { label: "تعیین‌نشده", value: "unassigned" },
             { label: "تأییدشده", value: "confirmed" },
+        ],
+    },
+    warehouseTransferTracking: {
+        TOGGLE_BUTTON_VALUE: [
+            { label: "همه", value: "all" },
+            { label: "در انتظار تأیید", value: "accepting" },
+            { label: "در حال جابجایی", value: "transferring" },
+            { label: "دریافت شده", value: "received" },
+            { label: "قطعی شده", value: "completed" },
+            { label: "لغو شده", value: "cancelled" },
+        ],
+    },
+    shipmentStatus: {
+        TOGGLE_BUTTON_VALUE: [
+            { label: "همه", value: "all", count: 7 },
+            { label: "در حال آماده‌سازی", value: "preparing", count: 1 },
+            { label: "در حال انتقال داخلی", value: "internal-transfer", count: 1 },
+            { label: "در حال ارسال به مشتری", value: "sending-to-customer", count: 2 },
+            { label: "ارسال شد", value: "sent", count: 1 },
+            { label: "دریافت توسط مشتری", value: "received-by-customer", count: 2 },
         ],
     },
     waste: {

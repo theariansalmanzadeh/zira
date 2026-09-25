@@ -4,7 +4,7 @@ import { useState } from 'react'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Button } from '@/src/shared/components/ui/button'
-import type { BaseModalProps } from '../../types'
+import type { BaseModalProps } from '../types'
 
 export type EditCustomerModalData = {
     firstName?: string

@@ -28,9 +28,6 @@ export const DETAIL_COLUMNS = [
     { id: 'productAddress', label: 'آدرس کالا' },
 ] as const
 
-export const DETAIL_GRID_CLASS =
-    'grid grid-cols-[repeat(10,minmax(0,1fr))] items-center gap-3'
-
 const createDetail = (
     detail: InventoryInvoiceDetailItem
 ): [InventoryInvoiceDetailItem] => [detail]
@@ -50,6 +47,8 @@ export const INVENTORY_INVOICE_DUMMY: InventoryInvoiceRowData[] = [
             id: 'd-1',
             size: 'L',
             color: 'سفید',
+            colorHex: '#F5F5F5',
+            materialHex: '#E8E0F0',
             model: 'کلاسیک',
             material: 'ساتن',
             labels: 'اورجینال',
@@ -75,6 +74,8 @@ export const INVENTORY_INVOICE_DUMMY: InventoryInvoiceRowData[] = [
             id: 'd-2',
             size: 'دونفره',
             color: 'کرم',
+            colorHex: '#E8D5B5',
+            materialHex: '#F3E6D0',
             model: 'ساده',
             material: 'نخ',
             labels: 'ایرانی',
@@ -100,6 +101,8 @@ export const INVENTORY_INVOICE_DUMMY: InventoryInvoiceRowData[] = [
             id: 'd-3',
             size: 'بزرگ',
             color: 'آبی',
+            colorHex: '#5B8DEF',
+            materialHex: '#D7E4F5',
             model: 'پنبه‌ای',
             material: 'پنبه',
             labels: 'وارداتی',
@@ -124,7 +127,9 @@ export const INVENTORY_INVOICE_DUMMY: InventoryInvoiceRowData[] = [
         details: createDetail({
             id: 'd-4',
             size: 'XL',
-            color: 'مشکی',
+            color: 'طوسی',
+            colorHex: '#9A9A9A',
+            materialHex: '#C8B99A',
             model: 'بیسیک',
             material: 'کتان',
             labels: 'اورجینال',

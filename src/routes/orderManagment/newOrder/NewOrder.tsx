@@ -2,9 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import IconButton from '@/src/shared/components/ui/IconButton'
-import StepperStatus, {
-    type StepperStatusStep,
-} from '@/src/shared/components/ui/StepperStatus'
+import StepperStatus from '@/src/shared/components/StepperStatus/StepperStatus'
 import CreateOrderProvider, {
     useCreateOrderContext,
 } from './provider/CreateOrderProvider'
@@ -14,6 +12,7 @@ import ItemsStep from './components/ItemsStep'
 import PaymentStrategy from './components/PaymentStrategy'
 import ConfirmStep from './components/ConfirmStep'
 import ActionButtons from './components/ActionButtons'
+import { StepperStatusStep } from '@/src/shared/components/StepperStatus/types'
 
 const NewOrderContent = () => {
     const { back } = useRouter()

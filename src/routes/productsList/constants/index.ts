@@ -7,6 +7,7 @@ export type PlpProduct = {
     isLoggedIn?: boolean
     image: string
     description: string
+    status?: 'available' | 'soon' | 'preorder'
 }
 
 export const PLP_PRODUCTS: PlpProduct[] = [
@@ -17,6 +18,7 @@ export const PLP_PRODUCTS: PlpProduct[] = [
         price: 1280000,
         discount: '10',
         isLoggedIn: true,
+        status: 'available',
         image: '/images/product1.jpg',
         description: 'بادی گیپور برند Lorenzo مناسب استفاده روزمره و رسمی',
     },
@@ -26,6 +28,7 @@ export const PLP_PRODUCTS: PlpProduct[] = [
         brand: 'Victoria',
         price: 2450000,
         discount: '15',
+        status: 'soon',
         image: '/images/product1.jpg',
         description: 'ست لباس خواب ساتن برند Victoria با بافت نرم و لطیف',
     },
@@ -34,6 +37,7 @@ export const PLP_PRODUCTS: PlpProduct[] = [
         title: 'شورت کشی مشکی',
         brand: 'Lorenzo',
         price: 390000,
+        status: 'preorder',
         image: '/images/product1.jpg',
         description: 'شورت کشی مشکی Lorenzo با کشسانی بالا و راحتی تمام‌روز',
     },

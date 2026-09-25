@@ -1,8 +1,8 @@
 'use client'
 
 import InfoCardField from '@/src/shared/components/infoCard/components/InfoCardField'
-import { Avatar, AvatarFallback } from '@/src/shared/components/ui/Avatar'
 import { DEFAULT_CUSTOMER_GROUP_DETAILS } from '@/src/shared/components/modals/components/CustomerGroupDetails.types'
+import { Avatar, AvatarFallback } from '@/src/shared/components/ui/Avatar'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 
 type HeaderProps = {

@@ -2,7 +2,7 @@
 
 import SummaryCard from '@/src/shared/components/ui/SummaryCard'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
-import type { EventSummaryCardItem } from '../constants'
+import { EventSummaryCardItem } from '../../constants'
 
 type EventSummaryCardsProps = {
     items: EventSummaryCardItem[]

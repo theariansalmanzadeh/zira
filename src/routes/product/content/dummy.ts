@@ -34,6 +34,14 @@ export const COLOR_ITEMS = [
     { label: "صورتی", value: "pink", color: "#EC4899" },
 ];
 
+export const PRODUCT_TAGS = [
+    { id: 'herbal', label: 'گیاهی', variant: 'success' as const, icon: 'verified400Linear' as const },
+    { id: 'hypoallergenic', label: 'ضد حساسیت', variant: 'info' as const, icon: 'shield400Linear' as const },
+    { id: 'satin', label: 'ساتن ابریشم' },
+    { id: 'wrinkle-free', label: 'ضد چروک' },
+    { id: 'export', label: 'بسته‌بندی صادراتی', variant: 'warning' as const, icon: 'checkCircle400Linear' as const },
+]
+
 export const PRODUCT_DETAILS = [
     { label: "کد محصول", value: "2703-hd63-02" },
     { label: "برند", value: "نام برند" },
