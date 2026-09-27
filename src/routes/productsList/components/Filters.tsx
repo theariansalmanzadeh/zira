@@ -9,7 +9,7 @@ import {
     SheetTrigger,
 } from '@/src/shared/components/ui/Sheet'
 import RangItems from './RangItems'
-import SelectableItems from './SelectableItems'
+import SelectableItems, { type FilterQueryKey } from './SelectableItems'
 import { DialogClose } from '@/src/shared/components/ui/Dialog'
 
 const FILTER_ITEMS = [
@@ -68,7 +68,7 @@ const FilterRows = ({ onSelect }: { onSelect: (id: string) => void }) => (
                 key={item.id}
                 type='button'
                 onClick={() => onSelect(item.id)}
-                className='flex items-center justify-between gap-3 border-b border-outline-variant py-4 text-right'
+                className='flex items-center justify-between gap-3 border-b border-outline-variant py-4 text-right cursor-pointer'
             >
                 <div className='flex flex-col gap-1'>
                     <span className='text-title-md text-on-surface'>{item.label}</span>
@@ -131,6 +131,7 @@ const Filters = () => {
             hint={selectable.hint}
             searchPlaceholder={selectable.searchPlaceholder}
             items={selectable.items}
+            queryKey={activeId as Exclude<FilterQueryKey, 'price'>}
             onBack={() => setActiveId(null)}
         />
     ) : (

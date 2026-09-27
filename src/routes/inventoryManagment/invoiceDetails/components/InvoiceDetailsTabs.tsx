@@ -1,7 +1,5 @@
 'use client'
 
-import { Icon } from '@/src/shared/components/Icons/Icon'
-import { Button } from '@/src/shared/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/shared/components/ui/Tabs'
 import type { RequestDetailsData } from '../constants'
 import ProductAddress from './ProductAddress'
@@ -21,27 +19,6 @@ const InvoiceDetailsTabs = ({ request }: { request: RequestDetailsData }) => (
                     آدرس کالا
                 </TabsTrigger>
             </TabsList>
-            <div className='flex flex-row items-center gap-2'>
-                <Button
-                    type='button'
-                    variant='outline'
-                    className='flex flex-row-reverse items-center justify-center gap-sm'
-                >
-                    جدیدترین
-                    <Icon
-                        label='filter400Linear'
-                        className='size-4 text-on-surface-variant'
-                    />
-                </Button>
-                <Button
-                    type='button'
-                    variant='outline'
-                    className='flex flex-row-reverse items-center justify-center gap-sm text-on-surface-variant'
-                >
-                    فیلتر ها
-                    <Icon label='tune400Linear' className='size-4' />
-                </Button>
-            </div>
         </div>
         <div className='rounded-card-md bg-surface-container-lowest p-4'>
             <TabsContent value='request'>

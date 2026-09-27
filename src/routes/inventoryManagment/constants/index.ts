@@ -133,6 +133,11 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
         title: 'آماده‌سازی و خروج کالا',
         subtitle: 'آماده‌سازی و ثبت خروج کالا از انبار',
     },
+    'preparation-exit-details': {
+        title: 'جزئیات خروج کالا',
+        subtitle: 'اطلاعات فاکتور، مشتری و انبار تحویل‌دهنده',
+        hasBackButton: true,
+    },
     'shipment-status': {
         title: 'وضعیت مرسوله‌ها',
         subtitle: 'پیگیری وضعیت آماده‌سازی، ارسال و تحویل مرسوله‌ها',
@@ -261,6 +266,9 @@ export const getInventorySectionKeyFromPath = (
     pathname: string,
     searchParams: Pick<URLSearchParams, 'get'>
 ): string => {
+    if (pathname.startsWith('/admin/inventory-managment/preparation-exit/')) {
+        return 'preparation-exit-details'
+    }
     if (pathname.startsWith('/admin/inventory-managment/goods-entry/')) {
         return 'goods-entry-details'
     }

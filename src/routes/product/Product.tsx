@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from 'react'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { ToggleGroup, ToggleGroupItem } from '@/src/shared/components/ui/ToggleGroup'
 import CTA from './components/CTA'
@@ -9,7 +8,6 @@ import Details from './components/Details'
 import DeliveryInfo from './components/DeliveryInfo'
 import ProductCarousel from './components/ProductCarousel'
 import {
-    COLOR_ITEMS,
     PRODUCT_DETAILS,
     PRODUCT_TAGS,
     QUANTITY_ITEMS,
@@ -19,6 +17,8 @@ import type { PlpProduct } from '@/src/routes/productsList/constants'
 import { useModalStore } from '@/src/shared/store/modal-store'
 import { ModalTypes } from '@/src/shared/components/modals/types'
 import Images from './components/Images'
+import Colors from './components/Colors'
+import { useProduct } from './context/Provider'
 
 const handleToggleChange =
     (setter: (value: string) => void) => (value: string) => {
@@ -26,9 +26,13 @@ const handleToggleChange =
     }
 
 const Product = ({ product }: { product?: PlpProduct }) => {
-    const [quantity, setQuantity] = useState('custom-pack')
-    const [size, setSize] = useState(SIZE_ITEMS[0].value)
-    const [color, setColor] = useState(COLOR_ITEMS[0].value)
+    const {
+        quantity,
+        setQuantity,
+        sizes,
+        setSizes,
+        isCustomPack,
+    } = useProduct()
     const openModal = useModalStore((state) => state.openModal)
 
     return (
@@ -44,7 +48,7 @@ const Product = ({ product }: { product?: PlpProduct }) => {
                         '/images/item-3.jpg',
                     ]}
                 />
-                <div className="basis-1/2 rounded-t-2xl p-lg flex flex-col gap-xl relative -mt-xl">
+                <div className="relative -mt-xl flex min-w-0 basis-1/2 flex-col gap-xl rounded-t-2xl p-lg">
                     <span className="text-outline">{product?.brand ?? 'برند'}</span>
                     <h2 className="text-title-lg font-bold text-on-surface">{product?.title ?? 'عنوان محصول'}</h2>
                     <div className="flex flex-col gap-3">
@@ -88,13 +92,14 @@ const Product = ({ product }: { product?: PlpProduct }) => {
                                 راهنمای سایز‌بندی
                             </button>
                         </div>
+                        {isCustomPack ? (
                         <ToggleGroup
                             dir='rtl'
                             variant="outline"
-                            type="single"
+                            type="multiple"
                             className='flex-wrap'
-                            value={size}
-                            onValueChange={handleToggleChange(setSize)}
+                            value={sizes}
+                            onValueChange={setSizes}
                         >
                             {SIZE_ITEMS.map((item) => (
                                 <ToggleGroupItem
@@ -107,34 +112,33 @@ const Product = ({ product }: { product?: PlpProduct }) => {
                                 </ToggleGroupItem>
                             ))}
                         </ToggleGroup>
-                    </div>
-                    <div className="flex flex-col gap-3">
-                        <span className="text-title-md font-normal text-on-surface-variant">رنگ</span>
+                        ) : (
                         <ToggleGroup
                             dir='rtl'
-                            variant="filled"
+                            variant="outline"
                             type="single"
                             className='flex-wrap'
-                            value={color}
-                            onValueChange={handleToggleChange(setColor)}
+                            value={sizes[0] ?? ''}
+                            onValueChange={(value) => {
+                                if (value) setSizes([value])
+                            }}
                         >
-                            {COLOR_ITEMS.map((item) => (
+                            {SIZE_ITEMS.map((item) => (
                                 <ToggleGroupItem
                                     key={item.value}
-                                    className='text-title-md px-1 py-1'
+                                    className=' text-title-md'
                                     value={item.value}
                                     aria-label={item.label}
                                 >
-                                    <div className='flex flex-row items-center gap-1'>
-                                        <div
-                                            className='h-6 w-6 rounded-full'
-                                            style={{ backgroundColor: item.color }}
-                                        />
-                                        <span>{item.label}</span>
-                                    </div>
+                                    {item.label}
                                 </ToggleGroupItem>
                             ))}
                         </ToggleGroup>
+                        )}
+                    </div>
+                    <div className="flex flex-col gap-3">
+                        <span className="text-title-md font-normal text-on-surface-variant">رنگ</span>
+                        <Colors />
                     </div>
                     <Tags tags={PRODUCT_TAGS} />
                     <DeliveryInfo quantity={10} deliveryTime="۳ تا ۵ روز کاری" />

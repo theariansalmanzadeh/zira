@@ -203,7 +203,6 @@ const NewLiecense = () => {
                         type="submit"
                         variant="primary"
                         className="flex-1 gap-2"
-                        disabled={!isValid}
                     >
                         <Icon
                             label="checkSm400Linear"

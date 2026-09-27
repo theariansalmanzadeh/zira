@@ -1,5 +1,5 @@
 import { Carousel, CarouselContent, CarouselDots, CarouselItem } from '@/src/shared/components/ui/Carousel'
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import ProductModal from './ProductModal'
 import { useProduct } from '../context/Provider'
@@ -11,8 +11,14 @@ type ImagesProps = {
 
 const Images = ({ images }: ImagesProps) => {
     const { setOpenProductModal } = useProduct();
+    const [selectedImageIndex, setSelectedImageIndex] = useState(0)
     const thumbnails = images.slice(1, 5)
     const hasMore = images.length > 4
+
+    const openImage = (index: number) => {
+        setSelectedImageIndex(index)
+        setOpenProductModal(true)
+    }
     return (
         <div className='w-full md:w-1/2!'>
             <Carousel className="md:hidden flex h-[60vh]! relative">
@@ -24,7 +30,7 @@ const Images = ({ images }: ImagesProps) => {
                 <CarouselDots className="mt-xl absolute bottom-5 left-1/2 translate-x-1/2" />
             </Carousel>
             <div className="md:flex flex-col gap-lg hidden min-h-[821px] self-stretch">
-                <div className='w-full h-full aspect-3/4 bg-surface-container-high overflow-hidden rounded-card-lg' onClick={() => setOpenProductModal(true)}>
+                <div className='w-full h-full aspect-3/4 bg-surface-container-high overflow-hidden rounded-card-lg cursor-pointer' onClick={() => openImage(0)}>
                     <Image src={images[0]} alt="product-1" width={500} height={1000} className='w-full h-full object-cover' />
                 </div>
                 <div className='flex flex-row items-center justify-between gap-1'>
@@ -33,8 +39,8 @@ const Images = ({ images }: ImagesProps) => {
                         return (
                             <div
                                 key={`${src}-${index}`}
-                                className='relative w-full h-full aspect-3/4 bg-surface-container-high overflow-hidden rounded-card-lg self-stretch'
-                                onClick={isLast ? () => setOpenProductModal(true) : undefined}
+                                className='relative w-full h-full aspect-3/4 bg-surface-container-high overflow-hidden rounded-card-lg self-stretch cursor-pointer'
+                                onClick={() => openImage(index + 1)}
                             >
                                 <Image src={src} alt='product-1' width={500} height={1000} className='h-full w-full object-cover' />
                                 {isLast && (
@@ -49,7 +55,7 @@ const Images = ({ images }: ImagesProps) => {
                     })}
                 </div>
             </div>
-            <ProductModal />
+            <ProductModal images={images} imageIndex={selectedImageIndex} />
         </div>
     )
 }

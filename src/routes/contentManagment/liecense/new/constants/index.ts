@@ -41,3 +41,4 @@ export const DOCUMENT_VISIBILITY_OPTIONS: {
 ]
 
 export const FILE_UPLOAD_HINT = 'PDF یا تصویر (JPG/PNG) · حداکثر ۵ مگابایت'
+export const FILE_UPLOAD_PDF_HINT = 'PDF · حداکثر ۵ مگابایت'

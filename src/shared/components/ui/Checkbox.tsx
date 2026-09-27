@@ -6,7 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@shared/libs/utils";
 
 const checkboxVariants = cva(
-  "grid place-content-center peer h-4 w-4 shrink-0 rounded-sm border ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+  "grid place-content-center peer h-4 w-4 shrink-0 overflow-hidden rounded-sm border ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -42,7 +42,7 @@ const Checkbox = React.forwardRef<
   >
     <CheckboxPrimitive.Indicator
       className={cn(
-        "grid place-content-center text-current data-[state=checked]:bg-primary data-[state=checked]:text-white"
+        "grid place-content-center text-current data-[state=checked]:bg-primary data-[state=checked]:text-white p-0.5"
       )}
     >
       <Check className="h-4 w-4 group-data-[state=indeterminate]:hidden" />

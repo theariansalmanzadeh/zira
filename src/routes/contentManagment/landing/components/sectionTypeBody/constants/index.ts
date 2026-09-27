@@ -8,6 +8,17 @@ export type BannerSlideItem = {
     thumbnailClassName: string
 }
 
+export type BrandSlideItem = {
+    id: string
+    title: string
+    subtitle: string
+    status: Extract<LandingSectionStatus, 'published' | 'draft'>
+    thumbnailClassName: string
+    description?: string
+    fileName?: string
+    isPrimary?: boolean
+}
+
 export type ProductSlideItem = {
     id: string
     title: string
@@ -38,6 +49,31 @@ export const BANNER_SLIDE_DUMMY: BannerSlideItem[] = [
         subtitle: 'اسلاید ۰۳ · CTA: مشاهده دسته',
         status: 'draft',
         thumbnailClassName: 'bg-[#3A9668]',
+    },
+]
+
+export const BRAND_SLIDE_DUMMY: BrandSlideItem[] = [
+    {
+        id: 'brand-1',
+        title: 'زیرا',
+        subtitle: 'پوشاک راحتی و لباس زیر · ۴ رویداد تاریخی',
+        status: 'published',
+        thumbnailClassName: 'bg-[#E15B5B]',
+        isPrimary: true,
+    },
+    {
+        id: 'brand-2',
+        title: 'ویرا',
+        subtitle: 'لباس راحتی مردانه · ۲ رویداد تاریخی',
+        status: 'published',
+        thumbnailClassName: 'bg-[#7A4E9D]',
+    },
+    {
+        id: 'brand-3',
+        title: 'زیرا کیدز',
+        subtitle: 'پوشاک کودک و نوزاد · ۱ رویداد تاریخی',
+        status: 'draft',
+        thumbnailClassName: 'bg-[#3C9A62]',
     },
 ]
 

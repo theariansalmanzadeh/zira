@@ -1,15 +1,8 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
-
-interface ProductContextType {
-    selectedSize: string;
-    setSelectedSize: (value: string) => void;
-    selectedQuantity: string;
-    setSelectedQuantity: (value: string) => void;
-    openProductModal: boolean;
-    setOpenProductModal: (value: boolean) => void;
-}
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { COLOR_ITEMS, SIZE_ITEMS } from "../content/dummy";
+import type { ProductContextType } from "../types";
 
 const ProductContext = createContext<ProductContextType | null>(null);
 
@@ -25,6 +18,21 @@ const ProductProvider = ({ children }: { children: React.ReactNode }) => {
     const [selectedSize, setSelectedSize] = useState("");
     const [selectedQuantity, setSelectedQuantity] = useState("");
     const [openProductModal, setOpenProductModal] = useState(false);
+    const [quantity, setQuantity] = useState("custom-pack");
+    const [sizes, setSizes] = useState<string[]>([SIZE_ITEMS[0].value]);
+    const [colors, setColors] = useState<string[]>([COLOR_ITEMS[0].value]);
+    const [storedSizes, setStoredSizes] = useState<string[]>([SIZE_ITEMS[0].value]);
+    const [storedColors, setStoredColors] = useState<string[]>([COLOR_ITEMS[0].value]);
+    const [isCustomPack, setIsCustomPack] = useState(quantity === "custom-pack");
+
+    useEffect(() => {
+        setIsCustomPack(quantity === "custom-pack");
+    }, [quantity]);
+
+    useEffect(() => {
+        setStoredSizes(sizes);
+        setStoredColors(colors);
+    }, [sizes, colors]);
 
     const value = {
         selectedSize,
@@ -33,6 +41,15 @@ const ProductProvider = ({ children }: { children: React.ReactNode }) => {
         setSelectedQuantity,
         openProductModal,
         setOpenProductModal,
+        quantity,
+        setQuantity,
+        sizes,
+        setSizes,
+        colors,
+        setColors,
+        storedSizes,
+        storedColors,
+        isCustomPack,
     };
 
     return (

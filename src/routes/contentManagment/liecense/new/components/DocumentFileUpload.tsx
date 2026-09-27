@@ -3,17 +3,19 @@
 import { useRef } from 'react'
 import { Button } from '@/src/shared/components/ui/button'
 import { Icon } from '@/src/shared/components/Icons/Icon'
-import { FILE_UPLOAD_HINT } from '../constants'
+import { FILE_UPLOAD_HINT, FILE_UPLOAD_PDF_HINT } from '../constants'
 
 type DocumentFileUploadProps = {
     fileName?: string
     fileSize?: string
+    isImg?: boolean
     onChange: (file?: File | null) => void
 }
 
 const DocumentFileUpload = ({
     fileName,
     fileSize,
+    isImg = true,
     onChange,
 }: DocumentFileUploadProps) => {
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -38,7 +40,7 @@ const DocumentFileUpload = ({
                     </div>
                 ) : (
                     <div className="mt-1 text-label-sm text-outline">
-                        {FILE_UPLOAD_HINT}
+                        {isImg ? FILE_UPLOAD_HINT : FILE_UPLOAD_PDF_HINT}
                     </div>
                 )}
             </div>
@@ -53,7 +55,7 @@ const DocumentFileUpload = ({
             <input
                 ref={fileInputRef}
                 type="file"
-                accept=".pdf,image/png,image/jpeg"
+                accept={isImg ? '.pdf,image/png,image/jpeg' : '.pdf'}
                 className="hidden"
                 onChange={(event) => onChange(event.target.files?.[0])}
             />

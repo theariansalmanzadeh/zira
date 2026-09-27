@@ -54,7 +54,7 @@ const ProductCard = ({
     return (
         <Link
             href={`/product/${href}`}
-            className='flex flex-col items-start justify-start gap-3 self-stretch rounded-card-lg hover:shadow-sm active:shadow-sm sm:h-[563px]'
+            className='flex flex-col items-start justify-start gap-3 self-stretch rounded-card-lg shadow-sm hover:shadow-sm active:shadow-sm sm:h-[563px]'
         >
             <div
                 className={cn(
@@ -76,7 +76,7 @@ const ProductCard = ({
                 <Pill
                     variant={productStatus.variant}
                     text={productStatus.text}
-                    className='absolute bottom-sm left-sm z-10 border-0'
+                    className='absolute bottom-sm right-sm z-10 border-0'
                 />
             </div>
             <div className='flex w-full flex-1 flex-col gap-2 px-1'>

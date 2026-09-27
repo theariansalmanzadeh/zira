@@ -15,35 +15,35 @@ const SOCIAL_FIELDS: {
     iconClassName: string
     boxClassName: string
 }[] = [
-    {
-        key: 'instagram',
-        label: 'اینستاگرام',
-        icon: Instagram,
-        boxClassName: 'bg-[#FBEDED]',
-        iconClassName: 'text-[#D74E54]',
-    },
-    {
-        key: 'telegram',
-        label: 'تلگرام',
-        icon: Send,
-        boxClassName: 'bg-[#E8F0FB]',
-        iconClassName: 'text-[#2A6FDB]',
-    },
-    {
-        key: 'whatsapp',
-        label: 'واتس‌آپ',
-        icon: MessageCircle,
-        boxClassName: 'bg-[#E8F5EF]',
-        iconClassName: 'text-[#1F8A5B]',
-    },
-    {
-        key: 'website',
-        label: 'وب‌سایت',
-        icon: Globe,
-        boxClassName: 'bg-[#F1ECF7]',
-        iconClassName: 'text-[#8E6CB0]',
-    },
-]
+        {
+            key: 'instagram',
+            label: 'اینستاگرام',
+            icon: Instagram,
+            boxClassName: 'bg-[#FBEDED]',
+            iconClassName: 'text-[#D74E54]',
+        },
+        {
+            key: 'telegram',
+            label: 'تلگرام',
+            icon: Send,
+            boxClassName: 'bg-[#E8F0FB]',
+            iconClassName: 'text-[#2A6FDB]',
+        },
+        {
+            key: 'whatsapp',
+            label: 'واتس‌آپ',
+            icon: MessageCircle,
+            boxClassName: 'bg-[#E8F5EF]',
+            iconClassName: 'text-[#1F8A5B]',
+        },
+        {
+            key: 'website',
+            label: 'وب‌سایت',
+            icon: Globe,
+            boxClassName: 'bg-[#F1ECF7]',
+            iconClassName: 'text-[#8E6CB0]',
+        },
+    ]
 
 const MAP_SRC =
     'https://www.openstreetmap.org/export/embed.html?bbox=51.30%2C35.68%2C51.38%2C35.72&layer=mapnik&marker=35.6997%2C51.3380'

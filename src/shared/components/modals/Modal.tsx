@@ -71,6 +71,10 @@ const AddAndEditBanner = dynamic(
   () => import('./components/addBanner'),
   { ssr: false }
 );
+const AddAndEditBrand = dynamic(
+  () => import('./components/addBrand'),
+  { ssr: false }
+);
 const AddProductByCategory = dynamic(
   () => import('./components/addProductByCategory'),
   { ssr: false }
@@ -118,6 +122,10 @@ const SizeGuidness = dynamic(
   () => import('./components/sizeGuidness'),
   { ssr: false }
 );
+const NotifAvailableProduct = dynamic(
+  () => import('./components/NotifAvailableProduct'),
+  { ssr: false }
+);
 
 const MODAL_COMPONENTS: Record<
   ModalType,
@@ -139,6 +147,7 @@ const MODAL_COMPONENTS: Record<
   [ModalTypes.ADD_CUSTOMER]: AddCustomer,
   [ModalTypes.ADD_NEW_FAQ]: AddNewFaq,
   [ModalTypes.ADD_BANNER]: AddAndEditBanner,
+  [ModalTypes.ADD_BRAND]: AddAndEditBrand,
   [ModalTypes.ADD_PRODUCT_BY_CATEGORY]: AddProductByCategory,
   [ModalTypes.ADD_PRODUCT]: AddProduct,
   [ModalTypes.CATEGORY_DETAIL]: CategoryDetail,
@@ -150,6 +159,7 @@ const MODAL_COMPONENTS: Record<
   [ModalTypes.ALLOWED_PRODUCTS]: AllowedProducts,
   [ModalTypes.POS_BRANCH_DETAILS]: PosBranchDetails,
   [ModalTypes.SIZE_GUIDNESS]: SizeGuidness,
+  [ModalTypes.NOTIF_AVAILABLE_PRODUCT]: NotifAvailableProduct,
 };
 
 const MODAL_CONFIG: Record<
@@ -241,6 +251,12 @@ const MODAL_CONFIG: Record<
     className:
       'min-w-[640px]! max-h-[90vh] w-full max-w-[720px]! overflow-y-auto border-0 sm:max-w-[720px]!',
   },
+  [ModalTypes.ADD_BRAND]: {
+    title: 'افزودن برند',
+    showCloseButton: true,
+    className:
+      'min-w-[640px]! max-h-[90vh] w-full max-w-[720px]! overflow-y-auto border-0 sm:max-w-[720px]!',
+  },
   [ModalTypes.ADD_PRODUCT_BY_CATEGORY]: {
     title: 'افزودن کالا بر اساس دسته‌بندی',
     showCloseButton: true,
@@ -304,6 +320,12 @@ const MODAL_CONFIG: Record<
     showCloseButton: false,
     className:
       'min-w-0! max-h-[90vh] w-full max-w-[720px]! overflow-y-auto border-0 px-5 py-6 sm:max-w-[720px]!',
+  },
+  [ModalTypes.NOTIF_AVAILABLE_PRODUCT]: {
+    title: 'اطلاع‌رسانی موجودی',
+    showCloseButton: true,
+    className:
+      'min-w-0! max-h-[90vh] w-full max-w-[420px]! overflow-y-auto border-0 sm:max-w-[420px]!',
   },
 };
 

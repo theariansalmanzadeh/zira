@@ -1,3 +1,4 @@
+import { Icon } from '@shared/components/Icons/Icon'
 import IconButton from '@shared/components/ui/IconButton'
 import { Pill } from '@shared/components/ui/Pill'
 import { cn } from '@shared/libs/utils'
@@ -101,10 +102,16 @@ const InventoryCard = ({ data, onEdit, className }: InventoryCardProps) => {
                     className="rounded-card-md bg-surface-container-lowest"
                     onClick={onEdit}
                 />
-                <Link href={data.href || `/admin/inventory-managment/details/${data.id}`}>
-                    <IconButton
-                        icon="chevronLeft400Linear"
-                        className="rounded-card-md bg-surface-container-lowest"
+                <Link
+                    href={
+                        data.href ||
+                        `/admin/inventory-managment/details/${data.id}`
+                    }
+                    className="flex size-10 items-center justify-center rounded-card-md bg-surface-container-lowest"
+                >
+                    <Icon
+                        label="chevronLeft400Linear"
+                        className="size-6 text-on-surface-variant"
                     />
                 </Link>
             </div>

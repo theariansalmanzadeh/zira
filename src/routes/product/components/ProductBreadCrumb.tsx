@@ -12,13 +12,13 @@ const ProductBreadCrumb = ({ id }: { id: string }) => {
                     </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator>
-                    <Icon label='chavaron' className='size-4' />
+                    <Icon label='chevronLeft400Linear' className='size-4 text-outline' />
                 </BreadcrumbSeparator>
                 <BreadcrumbItem className='text-label-lg text-outline hover:text-on-surface'>
                     دسته بندی
                 </BreadcrumbItem>
                 <BreadcrumbSeparator>
-                    <Icon label='chavaron' className='size-4' />
+                    <Icon label='chevronLeft400Linear' className='size-4 text-outline!' />
                 </BreadcrumbSeparator>
                 <BreadcrumbItem>
                     <BreadcrumbLink href={`/product/${id}`} className='text-label-lg text-on-surface'>
