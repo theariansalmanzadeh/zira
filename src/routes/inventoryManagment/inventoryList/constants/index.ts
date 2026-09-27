@@ -10,8 +10,8 @@ export const INVENTORY_LIST_DUMMY: InventoryCardData[] = [
         code: 'WH-1001',
         status: 'active',
         managerName: 'رضا کاظمی',
-        stockCount: '5,216',
-        capacity: '87%',
+        stockCount: '5216',
+        capacity: '87',
         href: '/admin/inventory-managment/details/WH-1001',
     },
     {

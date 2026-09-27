@@ -20,7 +20,7 @@ const CategoriesLayoutContent = ({ children }: { children: React.ReactNode }) =>
 
     const sectionKey = isCategoriesRoot
         ? searchParams.get('sub') || 'dashboard'
-        : getCategoriesSectionKeyFromPath(pathname, searchParams)
+        : getCategoriesSectionKeyFromPath(pathname)
 
     const heading = sectionToHeading[sectionKey]
 

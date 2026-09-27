@@ -33,6 +33,10 @@ const BundleList = dynamic(
     () => import('@/src/routes/categories/bundle/bundleList/BundleList'),
     { loading: () => <TableLoadingSkeleton isPending /> }
 )
+const PacksList = dynamic(
+    () => import('@/src/routes/categories/packsList/PacksList'),
+    { loading: () => <TableLoadingSkeleton isPending /> }
+)
 const BrandsList = dynamic(
     () => import('@/src/routes/categories/brands/BrandsList'),
     { loading: () => <TableLoadingSkeleton isPending /> }
@@ -56,6 +60,7 @@ const CATEGORIES_PAGE_COMPONENTS: Record<string, ComponentType> = {
     'discount-codes': Discount,
     campaigns: Campaigne,
     bundles: BundleList,
+    packs: PacksList,
     brands: BrandsList,
     report: Report,
     variable: Variable,

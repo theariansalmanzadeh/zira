@@ -97,6 +97,7 @@ export const LOCAL_SUB_SIDEBAR_CONTENT: Record<
                 links: [
                     { label: 'داشبورد', href: '/admin/categories?sub=dashboard' },
                     { label: 'لیست کالاها', href: '/admin/categories?sub=list' },
+                    { label: 'لیست پک‌ها', href: '/admin/categories?sub=packs' },
                     { label: 'برندها', href: '/admin/categories?sub=brands' },
                     { label: 'گزارش کمپین', href: '/admin/categories?sub=report' },
                 ],

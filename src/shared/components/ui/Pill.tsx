@@ -18,6 +18,7 @@ const PillVariants = cva(
         warning: "bg-warning-container [&_span]:text-on-warning-container [&_#dot]:bg-on-warning-container [&_svg]:text-on-warning-container",
         error: "bg-error-container [&_span]:text-on-error-container [&_#dot]:bg-on-error-container [&_svg]:text-on-error-container",
         info: "bg-info-container [&_span]:text-on-info-container [&_#dot]:bg-on-info-container [&_svg]:text-on-info-container",
+        primary: "bg-primary [&_span]:text-on-primary [&_#dot]:bg-on-primary [&_svg]:text-on-primary",
       },
       size: {
         default: "px-[8px] py-[4px] text-label-md",

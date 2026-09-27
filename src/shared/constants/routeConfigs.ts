@@ -12,6 +12,14 @@ export const ROUTE_CONFIGS = {
     branches: { TOGGLE_BUTTON_VALUE: [{ label: "همه", value: "all" }, { label: "فعال", value: "active" }, { label: "غیرفعال", value: "inactive" }], },
     bundle: { TOGGLE_BUTTON_VALUE: [{ label: "همه", value: "all" }, { label: "فعال", value: "active" }, { label: "غیرفعال", value: "inactive" }], },
     brands: { TOGGLE_BUTTON_VALUE: [{ label: "همه", value: "all" }, { label: "فعال", value: "active" }, { label: "غیرفعال", value: "inactive" }], },
+    packsList: {
+        TOGGLE_BUTTON_VALUE: [
+            { label: "همه پک ها", value: "all" },
+            { label: "نمایش عمومی", value: "public" },
+            { label: "گروه مشتریان", value: "customer-group" },
+            { label: "عدم نمایش", value: "hidden" },
+        ],
+    },
     branchDetails: {
         TOGGLE_BUTTON_VALUE: [
             { label: "لیست کالا", value: "products" },

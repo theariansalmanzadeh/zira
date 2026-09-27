@@ -1,32 +1,30 @@
-import type { MarkdownContentBlock } from '@/src/shared/components/content/renderMarkdownContent'
-import type { PlainContentBlock } from '@/src/shared/components/content/renderPlainContent'
+export type AboutItem = {
+    id: string
+    title: string
+    image: string
+    description: string
+}
 
-export const ABOUT_PLAIN_BLOCKS: PlainContentBlock[] = [
+export const ABOUT_ITEMS: AboutItem[] = [
     {
         id: 'brand-intro',
         title: 'معرفی برند',
-        type: 'text',
-        body: 'زیرا مارکت، برندی پیشرو در تولید پوشاک راحتی و زیرپوش با تمرکز بر کیفیت پارچه و دوام محصول.',
-    },
-    {
-        id: 'brand-image',
-        title: 'فضای برند',
-        type: 'image',
-        body: '/images/hero.jpg',
+        image: '/images/hero.jpg',
+        description:
+            'زیرا مارکت، برندی پیشرو در تولید پوشاک راحتی و زیرپوش با تمرکز بر کیفیت پارچه و دوام محصول.',
     },
     {
         id: 'about-company',
         title: 'درباره شرکت',
-        type: 'text',
-        body: 'شرکت زیرا در سال ۱۳۹۲ تاسیس شد و امروز یکی از بزرگ‌ترین تامین‌کنندگان پوشاک راحتی عمده در کشور است.',
+        image: '/images/banner.jpg',
+        description:
+            'شرکت زیرا در سال ۱۳۹۲ تاسیس شد و امروز یکی از بزرگ‌ترین تامین‌کنندگان پوشاک راحتی عمده در کشور است.',
     },
-]
-
-export const ABOUT_MARKDOWN_BLOCKS: MarkdownContentBlock[] = [
     {
         id: 'history',
         title: 'سابقه و افتخارات',
-        body: `بیش از یک دهه فعالیت، دریافت استاندارد ملی نساجی و همکاری با بیش از ۱٬۰۰۰ فروشگاه.
+        image: '/images/blog1.jpg',
+        description: `بیش از یک دهه فعالیت، دریافت استاندارد ملی نساجی و همکاری با بیش از ۱٬۰۰۰ فروشگاه.
 
 - استاندارد ملی نساجی
 - شبکه توزیع سراسری

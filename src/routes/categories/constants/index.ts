@@ -251,6 +251,48 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
             },
         ],
     },
+    'brands-new': {
+        title: 'برند جدید',
+        subtitle: 'ثبت برند و اطلاعات نمایش آن',
+        hasBackButton: true,
+        buttons: [
+            {
+                label: 'ثبت برند',
+                icon: 'checkSm400Linear',
+                variant: 'primary',
+                type: 'submit',
+                form: 'add-edit-brand-form',
+            },
+            {
+                label: 'انصراف',
+                variant: 'outline',
+                href: '/admin/categories/brands',
+            },
+        ],
+    },
+    'brands-edit': {
+        title: 'ویرایش برند',
+        subtitle: 'ویرایش اطلاعات و وضعیت برند',
+        hasBackButton: true,
+        buttons: [
+            {
+                label: 'ثبت برند',
+                icon: 'checkSm400Linear',
+                variant: 'primary',
+                type: 'submit',
+                form: 'add-edit-brand-form',
+            },
+            {
+                label: 'انصراف',
+                variant: 'outline',
+                href: '/admin/categories/brands',
+            },
+        ],
+    },
+    packs: {
+        title: 'لیست پک‌ها',
+        subtitle: 'پک‌های کالا و وضعیت نمایش آن‌ها',
+    },
     brands: {
         title: 'برندها',
         subtitle: 'مدیریت برندهای محصولات',
@@ -258,7 +300,7 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
             {
                 label: 'برند جدید',
                 icon: 'addSm400Broken',
-                href: '/admin/categories?sub=brands',
+                href: '/admin/categories/brands/new',
                 variant: 'primary',
             },
         ],
@@ -309,10 +351,7 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
     },
 }
 
-export const getCategoriesSectionKeyFromPath = (
-    pathname: string,
-    searchParams?: Pick<URLSearchParams, 'get'>
-): string => {
+export const getCategoriesSectionKeyFromPath = (pathname: string): string => {
     const pathSegments = pathname
         .replace(/^\/admin\/categories\/?/, '')
         .split('/')
@@ -323,13 +362,16 @@ export const getCategoriesSectionKeyFromPath = (
     const [section, nested] = pathSegments
 
     if (section === 'products' && nested) return 'product-detail'
-    if (section === 'variable' && nested === 'new') {
-        return searchParams?.get('id') ? 'variable-edit' : 'variable-new'
+    if (section === 'variable' && nested === 'new') return 'variable-new'
+    if (section === 'variable' && pathSegments[2] === 'edit') {
+        return 'variable-edit'
     }
     if (section === 'campaigns' && nested === 'new') return 'campaigns-new'
     if (section === 'campaigns' && nested) return 'campaigns-detail'
     if (section === 'bundles' && nested === 'new') return 'bundles-new'
     if (section === 'bundles' && nested) return 'bundles-new'
+    if (section === 'brands' && nested === 'new') return 'brands-new'
+    if (section === 'brands' && pathSegments[2] === 'edit') return 'brands-edit'
     if (section === 'pricing' && nested === 'new') return 'pricing-new'
     if (section === 'pricing' && nested) return 'pricing-detail'
     if (section === 'discounts' && nested === 'new') return 'discounts-new'
@@ -343,13 +385,10 @@ export const getCategoriesSectionKeyFromPath = (
     return section
 }
 
-export const getCategoriesSectionKey = (
-    pathnameOrSub: string,
-    searchParams?: Pick<URLSearchParams, 'get'>
-) => {
+export const getCategoriesSectionKey = (pathnameOrSub: string) => {
     if (!pathnameOrSub.includes('/')) {
         return pathnameOrSub || 'dashboard'
     }
 
-    return getCategoriesSectionKeyFromPath(pathnameOrSub, searchParams)
+    return getCategoriesSectionKeyFromPath(pathnameOrSub)
 }

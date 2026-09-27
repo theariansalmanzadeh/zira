@@ -18,6 +18,11 @@ export interface TablerowProps {
         sku: string;
         brand: string;
         category: string;
+        mainCategory?: string;
+        subCategory?: string;
+        finalCategory?: string;
+        size?: string;
+        color?: string;
         stock: string;
         status: Status;
     };

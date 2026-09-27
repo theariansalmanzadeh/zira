@@ -3,14 +3,19 @@ import dynamic from 'next/dynamic'
 import TableLoadingSkeleton from '@/src/shared/components/loading/TableLoadingSkeleton'
 
 const AddAndUpdateVariable = dynamic(
-    () => import('@/src/routes/categories/variable/AddAndUpdateVariable'),
+    () =>
+        import(
+            '@/src/routes/categories/variable/addAndUpdateVariable/AddAndUpdateVariable'
+        ),
     { loading: () => <TableLoadingSkeleton isPending /> }
 )
 
 export default function NewVariablePage() {
     return (
         <Suspense fallback={<TableLoadingSkeleton isPending />}>
-            <AddAndUpdateVariable />
+            <div className="mx-auto w-225">
+                <AddAndUpdateVariable />
+            </div>
         </Suspense>
     )
 }

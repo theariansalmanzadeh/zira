@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Table, TableBody } from '@/src/shared/components/ui/Table'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import { ROUTE_CONFIGS } from '@/src/shared/constants/routeConfigs'
@@ -19,6 +19,7 @@ type BrandsListProps = {
 }
 
 const BrandsList = ({ data = BRANDS_LIST_DUMMY }: BrandsListProps) => {
+    const { push } = useRouter()
     const searchParams = useSearchParams()
     const statusFilter = (searchParams.get('cat') as BrandStatus | null) ?? 'all'
 
@@ -39,7 +40,15 @@ const BrandsList = ({ data = BRANDS_LIST_DUMMY }: BrandsListProps) => {
                         <TableHeader />
                         <TableBody>
                             {filteredBrands.map((brand) => (
-                                <TableRow key={brand.id} data={brand} />
+                                <TableRow
+                                    key={brand.id}
+                                    data={brand}
+                                    onEdit={() =>
+                                        push(
+                                            `/admin/categories/brands/${brand.id}/edit`
+                                        )
+                                    }
+                                />
                             ))}
                         </TableBody>
                     </Table>
