@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import IconButton from "@/src/shared/components/ui/IconButton";
 import { useTable } from "@/src/shared/context/TableProvider";
 import { Pill, PillVariants } from "@/src/shared/components/ui/Pill";
@@ -18,11 +19,14 @@ export interface GroupUserRowProps {
         permissions: string;
         status: UserStatus;
     };
+    detailHref?: string;
 }
 
 const TableRow = ({
     data: { userName, userCode, roles, permissions, status },
+    detailHref = `/admin/user-management/user-details/${encodeURIComponent(userCode)}`,
 }: GroupUserRowProps) => {
+    const { push } = useRouter();
     const { TableColoumn } = useTable();
     const pillData = statusType(status);
 
@@ -58,13 +62,20 @@ const TableRow = ({
                     </TableCell>
                 )}
                 {TableColoumn[5]?.isChecked && (
-                    <TableCell className="w-[1%] whitespace-nowrap">
-                        <IconButton icon="more" iconClassName="rotate-90" />
+                    <TableCell className="w-[1%] whitespace-nowrap text-end">
+                        <IconButton
+                            icon="moreVertical400Linear"
+                            className="shrink-0"
+                        />
                     </TableCell>
                 )}
                 {TableColoumn[6]?.isChecked && (
-                    <TableCell className="w-[1%] whitespace-nowrap">
-                        <IconButton icon="chevron" />
+                    <TableCell className="w-[1%] whitespace-nowrap text-end">
+                        <IconButton
+                            icon="chevronLeft400Linear"
+                            className="shrink-0"
+                            onClick={() => push(detailHref)}
+                        />
                     </TableCell>
                 )}
             </UiTableRow>

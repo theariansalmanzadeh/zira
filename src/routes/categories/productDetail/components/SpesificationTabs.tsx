@@ -9,12 +9,10 @@ import Gallery from './Gallery'
 import Specifications from './Specifications'
 import WarehouseAndGrade from './WarehouseAndGrade'
 
-const TABS = [
+const BASE_TABS = [
     { value: 'specs', label: 'مشخصات' },
     { value: 'price-stock', label: 'قیمت و موجودی' },
     { value: 'kardex', label: 'کاردکس' },
-    { value: 'images', label: 'تصاویر' },
-    { value: 'warehouse-grid', label: 'انبار و گرید' },
 ] as const
 
 const tabTriggerClassName =
@@ -22,10 +20,21 @@ const tabTriggerClassName =
 
 type SpesificationTabsProps = {
     className?: string
+    warehouseLabel?: string
+    showGallery?: boolean
 }
 
-const SpesificationTabs = ({ className }: SpesificationTabsProps) => {
+const SpesificationTabs = ({
+    className,
+    warehouseLabel = 'انبار و گرید',
+    showGallery = false,
+}: SpesificationTabsProps) => {
     const [tab, setTab] = useState<string>('specs')
+    const tabs = [
+        ...BASE_TABS,
+        ...(showGallery ? [{ value: 'images', label: 'تصاویر' }] : []),
+        { value: 'warehouse-grid', label: warehouseLabel },
+    ]
 
     return (
         <Tabs
@@ -35,7 +44,7 @@ const SpesificationTabs = ({ className }: SpesificationTabsProps) => {
             className={cn('w-full gap-4', className)}
         >
             <TabsList className='h-auto w-full gap-1 rounded-container-md border-0 bg-surface-container-highest p-1.5 mb-3'>
-                {TABS.map((item) => (
+                {tabs.map((item) => (
                     <TabsTrigger
                         key={item.value}
                         value={item.value}
@@ -55,9 +64,11 @@ const SpesificationTabs = ({ className }: SpesificationTabsProps) => {
             <TabsContent value='kardex' className='mt-0'>
                 <Kardex />
             </TabsContent>
-            <TabsContent value='images' className='mt-0'>
-                <Gallery />
-            </TabsContent>
+            {/* {showGallery && (
+                <TabsContent value='images' className='mt-0'>
+                    <Gallery />
+                </TabsContent>
+            )} */}
             <TabsContent value='warehouse-grid' className='mt-0'>
                 <WarehouseAndGrade />
             </TabsContent>

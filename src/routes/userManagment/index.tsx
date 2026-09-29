@@ -3,6 +3,7 @@ import RoleLists from './role/roleLists/RoleLists'
 import UserLists from './user/userLists/UserLists'
 
 export type UserManagementSearchParams = {
+    sub?: string
     group?: string
     user?: string
     role?: string
@@ -13,26 +14,17 @@ type UserManagementProps = {
 }
 
 const UserManagement = ({ searchParams }: UserManagementProps) => {
-    const { group, user, role } = searchParams
+    const section = searchParams.sub ?? 'user'
 
-    const hasGroup = group !== undefined
-    const hasUser = user !== undefined
-    const hasRole = role !== undefined
-
-    if (!hasGroup && !hasUser && !hasRole) {
-        return <UserLists />
-    }
-    if (hasGroup) {
+    if (section === 'group') {
         return <GroupList />
     }
 
-    if (hasRole) {
+    if (section === 'role') {
         return <RoleLists />
     }
 
-    if (hasUser) {
-        return <UserLists />
-    }
+    return <UserLists />
 }
 
 export default UserManagement

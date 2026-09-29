@@ -1,9 +1,11 @@
 'use client'
 
+import { useState } from 'react'
 import {
     TableCell,
     TableRow as UiTableRow,
 } from '@/src/shared/components/ui/Table'
+import IconButton from '@/src/shared/components/ui/IconButton'
 import { useTable } from '@/src/shared/context/TableProvider'
 import { formatFaNumber, formatPrice } from '@/src/shared/libs/formatter'
 import { cn } from '@/src/shared/libs/utils'
@@ -11,6 +13,7 @@ import {
     CASH_REGISTER_BADGE_CLASS,
     type CashRegisterRowData,
 } from '../constants'
+import { Icon } from '@/src/shared/components/Icons/Icon'
 
 type CashRegisterTableRowProps = {
     data: CashRegisterRowData
@@ -18,6 +21,15 @@ type CashRegisterTableRowProps = {
 
 const CashRegisterTableRow = ({ data }: CashRegisterTableRowProps) => {
     const { TableColoumn } = useTable()
+    const [isRemoved, setIsRemoved] = useState(false)
+
+    const onEdit = () => {}
+
+    const onRemove = () => {
+        setIsRemoved(true)
+    }
+
+    if (isRemoved) return null
 
     return (
         <>
@@ -70,7 +82,32 @@ const CashRegisterTableRow = ({ data }: CashRegisterTableRowProps) => {
                 )}
                 {TableColoumn[6]?.isChecked && (
                     <TableCell>
-                        {formatPrice(data.initialBalance)} ت
+                        <div className='flex flex-row items-center gap-2'>
+                            {formatPrice(data.initialBalance)}
+                            <Icon label='currency' />
+                        </div>
+                    </TableCell>
+                )}
+                {TableColoumn[7]?.isChecked && (
+                    <TableCell className='w-[1%] whitespace-nowrap'>
+                        <IconButton
+                            icon='editSquare400Linear'
+                            variant='ghost'
+                            className='size-8!'
+                            iconClassName='size-5! text-outline'
+                            onClick={onEdit}
+                        />
+                    </TableCell>
+                )}
+                {TableColoumn[8]?.isChecked && (
+                    <TableCell className='w-[1%] whitespace-nowrap'>
+                        <IconButton
+                            icon='delete400Linear'
+                            variant='ghost'
+                            className='size-8!'
+                            iconClassName='size-5! text-outline'
+                            onClick={onRemove}
+                        />
                     </TableCell>
                 )}
             </UiTableRow>

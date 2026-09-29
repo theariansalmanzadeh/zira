@@ -4,6 +4,7 @@ import { useState } from 'react'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Textarea } from '@/src/shared/components/ui/TextArea'
+import { useCreateProducts } from '../../../provider/createProductsProvider'
 import {
     BRAND_OPTIONS,
     DISPLAY_STATUS_OPTIONS,
@@ -14,19 +15,36 @@ import {
 import NewRow from './components/NewRow'
 
 const BasicInfoTab = () => {
-    const [mainCategory, setMainCategory] = useState<string>()
-    const [subCategory, setSubCategory] = useState<string>()
-    const [brand, setBrand] = useState<string>()
-    const [supplier, setSupplier] = useState<string>()
+    const {
+        productTitle,
+        setProductTitle,
+        productCode,
+        setProductCode,
+        brand,
+        setBrand,
+        mainCategory,
+        setMainCategory,
+        midCategory,
+        setMidCategory,
+        subCategory,
+        setSubCategory,
+    } = useCreateProducts()
     const [displayStatus, setDisplayStatus] = useState<string>()
 
     return (
         <div className='grid grid-cols-2 gap-6'>
-            <Input label='عنوان محصول' placeholder='عنوان محصول' />
+            <Input
+                label='عنوان محصول'
+                placeholder='عنوان محصول'
+                value={productTitle}
+                onChange={setProductTitle}
+            />
 
             <Input
                 label='کد محصول'
                 placeholder='کد محصول'
+                value={productCode}
+                onChange={setProductCode}
                 iconId='copy'
                 iconClassName='cursor-pointer'
                 wrapperClassName='flex-row-reverse'
@@ -51,10 +69,10 @@ const BasicInfoTab = () => {
             />
 
             <FormDropdown
-                label='تأمین‌کننده'
-                value={supplier}
+                label='دسته میانی *'
+                value={midCategory}
                 options={SUPPLIER_OPTIONS}
-                onChange={setSupplier}
+                onChange={setMidCategory}
             />
 
             <FormDropdown

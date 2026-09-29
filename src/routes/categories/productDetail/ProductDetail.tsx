@@ -2,7 +2,6 @@
 
 import Info from './components/Info'
 import OverView from './components/OverView'
-import Seo from './components/Seo'
 import SpesificationTabs from './components/SpesificationTabs'
 import Stats from './components/Stats'
 
@@ -23,7 +22,6 @@ const ProductDetail = ({
                 </div>
                 <div className="gap-4 col-span-4 flex flex-col">
                     <Info />
-                    <Seo />
                 </div>
             </div>
         </div>

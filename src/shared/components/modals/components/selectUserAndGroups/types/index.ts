@@ -26,8 +26,6 @@ export type SelectUserAndGroupsModalData = {
     users?: SelectUserItem[]
     groups?: SelectGroupItem[]
     selectedIds?: string[]
-    onSelect?: (payload: {
-        tab: SelectUserAndGroupsTab
-        selectedIds: string[]
-    }) => void
+    onSelectUser?: (users: SelectUserItem[]) => void
+    onSelectGroup?: (groups: SelectGroupItem[]) => void
 }

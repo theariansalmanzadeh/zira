@@ -293,6 +293,18 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
         title: 'لیست پک‌ها',
         subtitle: 'پک‌های کالا و وضعیت نمایش آن‌ها',
     },
+    'pack-detail': {
+        title: 'جزئیات پک',
+        subtitle: 'مشاهده مشخصات، موجودی و وضعیت پک',
+        hasBackButton: true,
+        buttons: [
+            {
+                label: 'ویرایش',
+                variant: 'default',
+                href: '/admin/categories/addProduct',
+            },
+        ],
+    },
     brands: {
         title: 'برندها',
         subtitle: 'مدیریت برندهای محصولات',
@@ -362,6 +374,7 @@ export const getCategoriesSectionKeyFromPath = (pathname: string): string => {
     const [section, nested] = pathSegments
 
     if (section === 'products' && nested) return 'product-detail'
+    if (section === 'pack' && nested) return 'pack-detail'
     if (section === 'variable' && nested === 'new') return 'variable-new'
     if (section === 'variable' && pathSegments[2] === 'edit') {
         return 'variable-edit'

@@ -1,5 +1,6 @@
 'use client'
 
+import { Icon } from '@/src/shared/components/Icons/Icon'
 import { Pill } from '@/src/shared/components/ui/Pill'
 import SectionTitle from '@/src/shared/components/ui/SectionTitle'
 import {
@@ -98,7 +99,10 @@ const PriceAndStock = ({
                 METRIC_META[0].valueClassName
             )}
         >
-            {formatPrice(sellPrice)} تومان
+            <span className='inline-flex items-center gap-1'>
+                {formatPrice(sellPrice)}
+                <Icon label='currency' className='size-5 text-outline' />
+            </span>
         </span>,
         <span
             key='buy'
@@ -107,7 +111,10 @@ const PriceAndStock = ({
                 METRIC_META[1].valueClassName
             )}
         >
-            {formatPrice(buyPrice)} تومان
+            <span className='inline-flex items-center gap-1'>
+                {formatPrice(buyPrice)}
+                <Icon label='currency' className='size-5 text-outline' />
+            </span>
         </span>,
         <span
             key='margin'
@@ -125,7 +132,10 @@ const PriceAndStock = ({
                 METRIC_META[3].valueClassName
             )}
         >
-            {formatPrice(costPrice)} تومان
+            <span className='inline-flex items-center gap-1'>
+                {formatPrice(costPrice)}
+                <Icon label='currency' className='size-5 text-outline' />
+            </span>
         </span>,
         <span
             key='last-buy'

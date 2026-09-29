@@ -8,7 +8,7 @@ const TableHeader = () => {
         <div
             className={cn(
                 POS_DEVICE_GRID_CLASS,
-                'min-w-[1100px] rounded-t-card-md bg-surface-container-high px-3 py-3 text-label-lg font-normal text-outline'
+                'rounded-t-card-md bg-surface-container-high px-3 py-3 text-label-lg font-normal text-outline'
             )}
         >
             {POS_DEVICE_COLUMNS.map((column) => (

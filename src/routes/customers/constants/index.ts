@@ -111,10 +111,12 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
     customerGroupDetails: {
         title: 'جزئیات گروه',
         subtitle: 'مشاهده مشخصات گروه مشتریان',
+        hasBackButton: true,
     },
     groupDetails: {
         title: 'جزئیات گروه',
         subtitle: 'مشاهده مشخصات گروه مشتریان',
+        hasBackButton: true,
         buttons: [
             {
                 label: 'ایجاد گروه جدید',

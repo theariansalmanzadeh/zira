@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import IconButton from "@/src/shared/components/ui/IconButton";
 import { Pill } from "@/src/shared/components/ui/Pill";
 import { Icon } from "@/src/shared/components/Icons/Icon";
 import { useTable } from "@/src/shared/context/TableProvider";
@@ -147,21 +146,6 @@ const CategoryTableRow = ({
                     />
                 </div>
             )}
-            {TableColoumn[6]?.isChecked && (
-                <div
-                    className={cn(
-                        CATEGORY_CELL_CLASS,
-                        "flex justify-end pe-4 ps-2",
-                    )}
-                >
-                    <IconButton
-                        iconClassName="size-6!"
-                        icon="chevronLeft300Broken"
-                        onClick={openCategoryDetail}
-                    />
-                </div>
-            )}
-
             {isExpanded &&
                 data.subCategories?.map((subCategory) => (
                     <CategoryTableRow

@@ -2,7 +2,6 @@
 
 import TableListLayout from "@/src/shared/layouts/tableListLayout/TableListLayout";
 import type { UserManagementSearchParams } from "../index";
-import { getTabValueFromSearchParams } from "../utils/tabSearchParams";
 import UserManagementHeader from "./UserManagementHeader";
 import { TABLE_COLOUMN } from '../constants'
 
@@ -13,16 +12,13 @@ type UserManagementLayoutProps = {
 
 const UserManagementLayout = ({
     children,
-    searchParams,
 }: UserManagementLayoutProps) => {
-    const activeTab = getTabValueFromSearchParams(searchParams);
-
     return (
         <>
             <UserManagementHeader />
             <TableListLayout
                 TableColoumn={TABLE_COLOUMN}
-                value={activeTab}
+                hasHeaderActions={false}
             >
                 {children}
             </TableListLayout>

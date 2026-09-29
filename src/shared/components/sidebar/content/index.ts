@@ -6,6 +6,7 @@ import { INVENTORY_SUB_SIDEBAR_SECTIONS } from "@/src/routes/inventoryManagment/
 import { CUSTOMERS_SUB_SIDEBAR_SECTIONS } from "@/src/routes/customers/constants"
 import { CONTENT_SUB_SIDEBAR_SECTIONS } from "@/src/routes/contentManagment/constants"
 import { EVENTS_SUB_SIDEBAR_SECTIONS } from "@/src/routes/events/constants"
+import { USER_MANAGEMENT_SUB_SIDEBAR_SECTIONS } from "@/src/routes/userManagment/constants"
 import { LOCAL_SUB_SIDEBAR_CONTENT } from "./localSubSidebars"
 import type { SubSidebarContent } from "./types"
 
@@ -116,6 +117,13 @@ export const SIDEBAR_CONTENT: {
         icon: "history400Linear",
         link: "/admin/events",
     },
+    {
+        title: "user-management",
+        faLabel: "مدیریت کاربران",
+        breadcrumb: "مدیریت کاربران",
+        icon: "groups",
+        link: "/admin/user-management",
+    },
 ]
 
 export const SUB_SIDEBAR_CONTENT: Record<string, SubSidebarContent> = {
@@ -168,5 +176,12 @@ export const SUB_SIDEBAR_CONTENT: Record<string, SubSidebarContent> = {
         faLabel: 'رخدادها',
         subheader: 'ثبت و پایش رخدادهای سامانه',
         itemsList: EVENTS_SUB_SIDEBAR_SECTIONS,
+    },
+    'user-management': {
+        headerIcon: 'groups',
+        header: 'مدیریت کاربران',
+        faLabel: 'مدیریت کاربران',
+        subheader: 'کاربران، گروه‌ها و نقش‌ها',
+        itemsList: USER_MANAGEMENT_SUB_SIDEBAR_SECTIONS,
     },
 }

@@ -118,6 +118,10 @@ const PosBranchDetails = dynamic(
   () => import('./components/posBranchDetails'),
   { ssr: false }
 );
+const RelatedWarehouses = dynamic(
+  () => import('./components/relatedWarehouses'),
+  { ssr: false }
+);
 const SizeGuidness = dynamic(
   () => import('./components/sizeGuidness'),
   { ssr: false }
@@ -158,6 +162,7 @@ const MODAL_COMPONENTS: Record<
   [ModalTypes.BRANCH_ALLOWANCE]: BranchAllowance,
   [ModalTypes.ALLOWED_PRODUCTS]: AllowedProducts,
   [ModalTypes.POS_BRANCH_DETAILS]: PosBranchDetails,
+  [ModalTypes.RELATED_WAREHOUSES]: RelatedWarehouses,
   [ModalTypes.SIZE_GUIDNESS]: SizeGuidness,
   [ModalTypes.NOTIF_AVAILABLE_PRODUCT]: NotifAvailableProduct,
 };
@@ -311,6 +316,12 @@ const MODAL_CONFIG: Record<
   },
   [ModalTypes.POS_BRANCH_DETAILS]: {
     title: 'دستگاه‌های POS',
+    showCloseButton: true,
+    className:
+      'min-w-[1180px]! max-h-[90vh] w-full max-w-[1180px]! overflow-y-auto border-0 sm:max-w-[1180px]!',
+  },
+  [ModalTypes.RELATED_WAREHOUSES]: {
+    title: 'انبارهای مربوطه',
     showCloseButton: true,
     className:
       'min-w-[1180px]! max-h-[90vh] w-full max-w-[1180px]! overflow-y-auto border-0 sm:max-w-[1180px]!',

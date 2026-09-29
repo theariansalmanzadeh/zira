@@ -29,6 +29,8 @@ export const TABLE_COLOUMN: TableFilterItem[] = [
     { id: 'bank', header_label: 'بانک متصل', isChecked: true },
     { id: 'bankAccount', header_label: 'حساب بانکی متصل', isChecked: true },
     { id: 'initialBalance', header_label: 'موجودی اولیه', isChecked: true },
+    { id: 'edit', header_label: 'ویرایش', isChecked: true },
+    { id: 'remove', header_label: 'حذف', isChecked: true },
 ]
 
 export const BANK_ACCOUNT_TABLE_COLOUMN: TableFilterItem[] = [
@@ -154,7 +156,11 @@ export const CASH_REGISTER_DUMMY: CashRegisterRowData[] = [
 ]
 
 export const QUICK_ACCESS_ITEMS: QuickAccessStat[] = [
-    { label: 'انبارهای مربوطه', value: '8 انبار', modalType: null },
+    {
+        label: 'انبارهای مربوطه',
+        value: '8 انبار',
+        modalType: ModalTypes.RELATED_WAREHOUSES,
+    },
     {
         label: 'کالاهای مجاز',
         value: '214 کالا',

@@ -54,9 +54,8 @@ export const ROUTE_CONFIGS = {
     discount: {
         TOGGLE_BUTTON_VALUE: [
             { label: "همه", value: "all" },
-            { label: "معتبر", value: "valid" },
-            { label: "نامعتبر", value: "invalid" },
-            { label: "پیش‌نویس", value: "draft" },
+            { label: "تخفیف ترکیبی", value: "combined" },
+            { label: "تخفیف خرید نقدی", value: "cash" },
         ],
     },
     campaign: {

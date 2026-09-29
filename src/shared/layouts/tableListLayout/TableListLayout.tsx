@@ -85,6 +85,11 @@ const TableListLayoutInner = ({
         });
     };
 
+    const showToolbar =
+        hasSearch || hasFilter || hasTableSettings || hasSort || hasExpand;
+    const showHeader =
+        (defaultSearchOpen && hasSearch) || hasHeaderActions || showToolbar;
+
     return (
         <section
             className={cn(
@@ -93,6 +98,7 @@ const TableListLayoutInner = ({
                 className
             )}
         >
+            {showHeader && (
             <div className="bg-surface-container-lowest flex flex-row items-center justify-between gap-2 pb-2">
                 {defaultSearchOpen && hasSearch && (
                     <div className="min-w-0 flex-1">
@@ -126,7 +132,7 @@ const TableListLayoutInner = ({
                         ))}
                     </ToggleGroup>
                 )}
-                {(hasSearch || hasFilter || hasTableSettings || hasSort || hasExpand) && (
+                {showToolbar && (
                     <div
                         className={cn(
                             "flex flex-row",
@@ -157,6 +163,7 @@ const TableListLayoutInner = ({
                     </div>
                 )}
             </div>
+            )}
             <div id="admin-layout-content">
                 <Suspense fallback={<TableLoadingSkeleton isPending />}>
                     <TableListContent

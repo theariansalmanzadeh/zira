@@ -107,7 +107,15 @@ const CategoryTypes = ({
     data?: CategoryRowData[]
 }) => {
     return (
-        <TableListLayout TableColoumn={TABLE_COLOUMN}>
+        <TableListLayout
+            TableColoumn={TABLE_COLOUMN}
+            hasHeaderActions={false}
+            hasSearch={false}
+            hasFilter={false}
+            hasSort={false}
+            hasTableSettings={false}
+            hasExpand={false}
+        >
             <CategoryTypesGrid data={data} />
         </TableListLayout>
     )

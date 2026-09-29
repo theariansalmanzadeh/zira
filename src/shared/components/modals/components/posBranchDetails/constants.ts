@@ -21,12 +21,11 @@ export const POS_DEVICE_COLUMNS = [
     { id: 'bankAccount', label: 'حساب بانکی متصل' },
     { id: 'terminalNumber', label: 'شماره پایانه' },
     { id: 'terminalPassword', label: 'رمز پایانه' },
-    { id: 'cashRegister', label: 'صندوق متصل' },
-    { id: 'todayTransactions', label: 'تراکنش امروز' },
+    { id: 'expand', label: '' },
 ] as const
 
 export const POS_DEVICE_GRID_CLASS =
-    'grid grid-cols-[minmax(0,0.4fr)_minmax(0,1.4fr)_minmax(0,1.2fr)_minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,0.95fr)_minmax(0,0.75fr)_minmax(0,1fr)_minmax(0,0.85fr)] items-center gap-3'
+    'grid grid-cols-[minmax(0,0.4fr)_minmax(0,1.4fr)_minmax(0,1.2fr)_minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,0.95fr)_minmax(0,0.75fr)_2.5rem] items-center gap-3'
 
 export const POS_DEVICES_DUMMY: PosDeviceItem[] = [
     {

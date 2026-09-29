@@ -1,3 +1,5 @@
+"use client"
+
 import QuickAccessCard from '@/src/shared/components/quickAccessCard'
 import AlertBox, {
     AlertBoxContent,

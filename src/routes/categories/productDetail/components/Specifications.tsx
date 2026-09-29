@@ -114,7 +114,7 @@ const Specifications = ({
                             className={cn(
                                 'flex items-center justify-between gap-4 py-3',
                                 index < fields.length - 2 &&
-                                    'border-0 border-b border-outline-variant'
+                                'border-0 border-b border-outline-variant'
                             )}
                         >
                             <span className='text-label-md text-outline'>
@@ -125,17 +125,6 @@ const Specifications = ({
                             </span>
                         </div>
                     ))}
-                </div>
-
-                <div className='mt-4 flex flex-col gap-2'>
-                    <span className='text-label-md text-outline'>لیبل‌ها</span>
-                    <div className='flex flex-wrap gap-2'>
-                        {labels.map((label) => (
-                            <Badge key={label} variant='primary-outline'>
-                                {label}
-                            </Badge>
-                        ))}
-                    </div>
                 </div>
             </div>
         </div>

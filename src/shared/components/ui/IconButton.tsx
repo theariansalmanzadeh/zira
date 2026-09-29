@@ -10,6 +10,7 @@ const IconButton = ({
   className,
   iconClassName,
   variant = "default",
+  disabled,
 }: {
   icon: IconLabel;
   onClick?: () => void;
@@ -17,9 +18,12 @@ const IconButton = ({
   iconClassName?: string;
   fill?: string;
   variant?: ButtonProps["variant"];
+  disabled?: boolean;
 }) => {
   return (
     <Button
+      type="button"
+      disabled={disabled}
       onClick={onClick}
       variant={variant}
       size="icon"

@@ -1,191 +1,137 @@
 'use client'
 
-import { useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Controller, useForm } from 'react-hook-form'
-import { Icon } from '@/src/shared/components/Icons/Icon'
-import IconButton from '@/src/shared/components/ui/IconButton'
+import { useState } from 'react'
 import { Input } from '@/src/shared/components/ui/Input'
-import { Button } from '@/src/shared/components/ui/button'
-import FormDropdown from '@/src/shared/components/ui/FormDropdown'
-import { CopyableInput } from '@/src/shared/components/ui/CopyableInput'
-import Seperator from '@/src/shared/components/ui/Seperator'
-import {
-    ADD_NEW_CATEGORY_DEFAULT_VALUES,
-    addNewCategorySchema,
-    LEVEL_OPTIONS,
-    STATUS_OPTIONS,
-    type AddNewCategoryFormValues,
-} from './schema'
-import AddSubCategories from './component/AddSubCategories'
-import SubCategoriesTable, {
-    type SubCategoryRow,
-} from './component/SubCategoriesTable'
+import CategoryColumn from './component/CategoryColumn'
+import CreateCategoryProvider, {
+    useCreateCategory,
+} from './provider/createCategoryProvider'
 
-const resolveOptionLabel = (
-    options: { label: string; value: string }[],
-    value: string
-) => options.find((option) => option.value === value)?.label ?? value
+const crumbLabel = (title?: string) => title || '( — )'
 
-const AddNewCategory = () => {
-    const { back } = useRouter()
-    const fileInputRef = useRef<HTMLInputElement>(null)
-    const [subCategories, setSubCategories] = useState<SubCategoryRow[]>([])
+const matchesQuery = (title: string, query: string) =>
+    title.toLowerCase().includes(query.trim().toLowerCase())
 
+const CategoryBoard = () => {
     const {
-        control,
-        handleSubmit,
-        setValue,
-        formState: { errors },
-    } = useForm<AddNewCategoryFormValues>({
-        resolver: zodResolver(addNewCategorySchema),
-        defaultValues: ADD_NEW_CATEGORY_DEFAULT_VALUES,
-        mode: 'onSubmit',
-        reValidateMode: 'onBlur',
-    })
+        mainItems,
+        midItems,
+        subItems,
+        selectedMain,
+        selectedMid,
+        selectedSub,
+        selectMain,
+        selectMid,
+        selectSub,
+        addMain,
+        addMid,
+        addSub,
+        removeMain,
+        removeMid,
+        removeSub,
+    } = useCreateCategory()
+    const [query, setQuery] = useState('')
 
-    const nextSubCategoryId = `CAT-SUB-${String(subCategories.length + 1001).padStart(4, '0')}`
+    const selectedMainItem = mainItems.find((item) => item.id === selectedMain)
+    const selectedMidItem = midItems.find((item) => item.id === selectedMid)
+    const selectedSubItem = subItems.find((item) => item.id === selectedSub)
 
-    const onSubmit = (data: AddNewCategoryFormValues) => {
-        console.log(data, subCategories)
-    }
-
-    const handleAddSubCategory = (data: AddNewCategoryFormValues) => {
-        setSubCategories((prev) => [
-            ...prev,
-            {
-                id: data.id || nextSubCategoryId,
-                name: data.title,
-                level: resolveOptionLabel(LEVEL_OPTIONS, data.level),
-                status: data.status === 'inactive' ? 'inactive' : 'active',
-            },
-        ])
-    }
-
-    const handleRemoveSubCategory = (id: string) => {
-        setSubCategories((prev) => prev.filter((item) => item.id !== id))
-    }
+    const visibleMainItems = mainItems.filter((item) =>
+        matchesQuery(item.title, query)
+    )
+    const visibleMidItems = midItems.filter(
+        (item) =>
+            item.parentId === selectedMain && matchesQuery(item.title, query)
+    )
+    const visibleSubItems = subItems.filter(
+        (item) =>
+            item.parentId === selectedMid && matchesQuery(item.title, query)
+    )
 
     return (
-        <div className='mx-auto flex w-full max-w-[700px] flex-col gap-6' dir='rtl'>
-            <div className='flex flex-row items-center gap-2'>
-                <IconButton
-                    icon='arrorwRight400Broken'
-                    variant='ghost'
-                    iconClassName='size-6! text-on-surface-variant'
-                    onClick={() => back()}
-                />
-                <span className='text-title-lg font-bold text-on-surface'>
-                    ثبت دسته‌بندی جدید
-                </span>
-            </div>
-
-            <form
-                className='rounded-card-md bg-surface-container-lowest p-6'
-                onSubmit={handleSubmit(onSubmit)}
-            >
-                <div className='grid grid-cols-2 gap-6'>
-                    <Controller
-                        name='title'
-                        control={control}
-                        render={({ field }) => (
-                            <Input
-                                label='عنوان دسته‌بندی'
-                                placeholder='عنوان دسته‌بندی'
-                                value={field.value}
-                                onChange={field.onChange}
-                                error={!!errors.title}
-                                msg={errors.title?.message}
-                            />
-                        )}
-                    />
-                    <Controller
-                        name='id'
-                        control={control}
-                        render={({ field }) => (
-                            <CopyableInput
-                                label='شناسه'
-                                value={field.value}
-                                readOnly
-                            />
-                        )}
-                    />
-                    <Controller
-                        name='status'
-                        control={control}
-                        render={({ field }) => (
-                            <FormDropdown
-                                label='وضعیت'
-                                value={field.value}
-                                options={STATUS_OPTIONS}
-                                onChange={field.onChange}
-                            />
-                        )}
-                    />
-                    <Controller
-                        name='level'
-                        control={control}
-                        render={({ field }) => (
-                            <FormDropdown
-                                label='سطح'
-                                placeholder='انتخاب'
-                                value={field.value || undefined}
-                                options={LEVEL_OPTIONS}
-                                onChange={field.onChange}
-                            />
-                        )}
-                    />
-
-                    <Seperator className='col-span-2' />
-
-                    <div className='col-span-2 flex flex-row items-center justify-between gap-4'>
-                        <span className='shrink-0 text-nowrap text-label-md text-on-surface-variant'>
-                            آپلود تصویر بنر (نسبت 1:1 پیشنهاد می‌شود)
-                        </span>
-                        <Button
-                            type='button'
-                            className='flex w-full max-w-[313px] items-center gap-2'
-                            variant='outline'
-                            onClick={() => fileInputRef.current?.click()}
-                        >
-                            <Icon label='upload300Broken' className='size-6!' />
-                            <span className='text-label-md'>بارگذاری</span>
-                        </Button>
-                        <input
-                            ref={fileInputRef}
-                            type='file'
-                            accept='image/*'
-                            className='hidden'
-                            onChange={(event) => {
-                                const file = event.target.files?.[0] ?? null
-                                setValue('bannerImage', file, {
-                                    shouldValidate: true,
-                                })
-                            }}
-                        />
-                    </div>
-
-                    <AddSubCategories
-                        nextId={nextSubCategoryId}
-                        onAdd={handleAddSubCategory}
-                    />
-                    <SubCategoriesTable
-                        data={subCategories}
-                        onRemove={handleRemoveSubCategory}
-                    />
-
-                    <Button
-                        type='submit'
-                        variant='primary'
-                        size='lg'
-                        className='col-span-2 w-full text-label-lg'
-                    >
-                        ثبت دسته‌بندی
-                    </Button>
+        <div
+            className='flex w-full flex-col gap-5 rounded-card-lg bg-surface-container-lowest p-5'
+            dir='rtl'
+        >
+            <div className='flex flex-wrap items-center justify-between gap-4'>
+                <div className='flex min-w-0 flex-wrap items-center gap-3'>
+                    <span className='h-6 w-1 shrink-0 rounded-full bg-error' />
+                    <h2 className='text-title-lg font-bold text-on-surface'>
+                        لیست دسته‌بندی‌ها
+                    </h2>
+                    <span className='text-body-md text-outline'>
+                        {crumbLabel(selectedMainItem?.title)} —{' '}
+                        {crumbLabel(selectedMidItem?.title)} —{' '}
+                        {crumbLabel(selectedSubItem?.title)}
+                    </span>
                 </div>
-            </form>
+                <div className='w-full max-w-72'>
+                    <Input
+                        iconId='search400Linear'
+                        value={query}
+                        placeholder='جستجو در همه سطوح...'
+                        wrapperClassName='bg-surface-container-lowest border border-outline-variant'
+                        onChange={setQuery}
+                    />
+                </div>
+            </div>
+            <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
+                <CategoryColumn
+                    indexLabel='۱'
+                    title='دسته اصلی'
+                    count={mainItems.length}
+                    items={visibleMainItems}
+                    selectedId={selectedMain}
+                    placeholder='نام دسته اصلی'
+                    canAdd
+                    onSelect={selectMain}
+                    onAdd={addMain}
+                    onRemove={removeMain}
+                />
+                <CategoryColumn
+                    indexLabel='۲'
+                    title='دسته میانی'
+                    count={midItems.length}
+                    items={visibleMidItems}
+                    selectedId={selectedMid}
+                    placeholder='نام دسته میانی'
+                    emptyMessage={
+                        selectedMain
+                            ? undefined
+                            : 'ابتدا یک دسته اصلی را انتخاب کنید.'
+                    }
+                    canAdd={Boolean(selectedMain)}
+                    onSelect={selectMid}
+                    onAdd={addMid}
+                    onRemove={removeMid}
+                />
+                <CategoryColumn
+                    indexLabel='۳'
+                    title='دسته فرعی'
+                    count={subItems.length}
+                    items={visibleSubItems}
+                    selectedId={selectedSub}
+                    placeholder='نام دسته فرعی'
+                    emptyMessage={
+                        selectedMid
+                            ? undefined
+                            : 'ابتدا یک دسته میانی را انتخاب کنید.'
+                    }
+                    canAdd={Boolean(selectedMain && selectedMid)}
+                    onSelect={selectSub}
+                    onAdd={addSub}
+                    onRemove={removeSub}
+                />
+            </div>
         </div>
+    )
+}
+
+const AddNewCategory = () => {
+    return (
+        <CreateCategoryProvider>
+            <CategoryBoard />
+        </CreateCategoryProvider>
     )
 }
 

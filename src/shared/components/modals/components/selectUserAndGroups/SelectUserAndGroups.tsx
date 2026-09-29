@@ -11,8 +11,10 @@ import {
     TableRow,
 } from '@shared/components/ui/Table'
 import type { BaseModalProps } from '../../types'
+import GroupTableHead from './components/GroupTableHead'
 import GroupTableRow from './components/GroupTableRow'
 import Header from './components/Header'
+import UserTableHead from './components/UserTableHead'
 import UserTableRow from './components/UserTableRow'
 import { TOTAL_ITEMS } from './constants'
 import {
@@ -40,7 +42,8 @@ const SelectUserAndGroupsContent = ({ hasOnlyUsers = false }: { hasOnlyUsers?: b
         headerCheckboxState,
         toggleItemSelection,
         toggleAllOnPage,
-        handleSelect,
+        handleSelectUser,
+        handleSelectGroup,
         pageStart,
         pageEnd,
         closeModal,
@@ -61,23 +64,7 @@ const SelectUserAndGroupsContent = ({ hasOnlyUsers = false }: { hasOnlyUsers?: b
                                     onCheckedChange={toggleAllOnPage}
                                 />
                             </TableHead>
-                            {activeTab === 'user' ? (
-                                <>
-                                    <TableHead>نام کاربر</TableHead>
-                                    <TableHead>شناسه کاربر</TableHead>
-                                    <TableHead>نقش‌ها</TableHead>
-                                    <TableHead>دسترسی‌ها</TableHead>
-                                    <TableHead>وضعیت</TableHead>
-                                </>
-                            ) : (
-                                <>
-                                    <TableHead>عنوان گروه</TableHead>
-                                    <TableHead>شناسه گروه</TableHead>
-                                    <TableHead>نقش گروه</TableHead>
-                                    <TableHead>تعداد کاربران</TableHead>
-                                    <TableHead>وضعیت</TableHead>
-                                </>
-                            )}
+                            {activeTab === 'user' ? <UserTableHead /> : <GroupTableHead />}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -129,7 +116,11 @@ const SelectUserAndGroupsContent = ({ hasOnlyUsers = false }: { hasOnlyUsers?: b
                 <Button type="button" variant="ghost" onClick={closeModal}>
                     بازگشت
                 </Button>
-                <Button type="button" variant="primary" onClick={handleSelect}>
+                <Button
+                    type="button"
+                    variant="primary"
+                    onClick={activeTab === 'user' ? handleSelectUser : handleSelectGroup}
+                >
                     انتخاب
                 </Button>
             </div>

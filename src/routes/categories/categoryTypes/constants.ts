@@ -10,7 +10,6 @@ export const CATEGORY_COLUMN_SIZES: Record<string, string> = {
     directItems: '1fr',
     totalProducts: '1fr',
     status: 'auto',
-    actions: 'auto',
 }
 
 export const TABLE_COLOUMN: TableFilterItem[] = [
@@ -20,7 +19,6 @@ export const TABLE_COLOUMN: TableFilterItem[] = [
     { id: 'directItems', header_label: 'اقلام مستقیم', isChecked: true },
     { id: 'totalProducts', header_label: 'تعداد کل کالا', isChecked: true },
     { id: 'status', header_label: 'وضعیت', isChecked: true },
-    { id: 'actions', header_label: '', isChecked: true },
 ]
 
 export const CATEGORY_CELL_CLASS =

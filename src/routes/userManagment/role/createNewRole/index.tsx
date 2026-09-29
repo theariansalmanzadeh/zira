@@ -1,26 +1,12 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import IconButton from '@/src/shared/components/ui/IconButton'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Textarea } from '@/src/shared/components/ui/TextArea'
 import { CopyableInput } from '@/src/shared/components/ui/CopyableInput'
 
 const CreateNewRole = () => {
-    const { back } = useRouter()
-
     return (
         <div className="mx-auto flex w-full max-w-[700px] flex-col gap-6" dir="rtl">
-            <div className="flex flex-row items-center gap-2">
-                <IconButton
-                    icon="rightArrow"
-                    variant="ghost"
-                    iconClassName="size-6"
-                    onClick={() => back()}
-                />
-                <span className="text-title-lg font-bold text-on-surface">ایجاد نقش جدید</span>
-            </div>
-
             <div className="rounded-card-md bg-surface-container-lowest p-6">
                 <div className="grid grid-cols-2 gap-6">
                     <Input label="نام نقش *" placeholder="نام نقش" value="" onChange={() => {}} />

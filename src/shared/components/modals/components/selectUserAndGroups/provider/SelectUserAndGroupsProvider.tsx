@@ -29,7 +29,8 @@ type SelectUserAndGroupsContextValue = {
     headerCheckboxState: boolean | 'indeterminate'
     toggleItemSelection: (id: string, checked: boolean) => void
     toggleAllOnPage: (checked: boolean | 'indeterminate') => void
-    handleSelect: () => void
+    handleSelectUser: () => void
+    handleSelectGroup: () => void
     pageStart: number
     pageEnd: number
     closeModal: () => void
@@ -128,11 +129,15 @@ export const SelectUserAndGroupsProvider = ({
         })
     }
 
-    const handleSelect = () => {
-        modalData?.onSelect?.({
-            tab: activeTab,
-            selectedIds: Array.from(selectedIds),
-        })
+    const handleSelectUser = () => {
+        const selectedUsers = users.filter((user) => selectedIds.has(user.id))
+        modalData?.onSelectUser?.(selectedUsers)
+        closeModal()
+    }
+
+    const handleSelectGroup = () => {
+        const selectedGroups = groups.filter((group) => selectedIds.has(group.id))
+        modalData?.onSelectGroup?.(selectedGroups)
         closeModal()
     }
 
@@ -151,7 +156,8 @@ export const SelectUserAndGroupsProvider = ({
         headerCheckboxState,
         toggleItemSelection,
         toggleAllOnPage,
-        handleSelect,
+        handleSelectUser,
+        handleSelectGroup,
         pageStart,
         pageEnd,
         closeModal,

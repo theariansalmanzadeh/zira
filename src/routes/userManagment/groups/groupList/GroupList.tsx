@@ -9,7 +9,7 @@ const GROUP_CARDS = [
         managerAvatar: true,
         email: { label: 'تعداد نقش', value: '4' },
         phone: { label: 'تعداد کاربران', value: '12' },
-        href: '/admin/user-management/group-details/1'
+        href: '/admin/user-management/groupDetails/1'
     },
     {
         title: 'عنوان گروه',
@@ -18,7 +18,7 @@ const GROUP_CARDS = [
         managerAvatar: true,
         email: { label: 'تعداد نقش', value: '4' },
         phone: { label: 'تعداد کاربران', value: '12' },
-        href: '/admin/user-management/group-details/2'
+        href: '/admin/user-management/groupDetails/2'
     },
     {
         title: 'عنوان گروه',
@@ -27,7 +27,7 @@ const GROUP_CARDS = [
         managerAvatar: true,
         email: { label: 'تعداد نقش', value: '4' },
         phone: { label: 'تعداد کاربران', value: '12' },
-        href: '/admin/user-management/group-details/3'
+        href: '/admin/user-management/groupDetails/3'
     },
 ]
 

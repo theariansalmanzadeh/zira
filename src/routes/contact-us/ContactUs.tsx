@@ -1,6 +1,12 @@
+'use client'
+
+import { useState } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import { Globe, Instagram, MapPin, MessageCircle, Send } from 'lucide-react'
 import { cn } from '@shared/libs/utils'
+import { Button } from '@/src/shared/components/ui/button'
+import { Textarea } from '@/src/shared/components/ui/TextArea'
+import { useSendEmail } from './hook/useSendEmail'
 import {
     CONTACT_ADDRESS_DEFAULT,
     CONTACT_EMAIL_HOURS_DEFAULT,
@@ -49,6 +55,19 @@ const MAP_SRC =
     'https://www.openstreetmap.org/export/embed.html?bbox=51.30%2C35.68%2C51.38%2C35.72&layer=mapnik&marker=35.6997%2C51.3380'
 
 const ContactUs = () => {
+    const [message, setMessage] = useState('')
+    const sendEmail = useSendEmail()
+
+    const submitEmail = () => {
+        const trimmed = message.trim()
+        if (!trimmed) return
+
+        sendEmail.mutate(
+            { message: trimmed },
+            { onSuccess: () => setMessage('') }
+        )
+    }
+
     return (
         <section className='flex w-full flex-col gap-8 bg-surface-container-lowest py-10 lg:py-6xl' dir='rtl'>
             <h1 className='text-title-lg font-bold text-on-surface'>تماس با ما</h1>
@@ -121,6 +140,31 @@ const ContactUs = () => {
                             ))}
                         </div>
                     )}
+                </div>
+                <div className='flex flex-col gap-3 rounded-card-lg bg-surface-container-high p-5 md:col-span-2'>
+                    <div className='flex flex-col gap-1'>
+                        <h2 className='text-title-md font-semibold text-on-surface-variant'>
+                            ارسال ایمیل
+                        </h2>
+                        <p className='text-body-md text-outline'>
+                            پیام خود را بنویسید تا از طریق ایمیل برای پشتیبانی ارسال شود.
+                        </p>
+                    </div>
+                    <Textarea
+                        value={message}
+                        placeholder='متن پیام'
+                        className='min-h-28 bg-surface-container-lowest'
+                        onChange={(event) => setMessage(event.target.value)}
+                    />
+                    <Button
+                        type='button'
+                        className='w-fit'
+                        disabled={!message.trim() || sendEmail.isPending}
+                        isLoading={sendEmail.isPending}
+                        onClick={submitEmail}
+                    >
+                        ارسال
+                    </Button>
                 </div>
             </div>
         </section>

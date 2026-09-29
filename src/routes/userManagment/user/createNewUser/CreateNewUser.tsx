@@ -44,7 +44,7 @@ const CreateNewUser = () => {
     return (
         <FormProvider {...methods}>
             <div
-                className="mx-auto flex w-full max-w-[700px] flex-col gap-6"
+                className="mx-auto flex w-full max-w-[900px] flex-col gap-6"
                 dir="rtl"
             >
                 <div className="flex flex-row items-center gap-2">
@@ -56,7 +56,7 @@ const CreateNewUser = () => {
                     />
                     <span>ایجاد کاربر جدید</span>
                 </div>
-                <div className="mx-auto max-w-[700px] pt-3">
+                <div className="mx-auto w-full max-w-[900px] pt-3">
                     {formStep === FormSteps.identity && (
                         <IdentityForm
                             onContinue={() => setFormStep(FormSteps.ADDRESS)}

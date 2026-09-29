@@ -7,10 +7,12 @@ import AttributeSection from './components/AttributeSection'
 import ProductFieldsLayout from './components/Layout'
 import Preview from './components/Preview'
 import { useRouter } from 'next/navigation'
+import CreateProductsProvider from './provider/createProductsProvider'
 
 const AddProducts = () => {
     const { back } = useRouter()
     return (
+        <CreateProductsProvider>
         <div className='w-full rounded-card-lg p-6'>
 
             <div className='flex flex-row justify-between items-center'>
@@ -34,6 +36,7 @@ const AddProducts = () => {
                 </div>
             </ProductFieldsLayout>
         </div>
+        </CreateProductsProvider>
     )
 }
 

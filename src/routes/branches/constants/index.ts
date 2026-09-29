@@ -132,6 +132,16 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
         subtitle: 'به‌روزرسانی قیمت کالا در شعب',
     },
     new: null,
+    'pos-device-new': {
+        title: 'دستگاه جدید',
+        subtitle: 'ثبت کارت‌خوان جدید برای شعبه',
+        hasBackButton: true,
+    },
+    'pos-device-edit': {
+        title: 'ویرایش دستگاه',
+        subtitle: 'ویرایش اطلاعات کارت‌خوان شعبه',
+        hasBackButton: true,
+    },
 }
 
 export const getBranchesSectionKey = (sub: string) => sub || 'dashboard'
@@ -153,6 +163,12 @@ export const getBranchesSectionKeyFromPath = (
     }
     if (pathname === '/admin/branches/branch-stock/new') {
         return 'branch-stock-new'
+    }
+    if (pathname === '/admin/branches/pos-device/new') {
+        return 'pos-device-new'
+    }
+    if (/^\/admin\/branches\/pos-device\/[^/]+\/edit$/.test(pathname)) {
+        return 'pos-device-edit'
     }
 
     const segments = pathname

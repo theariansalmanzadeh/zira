@@ -1,5 +1,6 @@
 'use client'
 
+import { Icon } from '@/src/shared/components/Icons/Icon'
 import { cn } from '@shared/libs/utils'
 
 type OverViewProps = {
@@ -62,7 +63,7 @@ const OverView = ({
                     <span className="text-title-lg font-bold text-primary">
                         {price}
                     </span>
-                    <span className="text-label-md text-outline">تومان</span>
+                    <Icon label="currency" className="size-5 text-outline" />
                 </div>
                 <p className="mt-1 text-label-md leading-6 text-outline">
                     {description}

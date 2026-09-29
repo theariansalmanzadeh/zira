@@ -11,7 +11,11 @@ const RoleLists = () => {
                     <TableHeader />
                     <TableBody>
                         {GROUP_USERS_DUMMY.map((item, index) => (
-                            <TableRow key={index} data={item.data} />
+                            <TableRow
+                                key={index}
+                                data={item.data}
+                                detailHref={`/admin/user-management/role-details/${encodeURIComponent(item.data.userCode)}`}
+                            />
                         ))}
                     </TableBody>
                 </Table>

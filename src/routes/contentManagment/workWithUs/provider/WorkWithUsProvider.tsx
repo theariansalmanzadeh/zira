@@ -15,6 +15,7 @@ import {
 
 type WorkWithUsContextValue = {
     sections: WorkWithUsSectionItem[]
+    addSection: () => void
     updateSection: (id: string, patch: Partial<WorkWithUsSectionItem>) => void
     moveSection: (index: number, direction: -1 | 1) => void
     removeSection: (id: string) => void
@@ -39,6 +40,19 @@ type WorkWithUsProviderProps = {
 const WorkWithUsProvider = ({ children }: WorkWithUsProviderProps) => {
     const [sections, setSections] =
         useState<WorkWithUsSectionItem[]>(WORK_WITH_US_SECTIONS)
+
+    const addSection = useCallback(() => {
+        setSections((prev) => [
+            ...prev,
+            {
+                id: crypto.randomUUID(),
+                title: '',
+                body: '',
+                visible: true,
+                status: 'draft',
+            },
+        ])
+    }, [])
 
     const updateSection = useCallback(
         (id: string, patch: Partial<WorkWithUsSectionItem>) => {
@@ -70,11 +84,12 @@ const WorkWithUsProvider = ({ children }: WorkWithUsProviderProps) => {
     const value = useMemo(
         () => ({
             sections,
+            addSection,
             updateSection,
             moveSection,
             removeSection,
         }),
-        [sections, updateSection, moveSection, removeSection]
+        [sections, addSection, updateSection, moveSection, removeSection]
     )
 
     return (
