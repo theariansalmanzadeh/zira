@@ -29,7 +29,7 @@ export const GROUP_USERS_DUMMY: GroupUserRowProps[] = [
             userCode: 'PR0241',
             roles: 'مدیر',
             permissions: 'ویرایش',
-            status: 'not_active',
+            status: 'inactive',
         },
     },
 ]

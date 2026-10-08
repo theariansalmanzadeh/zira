@@ -9,6 +9,7 @@ import React, {
 } from 'react'
 import type {
     CartItem,
+    CashPaymentInfo,
     ChequeInfo,
     PaymentType,
     CreateOrderContextValue,
@@ -16,6 +17,8 @@ import type {
 import {
     INITIAL_CART_ITEMS,
     ORDER_CUSTOMERS,
+    createEmptyCashPayment,
+    createEmptyCheque,
 } from '../constants'
 
 const CreateOrderContext = createContext<CreateOrderContextValue | null>(null)
@@ -43,11 +46,10 @@ const CreateOrderProvider = ({ children }: CreateOrderProviderProps) => {
     )
     const [cartItems, setCartItems] = useState<CartItem[]>(INITIAL_CART_ITEMS)
     const [paymentType, setPaymentType] = useState<PaymentType[]>([])
-    const [chequeInfo, setChequeInfoState] = useState<ChequeInfo>({
-        chequeNumber: '',
-        dueDate: '',
-        bank: '',
-    })
+    const [cheques, setCheques] = useState<ChequeInfo[]>([createEmptyCheque()])
+    const [cashPayments, setCashPayments] = useState<CashPaymentInfo[]>([
+        createEmptyCashPayment(),
+    ])
     const [cacheInfo, setCacheInfo] = useState(0)
     const [otpDigits, setOtpDigits] = useState(['۸', '۳', '', ''])
 
@@ -86,9 +88,40 @@ const CreateOrderProvider = ({ children }: CreateOrderProviderProps) => {
         })
     }, [])
 
-    const setChequeInfo = useCallback((info: Partial<ChequeInfo>) => {
-        setChequeInfoState((prev) => ({ ...prev, ...info }))
+    const addCheque = useCallback(() => {
+        setCheques((prev) => [...prev, createEmptyCheque()])
     }, [])
+
+    const removeCheque = useCallback((id: string) => {
+        setCheques((prev) => prev.filter((cheque) => cheque.id !== id))
+    }, [])
+
+    const updateCheque = useCallback((id: string, info: Partial<ChequeInfo>) => {
+        setCheques((prev) =>
+            prev.map((cheque) =>
+                cheque.id === id ? { ...cheque, ...info } : cheque
+            )
+        )
+    }, [])
+
+    const addCashPayment = useCallback(() => {
+        setCashPayments((prev) => [...prev, createEmptyCashPayment()])
+    }, [])
+
+    const removeCashPayment = useCallback((id: string) => {
+        setCashPayments((prev) => prev.filter((payment) => payment.id !== id))
+    }, [])
+
+    const updateCashPayment = useCallback(
+        (id: string, info: Partial<CashPaymentInfo>) => {
+            setCashPayments((prev) =>
+                prev.map((payment) =>
+                    payment.id === id ? { ...payment, ...info } : payment
+                )
+            )
+        },
+        []
+    )
 
     const setOtpDigit = useCallback((index: number, value: string) => {
         setOtpDigits((prev) => {
@@ -130,8 +163,14 @@ const CreateOrderProvider = ({ children }: CreateOrderProviderProps) => {
             removeCartItem,
             paymentType,
             setPaymentType,
-            chequeInfo,
-            setChequeInfo,
+            cheques,
+            addCheque,
+            removeCheque,
+            updateCheque,
+            cashPayments,
+            addCashPayment,
+            removeCashPayment,
+            updateCashPayment,
             cacheInfo,
             setCacheInfo,
             otpDigits,
@@ -151,8 +190,14 @@ const CreateOrderProvider = ({ children }: CreateOrderProviderProps) => {
             updateCartQty,
             removeCartItem,
             paymentType,
-            chequeInfo,
-            setChequeInfo,
+            cheques,
+            addCheque,
+            removeCheque,
+            updateCheque,
+            cashPayments,
+            addCashPayment,
+            removeCashPayment,
+            updateCashPayment,
             cacheInfo,
             otpDigits,
             setOtpDigit,

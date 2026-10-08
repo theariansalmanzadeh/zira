@@ -80,8 +80,8 @@ const TableRow = ({ data }: TableRowProps) => {
             <UiTableRow className="[&>*]:text-on-surface-variant [&>*]:text-label-lg [&>*]:font-normal">
                 {TableColoumn[0]?.isChecked && <TableCell>{id}</TableCell>}
                 {TableColoumn[1]?.isChecked && (
-                    <TableCell>
-                        <div className="flex flex-col items-end gap-0.5">
+                    <TableCell className="align-middle">
+                        <div className="flex flex-col items-center justify-center gap-0.5">
                             <span className="text-label-lg text-on-surface">
                                 {customerName}
                             </span>
@@ -95,8 +95,8 @@ const TableRow = ({ data }: TableRowProps) => {
                     <TableCell>{formatFaDateTime(registeredAt)}</TableCell>
                 )}
                 {TableColoumn[3]?.isChecked && (
-                    <TableCell>
-                        <div className="flex flex-col items-end gap-0.5">
+                    <TableCell className="align-middle">
+                        <div className="flex flex-col items-center justify-center gap-0.5">
                             <span className="text-label-lg text-on-surface">
                                 {productName}
                             </span>

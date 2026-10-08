@@ -1,18 +1,15 @@
 'use client'
 
-import { useRef } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
-import { Icon } from '@/src/shared/components/Icons/Icon'
-import { Input } from '@/src/shared/components/ui/Input'
-import { Button } from '@/src/shared/components/ui/button'
+import DocumentFileUpload from '@/src/shared/components/ui/DocumentFileUpload'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
+import { Input } from '@/src/shared/components/ui/Input'
 import {
     GENDER_OPTIONS,
     type NewCustomerFormValues,
 } from '../schema'
 
 const IdentityInfo = () => {
-    const licenseInputRef = useRef<HTMLInputElement>(null)
     const {
         control,
         formState: { errors },
@@ -96,38 +93,11 @@ const IdentityInfo = () => {
                     />
                 </div>
 
-                <div className="flex flex-col items-stretch justify-between gap-4 rounded-container-lg border border-dashed border-outline-variant bg-surface-container-high/40 p-4 sm:flex-row sm:items-center">
-                    <div className="flex items-center gap-3">
-                        <div className="flex size-10 shrink-0 items-center justify-center rounded-container-md bg-primary-container">
-                            <Icon
-                                label="upload300Linear"
-                                className="size-6 text-on-primary-container"
-                            />
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-label-lg text-on-surface">
-                                تصویر پروانه کسب
-                            </span>
-                            <span className="text-label-md text-outline">
-                                فرمت JPG یا PNG — حداکثر ۵ مگابایت
-                            </span>
-                        </div>
-                    </div>
-                    <Button
-                        type="button"
-                        variant="primary-outline"
-                        className="shrink-0"
-                        onClick={() => licenseInputRef.current?.click()}
-                    >
-                        انتخاب فایل
-                    </Button>
-                    <input
-                        ref={licenseInputRef}
-                        type="file"
-                        accept="image/jpeg,image/png"
-                        className="hidden"
-                    />
-                </div>
+                <DocumentFileUpload
+                    title="تصویر پروانه کسب"
+                    hint="فرمت JPG یا PNG — حداکثر ۵ مگابایت"
+                    accept="image/jpeg,image/png"
+                />
             </div>
         </div>
     )

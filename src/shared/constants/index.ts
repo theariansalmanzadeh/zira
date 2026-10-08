@@ -32,6 +32,7 @@ export const PUBLIC_ROUTES = {
 
 
 export const ADMIN_PANEL_ROUTES = {
+    login: "/admin/login",
     users: "/users",
     userDetails: "/users/:id",
     groups: "user-management/groups",

@@ -292,6 +292,14 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
     packs: {
         title: 'لیست پک‌ها',
         subtitle: 'پک‌های کالا و وضعیت نمایش آن‌ها',
+        buttons: [
+            {
+                label: 'پک جدید',
+                icon: 'addSm400Broken',
+                href: '/admin/categories/addPack',
+                variant: 'primary',
+            },
+        ],
     },
     'pack-detail': {
         title: 'جزئیات پک',
@@ -301,9 +309,14 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
             {
                 label: 'ویرایش',
                 variant: 'default',
-                href: '/admin/categories/addProduct',
+                href: '/admin/categories/addPack',
             },
         ],
+    },
+    addPack: {
+        title: 'ایجاد و ویرایش پک',
+        subtitle: 'گالری، دامنه نمایش و اطلاعات پایه آیتم',
+        hasBackButton: true,
     },
     brands: {
         title: 'برندها',
@@ -393,6 +406,7 @@ export const getCategoriesSectionKeyFromPath = (pathname: string): string => {
     }
     if (section === 'new-campaign') return 'campaigns-new'
     if (section === 'addProduct') return 'add-product'
+    if (section === 'addPack') return 'addPack'
     if (section === 'addCategory') return 'add-category'
 
     return section

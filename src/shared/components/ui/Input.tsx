@@ -25,7 +25,9 @@ InputField.displayName = "InputField";
 type InputProps = Omit<InputFieldProps, "onChange" | "value"> & {
   iconClassName?: string;
   wrapperClassName?: string;
+  containerClassName?: string;
   iconId?: IconLabel;
+  icon?: React.ReactNode;
   error?: boolean;
   msg?: string;
   label?: string;
@@ -40,8 +42,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     {
       className,
       wrapperClassName,
+      containerClassName,
       iconClassName,
       iconId,
+      icon,
       isCopyable,
       onClickCopy,
       type,
@@ -59,11 +63,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const inputId = id ?? generatedId;
 
     return (
-      <div className="flex flex-col">
+      <div className={cn("flex flex-col", containerClassName)}>
         {label && (
           <label
             htmlFor={inputId}
-            className="mb-[6px] text-label-md text-on-surface-variant"
+            className="mb-1.5 text-label-md text-on-surface-variant"
           >
             {label}
           </label>
@@ -77,7 +81,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             wrapperClassName
           )}
         >
-          {iconId && <Icon label={iconId} className={cn("", iconClassName)} />}
+          {icon ?? (iconId && <Icon label={iconId} className={cn("", iconClassName)} />)}
           {/* ToDo: Add value check */}
           {isCopyable && <CopyButton onCopy={onClickCopy} value={value || ""} />}
           <InputField

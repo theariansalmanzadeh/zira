@@ -12,7 +12,6 @@ import IconButton from "@/src/shared/components/ui/IconButton";
 import { cn } from "@shared/libs/utils";
 import { VariantProps } from "class-variance-authority";
 import { PillVariants } from "@/src/shared/components/ui/Pill";
-import { useRouter } from "next/navigation";
 import { PILL_VARIANT_ICON } from "@/src/routes/support/constants/pillVariantIcons";
 import Link from "next/link";
 
@@ -21,6 +20,7 @@ export type TicketStatus = "open" | "waiting" | "reviewing" | "closed";
 
 export type TicketRowData = {
     id: string;
+    trackingCode: string;
     idVariant: TicketIdVariant;
     contact: string;
     subject: string;
@@ -49,6 +49,7 @@ const TicketRow = ({ data }: { data: TicketRowData }) => {
     const { TableColoumn } = useTable()
     const {
         id,
+        trackingCode,
         idVariant,
         contact,
         subject,
@@ -57,14 +58,14 @@ const TicketRow = ({ data }: { data: TicketRowData }) => {
         lastActivity,
     } = data;
     const statusConfig = STATUS_CONFIG[status];
-    const { push } = useRouter();
+
     return (
         <>
             <UiTableRow className="[&>*]:text-on-surface-variant!">
                 {TableColoumn[0]?.isChecked && (
                     <TableCell>
                         <div className="flex flex-row-reverse items-center justify-end gap-2">
-                            <span>{id}</span>
+                            <span>{trackingCode}</span>
                             <span
                                 className={cn(
                                     "size-2 shrink-0 rounded-full",

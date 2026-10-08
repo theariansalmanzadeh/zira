@@ -1,6 +1,6 @@
 "use client";
 
-import { formatFaDateTime } from "@/src/shared/libs/formatter";
+import { formatFaDateTime, formatPrice } from "@/src/shared/libs/formatter";
 import IconButton from "@/src/shared/components/ui/IconButton";
 import { useTable } from "@/src/shared/context/TableProvider";
 import { Pill, PillVariants } from "@/src/shared/components/ui/Pill";
@@ -35,7 +35,7 @@ export type OrderListRowData = {
     customerTier: string;
     registeredAt: string;
     itemsCount: number;
-    totalAmount: string;
+    totalAmount: number;
     settlementType: SettlementType;
     status: OrderListStatus;
     filterTab: OrderListFilterTab;
@@ -100,7 +100,7 @@ const TableRow = ({ data }: TableRowProps) => {
                     <TableCell>{itemsCount}</TableCell>
                 )}
                 {TableColoumn[4]?.isChecked && (
-                    <TableCell>{totalAmount}</TableCell>
+                    <TableCell>{formatPrice(totalAmount)}</TableCell>
                 )}
                 {TableColoumn[5]?.isChecked && (
                     <TableCell>

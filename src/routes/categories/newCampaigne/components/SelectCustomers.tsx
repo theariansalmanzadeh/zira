@@ -5,7 +5,7 @@ import { Button } from '@/src/shared/components/ui/button'
 import { ModalTypes } from '@/src/shared/components/modals/types'
 import { useModalStore } from '@/src/shared/store/modal-store'
 
-const SelectCustomers = () => {
+const SelectCustomers = ({ hasGroup = true }: { hasGroup?: boolean }) => {
     const { openModal } = useModalStore()
 
     return (
@@ -27,7 +27,9 @@ const SelectCustomers = () => {
                     variant='primary'
                     size='default'
                     className='shrink-0 gap-1.5'
-                    onClick={() => openModal(ModalTypes.ADD_CUSTOMER)}
+                    onClick={() =>
+                        openModal(ModalTypes.ADD_CUSTOMER, { hasGroup })
+                    }
                 >
                     <Icon label='addSm400Broken' className='size-5!' />
                     افزودن مشتری

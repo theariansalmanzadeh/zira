@@ -1,42 +1,39 @@
 "use client"
 
 import logo from "@/public/images/brandLogo.svg"
+import loginImage from "@/public/images/login.jpg"
+import { useRequestCustomerOtp } from "@/src/api/hooks/auth"
 import { Button } from "@/src/shared/components/ui/button"
 import { Card, CardContent, CardHeader } from '@/src/shared/components/ui/Card'
 import IconButton from '@/src/shared/components/ui/IconButton'
 import { Input } from "@/src/shared/components/ui/Input"
 import { PUBLIC_ROUTES } from "@/src/shared/constants"
 import { useRegistration } from "@/src/shared/context/RegistrationProvider"
+import { onlyNumber } from "@/src/shared/schema/generalSchema"
 import Image from 'next/image'
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import loginImage from "@/public/images/login.jpg"
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginValidation } from "@/src/shared/schema/authSchema"
 
+const PHONE_NUMBER_REGEX = /^\d{11}$/
 
 const LoginPage = () => {
-    const { setPhoneNumber } = useRegistration()
+    const { phoneNumber, setPhoneNumber } = useRegistration()
     const { push, back } = useRouter()
+    const { mutate: requestOtp, isPending } = useRequestCustomerOtp()
 
-    const { phoneNumber } = useRegistration()
-    const { register, formState: { errors } } = useForm<z.infer<typeof loginValidation>>({
-        resolver: zodResolver(loginValidation),
-        defaultValues: {
-            phoneNumber: ""
-        },
-        mode: "onChange"
-    })
-    const otpFields = register("phoneNumber")
-
-    const otpHandler = () => {
-    }
     const submitHandler = () => {
-        setPhoneNumber("");
-        push(PUBLIC_ROUTES.otp)
+        if (!PHONE_NUMBER_REGEX.test(phoneNumber)) return
+
+        requestOtp(
+            { phone_number: phoneNumber },
+            {
+                onSuccess: () => {
+                    push(PUBLIC_ROUTES.otp)
+                },
+            }
+        )
     }
+
     return (
         <>
             <Image src={loginImage} alt="login" fill className="w-full object-cover absolute top-0 left-0 z-0" />
@@ -56,8 +53,20 @@ const LoginPage = () => {
                         inputMode="numeric"
                         autoComplete="one-time-code"
                         pattern="[0-9]*"
-                        onChange={() => { }} wrapperClassName="mb-11 rounded-2xl!" value={""} />
-                    <Button className="w-full" variant="primary" onClick={submitHandler}>ورود</Button>
+                        value={phoneNumber}
+                        onChange={(value) => {
+                            setPhoneNumber(onlyNumber(value).slice(0, 11))
+                        }}
+                        wrapperClassName="mb-11 rounded-2xl!"
+                    />
+                    <Button
+                        className="w-full"
+                        variant="primary"
+                        onClick={submitHandler}
+                        disabled={isPending}
+                    >
+                        ورود
+                    </Button>
                     <div className="flex flex-row justify-start text-sm mt-8 text-on-surface">
                         <p className="text-nowrap">ورود شما به معنای پذیرش</p>
                         <Link href={PUBLIC_ROUTES.terms} className="text-primary">شرایط</Link>

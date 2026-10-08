@@ -1,8 +1,11 @@
 'use client'
 
+import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useEffect } from 'react'
+import { Icon } from '@/src/shared/components/Icons/Icon'
 import HeadingWithActions from '@/src/shared/components/ui/HeadingWithActions'
+import { Button } from '@/src/shared/components/ui/button'
 import {
     getUserManagementSectionKey,
     sectionToHeading,
@@ -41,10 +44,49 @@ const UserManagementLayoutContent = ({
                         <HeadingWithActions.BackButton onClick={() => back()} />
                     )}
                     <HeadingWithActions.Title>{heading.title}</HeadingWithActions.Title>
-                    {heading.subtitle && (
-                        <HeadingWithActions.SubTitle>
-                            {heading.subtitle}
-                        </HeadingWithActions.SubTitle>
+                    <HeadingWithActions.SubTitle>
+                        {heading.subtitle}
+                    </HeadingWithActions.SubTitle>
+                    {heading.buttons && heading.buttons.length > 0 && (
+                        <HeadingWithActions.ButtonWrapper>
+                            {heading.buttons.map((button, index) => {
+                                const content = (
+                                    <>
+                                        {button.icon && (
+                                            <Icon
+                                                label={button.icon}
+                                                className={
+                                                    button.variant === 'primary'
+                                                        ? 'size-6! text-on-primary'
+                                                        : 'size-6!'
+                                                }
+                                            />
+                                        )}
+                                        <span className='text-label-sm'>
+                                            {button.label}
+                                        </span>
+                                    </>
+                                )
+
+                                if (button.href) {
+                                    return (
+                                        <Button
+                                            key={index}
+                                            variant={button.variant}
+                                            asChild
+                                        >
+                                            <Link href={button.href}>{content}</Link>
+                                        </Button>
+                                    )
+                                }
+
+                                return (
+                                    <Button key={index} variant={button.variant}>
+                                        {content}
+                                    </Button>
+                                )
+                            })}
+                        </HeadingWithActions.ButtonWrapper>
                     )}
                 </HeadingWithActions>
             )}

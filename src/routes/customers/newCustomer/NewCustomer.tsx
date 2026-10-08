@@ -30,7 +30,7 @@ import {
 const NewCustomer = () => {
     const { back } = useRouter()
     const [activeStep, setActiveStep] = useState<NewCustomerStep>(
-        NEW_CUSTOMER_STEPS.identity
+        NEW_CUSTOMER_STEPS.addressAndContact
     )
 
     const methods = useForm<NewCustomerFormValues>({

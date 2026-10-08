@@ -7,6 +7,8 @@ export type AddProductItem = {
     sku: string
     brand: string
     category: string
+    colorLabel?: string
+    colorHex?: string
     stock: string
     status: 'active' | 'diactive' | 'pending'
     quantity?: number
@@ -39,6 +41,8 @@ export const ADD_PRODUCT_DUMMY: AddProductItem[] = [
         sku: '۷۶۲۳-۷۳۵۲',
         brand: 'Lorenzo',
         category: 'لباس زیر زنانه',
+        colorLabel: 'مشکی',
+        colorHex: '#1A1A1A',
         stock: '۴۲۰ آیتم در ۲ متغیر',
         status: 'pending',
     },
@@ -49,6 +53,8 @@ export const ADD_PRODUCT_DUMMY: AddProductItem[] = [
         sku: '۸۴۱۲-۹۰۳۱',
         brand: 'Victoria',
         category: 'لباس خواب',
+        colorLabel: 'کرم',
+        colorHex: '#E8D5C4',
         stock: '۱۵۶ آیتم در ۳ متغیر',
         status: 'active',
     },
@@ -59,6 +65,8 @@ export const ADD_PRODUCT_DUMMY: AddProductItem[] = [
         sku: '۵۵۰۱-۲۲۸۷',
         brand: 'Lorenzo',
         category: 'لباس زیر زنانه',
+        colorLabel: 'گلبهی',
+        colorHex: '#E8A0A0',
         stock: '۸۹۰ آیتم در ۱ متغیر',
         status: 'active',
     },

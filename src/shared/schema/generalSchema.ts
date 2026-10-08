@@ -6,6 +6,11 @@ export function toEnglishDigits(value: string) {
     return value.replace(/[۰-۹]/g, (digit) => String(PERSIAN_DIGITS.indexOf(digit)));
 }
 
+/** Keeps digits only (Persian digits converted to English). */
+export function onlyNumber(value: string) {
+    return toEnglishDigits(value).replace(/\D/g, '');
+}
+
 export const mobileSchema = z
     .string()
     .trim()

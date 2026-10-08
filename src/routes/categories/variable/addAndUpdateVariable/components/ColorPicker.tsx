@@ -20,42 +20,36 @@ const toHex = (value: string) => {
 
 const ColorPicker = ({ value = DEFAULT_HEX, onChange }: ColorPickerProps) => {
     const [hex, setHex] = useState(toHex(value) ?? DEFAULT_HEX)
-    const [draft, setDraft] = useState(hex)
 
     // TODO: fix this issue
     const commit = (next: string) => {
-        // setHex(next)
-        // setDraft(next)
-        // onChange?.(next)
+        setHex(toHex(next) ?? DEFAULT_HEX)
+        onChange?.(next)
     }
 
     return (
         <div className="flex flex-col gap-3">
             <span className="text-label-md text-on-surface-variant">انتخاب رنگ</span>
-            <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-end">
-                <div dir="ltr">
-                    <Colorful
-                        color={hex}
-                        disableAlpha
-                        style={{ width: 220 }}
-                        onChange={(color: ColorResult) => commit(color.hex)}
-                    />
-                </div>
-                <div className="w-full min-w-0 sm:w-48">
-                    <Input
-                        label="Hex"
-                        value={draft}
-                        dir="ltr"
-                        placeholder="#RRGGBB"
-                        onChange={(next) => {
-                            // setDraft(next)
-                            const parsed = toHex(next)
-                            if (!parsed) return
-                            setHex(parsed)
-                            onChange?.(parsed)
-                        }}
-                    />
-                </div>
+            <div className="flex flex-col items-center gap-3">
+                <Colorful
+                    color={hex}
+                    disableAlpha
+                    style={{ width: 250 }}
+                    onChange={(color: ColorResult) => commit(color.hex)}
+                />
+                <Input
+                    label="Hex"
+                    value={hex}
+                    dir="ltr"
+                    wrapperClassName='w-full'
+                    placeholder="#RRGGBB"
+                    onChange={(next) => {
+                        const parsed = toHex(next)
+                        if (!parsed) return
+                        setHex(parsed)
+                        onChange?.(parsed)
+                    }}
+                />
             </div>
         </div>
     )

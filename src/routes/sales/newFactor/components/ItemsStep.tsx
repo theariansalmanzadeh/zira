@@ -5,10 +5,18 @@ import { Button } from '@/src/shared/components/ui/button'
 import IconButton from '@/src/shared/components/ui/IconButton'
 import { useModalStore } from '@/src/shared/store/modal-store'
 import { ModalTypes } from '@/src/shared/components/modals/types'
-import type { SelectProductItem } from '@/src/shared/components/modals/components/selectProduct'
+import type { AddProductItem } from '@/src/shared/components/modals/components/addProduct'
 import { formatFaNumber, formatPrice } from '@/src/shared/libs/formatter'
 import { useNewFactorContext } from '../provider/NewFactorProvider'
 import FactorItemAndPrice from './FactorItemAndPrice'
+
+const mapAddProductToCartItem = (product: AddProductItem, unitPrice = 0) => ({
+    id: product.id,
+    name: product.productName,
+    unitPrice,
+    qty: product.quantity ?? 1,
+    swatch: product.colorHex ?? '#D98EA8',
+})
 
 const ItemsStep = () => {
     const {
@@ -19,13 +27,32 @@ const ItemsStep = () => {
     } = useNewFactorContext()
     const openModal = useModalStore((state) => state.openModal)
 
-    const handleSelectProduct = (product: SelectProductItem) => {
-        addCartItem({
-            id: product.id,
-            name: product.name,
-            unitPrice: product.unitPrice,
-            qty: 1,
-            swatch: product.swatch,
+    const handleOpenAddProduct = () => {
+        openModal(ModalTypes.ADD_PRODUCT, {
+            hasQuantity: true,
+            selectedIds: cartItems.map((item) => item.id),
+            quantities: Object.fromEntries(
+                cartItems.map((item) => [item.id, item.qty])
+            ),
+            onConfirm: (products: AddProductItem[]) => {
+                const selectedIds = new Set(products.map((product) => product.id))
+
+                cartItems.forEach((item) => {
+                    if (!selectedIds.has(item.id)) {
+                        removeCartItem(item.id)
+                    }
+                })
+
+                products.forEach((product) => {
+                    const existing = cartItems.find((item) => item.id === product.id)
+                    if (existing) {
+                        updateCartQty(product.id, product.quantity ?? existing.qty)
+                        return
+                    }
+
+                    addCartItem(mapAddProductToCartItem(product))
+                })
+            },
         })
     }
 
@@ -43,12 +70,7 @@ const ItemsStep = () => {
                     variant='primary'
                     size='default'
                     className='gap-1.5'
-                    onClick={() =>
-                        openModal(ModalTypes.SELECT_PRODUCT, {
-                            selectedIds: cartItems.map((item) => item.id),
-                            onSelect: handleSelectProduct,
-                        })
-                    }
+                    onClick={handleOpenAddProduct}
                 >
                     <Icon label='addSm400Broken' className='size-5!' />
                     افزودن کالا

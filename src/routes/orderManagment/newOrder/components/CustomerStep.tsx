@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Button } from '@/src/shared/components/ui/button'
 import { cn } from '@shared/libs/utils'
@@ -9,6 +10,7 @@ import { useCreateOrderContext } from '../provider/CreateOrderProvider'
 
 const CustomerStep = () => {
     const [search, setSearch] = useState('')
+    const { push } = useRouter()
     const {
         customers,
         selectedCustomerId,
@@ -99,6 +101,7 @@ const CustomerStep = () => {
                     type='button'
                     variant='ghost'
                     className='w-fit gap-1.5 px-0 text-label-md font-bold text-primary'
+                    onClick={() => push('/admin/customers/new')}
                 >
                     <span className='text-title-md'>+</span>
                     ثبت مشتری جدید

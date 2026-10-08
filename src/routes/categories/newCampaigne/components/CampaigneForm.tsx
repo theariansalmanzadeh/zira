@@ -183,7 +183,7 @@ const CampaigneForm = () => {
                         ))}
                     </TabsList>
                     <TabsContent value='selected-customers' className='mt-0'>
-                        <SelectCustomers />
+                        <SelectCustomers hasGroup={false} />
                     </TabsContent>
                 </Tabs>
             </div>

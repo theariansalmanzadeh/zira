@@ -1,88 +1,50 @@
-"use client"
+'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Table, TableBody } from '@/src/shared/components/ui/Table'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import TablePagination from '@/src/shared/components/adminTable/components/TablePagination'
+import TableLoadingSkeleton from '@/src/shared/components/loading/TableLoadingSkeleton'
 import { ROUTE_CONFIGS } from '@/src/shared/constants/routeConfigs'
+import type { ListTicketsParams, TicketStatusQuery } from '@/src/api/types/admin/support'
+import { useListTickets } from '../../hooks/support'
 import TableHeader from '../components/TableHeader'
-import TicketRow, { type TicketRowData } from '../components/TableRow'
+import TicketRow from '../components/TableRow'
 import { TABLE_COLOUMN } from '../constants'
+import { mapTicketListItemToRow } from '../utils/mapTicket'
 
-const TICKET_DUMMY: TicketRowData[] = [
-    {
-        id: 'TC-8271',
-        idVariant: 'success',
-        contact: 'آراد صفوی',
-        subject: 'درخواست مرجوعی',
-        department: 'انبار',
-        status: 'open',
-        lastActivity: '۸ دقیقه پیش',
-    },
-    {
-        id: 'TC-8270',
-        idVariant: 'warning',
-        contact: 'سارا احمدی',
-        subject: 'پیگیری سفارش',
-        department: 'فنی',
-        status: 'waiting',
-        lastActivity: 'دیروز',
-    },
-    {
-        id: 'TC-8269',
-        idVariant: 'error',
-        contact: 'رضا کریمی',
-        subject: 'مشکل پرداخت',
-        department: 'مالی',
-        status: 'reviewing',
-        lastActivity: '2025-12-09T14:53:00.000Z',
-    },
-    {
-        id: 'TC-8268',
-        idVariant: 'success',
-        contact: 'مینا رضایی',
-        subject: 'تأیید موجودی',
-        department: 'انبار',
-        status: 'closed',
-        lastActivity: '2025-12-08T10:40:00.000Z',
-    },
-    {
-        id: 'TC-8267',
-        idVariant: 'warning',
-        contact: 'علی محمدی',
-        subject: 'تغییر آدرس ارسال',
-        department: 'فنی',
-        status: 'open',
-        lastActivity: '۲ ساعت پیش',
-    },
-]
-
-const filterTickets = (tickets: TicketRowData[], filter: string) => {
-    switch (filter) {
-        case 'open':
-            return tickets.filter((ticket) => ticket.status === 'open')
-        case 'pending':
-            return tickets.filter((ticket) => ticket.status === 'waiting' || ticket.status === 'reviewing')
-        case 'closed':
-            return tickets.filter((ticket) => ticket.status === 'closed')
-        default:
-            return tickets
-    }
+const FILTER_TO_STATUS: Record<string, TicketStatusQuery | undefined> = {
+    all: undefined,
+    open: 'active',
+    pending: 'WAITING',
+    closed: 'CLOSED',
 }
 
 const Tickets = () => {
-    const [activeFilter] = useState('all')
-    const filteredTickets = useMemo(
-        () => filterTickets(TICKET_DUMMY, activeFilter),
+    const searchParams = useSearchParams()
+    const activeFilter = searchParams.get('cat') ?? 'all'
+
+    const listParams = useMemo<ListTicketsParams>(
+        () => ({
+            status: FILTER_TO_STATUS[activeFilter],
+            page: 1,
+            page_size: 20,
+        }),
         [activeFilter]
+    )
+
+    const { data, isPending, isError } = useListTickets(listParams)
+
+    const tickets = useMemo(
+        () => (data?.items ?? []).map(mapTicketListItemToRow),
+        [data?.items]
     )
 
     return (
         <div className='flex flex-col gap-3'>
             <div className='mt-3'>
-                <span className='text-label-md text-outline'>
-                    تیکت ها
-                </span>
+                <span className='text-label-md text-outline'>تیکت ها</span>
             </div>
 
             <TableListLayout
@@ -92,16 +54,32 @@ const Tickets = () => {
                 toggleButtonValue={ROUTE_CONFIGS.tickets.TOGGLE_BUTTON_VALUE}
             >
                 <div className='rounded-card-lg bg-surface-container-high p-2'>
-                    <Table className='border-collapse border-spacing-y-4'>
-                        <TableHeader />
-                        <TableBody>
-                            {filteredTickets.map((ticket) => (
-                                <TicketRow key={ticket.id} data={ticket} />
-                            ))}
-                        </TableBody>
-                    </Table>
+                    {isPending ? (
+                        <TableLoadingSkeleton isPending rows={6} />
+                    ) : isError ? (
+                        <div className='rounded-card-md bg-surface-container-lowest px-4 py-6 text-center text-label-md text-outline'>
+                            دریافت لیست تیکت‌ها با خطا مواجه شد.
+                        </div>
+                    ) : tickets.length === 0 ? (
+                        <div className='rounded-card-md bg-surface-container-lowest px-4 py-6 text-center text-label-md text-outline'>
+                            تیکتی یافت نشد.
+                        </div>
+                    ) : (
+                        <Table className='border-collapse border-spacing-y-4'>
+                            <TableHeader />
+                            <TableBody>
+                                {tickets.map((ticket) => (
+                                    <TicketRow key={ticket.id} data={ticket} />
+                                ))}
+                            </TableBody>
+                        </Table>
+                    )}
                 </div>
-                <TablePagination className='mt-2' totalAmount={100} />
+                <TablePagination
+                    className='mt-2'
+                    page={data?.page ?? 1}
+                    totalAmount={data?.total ?? 0}
+                />
             </TableListLayout>
         </div>
     )

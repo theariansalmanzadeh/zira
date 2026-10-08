@@ -5,7 +5,6 @@ import { Table, TableBody } from '@/src/shared/components/ui/Table'
 import TablePagination from '@/src/shared/components/adminTable/components/TablePagination'
 import { ROUTE_CONFIGS } from '@/src/shared/constants/routeConfigs'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
-import { formatPrice } from '@/src/shared/libs/formatter'
 import TableHeader from './components/TableHeader'
 import TableRow, { type FactorFilterTab, type FactorRowData } from './components/TableRow'
 import { TABLE_COLOUMN } from './constants'
@@ -20,7 +19,7 @@ const FACTOR_DUMMY: FactorRowData[] = [
         customerCode: 'C-2041',
         itemsCount: 43,
         issuedAt: '2025-12-03T00:00:00.000Z',
-        amount: formatPrice(14893000),
+        amount: 14893000,
         settlementType: 'credit',
         settlementDate: '2026-01-02T00:00:00.000Z',
         filterTab: 'credit',
@@ -34,7 +33,7 @@ const FACTOR_DUMMY: FactorRowData[] = [
         customerCode: 'C-1102',
         itemsCount: 124,
         issuedAt: '2025-12-02T00:00:00.000Z',
-        amount: formatPrice(62000000),
+        amount: 62000000,
         settlementType: 'credit',
         settlementDate: '2026-01-01T00:00:00.000Z',
         filterTab: 'credit',
@@ -48,7 +47,7 @@ const FACTOR_DUMMY: FactorRowData[] = [
         customerCode: 'C-1130',
         itemsCount: 27,
         issuedAt: '2025-12-02T00:00:00.000Z',
-        amount: formatPrice(142000000),
+        amount: 142000000,
         settlementType: 'cash',
         settlementDate: '2025-12-02T00:00:00.000Z',
         filterTab: 'cash',
@@ -62,7 +61,7 @@ const FACTOR_DUMMY: FactorRowData[] = [
         customerCode: 'C-1077',
         itemsCount: 32,
         issuedAt: '2025-11-30T00:00:00.000Z',
-        amount: formatPrice(62000000),
+        amount: 62000000,
         settlementType: 'cheque',
         settlementDate: '2026-01-29T00:00:00.000Z',
         filterTab: 'cheque',
@@ -76,7 +75,7 @@ const FACTOR_DUMMY: FactorRowData[] = [
         customerCode: 'C-1310',
         itemsCount: 48,
         issuedAt: '2025-11-29T00:00:00.000Z',
-        amount: formatPrice(21879000),
+        amount: 21879000,
         settlementType: 'cheque',
         settlementDate: '2026-01-13T00:00:00.000Z',
         filterTab: 'cheque',
@@ -90,7 +89,7 @@ const FACTOR_DUMMY: FactorRowData[] = [
         customerCode: 'C-1255',
         itemsCount: 92,
         issuedAt: '2025-11-29T00:00:00.000Z',
-        amount: formatPrice(82000000),
+        amount: 82000000,
         settlementType: 'cheque',
         settlementDate: '2025-12-29T00:00:00.000Z',
         filterTab: 'cheque',

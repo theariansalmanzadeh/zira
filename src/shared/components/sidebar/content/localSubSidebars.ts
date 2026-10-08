@@ -139,12 +139,6 @@ export const LOCAL_SUB_SIDEBAR_CONTENT: Record<
                     { label: 'صندوق تیکت‌ها', href: '/admin/support?sub=ticket' },
                 ],
             },
-            {
-                title: 'تنظیمات و گزارش',
-                links: [
-                    { label: 'دپارتمان‌ها', href: '/admin/support?sub=department' },
-                ],
-            },
         ],
     },
 }

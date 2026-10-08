@@ -1,12 +1,19 @@
 'use client'
 
-import { useState } from 'react'
 import type { LucideIcon } from 'lucide-react'
-import { Globe, Instagram, MapPin, MessageCircle, Send } from 'lucide-react'
+import { Globe, Instagram, MapPin, MessageCircle, Phone, Send, User } from 'lucide-react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Controller, useForm } from 'react-hook-form'
 import { cn } from '@shared/libs/utils'
 import { Button } from '@/src/shared/components/ui/button'
+import { Input } from '@/src/shared/components/ui/Input'
 import { Textarea } from '@/src/shared/components/ui/TextArea'
 import { useSendEmail } from './hook/useSendEmail'
+import {
+    CONTACT_EMAIL_DEFAULTS,
+    contactEmailSchema,
+    type ContactEmailValues,
+} from './schema'
 import {
     CONTACT_ADDRESS_DEFAULT,
     CONTACT_EMAIL_HOURS_DEFAULT,
@@ -55,17 +62,17 @@ const MAP_SRC =
     'https://www.openstreetmap.org/export/embed.html?bbox=51.30%2C35.68%2C51.38%2C35.72&layer=mapnik&marker=35.6997%2C51.3380'
 
 const ContactUs = () => {
-    const [message, setMessage] = useState('')
-    const sendEmail = useSendEmail()
+    const { mutate: sendEmail, isPending } = useSendEmail()
+    const { control, handleSubmit, reset, formState } = useForm<ContactEmailValues>({
+        resolver: zodResolver(contactEmailSchema),
+        defaultValues: CONTACT_EMAIL_DEFAULTS,
+        mode: 'onChange',
+    })
 
-    const submitEmail = () => {
-        const trimmed = message.trim()
-        if (!trimmed) return
-
-        sendEmail.mutate(
-            { message: trimmed },
-            { onSuccess: () => setMessage('') }
-        )
+    const submitEmail = (values: ContactEmailValues) => {
+        sendEmail(values, {
+            onSuccess: () => reset(CONTACT_EMAIL_DEFAULTS),
+        })
     }
 
     return (
@@ -141,7 +148,10 @@ const ContactUs = () => {
                         </div>
                     )}
                 </div>
-                <div className='flex flex-col gap-3 rounded-card-lg bg-surface-container-high p-5 md:col-span-2'>
+                <form
+                    className='flex flex-col gap-3 rounded-card-lg bg-surface-container-high p-5 md:col-span-2'
+                    onSubmit={handleSubmit(submitEmail)}
+                >
                     <div className='flex flex-col gap-1'>
                         <h2 className='text-title-md font-semibold text-on-surface-variant'>
                             ارسال ایمیل
@@ -150,22 +160,79 @@ const ContactUs = () => {
                             پیام خود را بنویسید تا از طریق ایمیل برای پشتیبانی ارسال شود.
                         </p>
                     </div>
-                    <Textarea
-                        value={message}
-                        placeholder='متن پیام'
-                        className='min-h-28 bg-surface-container-lowest'
-                        onChange={(event) => setMessage(event.target.value)}
+                    <div className='grid grid-cols-1 gap-3 sm:grid-cols-4'>
+                        <Controller
+                            name='name'
+                            control={control}
+                            render={({ field, fieldState }) => (
+                                <Input
+                                    label='نام'
+                                    placeholder='نام'
+                                    icon={<User className='size-5 shrink-0 text-on-surface-variant' strokeWidth={1.8} />}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    error={!!fieldState.error}
+                                    msg={fieldState.error?.message}
+                                    wrapperClassName='bg-surface-container-lowest'
+                                />
+                            )}
+                        />
+                        <Controller
+                            name='phone'
+                            control={control}
+                            render={({ field, fieldState }) => (
+                                <Input
+                                    label='شماره تماس'
+                                    placeholder='شماره تماس'
+                                    type='tel'
+                                    dir='ltr'
+                                    icon={<Phone className='size-5 shrink-0 text-on-surface-variant' strokeWidth={1.8} />}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    error={!!fieldState.error}
+                                    msg={fieldState.error?.message}
+                                    wrapperClassName='bg-surface-container-lowest'
+                                />
+                            )}
+                        />
+                        <Controller
+                            name='title'
+                            control={control}
+                            render={({ field, fieldState }) => (
+                                <Input
+                                    label='عنوان'
+                                    placeholder='عنوان'
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    error={!!fieldState.error}
+                                    msg={fieldState.error?.message}
+                                    wrapperClassName='bg-surface-container-lowest'
+                                    containerClassName='row-start-2 col-span-2'
+                                />
+                            )}
+                        />
+                    </div>
+                    <Controller
+                        name='message'
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <Textarea
+                                {...field}
+                                placeholder='متن پیام'
+                                aria-invalid={!!fieldState.error}
+                                className='min-h-28 bg-surface-container-lowest resize-none'
+                            />
+                        )}
                     />
                     <Button
-                        type='button'
+                        type='submit'
                         className='w-fit'
-                        disabled={!message.trim() || sendEmail.isPending}
-                        isLoading={sendEmail.isPending}
-                        onClick={submitEmail}
+                        isLoading={isPending}
+                        disabled={isPending}
                     >
                         ارسال
                     </Button>
-                </div>
+                </form>
             </div>
         </section>
     )

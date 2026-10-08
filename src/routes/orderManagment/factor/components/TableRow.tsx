@@ -10,7 +10,7 @@ import {
     TableCell,
     TableRow as UiTableRow,
 } from "@/src/shared/components/ui/Table";
-import { formatFaNumber, formatFaDate } from "@/src/shared/libs/formatter";
+import { formatFaNumber, formatFaDate, formatPrice } from "@/src/shared/libs/formatter";
 import Link from "next/link";
 import type { VariantProps } from "class-variance-authority";
 
@@ -27,7 +27,7 @@ export type FactorRowData = {
     customerCode: string;
     itemsCount: number;
     issuedAt: string;
-    amount: string;
+    amount: number;
     settlementType: SettlementType;
     settlementDate: string;
     filterTab: Exclude<FactorFilterTab, "all">;
@@ -120,7 +120,9 @@ const TableRow = ({ data }: TableRowProps) => {
                         <span dir="ltr">{formatFaDate(issuedAt)}</span>
                     </TableCell>
                 )}
-                {TableColoumn[5]?.isChecked && <TableCell>{amount}</TableCell>}
+                {TableColoumn[5]?.isChecked && (
+                    <TableCell>{formatPrice(amount)}</TableCell>
+                )}
                 {TableColoumn[6]?.isChecked && (
                     <TableCell>
                         <Pill
@@ -137,7 +139,10 @@ const TableRow = ({ data }: TableRowProps) => {
                 )}
                 {TableColoumn[8]?.isChecked && (
                     <TableCell className="w-[1%] whitespace-nowrap">
-                        <IconButton icon="print300Linear" onClick={() => {}} />
+                        <IconButton
+                            icon="print300Linear"
+                            onClick={() => window.print()}
+                        />
                     </TableCell>
                 )}
                 {TableColoumn[9]?.isChecked && (

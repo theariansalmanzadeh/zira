@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogTitle,
 } from '@components/ui/Dialog';
 import { useModalStore } from '@shared/store/modal-store';
@@ -39,10 +40,6 @@ const TableSettings = dynamic(
   () => import('./components/tableSettings').then((mod) => mod.TableSettings),
   { ssr: false }
 );
-const SelectProduct = dynamic(
-  () => import('./components/selectProduct').then((mod) => mod.SelectProduct),
-  { ssr: false }
-);
 const LocationGoods = dynamic(
   () => import('./components/locationGoods').then((mod) => mod.LocationGoods),
   { ssr: false }
@@ -60,7 +57,7 @@ const ChangeCustomerLevel = dynamic(
   { ssr: false }
 );
 const AddCustomer = dynamic(
-  () => import('./components/AddCustomer'),
+  () => import('./components/addCustomer/AddCustomer'),
   { ssr: false }
 );
 const AddNewFaq = dynamic(
@@ -130,6 +127,18 @@ const NotifAvailableProduct = dynamic(
   () => import('./components/NotifAvailableProduct'),
   { ssr: false }
 );
+const ExcelOutput = dynamic(
+  () => import('./components/ExcelOutput'),
+  { ssr: false }
+);
+const SelectBasedOnRole = dynamic(
+  () => import('./components/selectBasedOnRole'),
+  { ssr: false }
+);
+const SelectUsers = dynamic(
+  () => import('./components/selectUsers'),
+  { ssr: false }
+);
 
 const MODAL_COMPONENTS: Record<
   ModalType,
@@ -143,7 +152,6 @@ const MODAL_COMPONENTS: Record<
   [ModalTypes.SELECT_USER_AND_GROUPS]: SelectUserAndGroups,
   [ModalTypes.ADD_EMPLOYEE]: SelectUserAndGroups,
   [ModalTypes.TABLE_SETTINGS]: TableSettings,
-  [ModalTypes.SELECT_PRODUCT]: SelectProduct,
   [ModalTypes.LOCATION_GOODS]: LocationGoods,
   [ModalTypes.SELL_INVOICE]: SellInvoice,
   [ModalTypes.EDIT_CUSTOMER]: EditCustomer,
@@ -165,11 +173,19 @@ const MODAL_COMPONENTS: Record<
   [ModalTypes.RELATED_WAREHOUSES]: RelatedWarehouses,
   [ModalTypes.SIZE_GUIDNESS]: SizeGuidness,
   [ModalTypes.NOTIF_AVAILABLE_PRODUCT]: NotifAvailableProduct,
+  [ModalTypes.EXCEL_OUTPUT]: ExcelOutput,
+  [ModalTypes.SELECT_BASED_ON_ROLE]: SelectBasedOnRole,
+  [ModalTypes.SELECT_USERS]: SelectUsers,
 };
 
 const MODAL_CONFIG: Record<
   ModalType,
-  { title?: string; showCloseButton: boolean; className?: string }
+  {
+    title?: string
+    description?: string
+    showCloseButton: boolean
+    className?: string
+  }
 > = {
 
   [ModalTypes.DELETE_PERMISSION]: {
@@ -210,10 +226,6 @@ const MODAL_CONFIG: Record<
   [ModalTypes.TABLE_SETTINGS]: {
     showCloseButton: true,
     className: 'max-h-[90vh] max-w-full overflow-y-auto border-0 sm:max-w-[700px]',
-  },
-  [ModalTypes.SELECT_PRODUCT]: {
-    showCloseButton: true,
-    className: 'max-h-[90vh] max-w-full overflow-y-auto border-0 sm:max-w-[1120px]',
   },
   [ModalTypes.LOCATION_GOODS]: {
     showCloseButton: true,
@@ -338,6 +350,25 @@ const MODAL_CONFIG: Record<
     className:
       'min-w-0! max-h-[90vh] w-full max-w-[420px]! overflow-y-auto border-0 sm:max-w-[420px]!',
   },
+  [ModalTypes.EXCEL_OUTPUT]: {
+    title: 'خروجی اکسل',
+    showCloseButton: true,
+    className:
+      'min-w-0! max-h-[90vh] w-full max-w-[640px]! overflow-y-auto border-0 sm:max-w-[640px]!',
+  },
+  [ModalTypes.SELECT_BASED_ON_ROLE]: {
+    showCloseButton: false,
+    className:
+      'min-w-0! max-h-[90vh] w-full max-w-[560px]! overflow-y-auto border-0 sm:max-w-[560px]!',
+  },
+  [ModalTypes.SELECT_USERS]: {
+    title: 'انتخاب کاربران منتخب',
+    description:
+      'فقط کاربران سیستمی (کارمند و مدیر ارشد) در این فهرست هستند.',
+    showCloseButton: true,
+    className:
+      'min-w-0! max-h-[90vh] w-full max-w-[720px]! overflow-y-auto border-0 sm:max-w-[720px]!',
+  },
 };
 
 const Modal = () => {
@@ -374,6 +405,9 @@ const Modal = () => {
               ? 'ویرایش سوال'
               : modalConfig.title}
           </DialogTitle>
+        )}
+        {modalConfig.description && (
+          <DialogDescription>{modalConfig.description}</DialogDescription>
         )}
         <ModalComponent closeModal={closeModal} data={data} />
       </DialogContent>

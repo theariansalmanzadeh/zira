@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form'
@@ -9,6 +9,7 @@ import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { Input } from '@/src/shared/components/ui/Input'
 import ColorPicker from './components/ColorPicker'
 import VariableSettings from './components/VariableSettings'
+import VariableValues from './components/VariableValues'
 import {
     FORM_DISPLAY_OPTIONS,
     INPUT_TYPE_OPTIONS,
@@ -36,6 +37,7 @@ const VariableForm = ({ editId }: { editId: string | null }) => {
         control: methods.control,
         name: 'formDisplayControl',
     })
+    const [colorHex, setColorHex] = useState('#d64545')
 
     const onSubmit = () => {
         push('/admin/categories?sub=variable')
@@ -131,9 +133,18 @@ const VariableForm = ({ editId }: { editId: string | null }) => {
                     />
                     {formDisplayControl === 'color-swatch' && (
                         <div className="sm:col-span-2">
-                            <ColorPicker />
+                            <ColorPicker
+                                value={colorHex}
+                                onChange={(hex) => {
+                                    if (hex) setColorHex(hex)
+                                }}
+                            />
                         </div>
                     )}
+                    <VariableValues
+                        formDisplayControl={formDisplayControl ?? ''}
+                        colorHex={colorHex}
+                    />
                     <Controller
                         control={methods.control}
                         name="shortDescription"

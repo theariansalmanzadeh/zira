@@ -54,18 +54,6 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
             },
         ],
     },
-    department: {
-        title: 'دپارتمان‌ها',
-        subtitle: SUPPORT_SUBTITLE,
-        buttons: [
-            {
-                label: 'دپارتمان جدید',
-                icon: 'addSm400Broken',
-                href: '/admin/support/department/new',
-                variant: 'primary',
-            },
-        ],
-    },
 }
 
 export const getSupportSectionKey = (sub: string) => sub || 'dashboard'

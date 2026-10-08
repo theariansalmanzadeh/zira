@@ -1,8 +1,42 @@
-import React from 'react'
+'use client'
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/shared/components/ui/Tabs'
+import Departments from './component/Departments'
+import Header from './component/header'
+import PersonnelInfo from './component/PersonnelInfo'
+import Role from './component/Role'
+import SecurityStatus from './component/SecurityStatus'
+import SessionManagement from './component/SessionManagement'
 
 const UserDetail = () => {
     return (
-        <div>UserDetail</div>
+        <div className='flex w-full flex-col gap-4' dir='rtl'>
+            <Header />
+            <Tabs defaultValue='personnel' dir='rtl' className='w-full'>
+                <TabsList className='w-full justify-start overflow-x-auto overflow-y-hidden'>
+                    <TabsTrigger value='personnel'>اطلاعات پرسنلی</TabsTrigger>
+                    <TabsTrigger value='role'>نقش</TabsTrigger>
+                    <TabsTrigger value='departments'>دپارتمان‌ها</TabsTrigger>
+                    <TabsTrigger value='sessions'>مدیریت نشست</TabsTrigger>
+                    <TabsTrigger value='security'>امنیت و وضعیت</TabsTrigger>
+                </TabsList>
+                <TabsContent value='personnel'>
+                    <PersonnelInfo />
+                </TabsContent>
+                <TabsContent value='role'>
+                    <Role />
+                </TabsContent>
+                <TabsContent value='departments'>
+                    <Departments />
+                </TabsContent>
+                <TabsContent value='sessions'>
+                    <SessionManagement />
+                </TabsContent>
+                <TabsContent value='security'>
+                    <SecurityStatus />
+                </TabsContent>
+            </Tabs>
+        </div>
     )
 }
 

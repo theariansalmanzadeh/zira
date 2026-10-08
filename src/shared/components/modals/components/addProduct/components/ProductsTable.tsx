@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { Checkbox } from '@/src/shared/components/ui/Checkbox'
 import { Input } from '@/src/shared/components/ui/Input'
+import ColorPill from '@/src/shared/components/ui/ColorPill'
 import { Pill } from '@/src/shared/components/ui/Pill'
 import {
     Table,
@@ -111,8 +112,16 @@ const ProductsTable = ({
                                                     />
                                                 )}
                                             </div>
-                                            <span className='font-semibold text-on-surface'>
-                                                {product.productName}
+                                            <span className='flex flex-col items-start gap-1'>
+                                                <span className='font-semibold text-on-surface'>
+                                                    {product.productName}
+                                                </span>
+                                                {product.colorHex && product.colorLabel && (
+                                                    <ColorPill
+                                                        hex={product.colorHex}
+                                                        label={product.colorLabel}
+                                                    />
+                                                )}
                                             </span>
                                         </div>
                                     </TableCell>

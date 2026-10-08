@@ -1,8 +1,11 @@
 import type {
     CartItem,
+    CashPaymentInfo,
     CreateOrderCustomer,
+    ChequeInfo,
     PaymentOption,
 } from '../types'
+import type { FormDropdownOption } from '@/src/shared/components/ui/FormDropdown'
 
 export const CREATE_ORDER_STEPS = [
     { step: 1, label: 'مشتری' },
@@ -88,6 +91,36 @@ export const PAYMENT_OPTIONS: PaymentOption[] = [
         iconFgClassName: 'text-info',
     },
 ]
+
+export const CHEQUE_BANK_OPTIONS: FormDropdownOption[] = [
+    { label: 'بانک ملی ایران', value: 'melli' },
+    { label: 'بانک ملت', value: 'mellat' },
+    { label: 'بانک صادرات', value: 'saderat' },
+    { label: 'بانک پاسارگاد', value: 'pasargad' },
+]
+
+export const DEFAULT_CHEQUE_PAYEE = 'شرکت توسعه تجارت پیشرو زیرامارکت'
+
+export const createEmptyCheque = (): ChequeInfo => ({
+    id: crypto.randomUUID(),
+    bank: 'melli',
+    branch: '',
+    sayyadId: '',
+    amount: '0',
+    serialNumber: '',
+    iban: '',
+    nationalId: '',
+    issuerName: '',
+    payee: DEFAULT_CHEQUE_PAYEE,
+    dueDate: undefined,
+})
+
+export const CASH_DISCOUNT_RATE = 0.03
+
+export const createEmptyCashPayment = (): CashPaymentInfo => ({
+    id: crypto.randomUUID(),
+    amount: '',
+})
 
 export const CUSTOMER_LEVEL_STYLES = {
     gold: {

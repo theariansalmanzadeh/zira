@@ -17,7 +17,7 @@ import {
 const OrderManagmentLayoutContent = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const { push } = useRouter()
+    const { back, push } = useRouter()
     const [period, setPeriod] = useState('month')
     const isOrderRoot = pathname === '/admin/order-managment' || pathname === '/admin/order-managment/'
     const sectionKey = isOrderRoot
@@ -37,8 +37,13 @@ const OrderManagmentLayoutContent = ({ children }: { children: React.ReactNode }
         <div className='flex flex-col gap-3' dir='rtl'>
             {heading && (
                 <HeadingWithActions>
+                    {heading.hasBackButton && (
+                        <HeadingWithActions.BackButton onClick={() => back()} />
+                    )}
                     <HeadingWithActions.Title>{heading.title}</HeadingWithActions.Title>
-                    <HeadingWithActions.SubTitle>{heading.subtitle}</HeadingWithActions.SubTitle>
+                    {heading.subtitle && (
+                        <HeadingWithActions.SubTitle>{heading.subtitle}</HeadingWithActions.SubTitle>
+                    )}
 
                     {heading.showPeriodToggle && (
                         <HeadingWithActions.ToggleGroup

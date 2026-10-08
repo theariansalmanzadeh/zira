@@ -228,15 +228,17 @@ const AddressForm = ({ onContinue }: AddressFormProps) => {
                 />
             </FormSection>
 
-            <Button
-                type="button"
-                variant="primary"
-                size="lg"
-                className="w-full text-label-lg"
-                onClick={handleContinue}
-            >
-                ادامه
-            </Button>
+            {onContinue ? (
+                <Button
+                    type="button"
+                    variant="primary"
+                    size="lg"
+                    className="w-full text-label-lg"
+                    onClick={handleContinue}
+                >
+                    ادامه
+                </Button>
+            ) : null}
         </div>
     )
 }

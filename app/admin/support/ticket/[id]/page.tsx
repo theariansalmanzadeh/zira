@@ -7,10 +7,16 @@ const TicketDetail = dynamic(
     { loading: () => <TableLoadingSkeleton isPending /> }
 )
 
-const page = () => {
+type TicketDetailPageProps = {
+    params: Promise<{ id: string }>
+}
+
+const page = async ({ params }: TicketDetailPageProps) => {
+    const { id } = await params
+
     return (
         <Suspense fallback={<TableLoadingSkeleton isPending />}>
-            <TicketDetail />
+            <TicketDetail id={id} />
         </Suspense>
     )
 }

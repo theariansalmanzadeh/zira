@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Icon } from "@/src/shared/components/Icons/Icon";
 import IconButton from "@/src/shared/components/ui/IconButton";
 import { Pill } from "@/src/shared/components/ui/Pill";
 import {
@@ -8,6 +9,7 @@ import {
     TableRow as UiTableRow,
 } from "@/src/shared/components/ui/Table";
 import { useTable } from "@/src/shared/context/TableProvider";
+import { formatPrice } from "@/src/shared/libs/formatter";
 
 export type CustomerLevel = "gold" | "silver" | "bronze";
 
@@ -28,9 +30,6 @@ const LEVEL_CONFIG: Record<
     silver: { text: "نقره‌ای", variant: "tonal" },
     bronze: { text: "برنزی", variant: "outlined" },
 };
-
-const formatCredit = (value: number) =>
-    String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 export type TableRowProps = {
     data: CustomerListRowData;
@@ -71,7 +70,13 @@ const TableRow = ({ data }: TableRowProps) => {
                 )}
                 {TableColoumn[3]?.isChecked && (
                     <TableCell className="text-success">
-                        {formatCredit(credit)}
+                        <span className="inline-flex items-center gap-0.5">
+                            <span>{formatPrice(credit)}</span>
+                            <Icon
+                                label="currency"
+                                className="size-4! text-success"
+                            />
+                        </span>
                     </TableCell>
                 )}
                 {TableColoumn[4]?.isChecked && (

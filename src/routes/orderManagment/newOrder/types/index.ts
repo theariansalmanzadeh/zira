@@ -20,10 +20,26 @@ export type CartItem = {
 export type PaymentType = 'cash' | 'cheque' | 'credit'
 
 export type ChequeInfo = {
-    chequeNumber: string
-    dueDate: string
+    id: string
     bank: string
+    branch: string
+    sayyadId: string
+    amount: string
+    serialNumber: string
+    iban: string
+    nationalId: string
+    issuerName: string
+    payee: string
+    dueDate: Date | undefined
+    frontFileName?: string
+    backFileName?: string
 }
+
+export type CashPaymentInfo = {
+    id: string
+    amount: string
+}
+
 
 export type PaymentOption = {
     type: PaymentType
@@ -48,8 +64,14 @@ export type CreateOrderContextValue = {
     removeCartItem: (id: string) => void
     paymentType: PaymentType[]
     setPaymentType: (types: PaymentType[]) => void
-    chequeInfo: ChequeInfo
-    setChequeInfo: (info: Partial<ChequeInfo>) => void
+    cheques: ChequeInfo[]
+    addCheque: () => void
+    removeCheque: (id: string) => void
+    updateCheque: (id: string, info: Partial<ChequeInfo>) => void
+    cashPayments: CashPaymentInfo[]
+    addCashPayment: () => void
+    removeCashPayment: (id: string) => void
+    updateCashPayment: (id: string, info: Partial<CashPaymentInfo>) => void
     cacheInfo: number
     setCacheInfo: (value: number) => void
     otpDigits: string[]

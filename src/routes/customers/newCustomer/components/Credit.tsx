@@ -11,6 +11,7 @@ import {
     MARKETER_OPTIONS,
     type NewCustomerFormValues,
 } from '../schema'
+import CreditProof from './CreditProof'
 
 const sanitizeNumericInput = (value: string) =>
     toEnglishDigits(value).replace(/[^\d.]/g, '')
@@ -60,8 +61,8 @@ const Credit = () => {
                                 value={
                                     field.value
                                         ? formatFaNumber(field.value, {
-                                              useGrouping: false,
-                                          })
+                                            useGrouping: false,
+                                        })
                                         : ''
                                 }
                                 onChange={(value) =>
@@ -140,6 +141,7 @@ const Credit = () => {
                     />
                 </div>
             </div>
+            <CreditProof />
         </div>
     )
 }

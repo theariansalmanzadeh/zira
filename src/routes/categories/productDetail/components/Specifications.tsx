@@ -1,6 +1,7 @@
 'use client'
 
 import { Badge } from '@/src/shared/components/ui/Badge'
+import ColorPill from '@/src/shared/components/ui/ColorPill'
 import SectionTitle from '@/src/shared/components/ui/SectionTitle'
 import { cn } from '@shared/libs/utils'
 import type {
@@ -40,7 +41,6 @@ const Specifications = ({
     sizes = SIZES_DUMMY,
     saleUnits = SALE_UNITS_DUMMY,
     fields = TECH_SPECS_DUMMY,
-    labels = PRODUCT_LABELS_DUMMY,
     className,
 }: SpecificationsProps) => {
     return (
@@ -54,17 +54,11 @@ const Specifications = ({
                         </span>
                         <div className='flex flex-wrap gap-2'>
                             {colors.map((item) => (
-                                <Badge
+                                <ColorPill
                                     key={item.label}
-                                    variant='default'
-                                    className='gap-2 rounded-container-md border-0 bg-surface-container-high px-3 py-1.5 text-label-md text-on-surface'
-                                >
-                                    <span
-                                        className='size-3.5 shrink-0 rounded-full border border-outline-variant'
-                                        style={{ backgroundColor: item.color }}
-                                    />
-                                    {item.label}
-                                </Badge>
+                                    hex={item.color}
+                                    label={item.label}
+                                />
                             ))}
                         </div>
                     </div>

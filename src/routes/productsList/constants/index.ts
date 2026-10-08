@@ -19,7 +19,7 @@ export const PLP_PRODUCTS: PlpProduct[] = [
         discount: '10',
         isLoggedIn: true,
         status: 'available',
-        image: '/images/product1.jpg',
+        image: '/images/catalog/20554-P.jpg',
         description: 'بادی گیپور برند Lorenzo مناسب استفاده روزمره و رسمی',
     },
     {
@@ -29,7 +29,7 @@ export const PLP_PRODUCTS: PlpProduct[] = [
         price: 2450000,
         discount: '15',
         status: 'soon',
-        image: '/images/product1.jpg',
+        image: '/images/catalog/2517-2c.jpg',
         description: 'ست لباس خواب ساتن برند Victoria با بافت نرم و لطیف',
     },
     {
@@ -38,7 +38,7 @@ export const PLP_PRODUCTS: PlpProduct[] = [
         brand: 'Lorenzo',
         price: 390000,
         status: 'preorder',
-        image: '/images/product1.jpg',
+        image: '/images/catalog/2587-2.jpg',
         description: 'شورت کشی مشکی Lorenzo با کشسانی بالا و راحتی تمام‌روز',
     },
     {
@@ -47,7 +47,7 @@ export const PLP_PRODUCTS: PlpProduct[] = [
         brand: 'Calvin Klein',
         price: 980000,
         discount: '10',
-        image: '/images/product1.jpg',
+        image: '/images/catalog/2650-(1).jpg-C.jpg',
         description: 'سوتین پوش‌دار Calvin Klein با فرم‌دهی مناسب و پارچه باکیفیت',
     },
     {
@@ -56,7 +56,7 @@ export const PLP_PRODUCTS: PlpProduct[] = [
         brand: 'Nike',
         price: 740000,
         discount: '20',
-        image: '/images/product1.jpg',
+        image: '/images/catalog/2666-2.jpg',
         description: 'تاپ ورزشی زنانه Nike مناسب تمرین و استفاده روزمره',
     },
     {
@@ -65,7 +65,7 @@ export const PLP_PRODUCTS: PlpProduct[] = [
         brand: 'زرین‌پال',
         price: 1890000,
         discount: '10',
-        image: '/images/product1.jpg',
+        image: '/images/catalog/2517-3c.jpg',
         description: 'ربدوشامبر گیپور زرین‌پال با طراحی ظریف و پارچه لطیف',
     },
     {
@@ -74,7 +74,7 @@ export const PLP_PRODUCTS: PlpProduct[] = [
         brand: 'زرین‌پال',
         price: 2160000,
         discount: '12',
-        image: '/images/product1.jpg',
+        image: '/images/catalog/2587-7.jpg',
         description: 'لباس خواب ابریشمی زرین‌پال برای راحتی در طول شب',
     },
     {
@@ -83,7 +83,7 @@ export const PLP_PRODUCTS: PlpProduct[] = [
         brand: 'Victoria',
         price: 1120000,
         discount: '8',
-        image: '/images/product1.jpg',
+        image: '/images/catalog/2666-3.jpg',
         description: 'سوتین دانتل فنردار Victoria با پشتیبانی مناسب و جزئیات دانتل',
     },
 ]

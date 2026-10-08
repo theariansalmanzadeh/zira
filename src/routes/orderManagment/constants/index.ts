@@ -45,10 +45,11 @@ export type HeadingButton = {
 
 export type SectionHeading = {
     title: string
-    subtitle: string
+    subtitle?: string
     buttons?: HeadingButton[]
     showPeriodToggle?: boolean
     showDateRange?: boolean
+    hasBackButton?: boolean
 }
 
 export const sectionToHeading: Record<string, SectionHeading | null> = {
@@ -85,6 +86,13 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
     requests: {
         title: 'درخواست‌ها',
         subtitle: 'پیگیری و مدیریت درخواست‌های سفارش',
+        buttons: [
+            {
+                label: 'خروجی اکسل',
+                icon: 'export300Linear',
+                variant: 'outline',
+            },
+        ],
     },
     factor: {
         title: 'فاکتورها',
@@ -96,6 +104,10 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
                 variant: 'outline',
             },
         ],
+    },
+    'order-details': {
+        title: 'جزئیات سفارش',
+        hasBackButton: true,
     },
 }
 
@@ -109,7 +121,7 @@ export const getOrderSectionKeyFromPath = (pathname: string): string | null => {
     if (pathname.startsWith('/admin/order-managment/order-list')) return 'list'
     if (pathname.startsWith('/admin/order-managment/pre-order-details')) return null
     if (pathname.startsWith('/admin/order-managment/pre-order')) return 'pre-orders'
-    if (pathname.startsWith('/admin/order-managment/order-details')) return null
+    if (pathname.startsWith('/admin/order-managment/order-details')) return 'order-details'
     if (pathname.startsWith('/admin/order-managment/new-order')) return null
     if (pathname === '/admin/order-managment' || pathname === '/admin/order-managment/') return 'dashboard'
 

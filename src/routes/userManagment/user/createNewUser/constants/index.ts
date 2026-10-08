@@ -30,3 +30,50 @@ export const CITY_OPTIONS: FormDropdownOption[] = [
     { label: 'کرج', value: 'karaj' },
     { label: 'شیراز', value: 'shiraz' },
 ]
+
+export const BANK_OPTIONS: FormDropdownOption[] = [
+    { label: 'ملی', value: 'melli' },
+    { label: 'ملت', value: 'mellat' },
+    { label: 'صادرات', value: 'saderat' },
+    { label: 'تجارت', value: 'tejarat' },
+    { label: 'پارسیان', value: 'parsian' },
+    { label: 'پاسارگاد', value: 'pasargad' },
+]
+
+export const USER_TYPE_OPTIONS: FormDropdownOption[] = [
+    { label: 'کارمند داخلی', value: 'internal_employee' },
+    { label: 'پیمانکار', value: 'contractor' },
+    { label: 'مهمان', value: 'guest' },
+]
+
+export const USER_ROLE_OPTIONS: FormDropdownOption[] = [
+    { label: 'مدیر سیستم', value: 'system_admin' },
+    { label: 'مدیر فروش', value: 'sales_manager' },
+    { label: 'کارشناس', value: 'expert' },
+    { label: 'اپراتور', value: 'operator' },
+]
+
+export const ACCOUNT_STATUS_OPTIONS: FormDropdownOption[] = [
+    { label: 'فعال', value: 'active' },
+    { label: 'غیرفعال', value: 'inactive' },
+    { label: 'قفل', value: 'locked' },
+]
+
+export const DEPARTMENT_OPTIONS: FormDropdownOption[] = [
+    { label: 'پشتیبانی مالی', value: 'financial_support' },
+    { label: 'فنی', value: 'technical' },
+    { label: 'فروش', value: 'sales' },
+    { label: 'انبار', value: 'warehouse' },
+]
+
+export const MANAGER_OPTIONS: FormDropdownOption[] = [
+    { label: 'علی رضایی', value: 'user-1' },
+    { label: 'سارا احمدی', value: 'user-2' },
+    { label: 'حسین کریمی', value: 'user-3' },
+]
+
+export const BRANCH_OPTIONS: FormDropdownOption[] = [
+    { label: 'شعبه ونک', value: 'vanak' },
+    { label: 'شعبه سعادت‌آباد', value: 'saadat' },
+    { label: 'شعبه مرکزی', value: 'central' },
+]

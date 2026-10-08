@@ -129,3 +129,38 @@ export const formatFaDateTime = (
 
     return `${datePart} - ${timePart}`
 }
+
+/**
+ * Extracts the Persian weekday name from an ISO/UTC date string or `Date`
+ * (e.g. `چهارشنبه`) via `Intl.DateTimeFormat('fa-IR', { weekday: 'long' })`.
+ */
+export const formatFaWeekday = (
+    value: string | Date,
+    options?: Intl.DateTimeFormatOptions
+): string => {
+    const date = value instanceof Date ? value : new Date(value)
+    if (Number.isNaN(date.getTime())) {
+        return typeof value === 'string' ? value : ''
+    }
+
+    return new Intl.DateTimeFormat('fa-IR', {
+        weekday: 'long',
+        ...options,
+    }).format(date)
+}
+
+/**
+ * Formats an ISO/UTC date as `weekday - DD/MM/YYYY` in Persian
+ * (e.g. `چهارشنبه - ۱۷/۱۰/۱۴۰۵`).
+ */
+export const formatFaWeekdayDate = (
+    value: string | Date,
+    options?: Intl.DateTimeFormatOptions
+): string => {
+    const date = value instanceof Date ? value : new Date(value)
+    if (Number.isNaN(date.getTime())) {
+        return typeof value === 'string' ? value : ''
+    }
+
+    return `${formatFaWeekday(date, options)} - ${formatFaDate(date, options)}`
+}

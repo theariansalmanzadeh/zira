@@ -5,6 +5,8 @@ import { IconLabel } from '@/src/shared/types/icon'
 import { cn } from '@shared/libs/utils'
 import SubSidebarHeading from './SubSidebarHeading'
 import Link from 'next/link'
+import { Icon } from '@/src/shared/components/Icons/Icon'
+import { formatFaNumber } from '@/src/shared/libs/formatter'
 import type { SubSidebarSection } from '../content/types'
 
 type SubSidebarProps = {
@@ -58,21 +60,21 @@ const SubSidebar = ({ icon, header, subheader, itemsList }: SubSidebarProps) => 
     const currentSub = searchParams.get('sub')
 
     return (
-        <div className="bg-surface-container-high px-2 py-4 rounded-card-lg min-w-51 h-full">
-            <div className="bg-surface-container-lowest rounded-card-lg p-2 flex flex-col items-start gap-2 h-full">
+        <div className='min-w-51 h-full rounded-card-lg bg-surface-container-high px-2 py-4'>
+            <div className='flex h-full flex-col items-start gap-2 rounded-card-lg bg-surface-container-lowest p-2'>
                 <SubSidebarHeading
                     icon={icon}
                     header={header}
                     subheader={subheader}
                 />
 
-                <div className="flex flex-col gap-4 flex-1 w-full">
+                <div className='flex w-full flex-1 flex-col gap-4'>
                     {itemsList.map((section) => (
                         <div
                             key={section.title}
-                            className="flex flex-col items-start"
+                            className='flex flex-col items-stretch gap-1'
                         >
-                            <span className="text-label-sm text-outline px-4 py-1 ">
+                            <span className='px-4 py-1 text-label-sm text-outline'>
                                 {section.title}
                             </span>
                             {section.links.map((link) => {
@@ -87,13 +89,44 @@ const SubSidebar = ({ icon, header, subheader, itemsList }: SubSidebarProps) => 
                                         href={link.href}
                                         key={link.href}
                                         className={cn(
-                                            'text-label-lg py-2 px-4 rounded-card-md text-right transition-colors',
+                                            'group flex w-full items-center justify-between gap-2 rounded-card-md px-4 py-2 text-label-lg transition-colors',
                                             isActive
-                                                ? 'text-primary bg-primary/16'
-                                                : 'text-outline hover:text-primary hover:bg-primary/16'
+                                                ? 'bg-primary/16 text-primary'
+                                                : 'text-outline hover:bg-primary/16 hover:text-primary'
                                         )}
                                     >
-                                        {link.label}
+                                        <span className='flex min-w-0 items-center gap-2'>
+                                            {link.icon ? (
+                                                <Icon
+                                                    label={link.icon}
+                                                    size={20}
+                                                    className={cn(
+                                                        'size-5 shrink-0 transition-colors',
+                                                        isActive
+                                                            ? 'text-primary'
+                                                            : 'text-outline group-hover:text-primary'
+                                                    )}
+                                                />
+                                            ) : null}
+                                            <span className='truncate'>
+                                                {link.label}
+                                            </span>
+                                        </span>
+                                        {link.badge != null &&
+                                        link.badge !== '' ? (
+                                            <span
+                                                className={cn(
+                                                    'inline-flex min-w-5 shrink-0 items-center justify-center rounded-md px-1.5 py-0.5 text-label-sm',
+                                                    isActive
+                                                        ? 'bg-primary text-on-primary'
+                                                        : 'bg-primary/16 text-primary'
+                                                )}
+                                            >
+                                                {typeof link.badge === 'number'
+                                                    ? formatFaNumber(link.badge)
+                                                    : link.badge}
+                                            </span>
+                                        ) : null}
                                     </Link>
                                 )
                             })}

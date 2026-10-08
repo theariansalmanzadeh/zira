@@ -3,6 +3,7 @@ import type { TableFilterItem } from '@/src/shared/store/table-actions-store'
 import type { SubSidebarSection } from '@/src/shared/components/sidebar/content/types'
 import { ModalTypes } from '@/src/shared/components/modals/types'
 import { useModalStore } from '@/src/shared/store/modal-store'
+import { excelTemplates } from './excelTemplate'
 
 export const CUSTOMERS_SUB_SIDEBAR_SECTIONS: readonly SubSidebarSection[] = [
     {
@@ -69,6 +70,28 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
                 label: 'خروجی اکسل',
                 icon: 'export300Linear',
                 variant: 'outline',
+                action: () =>
+                    useModalStore.getState().openModal(ModalTypes.EXCEL_OUTPUT, {
+                        columns: excelTemplates.list,
+                        getData: () => [
+                            {
+                                name: 'آیدا میرزایی',
+                                id: 'CU-7362',
+                                level: 'طلایی',
+                                credit: 200000000,
+                                phone: '+98 912 673 4123',
+                                email: 'aida@gmail.com',
+                            },
+                            {
+                                name: 'سارا احمدی',
+                                id: 'CU-7363',
+                                level: 'نقره‌ای',
+                                credit: 85000000,
+                                phone: '+98 935 120 8845',
+                                email: 'sara@gmail.com',
+                            },
+                        ],
+                    }),
             },
             {
                 label: 'ایجاد گروه جدید',
@@ -91,6 +114,20 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
                 label: 'خروجی اکسل',
                 icon: 'export300Linear',
                 variant: 'outline',
+                action: () =>
+                    useModalStore.getState().openModal(ModalTypes.EXCEL_OUTPUT, {
+                        columns: excelTemplates.request,
+                        getData: () => [
+                            {
+                                id: 'RQT-0191',
+                                name: 'آرام محمدی',
+                                level: 'نقره‌ای',
+                                nationalId: '0581234567',
+                                licenseNumber: '0228452',
+                                status: 'رد شده',
+                            },
+                        ],
+                    }),
             },
             {
                 label: 'ثبت مشتری جدید',
@@ -146,33 +183,6 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
             },
         ],
     },
-}
-
-export const getCustomersSectionKey = (sub: string): CustomersSubParam =>
-    CUSTOMERS_SUB_PARAMS.includes(sub as CustomersSubParam)
-        ? (sub as CustomersSubParam)
-        : 'dashboard'
-
-export const getCustomersSectionKeyFromPath = (
-    pathname: string,
-    searchParams: Pick<URLSearchParams, 'get'>
-): string | null => {
-    if (pathname.startsWith('/admin/customers/newGroup')) return 'newGroup'
-    if (pathname.startsWith('/admin/customers/new')) return 'new'
-    if (pathname.startsWith('/admin/customers/groupDetails/')) {
-        return 'groupDetails'
-    }
-    if (pathname.startsWith('/admin/customers/customerGroupDetails/')) {
-        return 'customerGroupDetails'
-    }
-    if (pathname.startsWith('/admin/customers/') && pathname !== '/admin/customers/') {
-        return 'details'
-    }
-
-    const sub = searchParams.get('sub')
-    if (!sub) return 'dashboard'
-
-    return CUSTOMERS_SUB_PARAMS.includes(sub as CustomersSubParam) ? sub : 'dashboard'
 }
 
 export const TABLE_COLOUMN: TableFilterItem[] = [

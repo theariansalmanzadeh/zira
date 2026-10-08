@@ -30,6 +30,16 @@ export type {
   LocationGoodsRowData,
 } from '../components/locationGoods/types'
 
+export type {
+  SelectBasedOnRoleModalData,
+  SelectRoleItem,
+} from '../components/selectBasedOnRole/types'
+
+export type {
+  SelectAnnouncementUserItem,
+  SelectUsersModalData,
+} from '../components/selectUsers/types'
+
 export type TableSettingsModalProps = {
   closeModal: () => void;
   data?: import('../components/tableSettings/types').TableSettingsModalData | null;
@@ -46,7 +56,6 @@ export const ModalTypes = {
   DELETE_PERMISSION: "DELETE_PERMISSION",
   CONFIRM_ACCESS: "CONFIRM_ACCESS",
   TABLE_SETTINGS: "TABLE_SETTINGS",
-  SELECT_PRODUCT: "SELECT_PRODUCT",
   LOCATION_GOODS: "LOCATION_GOODS",
   SELL_INVOICE: "SELL_INVOICE",
   EDIT_CUSTOMER: "EDIT_CUSTOMER",
@@ -68,6 +77,9 @@ export const ModalTypes = {
   RELATED_WAREHOUSES: "RELATED_WAREHOUSES",
   SIZE_GUIDNESS: "SIZE_GUIDNESS",
   NOTIF_AVAILABLE_PRODUCT: "NOTIF_AVAILABLE_PRODUCT",
+  EXCEL_OUTPUT: "EXCEL_OUTPUT",
+  SELECT_BASED_ON_ROLE: "SELECT_BASED_ON_ROLE",
+  SELECT_USERS: "SELECT_USERS",
 } as const;
 
 export type ModalType = (typeof ModalTypes)[keyof typeof ModalTypes];

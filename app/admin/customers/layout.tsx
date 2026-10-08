@@ -9,10 +9,12 @@ import { Button } from '@/src/shared/components/ui/button'
 import { ToggleGroupItem } from '@/src/shared/components/ui/ToggleGroup'
 import {
     CUSTOMERS_PERIOD_OPTIONS,
-    getCustomersSectionKey,
-    getCustomersSectionKeyFromPath,
     sectionToHeading,
 } from '@/src/routes/customers/constants'
+import {
+    getCustomersSectionKey,
+    getCustomersSectionKeyFromPath,
+} from '@/src/routes/customers/utils'
 
 const CustomersLayoutContent = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname()

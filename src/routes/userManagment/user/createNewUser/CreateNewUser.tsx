@@ -6,9 +6,12 @@ import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import AddressForm from './components/AddressForm'
+import BankInfo from './components/BankInfo'
 import DocumentsForm from './components/DocumentsForm'
 import EmergencyForm from './components/EmergencyForm'
 import IdentityForm from './components/IdentityForm'
+import OccupationInfo from './components/OccupationInfo'
+import SecurityAndRole from './components/SecurityAndRole'
 import {
     NEW_USER_DEFAULT_VALUES,
     newUserFormSchema,
@@ -19,6 +22,9 @@ enum FormSteps {
     identity,
     ADDRESS,
     emergencyContact,
+    bankInfo,
+    securityAndRole,
+    occupationInfo,
     documents,
 }
 
@@ -44,19 +50,19 @@ const CreateNewUser = () => {
     return (
         <FormProvider {...methods}>
             <div
-                className="mx-auto flex w-full max-w-[900px] flex-col gap-6"
-                dir="rtl"
+                className='mx-auto flex w-full max-w-[900px] flex-col gap-6'
+                dir='rtl'
             >
-                <div className="flex flex-row items-center gap-2">
+                <div className='flex flex-row items-center gap-2'>
                     <IconButton
-                        icon="rightArrow"
-                        variant="ghost"
-                        iconClassName="size-6"
+                        icon='rightArrow'
+                        variant='ghost'
+                        iconClassName='size-6'
                         onClick={navigationHandler}
                     />
                     <span>ایجاد کاربر جدید</span>
                 </div>
-                <div className="mx-auto w-full max-w-[900px] pt-3">
+                <div className='mx-auto w-full max-w-[900px] pt-3'>
                     {formStep === FormSteps.identity && (
                         <IdentityForm
                             onContinue={() => setFormStep(FormSteps.ADDRESS)}
@@ -71,6 +77,25 @@ const CreateNewUser = () => {
                     )}
                     {formStep === FormSteps.emergencyContact && (
                         <EmergencyForm
+                            onContinue={() => setFormStep(FormSteps.bankInfo)}
+                        />
+                    )}
+                    {formStep === FormSteps.bankInfo && (
+                        <BankInfo
+                            onContinue={() =>
+                                setFormStep(FormSteps.securityAndRole)
+                            }
+                        />
+                    )}
+                    {formStep === FormSteps.securityAndRole && (
+                        <SecurityAndRole
+                            onContinue={() =>
+                                setFormStep(FormSteps.occupationInfo)
+                            }
+                        />
+                    )}
+                    {formStep === FormSteps.occupationInfo && (
+                        <OccupationInfo
                             onContinue={() => setFormStep(FormSteps.documents)}
                         />
                     )}

@@ -13,6 +13,11 @@ const RoleDetail = () => {
             <TableListLayout
                 TableColoumn={TABLE_COLOUMN}
                 hasHeaderActions={false}
+                hasSearch={false}
+                hasFilter={false}
+                hasExpand={false}
+                hasSort={false}
+                hasTableSettings={false}
             >
                 <div className="rounded-card-lg bg-surface-container-high p-2">
                     <Table className="border-collapse border-spacing-y-4">

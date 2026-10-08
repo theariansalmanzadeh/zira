@@ -1,17 +1,28 @@
 'use client'
 
 import { Icon } from '@/src/shared/components/Icons/Icon'
-import { Input } from '@/src/shared/components/ui/Input'
+import { Button } from '@/src/shared/components/ui/button'
 import { cn } from '@shared/libs/utils'
 import { PAYMENT_OPTIONS } from '../constants'
 import { useCreateOrderContext } from '../provider/CreateOrderProvider'
+import CashPaymentCard from './CashPaymentCard'
+import ChequeInputCard from './ChequeInputCard'
+import CreditPaymentCard from './CreditPaymentCard'
 
 const PaymentStrategy = () => {
     const {
         paymentType,
         setPaymentType,
-        chequeInfo,
-        setChequeInfo,
+        cheques,
+        addCheque,
+        removeCheque,
+        updateCheque,
+        cashPayments,
+        addCashPayment,
+        removeCashPayment,
+        updateCashPayment,
+        cacheInfo,
+        setCacheInfo,
     } = useCreateOrderContext()
 
     return (
@@ -70,48 +81,76 @@ const PaymentStrategy = () => {
                 })}
             </div>
 
-            {paymentType.includes('cheque') && (
-                <div className='rounded-card-sm bg-surface-container-high p-5'>
-                    <div className='mb-3.5 text-label-lg font-semibold text-on-surface-variant'>
-                        اطلاعات چک
-                    </div>
-                    <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
-                        <Input
-                            label='شماره چک'
-                            value={chequeInfo.chequeNumber}
-                            onChange={(value) => setChequeInfo({ chequeNumber: value })}
-                            placeholder='۱۲۳۴۵۶'
-                            dir='ltr'
-                            className='text-right'
-                        />
-                        <Input
-                            label='تاریخ سررسید'
-                            value={chequeInfo.dueDate}
-                            onChange={(value) => setChequeInfo({ dueDate: value })}
-                            placeholder='۱۴۰۴/۱۰/۱۵'
-                        />
-                        <div className='sm:col-span-2'>
-                            <Input
-                                label='بانک'
-                                value={chequeInfo.bank}
-                                onChange={(value) => setChequeInfo({ bank: value })}
-                                placeholder='ملت'
-                            />
+            {paymentType.includes('cash') && (
+                <div className='flex flex-col gap-3.5'>
+                    <div className='flex flex-wrap items-center justify-between gap-3'>
+                        <div className='text-label-lg font-semibold text-on-surface-variant'>
+                            اطلاعات نقدی
                         </div>
+                        <Button
+                            type='button'
+                            variant='primary'
+                            size='default'
+                            className='gap-1.5'
+                            onClick={addCashPayment}
+                        >
+                            <Icon label='addSm400Broken' className='size-5!' />
+                            افزودن پرداخت نقدی
+                        </Button>
                     </div>
+                    {cashPayments.map((payment) => (
+                        <CashPaymentCard
+                            key={payment.id}
+                            value={payment}
+                            onChange={(info) => updateCashPayment(payment.id, info)}
+                            onRemove={
+                                cashPayments.length > 1
+                                    ? () => removeCashPayment(payment.id)
+                                    : undefined
+                            }
+                        />
+                    ))}
+                </div>
+            )}
+
+            {paymentType.includes('cheque') && (
+                <div className='flex flex-col gap-3.5'>
+                    <div className='flex flex-wrap items-center justify-between gap-3'>
+                        <div className='text-label-lg font-semibold text-on-surface-variant'>
+                            اطلاعات چک
+                        </div>
+                        <Button
+                            type='button'
+                            variant='primary'
+                            size='default'
+                            className='gap-1.5'
+                            onClick={addCheque}
+                        >
+                            <Icon label='addSm400Broken' className='size-5!' />
+                            افزودن چک
+                        </Button>
+                    </div>
+                    {cheques.map((cheque) => (
+                        <ChequeInputCard
+                            key={cheque.id}
+                            value={cheque}
+                            onChange={(info) => updateCheque(cheque.id, info)}
+                            onRemove={
+                                cheques.length > 1
+                                    ? () => removeCheque(cheque.id)
+                                    : undefined
+                            }
+                        />
+                    ))}
                 </div>
             )}
 
             {paymentType.includes('credit') && (
-                <div className='flex items-center gap-3 rounded-card-sm bg-info-container px-4 py-4 text-label-md leading-relaxed text-info'>
-                    <div className='flex size-10 shrink-0 items-center justify-center rounded-card-sm bg-surface-container-lowest text-info'>
-                        <Icon label='heapSnapshot400Linear' className='size-5!' />
+                <div className='flex flex-col gap-3.5'>
+                    <div className='text-label-lg font-semibold text-on-surface-variant'>
+                        اطلاعات اعتبار
                     </div>
-                    <div>
-                        سقف اعتبار مشتری{' '}
-                        <b>۲۰۰٬۰۰۰٬۰۰۰</b> تومان — مانده پس از این سفارش{' '}
-                        <b>۵۸٬۰۰۰٬۰۰۰</b> تومان
-                    </div>
+                    <CreditPaymentCard amount={cacheInfo} onChange={setCacheInfo} />
                 </div>
             )}
         </div>

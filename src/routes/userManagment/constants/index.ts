@@ -1,13 +1,96 @@
 import type { SubSidebarSection } from '@/src/shared/components/sidebar/content/types'
 import type { TableFilterItem } from '@/src/shared/store/table-actions-store'
+import type { IconLabel } from '@/src/shared/types/icon'
+
+export type HeadingButton = {
+    label: string
+    icon?: IconLabel
+    href?: string
+    variant: 'primary' | 'default' | 'outline'
+}
 
 export type SectionHeading = {
     title: string
     subtitle?: string
     hasBackButton?: boolean
+    buttons?: HeadingButton[]
 }
 
 export const sectionToHeading: Record<string, SectionHeading> = {
+    user: {
+        title: 'مدیریت کاربران',
+        subtitle: 'مشاهده و مدیریت کاربران سیستم',
+        buttons: [
+            {
+                label: 'افزودن جدید',
+                icon: 'addSm400Linear',
+                href: '/admin/user-management/create-new-user',
+                variant: 'primary',
+            },
+        ],
+    },
+    group: {
+        title: 'مدیریت گروه ها',
+        subtitle: 'مشاهده و مدیریت گروه‌های کاربری',
+        buttons: [
+            {
+                label: 'افزودن جدید',
+                icon: 'addSm400Linear',
+                href: '/admin/user-management/create-new-group',
+                variant: 'primary',
+            },
+        ],
+    },
+    role: {
+        title: 'مدیریت نقش ها',
+        subtitle: 'مشاهده و مدیریت نقش‌ها و دسترسی‌ها',
+        buttons: [
+            {
+                label: 'افزودن جدید',
+                icon: 'addSm400Linear',
+                href: '/admin/user-management/create-new-role',
+                variant: 'primary',
+            },
+        ],
+    },
+    department: {
+        title: 'دپارتمان‌ها',
+        subtitle: 'مشاهده و مدیریت دپارتمان‌ها',
+        buttons: [
+            {
+                label: 'افزودن جدید',
+                icon: 'addSm400Linear',
+                href: '/admin/user-management/department/new',
+                variant: 'primary',
+            },
+        ],
+    },
+    announcements: {
+        title: 'اعلان‌ها',
+        subtitle: 'مشاهده و مدیریت اعلان‌های سامانه',
+        buttons: [
+            {
+                label: 'ارسال اعلان جدید',
+                icon: 'addSm400Linear',
+                href: '/admin/user-management/announcement/new',
+                variant: 'primary',
+            },
+        ],
+    },
+    sessions: {
+        title: 'امنیت و نشست‌ها',
+        subtitle: 'مدیریت نشست‌ها و امنیت سامانه',
+    },
+    'create-announcement': {
+        title: 'ارسال اعلان جدید',
+        subtitle: 'ثبت و ارسال اعلان برای کاربران',
+        hasBackButton: true,
+    },
+    'announcement-details': {
+        title: 'جزئیات اعلان',
+        subtitle: 'مشاهده اطلاعات و آمار اعلان',
+        hasBackButton: true,
+    },
     'user-details': {
         title: 'جزئیات کاربر',
         subtitle: 'مشاهده اطلاعات کاربر',
@@ -23,13 +106,10 @@ export const sectionToHeading: Record<string, SectionHeading> = {
         subtitle: 'مشاهده اطلاعات نقش و دسترسی‌ها',
         hasBackButton: true,
     },
-    group: {
-        title: 'گروه‌ها',
-        subtitle: 'مدیریت گروه‌های کاربری',
-    },
-    role: {
-        title: 'نقش‌ها',
-        subtitle: 'مدیریت نقش‌ها و دسترسی‌ها',
+    'create-user': {
+        title: 'ایجاد کاربر',
+        subtitle: 'ثبت کاربر جدید',
+        hasBackButton: true,
     },
     'create-group': {
         title: 'ایجاد گروه',
@@ -41,12 +121,33 @@ export const sectionToHeading: Record<string, SectionHeading> = {
         subtitle: 'تعریف نقش جدید و دسترسی‌ها',
         hasBackButton: true,
     },
+    'department-details': {
+        title: 'جزئیات دپارتمان',
+        subtitle: 'مشاهده اطلاعات دپارتمان',
+        hasBackButton: true,
+    },
+    'create-department': {
+        title: 'ایجاد دپارتمان',
+        subtitle: 'ثبت دپارتمان جدید',
+        hasBackButton: true,
+    },
+    'edit-department': {
+        title: 'ویرایش دپارتمان',
+        subtitle: 'ویرایش اطلاعات دپارتمان',
+        hasBackButton: true,
+    },
+    'edit-user': {
+        title: 'ویرایش کاربر',
+        subtitle: 'ویرایش اطلاعات کاربر',
+        hasBackButton: true,
+    },
 }
 
 export const getUserManagementSectionKey = (
     pathname: string,
     sub?: string | null
 ) => {
+    if (pathname.includes('/user-management/edit/')) return 'edit-user'
     if (pathname.includes('/user-details/')) return 'user-details'
     if (
         pathname.includes('/group-details/') ||
@@ -55,11 +156,25 @@ export const getUserManagementSectionKey = (
         return 'group-details'
     }
     if (pathname.includes('/role-details/')) return 'role-details'
+    if (pathname.includes('/create-new-user')) return 'create-user'
     if (pathname.includes('/create-new-group')) return 'create-group'
     if (pathname.includes('/create-new-role')) return 'create-role'
+    if (pathname.includes('/department/edit/')) return 'edit-department'
+    if (pathname.includes('/department/new')) return 'create-department'
+    if (pathname.includes('/department/')) return 'department-details'
+    if (pathname.includes('/announcement/new')) return 'create-announcement'
+    if (pathname.includes('/announcement/')) return 'announcement-details'
+
+    const isIndex =
+        pathname === '/admin/user-management' ||
+        pathname === '/admin/user-management/'
+    if (!isIndex) return null
     if (sub === 'group') return 'group'
     if (sub === 'role') return 'role'
-    return null
+    if (sub === 'department') return 'department'
+    if (sub === 'announcements') return 'announcements'
+    if (sub === 'sessions') return 'sessions'
+    return 'user'
 }
 
 export const USER_MANAGEMENT_SUB_SIDEBAR_SECTIONS: readonly SubSidebarSection[] =
@@ -70,6 +185,23 @@ export const USER_MANAGEMENT_SUB_SIDEBAR_SECTIONS: readonly SubSidebarSection[] 
                 { label: 'کاربران', href: '/admin/user-management?sub=user' },
                 { label: 'گروه‌ها', href: '/admin/user-management?sub=group' },
                 { label: 'نقش‌ها', href: '/admin/user-management?sub=role' },
+                {
+                    label: 'دپارتمان‌ها',
+                    href: '/admin/user-management?sub=department',
+                },
+            ],
+        },
+        {
+            title: 'سامانه',
+            links: [
+                {
+                    label: 'امنیت و نشست‌ها',
+                    href: '/admin/user-management?sub=sessions',
+                },
+                {
+                    label: 'اعلان‌ها',
+                    href: '/admin/user-management?sub=announcements',
+                },
             ],
         },
     ]

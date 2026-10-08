@@ -8,6 +8,7 @@ import {
 } from "@/src/shared/components/ui/Table";
 import { useTable } from "@/src/shared/context/TableProvider";
 import { formatFaNumber } from "@/src/shared/libs/formatter";
+import Link from "next/link";
 import type { CustomerLevel } from "../../components/TableRow";
 
 export type CustomerRequestStatus = "pending" | "approved" | "rejected";
@@ -108,10 +109,14 @@ const TableRow = ({ data }: TableRowProps) => {
                 )}
                 {TableColoumn[6]?.isChecked && (
                     <TableCell className="w-[1%] whitespace-nowrap">
-                        <IconButton
-                            icon="chevronLeft300Linear"
-                            iconClassName="size-6! text-outline"
-                        />
+                        <Link
+                            href={`/admin/order-managment/order-details/${id}`}
+                        >
+                            <IconButton
+                                icon="chevronLeft300Linear"
+                                iconClassName="size-6! text-outline"
+                            />
+                        </Link>
                     </TableCell>
                 )}
             </UiTableRow>
