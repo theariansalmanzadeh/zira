@@ -15,7 +15,7 @@ function Spinner({
       data-slot="spinner"
       role="status"
       aria-label="Loading"
-      className={cn("size-4 animate-spin", className)}
+      className={cn("size-4 animate-spin text-on-surface", className)}
       {...props}
     />
   );

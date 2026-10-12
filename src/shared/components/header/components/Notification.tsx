@@ -1,7 +1,9 @@
 'use client'
 
-import { useListNotifications } from '@/src/routes/userManagment/hooks/notification'
-import type { Notification as NotificationItem } from '@/src/api/types/admin/notification'
+import { useState } from 'react'
+import { useListStaffNotifications } from '@/src/routes/userManagment/hooks/me'
+import type { StaffNotificationDelivery } from '@/src/api/types/admin/me'
+import NotificationDetail from './NotificationDetail'
 import IconButton from '@/src/shared/components/ui/IconButton'
 import {
     Popover,
@@ -12,9 +14,19 @@ import {
 } from '@/src/shared/components/ui/Popover'
 import { formatFaDateTime } from '@/src/shared/libs/formatter'
 
-const NotificationRow = ({ item }: { item: NotificationItem }) => {
+const NotificationRow = ({
+    item,
+    onSelect,
+}: {
+    item: StaffNotificationDelivery
+    onSelect: (item: StaffNotificationDelivery) => void
+}) => {
     return (
-        <div className='flex flex-col gap-1 rounded-container-md px-3 py-2.5 transition-colors hover:bg-surface-container-high'>
+        <button
+            type='button'
+            onClick={() => onSelect(item)}
+            className='flex w-full flex-col gap-1 rounded-container-md px-3 py-2.5 text-right transition-colors hover:bg-surface-container-high'
+        >
             <div className='flex items-start justify-between gap-2'>
                 <span className='truncate text-label-lg font-semibold text-on-surface'>
                     {item.title || 'بدون عنوان'}
@@ -29,13 +41,16 @@ const NotificationRow = ({ item }: { item: NotificationItem }) => {
             {item.topic ? (
                 <span className='text-label-sm text-outline'>{item.topic}</span>
             ) : null}
-        </div>
+        </button>
     )
 }
 
 const Notification = () => {
-    const { data, isPending, isError } = useListNotifications()
+    const { data, isPending, isError } = useListStaffNotifications()
     const notifications = data ?? []
+    const [selected, setSelected] = useState<StaffNotificationDelivery | null>(
+        null
+    )
 
     return (
         <Popover>
@@ -56,7 +71,14 @@ const Notification = () => {
                 </PopoverHeader>
 
                 <div className='max-h-96 overflow-y-auto p-2'>
-                    {isPending ? (
+                    {selected ? (
+                        <NotificationDetail
+                            id={selected.id}
+                            title={selected.title}
+                            body={selected.body}
+                            onBack={() => setSelected(null)}
+                        />
+                    ) : isPending ? (
                         <div className='flex flex-col gap-2 p-2'>
                             {Array.from({ length: 3 }).map((_, index) => (
                                 <div
@@ -76,7 +98,11 @@ const Notification = () => {
                     ) : (
                         <div className='flex flex-col'>
                             {notifications.map((item) => (
-                                <NotificationRow key={item.id} item={item} />
+                                <NotificationRow
+                                    key={item.id}
+                                    item={item}
+                                    onSelect={setSelected}
+                                />
                             ))}
                         </div>
                     )}

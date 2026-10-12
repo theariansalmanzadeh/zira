@@ -5,8 +5,8 @@ export type CreditCardItem = {
     title: string
     icon: IconLabel
     levelLabel: string
-    cap: number
-    used: number
+    cap: number | null
+    used: number | null
     guarantee: string
     theme: {
         fg: string

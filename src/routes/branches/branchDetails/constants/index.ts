@@ -1,12 +1,68 @@
 import type { TableFilterItem } from '@/src/shared/store/table-actions-store'
 import { ModalTypes, type ModalType } from '@/src/shared/components/modals/types'
+import type { Branch, BranchPermit } from '@/src/api/types/admin/organization'
+import { formatFaNumber } from '@/src/shared/libs/formatter'
 
 export type QuickAccessStat = {
     label: string
-    value: string
+    values: string[]
     href?: string
     modalType: ModalType | null
     tableValue?: string
+}
+
+const PERMIT_VALUE_LABELS: Record<keyof BranchPermit, string> = {
+    allow_credit_sale: 'فروش اعتباری',
+    allow_cheque_sale: 'فروش چکی',
+    allow_consignment_sale: 'فروش امانی',
+    allow_scrap_entry: 'ثبت ضایعات',
+    allow_repricing: 'قیمت‌گذاری مجدد',
+}
+
+export const quickAccessValuesByLabel = (
+    label: string,
+    branch?: Branch | null
+): string[] => {
+    if (!branch) return []
+
+    switch (label) {
+        case 'انبارهای مربوطه':
+            return branch.warehouses.map((warehouse) => warehouse.warehouse_name)
+        case 'کالاهای مجاز':
+            return []
+        case 'دستگاه های POS':
+            return (branch.pos_devices ?? []).map((device) => device.title)
+        case 'مجوزها':
+            return (Object.keys(PERMIT_VALUE_LABELS) as (keyof BranchPermit)[])
+                .filter((key) => Boolean(branch.permit?.[key]))
+                .map((key) => PERMIT_VALUE_LABELS[key])
+        default:
+            return []
+    }
+}
+
+export const mapQuickAccessItems = (
+    branch?: Branch | null
+): QuickAccessStat[] =>
+    QUICK_ACCESS_ITEMS.map((item) => ({
+        ...item,
+        values: quickAccessValuesByLabel(item.label, branch),
+    }))
+
+export const quickAccessSummary = (label: string, values: string[]) => {
+    const count = formatFaNumber(values.length)
+    switch (label) {
+        case 'انبارهای مربوطه':
+            return `${count} انبار`
+        case 'کالاهای مجاز':
+            return `${count} کالا`
+        case 'دستگاه های POS':
+            return `${count} دستگاه`
+        case 'مجوزها':
+            return `${count} مجوز`
+        default:
+            return values.join('، ')
+    }
 }
 
 export const PRODUCT_TABLE_COLOUMN: TableFilterItem[] = [
@@ -158,18 +214,22 @@ export const CASH_REGISTER_DUMMY: CashRegisterRowData[] = [
 export const QUICK_ACCESS_ITEMS: QuickAccessStat[] = [
     {
         label: 'انبارهای مربوطه',
-        value: '8 انبار',
+        values: [],
         modalType: ModalTypes.RELATED_WAREHOUSES,
     },
     {
         label: 'کالاهای مجاز',
-        value: '214 کالا',
+        values: [],
         modalType: ModalTypes.ALLOWED_PRODUCTS,
     },
-    { label: 'دستگاه های POS', value: '8 دستگاه', modalType: ModalTypes.POS_BRANCH_DETAILS },
+    {
+        label: 'دستگاه های POS',
+        values: [],
+        modalType: ModalTypes.POS_BRANCH_DETAILS,
+    },
     {
         label: 'مجوزها',
-        value: '3 مجوز',
+        values: [],
         modalType: ModalTypes.BRANCH_ALLOWANCE,
     },
 ]

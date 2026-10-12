@@ -2,6 +2,7 @@ import type { CustomerLevel } from '@/src/routes/customers/components/TableRow'
 
 export type AddCustomerRow = {
     id: string
+    code: string
     name: string
     level: CustomerLevel
     credit: number
@@ -34,6 +35,7 @@ export const LEVEL_OPTIONS = [
 export const ADD_CUSTOMER_DUMMY: AddCustomerRow[] = [
     {
         id: 'CU-7362',
+        code: 'CU-7362',
         name: 'آیدا میرزایی',
         level: 'gold',
         credit: 200000000,
@@ -42,6 +44,7 @@ export const ADD_CUSTOMER_DUMMY: AddCustomerRow[] = [
     },
     {
         id: 'CU-7363',
+        code: 'CU-7363',
         name: 'سارا احمدی',
         level: 'silver',
         credit: 85000000,
@@ -50,6 +53,7 @@ export const ADD_CUSTOMER_DUMMY: AddCustomerRow[] = [
     },
     {
         id: 'CU-7364',
+        code: 'CU-7364',
         name: 'رضا کریمی',
         level: 'bronze',
         credit: 42000000,
@@ -58,6 +62,7 @@ export const ADD_CUSTOMER_DUMMY: AddCustomerRow[] = [
     },
     {
         id: 'CU-7365',
+        code: 'CU-7365',
         name: 'بهرام اکبری',
         level: 'gold',
         credit: 150000000,

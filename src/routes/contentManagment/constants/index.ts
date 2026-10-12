@@ -69,6 +69,7 @@ export type SectionHeading = {
     title: string
     subtitle?: string
     buttons?: HeadingButton[]
+    hasBackButton?: boolean
 }
 
 export const sectionToHeading: Record<ContentSubParam, SectionHeading> = {
@@ -157,10 +158,12 @@ export const sectionToHeading: Record<ContentSubParam, SectionHeading> = {
     'blog-add': {
         title: 'افزودن مقاله جدید',
         subtitle: 'فیلدهای ستاره‌دار الزامی هستند',
+        hasBackButton: true,
     },
     'blog-edit': {
         title: 'ویرایش مقاله',
         subtitle: 'فیلدهای ستاره‌دار الزامی هستند',
+        hasBackButton: true,
     },
     contact: {
         title: 'تماس با ما',

@@ -1,7 +1,7 @@
 'use client'
 
 import IconButton from '@/src/shared/components/ui/IconButton'
-import { Switch } from '@/src/shared/components/ui/Switch'
+import { Toggle } from '@/src/shared/components/ui/Toggle'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { formatFaDate } from '@/src/shared/libs/formatter'
 import { cn } from '@shared/libs/utils'
@@ -77,22 +77,17 @@ const LicenseCard = ({
             </div>
 
             <div className="flex items-center justify-between gap-2  p-3">
-                <div className='bg-surface-container-lowest rounded-card-md p-2'>
-                    <label className="flex cursor-pointer items-center gap-2">
-                        <Switch
-                            checked={visibleOnSite}
-                            onCheckedChange={onVisibleChange}
-                        />
-                        <span
-                            className={cn(
-                                'text-label-md font-semibold',
-                                visibleOnSite ? 'text-primary' : 'text-outline'
-                            )}
-                        >
-                            نمایش در سایت
-                        </span>
-                    </label>
-                </div>
+                <Toggle
+                    pressed={visibleOnSite}
+                    onPressedChange={(pressed) => onVisibleChange?.(pressed)}
+                    variant="outline"
+                    className={cn(
+                        'text-label-md font-semibold',
+                        visibleOnSite ? 'text-primary' : 'text-outline'
+                    )}
+                >
+                    نمایش در سایت
+                </Toggle>
 
                 <div className="flex items-center gap-1" dir="ltr">
                     <IconButton

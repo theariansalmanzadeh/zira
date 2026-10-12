@@ -14,8 +14,33 @@ import {
     type AllowedProductItem,
 } from './constants'
 
-const AllowedProducts = ({ closeModal: _closeModal }: BaseModalProps) => {
+type AllowedProductsModalData = {
+    values?: string[]
+}
+
+const toAllowedProduct = (name: string, index: number): AllowedProductItem => ({
+    id: `${index}-${name}`,
+    index: index + 1,
+    mainCategory: '—',
+    midCategory: '—',
+    subCategory: '—',
+    productCode: '—',
+    productName: name,
+    badgeLetter: name.trim().charAt(0) || 'ک',
+    badgeTone: 'info',
+    brand: '—',
+    unit: '—',
+    minStock: 0,
+    minSellPrice: 0,
+    status: 'فعال',
+})
+
+const AllowedProducts = ({ data }: BaseModalProps) => {
     const [expandedId, setExpandedId] = useState<string | null>(null)
+    const modalData = data as AllowedProductsModalData | null | undefined
+    const products = modalData?.values
+        ? modalData.values.map(toAllowedProduct)
+        : ALLOWED_PRODUCTS_DUMMY
 
     const toggleExpand = (id: string) => {
         setExpandedId((current) => (current === id ? null : id))
@@ -36,7 +61,12 @@ const AllowedProducts = ({ closeModal: _closeModal }: BaseModalProps) => {
                 </div>
 
                 <div className='flex min-w-[980px] flex-col gap-1'>
-                    {ALLOWED_PRODUCTS_DUMMY.map((item) => {
+                    {products.length === 0 ? (
+                        <p className='px-3 py-6 text-center text-label-lg text-outline'>
+                            کالای مجازی ثبت نشده است.
+                        </p>
+                    ) : null}
+                    {products.map((item) => {
                         const isExpanded = expandedId === item.id
 
                         return (

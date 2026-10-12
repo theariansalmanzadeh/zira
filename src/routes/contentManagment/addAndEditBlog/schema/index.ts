@@ -1,4 +1,5 @@
 import * as z from 'zod'
+import type { BlogPostDetailOut } from '@/src/api/types/admin/cms/blog'
 
 const requiredString = (message: string) => z.string().trim().min(1, message)
 
@@ -43,6 +44,28 @@ export const ADD_BLOG_EMPTY_VALUES: AddAndEditBlogFormValues = {
     },
     imageName: '',
 }
+
+export const toBlogFormValues = (
+    post: BlogPostDetailOut
+): AddAndEditBlogFormValues => ({
+    details: {
+        title: post.title ?? '',
+        subject: post.subject ?? '',
+        summary: post.summary ?? '',
+    },
+    seo: {
+        tags: post.tags ?? [],
+        slug: post.slug ?? '',
+        metaTitle: post.meta_title ?? '',
+        metaDescription: post.meta_description ?? '',
+    },
+    categories: {
+        selectedCategoryIds: post.category_id ? [post.category_id] : [],
+        author: post.author_name ?? '',
+        source: post.source ?? '',
+    },
+    imageName: '',
+})
 
 export const EDIT_BLOG_DEFAULT_VALUES: AddAndEditBlogFormValues = {
     details: {

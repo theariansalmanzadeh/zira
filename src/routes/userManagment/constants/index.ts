@@ -141,6 +141,14 @@ export const sectionToHeading: Record<string, SectionHeading> = {
         subtitle: 'ویرایش اطلاعات کاربر',
         hasBackButton: true,
     },
+    preferences: {
+        title: 'ترجیحات',
+        subtitle: 'اطلاعات حساب و تنظیم اعلان‌ها',
+    },
+    notification: {
+        title: 'اعلان‌ها',
+        subtitle: 'اعلان‌ها و هشدارها',
+    },
 }
 
 export const getUserManagementSectionKey = (
@@ -164,6 +172,8 @@ export const getUserManagementSectionKey = (
     if (pathname.includes('/department/')) return 'department-details'
     if (pathname.includes('/announcement/new')) return 'create-announcement'
     if (pathname.includes('/announcement/')) return 'announcement-details'
+    if (pathname.includes('/preferences')) return 'preferences'
+    if (pathname.includes('/notification')) return 'notification'
 
     const isIndex =
         pathname === '/admin/user-management' ||
@@ -201,6 +211,14 @@ export const USER_MANAGEMENT_SUB_SIDEBAR_SECTIONS: readonly SubSidebarSection[] 
                 {
                     label: 'اعلان‌ها',
                     href: '/admin/user-management?sub=announcements',
+                },
+                {
+                    label: 'ترجیحات',
+                    href: '/admin/user-management/preferences',
+                },
+                {
+                    label: 'اعلان‌ها و هشدارها',
+                    href: '/admin/user-management/notification',
                 },
             ],
         },

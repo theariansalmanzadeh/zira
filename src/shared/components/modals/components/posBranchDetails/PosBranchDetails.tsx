@@ -3,13 +3,54 @@
 import { useRouter } from 'next/navigation'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { Button } from '@/src/shared/components/ui/button'
+import type { BranchPosDevice } from '@/src/api/types/admin/organization'
 import type { BaseModalProps } from '../../types'
-import { POS_DEVICES_DUMMY } from './constants'
+import { type PosDeviceItem } from './constants'
 import TableHeader from './TableHeader'
 import TableRow from './TableRow'
 
-const PosBranchDetails = ({ closeModal }: BaseModalProps) => {
+type PosBranchDetailsModalData = {
+    values?: string[]
+    posDevices?: BranchPosDevice[]
+}
+
+const toDeviceItem = (
+    device: BranchPosDevice,
+    index: number
+): PosDeviceItem => ({
+    id: device.id,
+    index: index + 1,
+    name: device.title,
+    code: device.terminal_no,
+    model: '—',
+    bank: '—',
+    bankAccount: device.bank_account_id,
+    terminalNumber: device.terminal_no,
+    terminalPassword: '—',
+    cashRegister: '—',
+    todayTransactionsMillion: 0,
+})
+
+const toValueItem = (title: string, index: number): PosDeviceItem => ({
+    id: `${index}-${title}`,
+    index: index + 1,
+    name: title,
+    code: '—',
+    model: '—',
+    bank: '—',
+    bankAccount: '—',
+    terminalNumber: '—',
+    terminalPassword: '—',
+    cashRegister: '—',
+    todayTransactionsMillion: 0,
+})
+
+const PosBranchDetails = ({ closeModal, data }: BaseModalProps) => {
     const { push } = useRouter()
+    const modalData = data as PosBranchDetailsModalData | null | undefined
+    const rows = modalData?.posDevices
+        ? modalData.posDevices.map(toDeviceItem)
+        : (modalData?.values ?? []).map(toValueItem)
 
     const openDeviceForm = (href: string) => {
         closeModal()
@@ -36,9 +77,15 @@ const PosBranchDetails = ({ closeModal }: BaseModalProps) => {
                 <div className='overflow-hidden rounded-card-md bg-surface-container-lowest'>
                     <TableHeader />
                     <div className='flex flex-col'>
-                        {POS_DEVICES_DUMMY.map((item) => (
-                            <TableRow key={item.id} data={item} />
-                        ))}
+                        {rows.length === 0 ? (
+                            <p className='px-3 py-6 text-center text-label-lg text-outline'>
+                                دستگاهی ثبت نشده است.
+                            </p>
+                        ) : (
+                            rows.map((item) => (
+                                <TableRow key={item.id} data={item} />
+                            ))
+                        )}
                     </div>
                 </div>
             </div>

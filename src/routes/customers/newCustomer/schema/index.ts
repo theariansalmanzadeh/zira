@@ -37,6 +37,96 @@ const amountSchema = z
     .transform(toEnglishDigits)
     .refine((value) => /^\d+$/.test(value.replace(/,/g, '')), 'مبلغ معتبر نیست')
 
+const digitsOnly = (value: string) => toEnglishDigits(value).replace(/\D/g, '')
+
+const guaranteeSchema = z
+    .object({
+        type: z.enum(['personal-cheque', 'promissory-note']),
+        creditRelated: dropdownValue('انتخاب اعتبار مربوطه الزامی است'),
+        amount: amountSchema,
+        chequeNumber: z.string(),
+        bank: z.string(),
+        branch: z.string(),
+        accountHolder: z.string(),
+        noteNumber: z.string(),
+        guarantorName: z.string(),
+        guarantorNationalId: z.string(),
+        dueDate: z.date().optional(),
+        status: dropdownValue('وضعیت ضمانت الزامی است'),
+        fileName: z.string(),
+    })
+    .superRefine((values, ctx) => {
+        if (!values.dueDate) {
+            ctx.addIssue({
+                code: 'custom',
+                path: ['dueDate'],
+                message: 'تاریخ سررسید الزامی است',
+            })
+        }
+
+        if (!values.fileName.trim()) {
+            ctx.addIssue({
+                code: 'custom',
+                path: ['fileName'],
+                message: 'بارگذاری تصویر الزامی است',
+            })
+        }
+
+        if (values.type === 'personal-cheque') {
+            if (!/^\d{16}$/.test(digitsOnly(values.chequeNumber))) {
+                ctx.addIssue({
+                    code: 'custom',
+                    path: ['chequeNumber'],
+                    message: 'شماره چک باید ۱۶ رقم باشد',
+                })
+            }
+            if (!values.bank.trim()) {
+                ctx.addIssue({
+                    code: 'custom',
+                    path: ['bank'],
+                    message: 'نام بانک الزامی است',
+                })
+            }
+            if (!values.branch.trim()) {
+                ctx.addIssue({
+                    code: 'custom',
+                    path: ['branch'],
+                    message: 'شعبه الزامی است',
+                })
+            }
+            if (!values.accountHolder.trim()) {
+                ctx.addIssue({
+                    code: 'custom',
+                    path: ['accountHolder'],
+                    message: 'صاحب حساب الزامی است',
+                })
+            }
+            return
+        }
+
+        if (!digitsOnly(values.noteNumber)) {
+            ctx.addIssue({
+                code: 'custom',
+                path: ['noteNumber'],
+                message: 'شماره سفته الزامی است',
+            })
+        }
+        if (!values.guarantorName.trim()) {
+            ctx.addIssue({
+                code: 'custom',
+                path: ['guarantorName'],
+                message: 'نام ضامن الزامی است',
+            })
+        }
+        if (!/^\d{10}$/.test(digitsOnly(values.guarantorNationalId))) {
+            ctx.addIssue({
+                code: 'custom',
+                path: ['guarantorNationalId'],
+                message: 'کد ملی ضامن باید ۱۰ رقم باشد',
+            })
+        }
+    })
+
 export const newCustomerFormSchema = z.object({
     firstName: requiredString('نام الزامی است'),
     lastName: requiredString('نام خانوادگی الزامی است'),
@@ -64,12 +154,18 @@ export const newCustomerFormSchema = z.object({
     chequeLevel: dropdownValue('سطح اعتبار چک الزامی است'),
     goldCredit: amountSchema,
     goldStepIncrease: dropdownValue('انتخاب افزایش پله‌ای الزامی است'),
+    guarantee: guaranteeSchema,
     username: requiredString('نام کاربری الزامی است'),
     password: z
         .string()
         .trim()
         .min(8, 'رمز ورود باید حداقل ۸ کاراکتر باشد'),
-    customerType: dropdownValue('انتخاب نوع مشتری الزامی است'),
+    customerType: z.enum([
+        'WHOLESALE',
+        'RETAIL',
+        'ORGANIZATIONAL',
+        'OTHER',
+    ]),
     cooperationLevel: dropdownValue('انتخاب سطح همکاری الزامی است'),
     userLevel: dropdownValue('انتخاب سطح کاربر الزامی است'),
     customerStatus: dropdownValue('انتخاب وضعیت مشتری الزامی است'),
@@ -94,9 +190,24 @@ export const NEW_CUSTOMER_DEFAULT_VALUES: NewCustomerFormValues = {
     chequeLevel: '4',
     goldCredit: '150000000',
     goldStepIncrease: 'active',
+    guarantee: {
+        type: 'personal-cheque',
+        creditRelated: 'cheque-credit',
+        amount: '250000000',
+        chequeNumber: '',
+        bank: 'mellat',
+        branch: '',
+        accountHolder: '',
+        noteNumber: '1234567',
+        guarantorName: '',
+        guarantorNationalId: '0072345689',
+        dueDate: new Date('2026-06-05T00:00:00.000Z'),
+        status: 'active',
+        fileName: '',
+    },
     username: 'cu-7363',
     password: '',
-    customerType: 'wholesaler',
+    customerType: 'WHOLESALE',
     cooperationLevel: 'gold',
     userLevel: '2',
     customerStatus: 'pending',
@@ -129,20 +240,22 @@ export const GOLD_STEP_INCREASE_OPTIONS: FormDropdownOption[] = [
 ]
 
 export const CUSTOMER_TYPE_OPTIONS: FormDropdownOption[] = [
-    { label: 'عمده‌فروش', value: 'wholesaler' },
-    { label: 'خرده‌فروش', value: 'retailer' },
+    { label: 'عمده‌فروش', value: 'WHOLESALE' },
+    { label: 'خرده‌فروش', value: 'RETAIL' },
+    { label: 'سازمانی', value: 'ORGANIZATIONAL' },
+    { label: 'سایر', value: 'OTHER' },
 ]
 
 export const COOPERATION_LEVEL_OPTIONS: FormDropdownOption[] = [
-    { label: 'طلایی', value: 'gold' },
-    { label: 'نقره‌ای', value: 'silver' },
-    { label: 'برنزی', value: 'bronze' },
+    { label: 'طلایی', value: 'GOLD' },
+    { label: 'نقره‌ای', value: 'SILVER' },
+    { label: 'برنزی', value: 'BRONZE' },
 ]
 
 export const USER_LEVEL_OPTIONS: FormDropdownOption[] = [
-    { label: 'سطح ۱ — تصاویر پایه', value: '1' },
-    { label: 'سطح ۲ — تصاویر مانکنی', value: '2' },
-    { label: 'سطح ۳ — دسترسی کامل', value: '3' },
+    { label: 'سطح ۱ — تصاویر پایه', value: 'NORMAL' },
+    { label: 'سطح ۲ — تصاویر مانکنی', value: 'PROFESSIONAL' },
+    { label: 'سطح ۳ — دسترسی کامل', value: 'SPECIAL' },
 ]
 
 export const CUSTOMER_STATUS_OPTIONS: FormDropdownOption[] = [
@@ -174,6 +287,7 @@ export const CREDIT_FIELDS = [
     'chequeLevel',
     'goldCredit',
     'goldStepIncrease',
+    'guarantee',
 ] as const satisfies ReadonlyArray<keyof NewCustomerFormValues>
 
 export const ACCOUNT_FIELDS = [

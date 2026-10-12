@@ -5,7 +5,7 @@ import { Pill } from '@/src/shared/components/ui/Pill'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 import type { BaseModalProps } from '../types'
-import type { CategoryRowData } from '@/src/routes/categories/categoryTypes/components/TableRow'
+import type { CategoryRowData } from '@/src/routes/catalog/categoryTypes/components/TableRow'
 
 export type CategoryDetailModalData = {
     category: CategoryRowData

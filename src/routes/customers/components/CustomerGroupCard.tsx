@@ -9,6 +9,7 @@ import { VariantProps } from 'class-variance-authority'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 
 export type CustomerGroupCardProps = {
+    id: string
     title: string
     subtitle: string
     status?: string
@@ -26,6 +27,7 @@ export type CustomerGroupCardProps = {
 }
 
 const CustomerGroupCard = ({
+    id,
     title,
     subtitle,
     status = 'فعال',
@@ -87,7 +89,7 @@ const CustomerGroupCard = ({
                     onClick={onEdit}
                 />
                 <Link
-                    href={`/admin/customers/groupDetails/${subtitle}`}
+                    href={`/admin/customers/groupDetails/${id}`}
                     className="flex size-10 items-center justify-center rounded-card-md bg-surface-container-lowest"
                 >
                     <Icon

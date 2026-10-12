@@ -8,10 +8,13 @@ import {
     staffAuthPut,
 } from '../http'
 import type {
+    CreateStaffUserRequest,
+    CreateStaffUserResponse,
     CreateUserRequest,
     CreateUserResponse,
     GetUserDepartmentsResponse,
     GetUserResponse,
+    ListStaffUsersResponse,
     ListUserBranchesResponse,
     ListUserSessionsResponse,
     ListUsersResponse,
@@ -26,6 +29,19 @@ import type {
     UpdateUserStatusResponse,
     UserBranchAccessRequest,
 } from '../types/admin/user'
+
+export const listStaffUsers = (config?: AxiosRequestConfig) =>
+    staffAuthGet<ListStaffUsersResponse>('/auth/staff', config)
+
+export const createStaffUser = (
+    body: CreateStaffUserRequest,
+    config?: AxiosRequestConfig
+) =>
+    staffAuthPost<CreateStaffUserResponse, CreateStaffUserRequest>(
+        '/auth/staff',
+        body,
+        config
+    )
 
 export const listUsers = (config?: AxiosRequestConfig) =>
     staffAuthGet<ListUsersResponse>('/auth/users', config)

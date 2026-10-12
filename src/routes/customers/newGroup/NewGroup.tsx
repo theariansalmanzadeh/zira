@@ -1,12 +1,16 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQueryClient } from '@tanstack/react-query'
 import { Controller, useForm } from 'react-hook-form'
+import type { CreateCustomerGroupRequest } from '@/src/api/types/admin/customers'
 import { Button } from '@/src/shared/components/ui/button'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { Input } from '@/src/shared/components/ui/Input'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 import { toEnglishDigits } from '@/src/shared/schema/generalSchema'
+import { customerKeys, useCreateCustomerGroup } from '../hooks/customers'
 import {
     GROUP_CHEQUE_LEVEL_OPTIONS,
     GROUP_GOLD_LEVEL_OPTIONS,
@@ -22,6 +26,10 @@ const sanitizeNumericInput = (value: string) =>
     toEnglishDigits(value).replace(/[^\d.]/g, '')
 
 const NewGroup = () => {
+    const router = useRouter()
+    const queryClient = useQueryClient()
+    const { mutate, isPending } = useCreateCustomerGroup()
+
     const {
         control,
         handleSubmit,
@@ -33,8 +41,26 @@ const NewGroup = () => {
         reValidateMode: 'onBlur',
     })
 
-    const onSubmit = (_values: NewGroupFormValues) => {
-        // API wiring later
+    const onSubmit = (values: NewGroupFormValues) => {
+        const payload: CreateCustomerGroupRequest = {
+            name: values.groupName,
+            description: values.groupCode ? `کد گروه: ${values.groupCode}` : '',
+            default_tier: values.userLevel,
+            default_payment_due_days: 0,
+            default_golden_credit_amount: Number(values.goldLevel) || 0,
+            default_max_cheque_maturity_months: Number(values.chequeLevel) || 0,
+            marketer_id: values.marketerId || null,
+            marketer_percent: Number(values.marketerPercent) || 0,
+        }
+
+        mutate(payload, {
+            onSuccess: () => {
+                queryClient.invalidateQueries({
+                    queryKey: customerKeys.groups.lists(),
+                })
+                router.push('/admin/customers?sub=list&cat=groups')
+            },
+        })
     }
 
     return (
@@ -102,6 +128,7 @@ const NewGroup = () => {
                                     value={field.value}
                                     options={GROUP_MARKETER_OPTIONS}
                                     onChange={field.onChange}
+                                    hasSearch
                                 />
                             )}
                         />
@@ -119,8 +146,8 @@ const NewGroup = () => {
                                     value={
                                         field.value
                                             ? formatFaNumber(field.value, {
-                                                  useGrouping: false,
-                                              })
+                                                useGrouping: false,
+                                            })
                                             : ''
                                     }
                                     onChange={(value) =>
@@ -146,8 +173,8 @@ const NewGroup = () => {
                                     value={
                                         field.value
                                             ? formatFaNumber(field.value, {
-                                                  useGrouping: false,
-                                              })
+                                                useGrouping: false,
+                                            })
                                             : ''
                                     }
                                     onChange={(value) =>
@@ -203,7 +230,13 @@ const NewGroup = () => {
             </div>
 
             <div className="flex w-full items-center gap-3">
-                <Button type="submit" variant="primary" className="w-full">
+                <Button
+                    type="submit"
+                    variant="primary"
+                    className="w-full"
+                    disabled={isPending}
+                    isLoading={isPending}
+                >
                     ایجاد گروه
                 </Button>
             </div>

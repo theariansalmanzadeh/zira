@@ -7,6 +7,12 @@ import TablePagination from '@/src/shared/components/adminTable/components/Table
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import { useModalStore } from '@/src/shared/store/modal-store'
 import { ModalTypes } from '@/src/shared/components/modals/types'
+import type { FaqItemOut } from '@/src/api/types/admin/cms/faq'
+import {
+    useArchiveFaqItem,
+    useListFaqCategories,
+    useListFaqItems,
+} from '@/src/routes/contentManagment/hooks/faq'
 import {
     DEFAULT_CATEGORIES,
     type AddNewFaqModalData,
@@ -17,8 +23,6 @@ import TableHeader from './components/TableHeader'
 import TableRow from './components/TableRow'
 import {
     FAQ_CATEGORY_LABELS,
-    FAQ_DUMMY,
-    FAQ_TOGGLE_BUTTON_VALUE,
     OPEN_ADD_FAQ_EVENT,
     UPSERT_FAQ_EVENT,
     TABLE_COLOUMN,
@@ -26,6 +30,16 @@ import {
     type FaqCategoryId,
     type FaqRowData,
 } from './constants'
+
+const toFaqRow = (item: FaqItemOut): FaqRowData => ({
+    id: item.id,
+    question: item.question,
+    answer: item.answer,
+    category: item.category_name,
+    categoryId: item.category_id,
+    createdAt: item.created_at,
+    visible: item.is_visible,
+})
 
 const resolveCategoryId = (
     category: string,
@@ -45,8 +59,31 @@ const FaqContent = () => {
     const activeCategory = (searchParams.get('cat') ?? 'all') as
         | FaqCategoryId
         | string
-    const [items, setItems] = useState<FaqRowData[]>(FAQ_DUMMY)
+    const { data: categoryPage } = useListFaqCategories()
+    const { data: faqPage } = useListFaqItems(
+        activeCategory !== 'all' ? { category_id: activeCategory } : undefined
+    )
+    const { mutate: archiveFaqItem } = useArchiveFaqItem()
+    const toggleButtonValue = useMemo(
+        () => [
+            { label: 'همه', value: 'all' },
+            ...(categoryPage?.results ?? []).map((category) => ({
+                label: category.name,
+                value: category.id,
+            })),
+        ],
+        [categoryPage]
+    )
+    const serverItems = useMemo(
+        () => (faqPage?.results ?? []).map(toFaqRow),
+        [faqPage]
+    )
+    const [items, setItems] = useState<FaqRowData[]>([])
     const [expandedId, setExpandedId] = useState<string | null>(null)
+
+    useEffect(() => {
+        setItems(serverItems)
+    }, [serverItems])
 
     const filteredItems = useMemo(
         () => filterFaqs(items, activeCategory),
@@ -60,19 +97,23 @@ const FaqContent = () => {
     }
 
     const removeItem = (id: string) => {
-        setItems((prev) => prev.filter((item) => item.id !== id))
-        if (expandedId === id) setExpandedId(null)
+        archiveFaqItem(
+            { itemId: id },
+            {
+                onSuccess: () => {
+                    if (expandedId === id) setExpandedId(null)
+                },
+            }
+        )
     }
 
     const openAddFaqModal = () => {
         const defaultCategoryId =
-            activeCategory !== 'all' && activeCategory in FAQ_CATEGORY_LABELS
-                ? activeCategory
-                : 'material'
+            activeCategory !== 'all' ? activeCategory : undefined
 
         openModal(ModalTypes.ADD_NEW_FAQ, {
             defaultValues: {
-                categoryId: defaultCategoryId,
+                ...(defaultCategoryId ? { categoryId: defaultCategoryId } : {}),
             },
         } satisfies AddNewFaqModalData)
     }
@@ -81,7 +122,7 @@ const FaqContent = () => {
         openModal(ModalTypes.ADD_NEW_FAQ, {
             id: item.id,
             defaultValues: {
-                categoryId: resolveCategoryId(item.category),
+                categoryId: item.categoryId ?? resolveCategoryId(item.category),
                 question: item.question,
                 answer: item.answer,
             },
@@ -135,7 +176,7 @@ const FaqContent = () => {
             <TableListLayout
                 TableColoumn={TABLE_COLOUMN}
                 value="all"
-                toggleButtonValue={[...FAQ_TOGGLE_BUTTON_VALUE]}
+                toggleButtonValue={toggleButtonValue}
                 hasHeaderActions
             >
                 <div className="rounded-card-lg bg-surface-container-high p-2">
@@ -165,7 +206,7 @@ const FaqContent = () => {
                 </div>
                 <TablePagination
                     className="mt-2"
-                    totalAmount={filteredItems.length}
+                    totalAmount={faqPage?.total ?? filteredItems.length}
                 />
             </TableListLayout>
         </div>

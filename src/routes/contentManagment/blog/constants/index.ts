@@ -12,8 +12,8 @@ export type BlogRowData = {
     author: string
     source: string
     createdAt: string
-    category: BlogCategoryKey
-    categories: BlogCategoryKey[]
+    category: string
+    categories: string[]
     summary: string
     content: string
     views: number

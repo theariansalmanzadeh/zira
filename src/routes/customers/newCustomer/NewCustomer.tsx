@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
-import IconButton from '@/src/shared/components/ui/IconButton'
+import { toast } from 'sonner'
+import { useCreateRegistrationRequest } from '@/src/routes/customers/hooks/customers'
 import StepperStatus from '@/src/shared/components/StepperStatus/StepperStatus'
 import type { StepperStatusStep } from '@/src/shared/components/StepperStatus/types'
 import ActionButton from './components/ActionButton'
@@ -18,7 +19,6 @@ import {
     type NewCustomerStep,
 } from './constants'
 import {
-    ACCOUNT_FIELDS,
     CONTACT_FIELDS,
     CREDIT_FIELDS,
     IDENTITY_FIELDS,
@@ -26,11 +26,14 @@ import {
     newCustomerFormSchema,
     type NewCustomerFormValues,
 } from './schema'
+import { toCreateRegistrationRequest } from './utils/toCreateRegistrationRequest'
 
 const NewCustomer = () => {
-    const { back } = useRouter()
+    const { back, push } = useRouter()
+    const { mutate: createRegistrationRequest, isPending } =
+        useCreateRegistrationRequest()
     const [activeStep, setActiveStep] = useState<NewCustomerStep>(
-        NEW_CUSTOMER_STEPS.addressAndContact
+        NEW_CUSTOMER_STEPS.credit
     )
 
     const methods = useForm<NewCustomerFormValues>({
@@ -55,9 +58,13 @@ const NewCustomer = () => {
                     : 'not_reached',
     }))
 
-    const onSubmit = async () => {
-        const isValid = await methods.trigger([...ACCOUNT_FIELDS])
-        if (!isValid) return
+    const onSubmit = (values: NewCustomerFormValues) => {
+        createRegistrationRequest(toCreateRegistrationRequest(values), {
+            onSuccess: () => {
+                toast.success('درخواست ثبت‌نام ثبت شد')
+                push('/admin/customers?sub=requests')
+            },
+        })
     }
 
     const handleContinue = async () => {
@@ -105,17 +112,6 @@ const NewCustomer = () => {
                 className="mx-auto flex w-full max-w-[900px] flex-col gap-6"
                 dir="rtl"
             >
-                <div className="flex flex-row items-center gap-2">
-                    <IconButton
-                        icon="arrorwRight300Linear"
-                        onClick={handleBack}
-                        iconClassName="size-6 text-on-surface-variant"
-                        variant="ghost"
-                    />
-                    <span className="text-title-lg font-medium text-on-surface">
-                        مشتری جدید
-                    </span>
-                </div>
 
                 <StepperStatus steps={steps} indexBased />
 
@@ -133,6 +129,7 @@ const NewCustomer = () => {
                     onContinue={handleContinue}
                     onBack={handleBack}
                     onCancel={() => back()}
+                    isSubmitting={isPending}
                 />
             </form>
         </FormProvider>

@@ -3,10 +3,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import {
+    createStaffUser,
     createUser,
     getUser,
     getUserDepartments,
     grantUserBranches,
+    listStaffUsers,
     listUserBranches,
     listUserSessions,
     listUsers,
@@ -18,6 +20,7 @@ import {
     updateUserStatus,
 } from '@/src/api/admin/user'
 import type {
+    CreateStaffUserRequest,
     CreateUserRequest,
     SetUserDepartmentsRequest,
     UpdateUserBranchMasterRequest,
@@ -30,6 +33,7 @@ export const userKeys = {
     all: ['users'] as const,
     lists: () => [...userKeys.all, 'list'] as const,
     list: () => [...userKeys.lists()] as const,
+    staff: () => [...userKeys.all, 'staff'] as const,
     details: () => [...userKeys.all, 'detail'] as const,
     detail: (userId: string) => [...userKeys.details(), userId] as const,
     sessions: (userId: string) =>
@@ -38,6 +42,32 @@ export const userKeys = {
         [...userKeys.detail(userId), 'branches'] as const,
     departments: (userId: string) =>
         [...userKeys.detail(userId), 'departments'] as const,
+}
+
+export const useListStaffUsers = () => {
+    return useQuery({
+        queryKey: userKeys.staff(),
+        queryFn: async () => {
+            const result = await listStaffUsers()
+            if (!result.success) throw result.error
+            return result.data
+        },
+    })
+}
+
+export const useCreateStaffUser = () => {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: async (body: CreateStaffUserRequest) => {
+            const result = await createStaffUser(body)
+            if (!result.success) throw result.error
+            return result.data
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: userKeys.staff() })
+        },
+    })
 }
 
 export const useListUsers = () => {

@@ -7,8 +7,8 @@ import TablePagination from '@/src/shared/components/adminTable/components/Table
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import TableLoadingSkeleton from '@/src/shared/components/loading/TableLoadingSkeleton'
 import { formatFaDateTime } from '@/src/shared/libs/formatter'
-import type { User } from '@/src/api/types/admin/user'
-import { useListUsers } from '../../hooks/user'
+import type { StaffUser } from '@/src/api/types/admin/user'
+import { useListStaffUsers } from '../../hooks/user'
 import TableHeader from '../../components/TableHeader'
 import TableRow from './components/TableRow'
 import {
@@ -33,7 +33,7 @@ const mapApiStatus = (status: string, isActive: boolean): UserStatus => {
     return 'active'
 }
 
-const mapUserToRow = (user: User): UserListRowData => ({
+const mapUserToRow = (user: StaffUser): UserListRowData => ({
     id: user.id,
     personnelCode: user.personnel_code || '—',
     firstName: user.first_name || '—',
@@ -49,7 +49,7 @@ const mapUserToRow = (user: User): UserListRowData => ({
 const UserLists = () => {
     const searchParams = useSearchParams()
     const category = searchParams.get('cat')
-    const { data, isPending, isError } = useListUsers()
+    const { data, isPending, isError } = useListStaffUsers()
 
     const users = useMemo(() => {
         const rows = (data ?? []).map(mapUserToRow)

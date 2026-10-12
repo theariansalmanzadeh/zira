@@ -9,13 +9,14 @@ type ActionButtonProps = {
     onContinue: () => void
     onBack: () => void
     onCancel?: () => void
+    isSubmitting?: boolean
 }
 
 const ActionButton = ({
     activeStep,
     onContinue,
     onBack,
-    onCancel,
+    isSubmitting = false,
 }: ActionButtonProps) => {
     const isLastStep = activeStep === NEW_CUSTOMER_STEPS.customerAccount
 
@@ -26,6 +27,8 @@ const ActionButton = ({
                 variant="primary"
                 className={isLastStep ? 'gap-2' : undefined}
                 onClick={isLastStep ? undefined : onContinue}
+                isLoading={isLastStep && isSubmitting}
+                disabled={isSubmitting}
                 size="lg"
             >
                 {isLastStep && (

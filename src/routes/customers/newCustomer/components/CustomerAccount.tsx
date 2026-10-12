@@ -63,8 +63,9 @@ const CustomerAccount = () => {
                             className="mt-0.5 size-5! shrink-0 text-info"
                         />
                         <span className="text-label-md leading-relaxed text-info">
-                            پس از تایید درخواست، نام کاربری و رمز ورود به‌صورت
-                            پیامک برای مشتری ارسال می‌شود.
+                            نام کاربری و رمز در این درخواست ارسال نمی‌شود. اولین
+                            ورود مشتری با رمز یکبارمصرف پیامکی است و خودش رمز را
+                            تعیین می‌کند.
                         </span>
                     </div>
                 </div>

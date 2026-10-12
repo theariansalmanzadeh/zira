@@ -19,6 +19,7 @@ export type FaqRowData = {
     question: string
     answer: string
     category: string
+    categoryId?: string
     createdAt: string
     visible: boolean
 }
@@ -116,7 +117,9 @@ export const filterFaqs = (
     category: FaqCategoryId | string
 ) => {
     if (!category || category === 'all') return items
-    return items.filter((item) => item.category === category)
+    return items.filter(
+        (item) => item.categoryId === category || item.category === category
+    )
 }
 
 export const TABLE_COLOUMN: TableFilterItem[] = [

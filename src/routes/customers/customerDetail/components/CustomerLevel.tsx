@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
 import { Button } from '@/src/shared/components/ui/button'
 import { ModalTypes } from '@/src/shared/components/modals/types'
 import { useModalStore } from '@/src/shared/store/modal-store'
@@ -18,12 +19,18 @@ type CustomerLevelProps = {
     userLevel?: number
 }
 
-const CustomerLevel = ({ userLevel: initialUserLevel = 2 }: CustomerLevelProps) => {
+const CustomerLevel = ({ userLevel: initialUserLevel = 0 }: CustomerLevelProps) => {
+    const params = useParams<{ id: string }>()
     const openModal = useModalStore((state) => state.openModal)
     const [userLevel, setUserLevel] = useState(initialUserLevel)
 
+    useEffect(() => {
+        setUserLevel(initialUserLevel)
+    }, [initialUserLevel])
+
     const handleChangeLevel = () => {
         openModal(ModalTypes.CHANGE_CUSTOMER_LEVEL, {
+            customerId: params?.id,
             currentLevel: userLevel,
             onConfirm: (level: number) => setUserLevel(level),
         })
@@ -77,7 +84,7 @@ const CustomerLevel = ({ userLevel: initialUserLevel = 2 }: CustomerLevelProps) 
             </div>
 
             <div className="mt-3 rounded-[10px] bg-surface-container-high px-3 py-2.5 text-label-sm leading-relaxed text-on-surface-variant">
-                {LEVEL_NOTES[userLevel]}
+                {LEVEL_NOTES[userLevel] ?? '-'}
             </div>
         </div>
     )

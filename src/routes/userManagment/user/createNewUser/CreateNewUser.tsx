@@ -1,10 +1,14 @@
 'use client'
 
 import IconButton from '@/src/shared/components/ui/IconButton'
+import { Button } from '@/src/shared/components/ui/button'
+import { Spinner } from '@/src/shared/components/ui/spinner'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import { useCreateStaffUser } from '@/src/routes/userManagment/hooks/user'
 import AddressForm from './components/AddressForm'
 import BankInfo from './components/BankInfo'
 import DocumentsForm from './components/DocumentsForm'
@@ -17,6 +21,7 @@ import {
     newUserFormSchema,
     type NewUserFormValues,
 } from './schema'
+import { toCreateStaffUserRequest } from './utils/toCreateStaffUserRequest'
 
 enum FormSteps {
     identity,
@@ -29,8 +34,9 @@ enum FormSteps {
 }
 
 const CreateNewUser = () => {
-    const { back } = useRouter()
-    const [formStep, setFormStep] = useState<FormSteps>(FormSteps.identity)
+    const { back, push } = useRouter()
+    const { mutate: createStaffUser, isPending } = useCreateStaffUser()
+    const [formStep, setFormStep] = useState<FormSteps>(FormSteps.securityAndRole)
 
     const methods = useForm<NewUserFormValues>({
         resolver: zodResolver(newUserFormSchema),
@@ -38,6 +44,18 @@ const CreateNewUser = () => {
         mode: 'onSubmit',
         reValidateMode: 'onBlur',
     })
+
+    const onSubmit = (values: NewUserFormValues) => {
+        createStaffUser(toCreateStaffUserRequest(values), {
+            onSuccess: () => {
+                toast.success('کاربر ایجاد شد')
+                push('/admin/user-management?sub=user')
+            },
+            onError: () => {
+                toast.error('ایجاد کاربر انجام نشد')
+            },
+        })
+    }
 
     const navigationHandler = () => {
         if (formStep === FormSteps.identity) {
@@ -99,7 +117,25 @@ const CreateNewUser = () => {
                             onContinue={() => setFormStep(FormSteps.documents)}
                         />
                     )}
-                    {formStep === FormSteps.documents && <DocumentsForm />}
+                    {formStep === FormSteps.documents && (
+                        <>
+                            <DocumentsForm />
+                            <Button
+                                type='button'
+                                variant='primary'
+                                size='lg'
+                                className='w-full text-label-lg'
+                                disabled={isPending}
+                                onClick={methods.handleSubmit(onSubmit)}
+                            >
+                                {isPending ? (
+                                    <Spinner className='size-4' />
+                                ) : (
+                                    'ثبت کاربر'
+                                )}
+                            </Button>
+                        </>
+                    )}
                 </div>
             </div>
         </FormProvider>

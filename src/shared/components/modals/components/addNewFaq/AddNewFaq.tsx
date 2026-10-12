@@ -1,20 +1,25 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, useWatch } from 'react-hook-form'
+import { toast } from 'sonner'
 import { Button } from '@/src/shared/components/ui/button'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Textarea } from '@/src/shared/components/ui/TextArea'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { cn } from '@shared/libs/utils'
+import {
+    useCreateFaqItem,
+    useListFaqCategories,
+    useUpdateFaqItem,
+} from '@/src/routes/contentManagment/hooks/faq'
 import type { BaseModalProps } from '../../types'
 import {
     addNewFaqFormSchema,
     getAddNewFaqDefaultValues,
     type AddNewFaqFormValues,
     type AddNewFaqModalData,
-    type AddNewFaqPayload,
 } from './schema'
 
 export type { AddNewFaqModalData, AddNewFaqPayload } from './schema'
@@ -22,6 +27,10 @@ export type { AddNewFaqModalData, AddNewFaqPayload } from './schema'
 const AddNewFaq = ({ closeModal, data }: BaseModalProps) => {
     const modalData = (data as AddNewFaqModalData | null | undefined) ?? {}
     const isEditing = Boolean(modalData.id)
+    const { mutate: createFaqItem, isPending: isCreating } = useCreateFaqItem()
+    const { mutate: updateFaqItem, isPending: isUpdating } = useUpdateFaqItem()
+    const { data: categoryPage } = useListFaqCategories()
+    const isPending = isCreating || isUpdating
 
     const {
         control,
@@ -39,6 +48,24 @@ const AddNewFaq = ({ closeModal, data }: BaseModalProps) => {
         control,
         name: ['categories', 'categoryId', 'isAddingCategory'],
     })
+
+    useEffect(() => {
+        const nextCategories = (categoryPage?.results ?? []).map((category) => ({
+            id: category.id,
+            label: category.name,
+        }))
+        if (!nextCategories.length) return
+
+        setValue('categories', nextCategories)
+        const currentId = getValues('categoryId')
+        if (nextCategories.some((category) => category.id === currentId)) return
+
+        const preferredId = modalData.defaultValues?.categoryId
+        const nextId = nextCategories.some((category) => category.id === preferredId)
+            ? preferredId
+            : nextCategories[0].id
+        if (nextId) setValue('categoryId', nextId)
+    }, [categoryPage, getValues, modalData.defaultValues?.categoryId, setValue])
 
     const selectedCategory = useMemo(
         () => categories?.find((category) => category.id === categoryId),
@@ -63,14 +90,34 @@ const AddNewFaq = ({ closeModal, data }: BaseModalProps) => {
         )
         if (!category) return
 
-        const payload: AddNewFaqPayload = {
-            id: modalData.id,
-            categoryId: category.id,
-            categoryLabel: category.label,
+        const body = {
+            category_id: category.id,
             question: values.question.trim(),
             answer: values.answer.trim(),
         }
-        closeModal()
+
+        if (isEditing && modalData.id) {
+            updateFaqItem(
+                { itemId: modalData.id, body },
+                {
+                    onSuccess: () => {
+                        toast.success('تغییرات ذخیره شد')
+                        closeModal()
+                    },
+                }
+            )
+            return
+        }
+
+        createFaqItem(
+            { body },
+            {
+                onSuccess: () => {
+                    toast.success('سوال ثبت شد')
+                    closeModal()
+                },
+            }
+        )
     }
 
     return (
@@ -205,7 +252,8 @@ const AddNewFaq = ({ closeModal, data }: BaseModalProps) => {
                     type="submit"
                     variant="primary"
                     className="flex-1 gap-2"
-                    disabled={!isValid || !selectedCategory}
+                    disabled={!isValid || !selectedCategory || isPending}
+                    isLoading={isPending}
                 >
                     <Icon label="checkSm400Linear" className="size-4! text-on-primary" />
                     {isEditing ? 'ذخیره تغییرات' : 'ثبت سوال'}

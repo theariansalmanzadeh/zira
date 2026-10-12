@@ -1,7 +1,14 @@
 'use client'
 
+import { useMemo } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useWatch } from 'react-hook-form'
+import { toast } from 'sonner'
+import { Button } from '@/src/shared/components/ui/button'
+import {
+    useContactInfo,
+    useUpdateContactInfo,
+} from '@/src/routes/contentManagment/hooks/contact'
 import ContactNumbers from './components/ContactNumbers'
 import EmailAndHours from './components/EmailAndHours'
 import AddressSection from './components/AddressSection'
@@ -9,13 +16,25 @@ import SocialNetworks from './components/SocialNetworks'
 import {
     CONTACT_US_DEFAULT_VALUES,
     contactUsFormSchema,
+    toContactInfoIn,
+    toContactUsFormValues,
     type ContactUsFormValues,
 } from './schema'
 
 const ContactUs = () => {
+    const { data: contactInfo } = useContactInfo()
+    const { mutate: updateContactInfo, isPending } = useUpdateContactInfo()
+    const defaultValues = useMemo(
+        () =>
+            contactInfo
+                ? toContactUsFormValues(contactInfo)
+                : CONTACT_US_DEFAULT_VALUES,
+        [contactInfo]
+    )
     const { control, handleSubmit, setValue } = useForm<ContactUsFormValues>({
         resolver: zodResolver(contactUsFormSchema),
-        defaultValues: CONTACT_US_DEFAULT_VALUES,
+        defaultValues,
+        values: contactInfo ? defaultValues : undefined,
         mode: 'onChange',
     })
 
@@ -24,7 +43,16 @@ const ContactUs = () => {
         name: ['phones', 'emailHours', 'address', 'socials'],
     })
 
-    const onSubmit = () => {}
+    const onSubmit = (values: ContactUsFormValues) => {
+        updateContactInfo(
+            { body: toContactInfoIn(values, contactInfo) },
+            {
+                onSuccess: () => {
+                    toast.success('اطلاعات تماس ذخیره شد')
+                },
+            }
+        )
+    }
 
     return (
         <form
@@ -71,6 +99,14 @@ const ContactUs = () => {
                         })
                     }
                 />
+                <Button
+                    type="submit"
+                    variant="primary"
+                    className="self-end"
+                    isLoading={isPending}
+                >
+                    ذخیره
+                </Button>
             </div>
         </form>
     )

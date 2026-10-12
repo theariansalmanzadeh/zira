@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { Controller, useFormContext } from 'react-hook-form'
 import CalendarButton from '@/src/shared/components/ui/CalendarButton'
 import DocumentFileUpload from '@/src/shared/components/ui/DocumentFileUpload'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
@@ -14,169 +14,305 @@ import {
     CREDIT_RELATED_OPTIONS,
     GUARANTEE_STATUS_OPTIONS,
 } from '../constants/creditProof'
-
-type GuaranteeType = 'personal-cheque' | 'promissory-note'
+import type { NewCustomerFormValues } from '../schema'
 
 const sanitizeNumericInput = (value: string) =>
     toEnglishDigits(value).replace(/[^\d]/g, '')
 
+const FieldError = ({ message }: { message?: string }) =>
+    message ? <span className="text-sm text-error">{message}</span> : null
+
 const PersonalChequeForm = () => {
-    const [creditRelated, setCreditRelated] = useState('cheque-credit')
-    const [amount, setAmount] = useState('250000000')
-    const [chequeNumber, setChequeNumber] = useState('')
-    const [bank, setBank] = useState('mellat')
-    const [branch, setBranch] = useState('')
-    const [accountHolder, setAccountHolder] = useState('')
-    const [dueDate, setDueDate] = useState<Date | undefined>(
-        new Date('2026-06-05T00:00:00.000Z')
-    )
-    const [status, setStatus] = useState('active')
-    const [fileName, setFileName] = useState<string>()
+    const {
+        control,
+        formState: { errors },
+    } = useFormContext<NewCustomerFormValues>()
+    const guaranteeErrors = errors.guarantee
 
     return (
         <div className="flex flex-col gap-6">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <FormDropdown
-                    label="مربوط به اعتبار"
-                    value={creditRelated}
-                    options={CREDIT_RELATED_OPTIONS}
-                    onChange={setCreditRelated}
+                <div className="flex flex-col gap-1">
+                    <Controller
+                        name="guarantee.creditRelated"
+                        control={control}
+                        render={({ field }) => (
+                            <FormDropdown
+                                label="مربوط به اعتبار"
+                                value={field.value}
+                                options={CREDIT_RELATED_OPTIONS}
+                                onChange={field.onChange}
+                            />
+                        )}
+                    />
+                    <FieldError message={guaranteeErrors?.creditRelated?.message} />
+                </div>
+                <Controller
+                    name="guarantee.amount"
+                    control={control}
+                    render={({ field }) => (
+                        <Input
+                            label="مبلغ ضمانت (تومان)"
+                            inputMode="numeric"
+                            value={field.value ? formatFaNumber(field.value) : ''}
+                            onChange={(value) =>
+                                field.onChange(sanitizeNumericInput(value))
+                            }
+                            error={!!guaranteeErrors?.amount}
+                            msg={guaranteeErrors?.amount?.message}
+                        />
+                    )}
                 />
-                <Input
-                    label="مبلغ ضمانت (تومان)"
-                    inputMode="numeric"
-                    value={amount ? formatFaNumber(amount) : ''}
-                    onChange={(value) => setAmount(sanitizeNumericInput(value))}
+                <Controller
+                    name="guarantee.chequeNumber"
+                    control={control}
+                    render={({ field }) => (
+                        <Input
+                            label="شماره چک (صیادی)"
+                            placeholder="رقم شناسه صیاد ۱۶"
+                            inputMode="numeric"
+                            value={field.value ? formatFaNumber(field.value) : ''}
+                            onChange={(value) =>
+                                field.onChange(sanitizeNumericInput(value))
+                            }
+                            error={!!guaranteeErrors?.chequeNumber}
+                            msg={guaranteeErrors?.chequeNumber?.message}
+                        />
+                    )}
                 />
-                <Input
-                    label="شماره چک (صیادی)"
-                    placeholder="رقم شناسه صیاد ۱۶"
-                    inputMode="numeric"
-                    value={chequeNumber ? formatFaNumber(chequeNumber) : ''}
-                    onChange={(value) =>
-                        setChequeNumber(sanitizeNumericInput(value))
-                    }
+                <div className="flex flex-col gap-1">
+                    <Controller
+                        name="guarantee.bank"
+                        control={control}
+                        render={({ field }) => (
+                            <FormDropdown
+                                label="نام بانک"
+                                value={field.value}
+                                options={BANK_OPTIONS}
+                                onChange={field.onChange}
+                            />
+                        )}
+                    />
+                    <FieldError message={guaranteeErrors?.bank?.message} />
+                </div>
+                <Controller
+                    name="guarantee.branch"
+                    control={control}
+                    render={({ field }) => (
+                        <Input
+                            label="شعبه"
+                            placeholder="مثلاً شعبه ولنجک"
+                            value={field.value}
+                            onChange={field.onChange}
+                            error={!!guaranteeErrors?.branch}
+                            msg={guaranteeErrors?.branch?.message}
+                        />
+                    )}
                 />
-                <FormDropdown
-                    label="نام بانک"
-                    value={bank}
-                    options={BANK_OPTIONS}
-                    onChange={setBank}
+                <Controller
+                    name="guarantee.accountHolder"
+                    control={control}
+                    render={({ field }) => (
+                        <Input
+                            label="صاحب حساب / صادرکننده"
+                            placeholder="نام و نام خانوادگی"
+                            value={field.value}
+                            onChange={field.onChange}
+                            error={!!guaranteeErrors?.accountHolder}
+                            msg={guaranteeErrors?.accountHolder?.message}
+                        />
+                    )}
                 />
-                <Input
-                    label="شعبه"
-                    placeholder="مثلاً شعبه ولنجک"
-                    value={branch}
-                    onChange={setBranch}
-                />
-                <Input
-                    label="صاحب حساب / صادرکننده"
-                    placeholder="نام و نام خانوادگی"
-                    value={accountHolder}
-                    onChange={setAccountHolder}
-                />
-                <CalendarButton
-                    label="تاریخ سررسید چک"
-                    value={dueDate}
-                    onChange={setDueDate}
-                />
-                <FormDropdown
-                    label="وضعیت ضمانت"
-                    value={status}
-                    options={GUARANTEE_STATUS_OPTIONS}
-                    onChange={setStatus}
-                />
+                <div className="flex flex-col gap-1">
+                    <Controller
+                        name="guarantee.dueDate"
+                        control={control}
+                        render={({ field }) => (
+                            <CalendarButton
+                                label="تاریخ سررسید چک"
+                                value={field.value}
+                                onChange={field.onChange}
+                            />
+                        )}
+                    />
+                    <FieldError message={guaranteeErrors?.dueDate?.message} />
+                </div>
+                <div className="flex flex-col gap-1">
+                    <Controller
+                        name="guarantee.status"
+                        control={control}
+                        render={({ field }) => (
+                            <FormDropdown
+                                label="وضعیت ضمانت"
+                                value={field.value}
+                                options={GUARANTEE_STATUS_OPTIONS}
+                                onChange={field.onChange}
+                            />
+                        )}
+                    />
+                    <FieldError message={guaranteeErrors?.status?.message} />
+                </div>
             </div>
 
-            <DocumentFileUpload
-                title="تصویر چک"
-                hint="روی چک عبارت «ضمانت» درج شده باشد — JPG یا PDF"
-                fileName={fileName}
-                onChange={(file) => setFileName(file?.name)}
+            <Controller
+                name="guarantee.fileName"
+                control={control}
+                render={({ field }) => (
+                    <div className="flex flex-col gap-1">
+                        <DocumentFileUpload
+                            title="تصویر چک"
+                            hint="روی چک عبارت «ضمانت» درج شده باشد — JPG یا PDF"
+                            fileName={field.value || undefined}
+                            onChange={(file) => field.onChange(file?.name ?? '')}
+                        />
+                        <FieldError message={guaranteeErrors?.fileName?.message} />
+                    </div>
+                )}
             />
         </div>
     )
 }
 
 const PromissoryNoteForm = () => {
-    const [creditRelated, setCreditRelated] = useState('cheque-credit')
-    const [amount, setAmount] = useState('250000000')
-    const [noteNumber, setNoteNumber] = useState('1234567')
-    const [guarantorName, setGuarantorName] = useState('')
-    const [guarantorNationalId, setGuarantorNationalId] = useState('0072345689')
-    const [dueDate, setDueDate] = useState<Date | undefined>(
-        new Date('2026-06-05T00:00:00.000Z')
-    )
-    const [status, setStatus] = useState('active')
-    const [fileName, setFileName] = useState<string>()
+    const {
+        control,
+        formState: { errors },
+    } = useFormContext<NewCustomerFormValues>()
+    const guaranteeErrors = errors.guarantee
 
     return (
         <div className="flex flex-col gap-6">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <FormDropdown
-                    label="مربوط به اعتبار"
-                    value={creditRelated}
-                    options={CREDIT_RELATED_OPTIONS}
-                    onChange={setCreditRelated}
+                <div className="flex flex-col gap-1">
+                    <Controller
+                        name="guarantee.creditRelated"
+                        control={control}
+                        render={({ field }) => (
+                            <FormDropdown
+                                label="مربوط به اعتبار"
+                                value={field.value}
+                                options={CREDIT_RELATED_OPTIONS}
+                                onChange={field.onChange}
+                            />
+                        )}
+                    />
+                    <FieldError message={guaranteeErrors?.creditRelated?.message} />
+                </div>
+                <Controller
+                    name="guarantee.amount"
+                    control={control}
+                    render={({ field }) => (
+                        <Input
+                            label="مبلغ ضمانت (تومان)"
+                            inputMode="numeric"
+                            value={field.value ? formatFaNumber(field.value) : ''}
+                            onChange={(value) =>
+                                field.onChange(sanitizeNumericInput(value))
+                            }
+                            error={!!guaranteeErrors?.amount}
+                            msg={guaranteeErrors?.amount?.message}
+                        />
+                    )}
                 />
-                <Input
-                    label="مبلغ ضمانت (تومان)"
-                    inputMode="numeric"
-                    value={amount ? formatFaNumber(amount) : ''}
-                    onChange={(value) => setAmount(sanitizeNumericInput(value))}
+                <Controller
+                    name="guarantee.noteNumber"
+                    control={control}
+                    render={({ field }) => (
+                        <Input
+                            label="شماره سفته"
+                            inputMode="numeric"
+                            value={field.value ? formatFaNumber(field.value) : ''}
+                            onChange={(value) =>
+                                field.onChange(sanitizeNumericInput(value))
+                            }
+                            error={!!guaranteeErrors?.noteNumber}
+                            msg={guaranteeErrors?.noteNumber?.message}
+                        />
+                    )}
                 />
-                <Input
-                    label="شماره سفته"
-                    inputMode="numeric"
-                    value={noteNumber ? formatFaNumber(noteNumber) : ''}
-                    onChange={(value) =>
-                        setNoteNumber(sanitizeNumericInput(value))
-                    }
+                <Controller
+                    name="guarantee.guarantorName"
+                    control={control}
+                    render={({ field }) => (
+                        <Input
+                            label="نام ضامن"
+                            placeholder="نام و نام خانوادگی ضامن"
+                            value={field.value}
+                            onChange={field.onChange}
+                            error={!!guaranteeErrors?.guarantorName}
+                            msg={guaranteeErrors?.guarantorName?.message}
+                        />
+                    )}
                 />
-                <Input
-                    label="نام ضامن"
-                    placeholder="نام و نام خانوادگی ضامن"
-                    value={guarantorName}
-                    onChange={setGuarantorName}
+                <Controller
+                    name="guarantee.guarantorNationalId"
+                    control={control}
+                    render={({ field }) => (
+                        <Input
+                            label="کد ملی ضامن"
+                            inputMode="numeric"
+                            value={field.value ? formatFaNumber(field.value) : ''}
+                            onChange={(value) =>
+                                field.onChange(sanitizeNumericInput(value))
+                            }
+                            error={!!guaranteeErrors?.guarantorNationalId}
+                            msg={guaranteeErrors?.guarantorNationalId?.message}
+                        />
+                    )}
                 />
-                <Input
-                    label="کد ملی ضامن"
-                    inputMode="numeric"
-                    value={
-                        guarantorNationalId
-                            ? formatFaNumber(guarantorNationalId)
-                            : ''
-                    }
-                    onChange={(value) =>
-                        setGuarantorNationalId(sanitizeNumericInput(value))
-                    }
-                />
-                <CalendarButton
-                    label="تاریخ سررسید سفته"
-                    value={dueDate}
-                    onChange={setDueDate}
-                />
-                <FormDropdown
-                    label="وضعیت ضمانت"
-                    value={status}
-                    options={GUARANTEE_STATUS_OPTIONS}
-                    onChange={setStatus}
-                />
+                <div className="flex flex-col gap-1">
+                    <Controller
+                        name="guarantee.dueDate"
+                        control={control}
+                        render={({ field }) => (
+                            <CalendarButton
+                                label="تاریخ سررسید سفته"
+                                value={field.value}
+                                onChange={field.onChange}
+                            />
+                        )}
+                    />
+                    <FieldError message={guaranteeErrors?.dueDate?.message} />
+                </div>
+                <div className="flex flex-col gap-1">
+                    <Controller
+                        name="guarantee.status"
+                        control={control}
+                        render={({ field }) => (
+                            <FormDropdown
+                                label="وضعیت ضمانت"
+                                value={field.value}
+                                options={GUARANTEE_STATUS_OPTIONS}
+                                onChange={field.onChange}
+                            />
+                        )}
+                    />
+                    <FieldError message={guaranteeErrors?.status?.message} />
+                </div>
             </div>
 
-            <DocumentFileUpload
-                title="تصویر سفته"
-                hint="سفته با امضای ضامن — JPG یا PDF"
-                fileName={fileName}
-                onChange={(file) => setFileName(file?.name)}
+            <Controller
+                name="guarantee.fileName"
+                control={control}
+                render={({ field }) => (
+                    <div className="flex flex-col gap-1">
+                        <DocumentFileUpload
+                            title="تصویر سفته"
+                            hint="سفته با امضای ضامن — JPG یا PDF"
+                            fileName={field.value || undefined}
+                            onChange={(file) => field.onChange(file?.name ?? '')}
+                        />
+                        <FieldError message={guaranteeErrors?.fileName?.message} />
+                    </div>
+                )}
             />
         </div>
     )
 }
 
 const CreditProof = () => {
-    const [guaranteeType, setGuaranteeType] =
-        useState<GuaranteeType>('personal-cheque')
+    const { control, watch } = useFormContext<NewCustomerFormValues>()
+    const guaranteeType = watch('guarantee.type')
 
     return (
         <div className="flex flex-col gap-3" dir="rtl">
@@ -195,30 +331,36 @@ const CreditProof = () => {
                     <span className="text-label-md text-on-surface-variant">
                         نوع ضمانت
                     </span>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                        <SelectItem
-                            title="چک شخصی"
-                            description="چک صیادی به نام مشتری"
-                            icon="description400Linear"
-                            selected={guaranteeType === 'personal-cheque'}
-                            onClick={() => setGuaranteeType('personal-cheque')}
-                            className={cn(
-                                guaranteeType === 'personal-cheque' &&
-                                    'bg-primary-container/40'
-                            )}
-                        />
-                        <SelectItem
-                            title="سفته"
-                            description="سفته با امضای ضامن"
-                            icon="fileNew400Linear"
-                            selected={guaranteeType === 'promissory-note'}
-                            onClick={() => setGuaranteeType('promissory-note')}
-                            className={cn(
-                                guaranteeType === 'promissory-note' &&
-                                    'bg-primary-container/40'
-                            )}
-                        />
-                    </div>
+                    <Controller
+                        name="guarantee.type"
+                        control={control}
+                        render={({ field }) => (
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                <SelectItem
+                                    title="چک شخصی"
+                                    description="چک صیادی به نام مشتری"
+                                    icon="description400Linear"
+                                    selected={field.value === 'personal-cheque'}
+                                    onClick={() => field.onChange('personal-cheque')}
+                                    className={cn(
+                                        field.value === 'personal-cheque' &&
+                                            'bg-primary-container/40'
+                                    )}
+                                />
+                                <SelectItem
+                                    title="سفته"
+                                    description="سفته با امضای ضامن"
+                                    icon="fileNew400Linear"
+                                    selected={field.value === 'promissory-note'}
+                                    onClick={() => field.onChange('promissory-note')}
+                                    className={cn(
+                                        field.value === 'promissory-note' &&
+                                            'bg-primary-container/40'
+                                    )}
+                                />
+                            </div>
+                        )}
+                    />
                 </div>
 
                 {guaranteeType === 'personal-cheque' ? (

@@ -59,6 +59,93 @@ export type MessageResponse = {
 
 export type ListUsersResponse = User[]
 
+export type StaffUser = {
+    id: string
+    phone_number: string
+    username: string
+    email: string
+    first_name: string
+    last_name: string
+    national_id: string
+    personnel_code: string
+    user_type: string
+    status: string
+    is_active: boolean
+    is_verified: boolean
+    job_title: string
+    job_description: string
+    account_description: string
+    has_commission_contract: boolean
+    commission_percent: number
+    primary_branch_id: string
+    direct_manager_id: string
+    created_at: string
+    created_by_id: string
+    last_login_at: string
+    last_activity_at: string
+    roles: string[]
+    active_sessions_count: number
+}
+
+export type StaffNextOfKin = {
+    full_name: string
+    relation: string
+    phone: string
+    address: string
+}
+
+export type StaffDocument = {
+    slot: string
+    file: string
+}
+
+export type CreateStaffUserRequest = {
+    first_name: string
+    last_name: string
+    national_id: string
+    birth_certificate_no: string
+    issue_place: string
+    father_name: string
+    birth_date: string
+    gender: string
+    marital_status: string
+    children_count: number
+    educational_qualification: string
+    social_security_no: string
+    province: string
+    city: string
+    full_address: string
+    postal_code: string
+    phone: string
+    email: string
+    mobile_1: string
+    mobile_2: string
+    next_of_kin: StaffNextOfKin[]
+    account_no: string
+    bank_name: string
+    iban: string
+    card_no: string
+    phone_number: string
+    password: string
+    user_type: string
+    role_id: string
+    status: string
+    username: string
+    account_description: string
+    department_id: string
+    primary_branch_id: string
+    direct_manager_id: string
+    job_title: string
+    job_description: string
+    has_commission_contract: boolean
+    commission_percent: number
+    documents: StaffDocument[]
+}
+
+export type ListStaffUsersResponse = StaffUser[]
+
+export type CreateStaffUserResponse = StaffUser
+
 export type CreateUserRequest = {
     phone_number: string
     username: string

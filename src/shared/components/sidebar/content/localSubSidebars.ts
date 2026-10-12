@@ -1,7 +1,7 @@
 import type { SubSidebarContent } from './types'
 
 export const LOCAL_SUB_SIDEBAR_CONTENT: Record<
-    'branches' | 'purchase' | 'categories' | 'support',
+    'branches' | 'purchase' | 'catalog' | 'support',
     SubSidebarContent
 > = {
     branches: {
@@ -86,7 +86,7 @@ export const LOCAL_SUB_SIDEBAR_CONTENT: Record<
             },
         ],
     },
-    categories: {
+    catalog: {
         headerIcon: 'package2',
         header: 'مدیریت کالا',
         faLabel: 'مدیریت کالا',
@@ -95,33 +95,33 @@ export const LOCAL_SUB_SIDEBAR_CONTENT: Record<
             {
                 title: 'نمای کلی',
                 links: [
-                    { label: 'داشبورد', href: '/admin/categories?sub=dashboard' },
-                    { label: 'لیست کالاها', href: '/admin/categories?sub=list' },
-                    { label: 'لیست پک‌ها', href: '/admin/categories?sub=packs' },
-                    { label: 'برندها', href: '/admin/categories?sub=brands' },
-                    { label: 'گزارش کمپین', href: '/admin/categories?sub=report' },
+                    { label: 'داشبورد', href: '/admin/catalog?sub=dashboard' },
+                    { label: 'لیست کالاها', href: '/admin/catalog?sub=list' },
+                    { label: 'لیست پک‌ها', href: '/admin/catalog?sub=packs' },
+                    { label: 'برندها', href: '/admin/catalog?sub=brands' },
+                    { label: 'گزارش کمپین', href: '/admin/catalog?sub=report' },
                 ],
             },
             {
                 title: 'دسته‌بندی و قیمت',
                 links: [
-                    { label: 'دسته‌بندی‌ها', href: '/admin/categories?sub=category-types' },
-                    { label: 'ویژگی‌ها و متغیرها', href: '/admin/categories?sub=variable' },
-                    { label: 'قیمت‌گذاری', href: '/admin/categories?sub=pricing' },
+                    { label: 'دسته‌بندی‌ها', href: '/admin/catalog?sub=category-types' },
+                    { label: 'ویژگی‌ها و متغیرها', href: '/admin/catalog?sub=variable' },
+                    { label: 'قیمت‌گذاری', href: '/admin/catalog?sub=pricing' },
                 ],
             },
             {
                 title: 'تخفیف',
                 links: [
-                    { label: 'مدیریت تخفیف', href: '/admin/categories?sub=discounts' },
-                    { label: 'کدهای تخفیف', href: '/admin/categories?sub=discount-codes' },
+                    { label: 'مدیریت تخفیف', href: '/admin/catalog?sub=discounts' },
+                    { label: 'کدهای تخفیف', href: '/admin/catalog?sub=discount-codes' },
                 ],
             },
             {
                 title: 'کمپین',
                 links: [
-                    { label: 'کمپین‌ها', href: '/admin/categories?sub=campaigns' },
-                    { label: 'باندل‌ها', href: '/admin/categories?sub=bundles' },
+                    { label: 'کمپین‌ها', href: '/admin/catalog?sub=campaigns' },
+                    { label: 'باندل‌ها', href: '/admin/catalog?sub=bundles' },
                 ],
             },
         ],

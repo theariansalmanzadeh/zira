@@ -15,10 +15,11 @@ export type CustomerRequestStatus = "pending" | "approved" | "rejected";
 
 export type CustomerRequestRowData = {
     id: string;
+    requestNo: string;
     name: string;
-    level: CustomerLevel;
-    nationalId: string;
-    licenseNumber: string;
+    level: CustomerLevel | null;
+    nationalId: string | null;
+    licenseNumber: string | null;
     status: CustomerRequestStatus;
 };
 
@@ -48,20 +49,21 @@ const TableRow = ({ data }: TableRowProps) => {
     const { TableColoumn } = useTable();
     const {
         id,
+        requestNo,
         name,
         level,
         nationalId,
         licenseNumber,
         status,
     } = data;
-    const levelConfig = LEVEL_CONFIG[level];
+    const levelConfig = level ? LEVEL_CONFIG[level] : null;
     const statusConfig = STATUS_CONFIG[status];
 
     return (
         <>
             <UiTableRow className="[&>*]:text-on-surface-variant [&>*]:text-label-lg [&>*]:font-normal">
                 {TableColoumn[0]?.isChecked && (
-                    <TableCell className="text-outline">{id}</TableCell>
+                    <TableCell className="text-outline">{requestNo}</TableCell>
                 )}
                 {TableColoumn[1]?.isChecked && (
                     <TableCell>
@@ -79,22 +81,28 @@ const TableRow = ({ data }: TableRowProps) => {
                 )}
                 {TableColoumn[2]?.isChecked && (
                     <TableCell>
-                        <Pill
-                            className="border-0"
-                            variant={levelConfig.variant}
-                            text={levelConfig.text}
-                            hasDot
-                        />
+                        {levelConfig ? (
+                            <Pill
+                                className="border-0"
+                                variant={levelConfig.variant}
+                                text={levelConfig.text}
+                                hasDot
+                            />
+                        ) : (
+                            <span className="text-outline">—</span>
+                        )}
                     </TableCell>
                 )}
                 {TableColoumn[3]?.isChecked && (
                     <TableCell className="text-outline">
-                        {formatFaNumber(nationalId)}
+                        {nationalId ? formatFaNumber(nationalId) : "—"}
                     </TableCell>
                 )}
                 {TableColoumn[4]?.isChecked && (
                     <TableCell className="text-outline">
-                        {formatFaNumber(licenseNumber)}
+                        {licenseNumber
+                            ? formatFaNumber(licenseNumber)
+                            : "—"}
                     </TableCell>
                 )}
                 {TableColoumn[5]?.isChecked && (
@@ -110,7 +118,7 @@ const TableRow = ({ data }: TableRowProps) => {
                 {TableColoumn[6]?.isChecked && (
                     <TableCell className="w-[1%] whitespace-nowrap">
                         <Link
-                            href={`/admin/order-managment/order-details/${id}`}
+                            href={`/admin/customers/requestDetails/${id}`}
                         >
                             <IconButton
                                 icon="chevronLeft300Linear"

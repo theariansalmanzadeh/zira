@@ -56,8 +56,16 @@ const ChangeCustomerLevel = dynamic(
   () => import('./components/ChangeCustomerLevel'),
   { ssr: false }
 );
+const CustomerChangeCredit = dynamic(
+  () => import('./components/CustomerChangeCredit'),
+  { ssr: false }
+);
 const AddCustomer = dynamic(
   () => import('./components/addCustomer/AddCustomer'),
+  { ssr: false }
+);
+const AddCustomerDocuments = dynamic(
+  () => import('./components/addCustomerDocuments/AddCustomerDocuments'),
   { ssr: false }
 );
 const AddNewFaq = dynamic(
@@ -156,7 +164,9 @@ const MODAL_COMPONENTS: Record<
   [ModalTypes.SELL_INVOICE]: SellInvoice,
   [ModalTypes.EDIT_CUSTOMER]: EditCustomer,
   [ModalTypes.CHANGE_CUSTOMER_LEVEL]: ChangeCustomerLevel,
+  [ModalTypes.CUSTOMER_CHANGE_CREDIT]: CustomerChangeCredit,
   [ModalTypes.ADD_CUSTOMER]: AddCustomer,
+  [ModalTypes.ADD_CUSTOMER_DOCUMENTS]: AddCustomerDocuments,
   [ModalTypes.ADD_NEW_FAQ]: AddNewFaq,
   [ModalTypes.ADD_BANNER]: AddAndEditBanner,
   [ModalTypes.ADD_BRAND]: AddAndEditBrand,
@@ -250,11 +260,23 @@ const MODAL_CONFIG: Record<
     className:
       'min-w-[480px]! max-h-[90vh] w-full max-w-[520px]! overflow-y-auto border-0 sm:max-w-[520px]!',
   },
+  [ModalTypes.CUSTOMER_CHANGE_CREDIT]: {
+    title: 'تغییر اعتبار کاربر',
+    showCloseButton: true,
+    className:
+      'min-w-[480px]! max-h-[90vh] w-full max-w-[520px]! overflow-y-auto border-0 sm:max-w-[520px]!',
+  },
   [ModalTypes.ADD_CUSTOMER]: {
     title: 'افزودن کاربر',
     showCloseButton: true,
     className:
       'min-w-[1060px]! max-h-[90vh] w-full max-w-[1060px]! overflow-y-auto border-0 sm:max-w-[1060px]!',
+  },
+  [ModalTypes.ADD_CUSTOMER_DOCUMENTS]: {
+    title: 'افزودن مدرک',
+    showCloseButton: true,
+    className:
+      'min-w-[520px]! max-h-[90vh] w-full max-w-[560px]! overflow-y-auto border-0 sm:max-w-[560px]!',
   },
   [ModalTypes.ADD_NEW_FAQ]: {
     title: 'ثبت سوال جدید',
@@ -395,7 +417,7 @@ const Modal = () => {
       <DialogContent
         dir='rtl'
         showCloseButton={modalConfig.showCloseButton}
-        className={`min-w-[962px] w-full px-6 py-4.5 rounded-card-lg! ${modalConfig.className ?? ''}`}
+        className={`min-w-240.5 w-full px-6 py-4.5 rounded-card-lg! ${modalConfig.className ?? ''}`}
         onEscapeKeyDown={closeModal}
       >
         {modalConfig.title && (

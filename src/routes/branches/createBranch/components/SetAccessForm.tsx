@@ -1,230 +1,124 @@
-"use client"
+'use client'
 
-import { Dispatch, SetStateAction, useState } from 'react'
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from '@/src/shared/components/ui/Accordion'
-import { Checkbox } from '@/src/shared/components/ui/Checkbox'
+import { Dispatch, SetStateAction } from 'react'
 import { Switch } from '@/src/shared/components/ui/Switch'
 import { Button } from '@/src/shared/components/ui/button'
 import { Icon } from '@/src/shared/components/Icons/Icon'
+import {
+    useCreateBranchContext,
+    type BranchPermissions,
+} from '../provider/CreateBranchProvider'
 
-type AccessItem = {
-    id: string
+type PermissionItemConfig = {
+    key: keyof BranchPermissions
     label: string
-    checked: boolean
+    description?: string
 }
 
-type AccessGroup = {
-    id: string
-    label: string
-    items: AccessItem[]
-}
-
-type Permission = {
-    id: string
-    label: string
-    enabled: boolean
-}
-
-const INITIAL_ACCESS_GROUPS: AccessGroup[] = [
+const PERMISSION_CONFIGS: PermissionItemConfig[] = [
     {
-        id: 'group-1',
-        label: 'عنوان گروه دسترسی',
-        items: [
-            { id: 'access-1', label: 'عنوان دسترسی', checked: true },
-            { id: 'access-2', label: 'عنوان دسترسی', checked: true },
-            { id: 'access-3', label: 'عنوان دسترسی', checked: false },
-            { id: 'access-4', label: 'عنوان دسترسی', checked: true },
-            { id: 'access-5', label: 'عنوان دسترسی', checked: false },
-        ],
+        key: 'allow_credit_sale',
+        label: 'فروش اعتباری',
+        description: 'امکان ثبت سفارش و فاکتور به صورت اعتباری در این شعبه',
     },
     {
-        id: 'group-2',
-        label: 'عنوان گروه دسترسی',
-        items: [
-            { id: 'access-6', label: 'عنوان دسترسی', checked: false },
-            { id: 'access-7', label: 'عنوان دسترسی', checked: false },
-            { id: 'access-8', label: 'عنوان دسترسی', checked: false },
-        ],
+        key: 'allow_cheque_sale',
+        label: 'فروش چکی',
+        description: 'امکان دریافت چک صیادی و ثبت فاکتورهای چکی',
+    },
+    {
+        key: 'allow_consignment_sale',
+        label: 'فروش امانی',
+        description: 'امکان تحویل یا فروش کالاهای امانی در این شعبه',
+    },
+    {
+        key: 'allow_scrap_entry',
+        label: 'ثبت ضایعات',
+        description: 'دسترسی به ثبت ضایعات و اقلام مرجوعی/اسقاطی',
+    },
+    {
+        key: 'allow_repricing',
+        label: 'قیمت‌گذاری مجدد',
+        description: 'مجوز تغییر یا بازبینی قیمت محصولات در سطح شعبه',
     },
 ]
-
-const INITIAL_PERMISSIONS: Permission[] = [
-    { id: 'permission-1', label: 'عنوان مجوز', enabled: true },
-    { id: 'permission-2', label: 'عنوان مجوز', enabled: false },
-    { id: 'permission-3', label: 'عنوان مجوز', enabled: false },
-    { id: 'permission-4', label: 'عنوان مجوز', enabled: true },
-    { id: 'permission-5', label: 'عنوان مجوز', enabled: false },
-]
-
-const getGroupCheckedState = (
-    items: AccessItem[]
-): boolean | 'indeterminate' => {
-    const checkedCount = items.filter((item) => item.checked).length
-
-    if (checkedCount === 0) return false
-    if (checkedCount === items.length) return true
-    return 'indeterminate'
-}
 
 type SetAccessFormProps = {
-    setActiveStep: Dispatch<SetStateAction<number>>
+    setActiveStep?: Dispatch<SetStateAction<number>>
 }
 
-const SetAccessForm = ({ setActiveStep }: SetAccessFormProps) => {
-    const [accessGroups, setAccessGroups] = useState(INITIAL_ACCESS_GROUPS)
-    const [permissions, setPermissions] = useState(INITIAL_PERMISSIONS)
+const SetAccessForm = ({
+    setActiveStep: propSetActiveStep,
+}: SetAccessFormProps) => {
+    const {
+        permissions,
+        togglePermission,
+        submitBranch,
+        isPending,
+        setActiveStep: contextSetActiveStep,
+    } = useCreateBranchContext()
 
-    const updateAccessItem = (
-        groupId: string,
-        itemId: string,
-        checked: boolean
-    ) => {
-        setAccessGroups((groups) =>
-            groups.map((group) =>
-                group.id === groupId
-                    ? {
-                        ...group,
-                        items: group.items.map((item) =>
-                            item.id === itemId ? { ...item, checked } : item
-                        ),
-                    }
-                    : group
-            )
-        )
-    }
+    const setActiveStep = propSetActiveStep || contextSetActiveStep
 
-    const toggleAccessGroup = (groupId: string, checked: boolean) => {
-        setAccessGroups((groups) =>
-            groups.map((group) =>
-                group.id === groupId
-                    ? {
-                        ...group,
-                        items: group.items.map((item) => ({
-                            ...item,
-                            checked,
-                        })),
-                    }
-                    : group
-            )
-        )
-    }
-
-    const togglePermission = (permissionId: string, enabled: boolean) => {
-        setPermissions((items) =>
-            items.map((item) =>
-                item.id === permissionId ? { ...item, enabled } : item
-            )
-        )
+    const handleSubmit = () => {
+        submitBranch()
     }
 
     return (
-        <div className='flex flex-col gap-6' dir='rtl'>
-            <div className='rounded-card-md bg-surface-container-lowest p-6'>
-                <Accordion
-                    type='single'
-                    collapsible
-                    defaultValue='group-1'
-                    className='w-full'
-                >
-                    {accessGroups.map((group) => (
-                        <AccordionItem
-                            key={group.id}
-                            value={group.id}
-                            className='border-b border-outline-variant last:border-b-0'
-                        >
-                            <AccordionTrigger iconType='keyboardArrowDown400Linear' className='py-4 text-right font-normal'>
-                                <div className='flex flex-1 items-center gap-3'>
-                                    <Checkbox
-                                        className='size-6'
-                                        checked={getGroupCheckedState(group.items)}
-                                        onCheckedChange={(checked) => {
-                                            if (checked === 'indeterminate') return
-                                            toggleAccessGroup(
-                                                group.id,
-                                                checked === true
-                                            )
-                                        }}
-                                        onClick={(event) => event.stopPropagation()}
-                                    />
-                                    <span className='text-label-lg text-on-surface'>
-                                        {group.label}
-                                    </span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className='pb-2'>
-                                <div className='flex flex-col gap-1 pr-7'>
-                                    {group.items.map((item) => (
-                                        <div
-                                            key={item.id}
-                                            className='flex items-center justify-start gap-3 py-2'
-                                        >
-                                            <Checkbox
-                                                className='size-6'
-                                                checked={item.checked}
-                                                onCheckedChange={(checked) =>
-                                                    updateAccessItem(
-                                                        group.id,
-                                                        item.id,
-                                                        checked === true
-                                                    )
-                                                }
-                                            />
-                                            <span className='text-label-lg text-on-surface'>
-                                                {item.label}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </AccordionContent>
-                        </AccordionItem>
-                    ))}
-                </Accordion>
-            </div>
-
-            <div className='flex flex-col gap-3'>
-                <span className='text-label-lg font-medium text-outline'>
+        <div className="flex flex-col gap-6" dir="rtl">
+            <div className="flex flex-col gap-3">
+                <span className="text-label-lg font-medium text-outline">
                     مجوزها
                 </span>
-                <div className='rounded-card-md bg-surface-container-lowest p-6'>
-                    <div className='flex flex-col gap-1'>
-                        {permissions.map((permission) => (
+                <div className="rounded-card-md bg-surface-container-lowest p-6">
+                    <div className="flex flex-col divide-y divide-outline-variant/30">
+                        {PERMISSION_CONFIGS.map((perm) => (
                             <div
-                                key={permission.id}
-                                className='flex items-center justify-between py-2'
+                                key={perm.key}
+                                className="flex items-center justify-between py-3.5"
                             >
-                                <span className='text-label-lg text-on-surface'>
-                                    {permission.label}
-                                </span>
+                                <div className="flex flex-col gap-1">
+                                    <span className="text-label-lg font-medium text-on-surface">
+                                        {perm.label}
+                                    </span>
+                                    {perm.description && (
+                                        <span className="text-body-sm text-on-surface-variant">
+                                            {perm.description}
+                                        </span>
+                                    )}
+                                </div>
                                 <Switch
-                                    checked={permission.enabled}
-                                    onCheckedChange={(enabled) =>
-                                        togglePermission(permission.id, enabled)
+                                    checked={permissions[perm.key]}
+                                    onCheckedChange={(checked) =>
+                                        togglePermission(perm.key, checked)
                                     }
                                 />
                             </div>
                         ))}
                     </div>
 
-                    <div className='flex flex-row gap-3 mt-10'>
+                    <div className="flex flex-row gap-3 mt-10">
                         <Button
-                            type='button'
-                            variant='ghost'
-                            className='w-fit gap-2 self-end text-on-surface-variant'
+                            type="button"
+                            variant="ghost"
+                            className="w-fit gap-2 self-end text-on-surface-variant"
                             onClick={() => setActiveStep(3)}
+                            disabled={isPending}
                         >
-                            <Icon label='arrorwRight400Linear' className='size-4 text-on-surface-variant' />
-                            <span className='text-label-lg'>بازگشت</span>
+                            <Icon
+                                label="arrorwRight400Linear"
+                                className="size-4 text-on-surface-variant"
+                            />
+                            <span className="text-label-lg">بازگشت</span>
                         </Button>
                         <Button
-                            type='button'
-                            variant='primary'
-                            size='lg'
-                            className='w-full text-label-lg'
+                            type="button"
+                            variant="primary"
+                            size="lg"
+                            className="w-full text-label-lg"
+                            onClick={handleSubmit}
+                            isLoading={isPending}
+                            disabled={isPending}
                         >
                             ثبت شعبه
                         </Button>

@@ -140,10 +140,12 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
     new: {
         title: 'مشتری جدید',
         subtitle: 'ثبت مشتری جدید',
+        hasBackButton: true,
     },
     newGroup: {
         title: 'گروه جدید',
         subtitle: 'ایجاد گروه مشتریان',
+        hasBackButton: true,
     },
     customerGroupDetails: {
         title: 'جزئیات گروه',
@@ -162,6 +164,11 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
                 variant: 'outline',
             },
         ],
+    },
+    requestDetails: {
+        title: 'جزئیات درخواست',
+        subtitle: 'بررسی و تایید درخواست ثبت‌نام',
+        hasBackButton: true,
     },
     details: {
         title: 'جزئیات مشتری',

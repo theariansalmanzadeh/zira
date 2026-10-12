@@ -12,7 +12,7 @@ import { LEVEL_CONFIG, type AddCustomerRow } from '../constants'
 type CustomerTableRowProps = {
     customer: AddCustomerRow
     checked: boolean
-    onToggle: (id: string) => void
+    onToggle: (customer: AddCustomerRow) => void
 }
 
 const CustomerTableRow = ({
@@ -32,7 +32,7 @@ const CustomerTableRow = ({
                 <Checkbox
                     className="size-6! overflow-hidden mr-4"
                     checked={checked}
-                    onCheckedChange={() => onToggle(customer.id)}
+                    onCheckedChange={() => onToggle(customer)}
                 />
             </TableCell>
             <TableCell>
@@ -50,7 +50,7 @@ const CustomerTableRow = ({
                     </span>
                 </div>
             </TableCell>
-            <TableCell className="text-outline">{customer.id}</TableCell>
+            <TableCell className="text-outline">{customer.code}</TableCell>
             <TableCell>
                 <Pill
                     className="border-0"

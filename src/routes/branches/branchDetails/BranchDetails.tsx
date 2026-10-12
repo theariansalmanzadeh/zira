@@ -1,6 +1,6 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import InfoCardField from '@/src/shared/components/infoCard/components/InfoCardField'
 import { Avatar, AvatarFallback } from '@/src/shared/components/ui/Avatar'
 import QuickAccessCard, {
@@ -13,6 +13,7 @@ import { Table, TableBody } from '@/src/shared/components/ui/Table'
 import { useModalStore } from '@/src/shared/store/modal-store'
 import { useSearchParam } from '@/src/shared/hooks/useSearchParam'
 import { ROUTE_CONFIGS } from '@/src/shared/constants/routeConfigs'
+import { useGetBranch } from '@/src/routes/branches/hooks/organization'
 import ProductTableHeader from './components/TableHeader'
 import ProductTableRow from './components/TableRow'
 import CashRegisterTableHeader from './components/CashRegisterTableHeader'
@@ -25,8 +26,9 @@ import {
     BANK_ACCOUNT_TABLE_COLOUMN,
     CASH_REGISTER_DUMMY,
     PRODUCT_TABLE_COLOUMN,
-    QUICK_ACCESS_ITEMS,
     TABLE_COLOUMN,
+    mapQuickAccessItems,
+    quickAccessSummary,
     type QuickAccessStat,
 } from './constants'
 
@@ -44,13 +46,29 @@ const BranchDetails = () => {
     const { openModal } = useModalStore()
     const { addSearchParam } = useSearchParam()
     const searchParams = useSearchParams()
+    const params = useParams<{ id: string }>()
+    const branchId = params.id ?? ''
+    const { data: branch } = useGetBranch(branchId)
     const tableView = searchParams.get('cat') ?? 'products'
     const isCashRegisters = tableView === 'cashRegisters'
     const isBankAccounts = tableView === 'bankAccounts'
+    const quickAccessItems = mapQuickAccessItems(branch)
+    const address =
+        branch?.full_address ||
+        [branch?.province, branch?.city, branch?.address_details]
+            .filter(Boolean)
+            .join('، ')
 
     const handleQuickAccessClick = (item: QuickAccessStat) => {
+        if (!branch) return
         if (item.modalType) {
-            openModal(item.modalType)
+            openModal(item.modalType, {
+                values: item.values,
+                branchId,
+                warehouses: branch.warehouses,
+                posDevices: branch.pos_devices ?? [],
+                permit: branch.permit,
+            })
             return
         }
         if (item.tableValue) {
@@ -60,7 +78,12 @@ const BranchDetails = () => {
 
     return (
         <div dir='rtl'>
-            <Header />
+            <Header
+                name={branch?.name ?? ''}
+                code={branch?.code ?? ''}
+                status={branch?.status}
+                statusDisplay={branch?.status_display}
+            />
             <div className='flex h-full flex-col gap-6'>
                 <div className='rounded-card-md bg-surface-container-lowest p-6'>
                     <div className='grid grid-cols-1 gap-6 py-6 sm:grid-cols-2 lg:grid-cols-5'>
@@ -71,34 +94,28 @@ const BranchDetails = () => {
                             <div className='flex flex-row items-center gap-2'>
                                 <Avatar size='sm'>
                                     <AvatarFallback className='bg-surface-container-highest text-label-sm text-on-surface-variant'>
-                                        ر
+                                        —
                                     </AvatarFallback>
                                 </Avatar>
                                 <span className='text-label-lg text-on-surface-variant'>
-                                    رضا کاظمی
+                                    —
                                 </span>
                             </div>
                         </div>
-                        <InfoCardField label='تعداد اقلام' value='8,240 قلم' />
-                        <InfoCardField label='متراژ' value='450 متر مربع' />
-                        <InfoCardField
-                            label='موجودی'
-                            value='2.9 میلیارد تومان'
-                        />
-                        <InfoCardField
-                            label='وضعیت بیمه'
-                            value='معتبر تا 1404/10'
-                        />
+                        <InfoCardField label='تعداد اقلام' value='—' />
+                        <InfoCardField label='متراژ' value='—' />
+                        <InfoCardField label='موجودی' value='—' />
+                        <InfoCardField label='وضعیت بیمه' value='—' />
                     </div>
                     <SectionDivider />
                     <div className='grid grid-cols-1 gap-6 py-6 lg:grid-cols-5'>
                         <InfoCardField
                             label='شماره تماس'
-                            value='+98 912 2571 928'
+                            value={branch?.phone || '—'}
                         />
                         <InfoCardField
                             label='آدرس'
-                            value='تهران، پاسداران، اطلس مال، طبقه 11، پلاک 10'
+                            value={address || '—'}
                             className='col-span-2'
                         />
                     </div>
@@ -107,11 +124,14 @@ const BranchDetails = () => {
                         <QuickAccessCard>
                             <QuickAccessCardContent>
                                 <QuickAccessCardList className='gap-2'>
-                                    {QUICK_ACCESS_ITEMS.map((item) => (
+                                    {quickAccessItems.map((item) => (
                                         <QuickAccessCardItem
                                             key={item.label}
                                             label={item.label}
-                                            value={item.value}
+                                            value={quickAccessSummary(
+                                                item.label,
+                                                item.values
+                                            )}
                                             href={item.href}
                                             className='max-w-[186px] cursor-pointer'
                                             onClick={() =>

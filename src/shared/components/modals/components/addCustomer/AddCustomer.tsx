@@ -1,15 +1,13 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Button } from '@/src/shared/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/shared/components/ui/Tabs'
 import { cn } from '@/src/shared/libs/utils'
 import type { BaseModalProps } from '../../types'
-import CustomerFilters from './components/CustomerFilters'
 import CustomerTable from './components/CustomerTable'
 import GroupTable from './components/GroupTable'
 import {
-    ADD_CUSTOMER_DUMMY,
     type AddCustomerModalData,
     type AddCustomerRow,
 } from './constants'
@@ -22,27 +20,21 @@ const AddCustomer = ({ closeModal, data }: BaseModalProps) => {
     const [selectedIds, setSelectedIds] = useState(
         () => new Set(modalData?.selectedIds ?? [])
     )
-    const [level, setLevel] = useState('all')
-    const [search, setSearch] = useState('')
+    const [selectedCustomers, setSelectedCustomers] = useState(
+        () => new Map<string, AddCustomerRow>()
+    )
 
-    const filteredCustomers = useMemo(() => {
-        const query = search.trim()
-        return ADD_CUSTOMER_DUMMY.filter((customer) => {
-            const matchesLevel = level === 'all' || customer.level === level
-            const matchesSearch =
-                !query ||
-                customer.name.includes(query) ||
-                customer.id.toLowerCase().includes(query.toLowerCase()) ||
-                customer.phone.includes(query)
-            return matchesLevel && matchesSearch
-        })
-    }, [level, search])
-
-    const toggleCustomer = (id: string) => {
+    const toggleCustomer = (customer: AddCustomerRow) => {
         setSelectedIds((prev) => {
             const next = new Set(prev)
-            if (next.has(id)) next.delete(id)
-            else next.add(id)
+            if (next.has(customer.id)) next.delete(customer.id)
+            else next.add(customer.id)
+            return next
+        })
+        setSelectedCustomers((prev) => {
+            const next = new Map(prev)
+            if (next.has(customer.id)) next.delete(customer.id)
+            else next.set(customer.id, customer)
             return next
         })
     }
@@ -56,11 +48,19 @@ const AddCustomer = ({ closeModal, data }: BaseModalProps) => {
             })
             return next
         })
+        setSelectedCustomers((prev) => {
+            const next = new Map(prev)
+            customers.forEach((customer) => {
+                if (checked) next.set(customer.id, customer)
+                else next.delete(customer.id)
+            })
+            return next
+        })
     }
 
     const handleConfirm = () => {
-        const selected = ADD_CUSTOMER_DUMMY.filter((customer) =>
-            selectedIds.has(customer.id)
+        const selected = Array.from(selectedCustomers.values()).filter(
+            (customer) => selectedIds.has(customer.id)
         )
         modalData?.onChange?.(selected)
         closeModal()
@@ -85,29 +85,18 @@ const AddCustomer = ({ closeModal, data }: BaseModalProps) => {
 
                 <TabsContent value="customers" className="pt-xl">
                     <CustomerTable
-                        customers={filteredCustomers}
                         selectedIds={selectedIds}
                         onToggle={toggleCustomer}
-                        onToggleAll={(checked) =>
-                            toggleAll(filteredCustomers, checked)
-                        }
+                        onToggleAll={toggleAll}
                     />
                 </TabsContent>
 
-                <TabsContent value="filters" className="flex flex-col gap-4 pt-xl">
-                    <CustomerFilters
-                        level={level}
-                        search={search}
-                        onLevelChange={setLevel}
-                        onSearchChange={setSearch}
-                    />
+                <TabsContent value="filters" className="pt-xl">
                     <CustomerTable
-                        customers={filteredCustomers}
+                        showFilters
                         selectedIds={selectedIds}
                         onToggle={toggleCustomer}
-                        onToggleAll={(checked) =>
-                            toggleAll(filteredCustomers, checked)
-                        }
+                        onToggleAll={toggleAll}
                     />
                 </TabsContent>
 

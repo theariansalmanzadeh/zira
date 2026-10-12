@@ -1,4 +1,6 @@
 export type CustomerGroupMember = {
+    id?: string
+    membershipId?: string
     code: string
     name: string
     avatarColor: string

@@ -1,9 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
+import type { BranchPermit } from '@/src/api/types/admin/organization'
 import { Button } from '@/src/shared/components/ui/button'
 import { Switch } from '@/src/shared/components/ui/Switch'
 import { cn } from '@/src/shared/libs/utils'
+import { useUpdateBranchPermits } from '@/src/routes/branches/hooks/organization'
 import type { BaseModalProps } from '../../types'
 
 export type BranchAllowanceKey =
@@ -14,6 +17,9 @@ export type BranchAllowanceKey =
     | 'repricing'
 
 export type BranchAllowanceModalData = {
+    branchId?: string
+    values?: string[]
+    permit?: BranchPermit | null
     allowances?: Partial<Record<BranchAllowanceKey, boolean>>
     onSave?: (allowances: Record<BranchAllowanceKey, boolean>) => void
 }
@@ -27,29 +33,69 @@ const ALLOWANCE_ITEMS: { key: BranchAllowanceKey; label: string }[] = [
 ]
 
 const DEFAULT_ALLOWANCES: Record<BranchAllowanceKey, boolean> = {
-    creditSales: true,
+    creditSales: false,
     chequeSales: false,
-    consignmentSales: true,
-    wasteRegistration: true,
+    consignmentSales: false,
+    wasteRegistration: false,
     repricing: false,
 }
 
+const permitToAllowances = (
+    permit?: BranchPermit | null
+): Record<BranchAllowanceKey, boolean> => ({
+    creditSales: Boolean(permit?.allow_credit_sale),
+    chequeSales: Boolean(permit?.allow_cheque_sale),
+    consignmentSales: Boolean(permit?.allow_consignment_sale),
+    wasteRegistration: Boolean(permit?.allow_scrap_entry),
+    repricing: Boolean(permit?.allow_repricing),
+})
+
+const allowancesToPermit = (
+    allowances: Record<BranchAllowanceKey, boolean>
+): BranchPermit => ({
+    allow_credit_sale: allowances.creditSales,
+    allow_cheque_sale: allowances.chequeSales,
+    allow_consignment_sale: allowances.consignmentSales,
+    allow_scrap_entry: allowances.wasteRegistration,
+    allow_repricing: allowances.repricing,
+})
+
 const BranchAllowance = ({ closeModal, data }: BaseModalProps) => {
     const modalData = data as BranchAllowanceModalData | null | undefined
+    const { mutate, isPending } = useUpdateBranchPermits()
     const [allowances, setAllowances] = useState<
         Record<BranchAllowanceKey, boolean>
-    >({
-        ...DEFAULT_ALLOWANCES,
+    >(() => ({
+        ...(modalData?.permit !== undefined
+            ? permitToAllowances(modalData.permit)
+            : DEFAULT_ALLOWANCES),
         ...modalData?.allowances,
-    })
+    }))
 
     const handleToggle = (key: BranchAllowanceKey, checked: boolean) => {
         setAllowances((prev) => ({ ...prev, [key]: checked }))
     }
 
     const handleSave = () => {
-        modalData?.onSave?.(allowances)
-        closeModal()
+        if (!modalData?.branchId) {
+            modalData?.onSave?.(allowances)
+            closeModal()
+            return
+        }
+
+        mutate(
+            {
+                branchId: modalData.branchId,
+                body: allowancesToPermit(allowances),
+            },
+            {
+                onSuccess: () => {
+                    modalData.onSave?.(allowances)
+                    toast.success('مجوزهای شعبه ذخیره شد')
+                    closeModal()
+                },
+            }
+        )
     }
 
     return (
@@ -92,6 +138,8 @@ const BranchAllowance = ({ closeModal, data }: BaseModalProps) => {
                         type='button'
                         variant='primary'
                         onClick={handleSave}
+                        isLoading={isPending}
+                        disabled={!modalData?.branchId || isPending}
                     >
                         ذخیره مجوزها
                     </Button>

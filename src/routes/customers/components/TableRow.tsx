@@ -15,6 +15,7 @@ export type CustomerLevel = "gold" | "silver" | "bronze";
 
 export type CustomerListRowData = {
     id: string;
+    code: string;
     name: string;
     level: CustomerLevel;
     credit: number;
@@ -37,7 +38,7 @@ export type TableRowProps = {
 
 const TableRow = ({ data }: TableRowProps) => {
     const { TableColoumn } = useTable();
-    const { id, name, level, credit, phone, email } = data;
+    const { id, code, name, level, credit, phone, email } = data;
     const levelConfig = LEVEL_CONFIG[level];
 
     return (
@@ -56,7 +57,7 @@ const TableRow = ({ data }: TableRowProps) => {
                     </TableCell>
                 )}
                 {TableColoumn[1]?.isChecked && (
-                    <TableCell className="text-outline">{id}</TableCell>
+                    <TableCell className="text-outline">{code}</TableCell>
                 )}
                 {TableColoumn[2]?.isChecked && (
                     <TableCell>

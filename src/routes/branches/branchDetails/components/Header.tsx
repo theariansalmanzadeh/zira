@@ -1,12 +1,26 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import type { BranchStatus } from '@/src/api/types/admin/organization'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { Button } from '@/src/shared/components/ui/button'
 import IconButton from '@/src/shared/components/ui/IconButton'
 import { Pill } from '@/src/shared/components/ui/Pill'
 
-const Header = () => {
+const STATUS_VARIANT = {
+    ACTIVE: 'success',
+    INACTIVE: 'warning',
+    CLOSED: 'error',
+} as const
+
+type HeaderProps = {
+    name: string
+    code: string
+    status?: BranchStatus
+    statusDisplay?: string
+}
+
+const Header = ({ name, code, status, statusDisplay }: HeaderProps) => {
     const { back } = useRouter()
 
     return (
@@ -21,12 +35,17 @@ const Header = () => {
                 <div className='flex flex-col gap-2'>
                     <div className='flex flex-row items-center gap-2'>
                         <span className='text-title-md font-medium text-on-surface'>
-                            انبار مرکزی تهران
+                            {name || '—'}
                         </span>
-                        <Pill text='فعال' variant='success' />
+                        {status ? (
+                            <Pill
+                                text={statusDisplay || status}
+                                variant={STATUS_VARIANT[status]}
+                            />
+                        ) : null}
                     </div>
                     <span className='text-label-md text-on-surface-variant'>
-                        WH-1001
+                        {code || '—'}
                     </span>
                 </div>
             </div>

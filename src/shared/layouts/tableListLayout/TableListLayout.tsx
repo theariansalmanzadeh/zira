@@ -21,7 +21,7 @@ import TableProvider, { useTable } from "@/src/shared/context/TableProvider";
 import { cn } from "@/src/shared/libs/utils";
 import { formatFaNumber } from "@/src/shared/libs/formatter";
 
-type ToggleButtonItem = {
+export type ToggleButtonItem = {
     label: string;
     value: string;
     count?: number;

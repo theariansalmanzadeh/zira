@@ -76,11 +76,11 @@ export const SIDEBAR_CONTENT: {
         link: "/admin/sales",
     },
     {
-        title: "categories",
+        title: "catalog",
         faLabel: "مدیریت کالا",
         breadcrumb: "New Field Profile",
         icon: "product400Linear",
-        link: "/admin/categories",
+        link: "/admin/catalog",
     },
     {
         title: "Accounting",
@@ -102,13 +102,6 @@ export const SIDEBAR_CONTENT: {
         breadcrumb: "New Field Profile",
         icon: "conversation",
         link: "/admin/support",
-    },
-    {
-        title: "Notifications",
-        faLabel: "اعلان‌ها",
-        breadcrumb: "Notifications",
-        icon: "notification",
-        link: "/admin/notification",
     },
     {
         title: "events",

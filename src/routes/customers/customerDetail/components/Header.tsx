@@ -8,19 +8,27 @@ export type CustomerDetailHeaderProps = {
     customerId?: string
     levelText?: string
     statusText?: string
+    status?: string
     userLevel?: number
     creditScore?: number | string
     tenure?: string
 }
 
+const statusVariant = (status?: string) => {
+    if (status === 'ACTIVE') return 'success' as const
+    if (status === 'PENDING') return 'warning' as const
+    return 'outlined' as const
+}
+
 const Header = ({
-    name = 'آیدا میرزایی',
-    customerId = 'CU-7362',
-    levelText = 'طلایی',
-    statusText = 'فعال',
-    userLevel = 2,
-    creditScore = 92,
-    tenure = '۳٫۲ سال',
+    name = '-',
+    customerId = '-',
+    levelText = '-',
+    statusText = '-',
+    status,
+    userLevel,
+    creditScore = '-',
+    tenure = '-',
 }: CustomerDetailHeaderProps) => {
     return (
         <div
@@ -49,12 +57,14 @@ const Header = ({
                     />
                     <Pill
                         text={statusText}
-                        variant="success"
+                        variant={statusVariant(status)}
                         hasDot
                         className="border-0"
                     />
                     <span className="text-label-sm text-outline">
-                        سطح کاربر {formatFaNumber(userLevel)} از ۳
+                        سطح کاربر{' '}
+                        {userLevel === undefined ? '-' : formatFaNumber(userLevel)}{' '}
+                        از ۳
                     </span>
                 </div>
             </div>

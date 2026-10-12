@@ -10,16 +10,16 @@ import { useTable } from '@/src/shared/context/TableProvider'
 import { formatFaNumber, formatFaDate } from '@/src/shared/libs/formatter'
 import { cn } from '@shared/libs/utils'
 import {
-    BLOG_CATEGORY_LABELS,
-    type BlogRowData,
-} from '../constants'
+    useArchivePost,
+    usePostDetail,
+} from '@/src/routes/contentManagment/hooks/blog'
+import type { BlogRowData } from '../constants'
 
 export type TableRowProps = {
     data: BlogRowData
     isExpanded?: boolean
     onToggleExpand?: () => void
     onEdit?: () => void
-    onDelete?: () => void
 }
 
 const TableRow = ({
@@ -27,9 +27,12 @@ const TableRow = ({
     isExpanded = false,
     onToggleExpand,
     onEdit,
-    onDelete,
 }: TableRowProps) => {
     const { TableColoumn } = useTable()
+    const { mutate: archivePost } = useArchivePost()
+    const { data: detail } = usePostDetail(data.id, isExpanded)
+    const summary = detail?.summary || data.summary
+    const content = detail?.content || data.content
     const {
         code,
         title,
@@ -38,8 +41,6 @@ const TableRow = ({
         source,
         createdAt,
         views,
-        summary,
-        content,
         categories,
     } = data
     const visibleColumns = TableColoumn.filter((column) => column.isChecked)
@@ -108,7 +109,16 @@ const TableRow = ({
                                 variant="ghost"
                                 className="size-9!"
                                 iconClassName="size-5! text-outline"
-                                onClick={onDelete}
+                                onClick={() => {
+                                    archivePost(
+                                        { postId: data.id },
+                                        {
+                                            onSuccess: () => {
+                                                if (isExpanded) onToggleExpand?.()
+                                            },
+                                        }
+                                    )
+                                }}
                             />
                             <IconButton
                                 icon="editSquare400Linear"
@@ -155,7 +165,7 @@ const TableRow = ({
                                     {categories.map((category) => (
                                         <Pill
                                             key={category}
-                                            text={BLOG_CATEGORY_LABELS[category]}
+                                            text={category}
                                             variant="tonal"
                                             size="sm"
                                             className="border-0 bg-primary-container [&_span]:text-primary"

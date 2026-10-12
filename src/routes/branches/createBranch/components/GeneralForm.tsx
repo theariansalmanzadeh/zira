@@ -1,14 +1,14 @@
-"use client"
+'use client'
 
-import { Dispatch, SetStateAction, useState, type ChangeEvent } from 'react'
+import { Dispatch, SetStateAction, type ChangeEvent } from 'react'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Button } from '@/src/shared/components/ui/button'
 import FormDropdown, {
     type FormDropdownOption,
 } from '@/src/shared/components/ui/FormDropdown'
 import { CopyableInput } from '@/src/shared/components/ui/CopyableInput'
-import { Calendar } from '@/src/shared/components/ui/Calendar'
 import CalendarButton from '@/src/shared/components/ui/CalendarButton'
+import { useCreateBranchContext } from '../provider/CreateBranchProvider'
 
 const MANAGER_OPTIONS: FormDropdownOption[] = [
     { label: 'نام کاربر ۱', value: 'user-1' },
@@ -29,13 +29,6 @@ const CITY_OPTIONS: FormDropdownOption[] = [
 ]
 
 const PHONE_PLACEHOLDER = '+98 --- ---- ---'
-const BRANCH_CODE = 'BR-5318_92'
-
-const handleInputChange =
-    (setter: (value: string) => void) =>
-        (value: string | ChangeEvent<HTMLInputElement>) => {
-            setter(typeof value === 'string' ? value : value.target.value)
-        }
 
 type FormSectionProps = {
     title: string
@@ -43,111 +36,128 @@ type FormSectionProps = {
 }
 
 const FormSection = ({ title, children }: FormSectionProps) => (
-    <div className='flex flex-col gap-3'>
-        <span className='text-label-lg font-bold text-outline'>{title}</span>
-        <div className='grid grid-cols-2 gap-6'>{children}</div>
+    <div className="flex flex-col gap-3">
+        <span className="text-label-lg font-bold text-outline">{title}</span>
+        <div className="grid grid-cols-2 gap-6">{children}</div>
     </div>
 )
 
-const GeneralForm = ({ setActiveStep }: { setActiveStep: Dispatch<SetStateAction<number>> }) => {
-    const [branchName, setBranchName] = useState('')
-    const [branchManager, setBranchManager] = useState<string>()
-    const [activityStartDate, setActivityStartDate] = useState('')
-    const [province, setProvince] = useState<string>()
-    const [city, setCity] = useState<string>()
-    const [postalAddress, setPostalAddress] = useState('')
-    const [plaque, setPlaque] = useState('')
-    const [unit, setUnit] = useState('')
-    const [postalCode, setPostalCode] = useState('')
-    const [landlinePhone, setLandlinePhone] = useState('')
+type GeneralFormProps = {
+    setActiveStep?: Dispatch<SetStateAction<number>>
+}
+
+const GeneralForm = ({ setActiveStep: propSetActiveStep }: GeneralFormProps) => {
+    const {
+        generalData,
+        updateGeneralData,
+        setActiveStep: contextSetActiveStep,
+    } = useCreateBranchContext()
+
+    const setActiveStep = propSetActiveStep || contextSetActiveStep
+
+    const handleInputChange =
+        (field: keyof typeof generalData) =>
+        (value: string | ChangeEvent<HTMLInputElement>) => {
+            const nextVal = typeof value === 'string' ? value : value.target.value
+            updateGeneralData({ [field]: nextVal })
+        }
 
     return (
-        <div className='flex flex-col gap-6 bg-surface-container-lowest p-6 rounded-card-md' dir='rtl'>
-            <FormSection title='عمومی'>
+        <div
+            className="flex flex-col gap-6 rounded-card-md bg-surface-container-lowest p-6"
+            dir="rtl"
+        >
+            <FormSection title="عمومی">
                 <Input
-                    label='نام شعبه'
-                    placeholder='نام شعبه'
-                    value={branchName}
-                    onChange={handleInputChange(setBranchName)}
+                    label="نام شعبه"
+                    placeholder="نام شعبه"
+                    value={generalData.branchName}
+                    onChange={handleInputChange('branchName')}
                 />
-                <div className='flex flex-col'>
-                    <span className='mb-1.5 text-label-md text-on-surface-variant'>
+                <div className="flex flex-col">
+                    <span className="mb-1.5 text-label-md text-on-surface-variant">
                         کد شعبه
                     </span>
                     <CopyableInput
-                        value={BRANCH_CODE}
-                        onCopy={() => { }}
-                        readOnly
-                        groupClassName='bg-surface-container-high h-10 rounded-container-lg border-0'
+                        value={generalData.branchCode}
+                        onChange={handleInputChange('branchCode')}
+                        onCopy={() => {}}
+                        readOnly={false}
+                        groupClassName="bg-surface-container-high h-10 rounded-container-lg border-0"
                     />
                 </div>
                 <FormDropdown
-                    label='مسئول شعبه'
-                    value={branchManager}
+                    label="مسئول شعبه"
+                    value={generalData.branchManager}
                     options={MANAGER_OPTIONS}
-                    onChange={setBranchManager}
+                    onChange={(branchManager) =>
+                        updateGeneralData({ branchManager })
+                    }
                 />
                 <CalendarButton
-                    label='تاریخ شروع فعالیت'
-                    placeholder='انتخاب تاریخ'
-
+                    label="تاریخ شروع فعالیت"
+                    placeholder="انتخاب تاریخ"
+                    value={generalData.activityStartDate}
+                    onChange={(date) =>
+                        updateGeneralData({ activityStartDate: date })
+                    }
                 />
             </FormSection>
 
-            <FormSection title='نشانی'>
+            <FormSection title="نشانی">
                 <FormDropdown
-                    label='شهر'
-                    value={city}
+                    label="شهر"
+                    value={generalData.city}
                     options={CITY_OPTIONS}
-                    onChange={setCity}
+                    onChange={(city) => updateGeneralData({ city })}
                 />
                 <FormDropdown
-                    label='استان'
-                    value={province}
+                    label="استان"
+                    value={generalData.province}
                     options={PROVINCE_OPTIONS}
-                    onChange={setProvince}
+                    onChange={(province) => updateGeneralData({ province })}
                 />
-                <div className='col-span-2'>
+                <div className="col-span-2">
                     <Input
-                        label='آدرس پستی'
-                        value={postalAddress}
-                        onChange={handleInputChange(setPostalAddress)}
+                        label="آدرس پستی"
+                        value={generalData.postalAddress}
+                        onChange={handleInputChange('postalAddress')}
                     />
                 </div>
                 <Input
-                    label='پلاک'
-                    value={plaque}
-                    onChange={handleInputChange(setPlaque)}
+                    label="پلاک"
+                    value={generalData.plaque}
+                    onChange={handleInputChange('plaque')}
                 />
                 <Input
-                    label='واحد'
-                    value={unit}
-                    onChange={handleInputChange(setUnit)}
+                    label="واحد"
+                    value={generalData.unit}
+                    onChange={handleInputChange('unit')}
                 />
                 <Input
-                    label='کد پستی'
-                    value={postalCode}
-                    onChange={handleInputChange(setPostalCode)}
+                    label="کد پستی"
+                    value={generalData.postalCode}
+                    onChange={handleInputChange('postalCode')}
                 />
                 <Input
-                    label='تلفن ثابت'
+                    label="تلفن ثابت"
                     placeholder={PHONE_PLACEHOLDER}
-                    value={landlinePhone}
-                    onChange={handleInputChange(setLandlinePhone)}
+                    value={generalData.landlinePhone}
+                    onChange={handleInputChange('landlinePhone')}
                 />
-                <div className='col-span-2 flex flex-col gap-1.5'>
-                    <span className='text-label-md text-on-surface-variant'>
+                <div className="col-span-2 flex flex-col gap-1.5">
+                    <span className="text-label-md text-on-surface-variant">
                         انتخاب موقعیت روی نقشه *
                     </span>
-                    <div className='bg-surface-container-high min-h-48 w-full rounded-container-lg' />
+                    <div className="min-h-48 w-full rounded-container-lg bg-surface-container-high" />
                 </div>
             </FormSection>
 
             <Button
-                type='button'
-                variant='primary'
-                size='lg'
-                className='w-full text-label-lg'
+                type="button"
+                variant="primary"
+                size="lg"
+                className="w-full text-label-lg"
                 onClick={() => setActiveStep(2)}
             >
                 ادامه

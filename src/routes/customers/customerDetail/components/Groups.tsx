@@ -1,60 +1,38 @@
 'use client'
 
-import CustomerGroupCard from '../../components/CustomerGroupCard'
-
-const CUSTOMER_MEMBER_GROUPS_DUMMY = [
-    {
-        id: 'CG-732698',
-        title: 'پوشاک تهران بزرگ',
-        subtitle: 'CG-732698',
-        status: 'فعال',
-        customerCount: 824,
-        discountPercent: 9,
-        marketerPercent: 3,
-        userLevel: 'سطح ۳',
-        marketerName: 'رضا کریمی',
-        chequeLevel: 'سطح ۵ (راس تا ۵ ماه)',
-        goldLevel: 'سطح ۴',
-        userStatus: 'فعال',
-    },
-    {
-        id: 'CG-732701',
-        title: 'عمده‌فروشان شمال',
-        subtitle: 'CG-732701',
-        status: 'فعال',
-        customerCount: 120,
-        discountPercent: 1,
-        marketerPercent: 2,
-        userLevel: 'سطح ۲',
-        marketerName: 'مهدی رشیدی',
-        chequeLevel: 'سطح ۳ (راس تا ۳ ماه)',
-        goldLevel: 'سطح ۲',
-        userStatus: 'فعال',
-    },
-]
+import { useParams } from 'next/navigation'
+import { useGetCustomerProfile } from '@/src/routes/customers/hooks/customers'
+import { displayValue } from '../display'
 
 const Groups = () => {
+    const params = useParams<{ id: string }>()
+    const customerId = params.id ?? ''
+    const { data: profile } = useGetCustomerProfile(
+        customerId,
+        Boolean(customerId)
+    )
+    const groupNames = profile?.group_names ?? []
+
     return (
         <div
-            className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 bg-surface-container-lowest rounded-card-md p-4"
+            className="grid grid-cols-1 gap-3 rounded-card-md bg-surface-container-lowest p-4 sm:grid-cols-2 lg:grid-cols-3"
             dir="rtl"
         >
-            {CUSTOMER_MEMBER_GROUPS_DUMMY.map((group) => (
-                <CustomerGroupCard
-                    key={group.id}
-                    title={group.title}
-                    subtitle={group.subtitle}
-                    status={group.status}
-                    customerCount={group.customerCount}
-                    discountPercent={group.discountPercent}
-                    marketerPercent={group.marketerPercent}
-                    userLevel={group.userLevel}
-                    marketerName={group.marketerName}
-                    chequeLevel={group.chequeLevel}
-                    goldLevel={group.goldLevel}
-                    userStatus={group.userStatus}
-                />
-            ))}
+            {groupNames.length === 0 ? (
+                <p className="text-label-lg text-outline">-</p>
+            ) : (
+                groupNames.map((name) => (
+                    <div
+                        key={name}
+                        className="flex flex-col gap-2 rounded-card-md bg-surface-container-high p-3"
+                    >
+                        <h3 className="text-title-lg font-medium text-on-surface">
+                            {displayValue(name)}
+                        </h3>
+                        <span className="text-label-md text-outline">-</span>
+                    </div>
+                ))
+            )}
         </div>
     )
 }

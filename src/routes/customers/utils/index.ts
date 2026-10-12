@@ -20,6 +20,9 @@ export const getCustomersSectionKeyFromPath = (
     if (pathname.startsWith('/admin/customers/customerGroupDetails/')) {
         return 'customerGroupDetails'
     }
+    if (pathname.startsWith('/admin/customers/requestDetails/')) {
+        return 'requestDetails'
+    }
     if (pathname.startsWith('/admin/customers/') && pathname !== '/admin/customers/') {
         return 'details'
     }
