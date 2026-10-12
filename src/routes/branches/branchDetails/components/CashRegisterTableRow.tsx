@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
 import {
     TableCell,
     TableRow as UiTableRow,
 } from '@/src/shared/components/ui/Table'
 import IconButton from '@/src/shared/components/ui/IconButton'
+import { useCloseCashBox } from '@/src/routes/branches/hooks/organization'
 import { useTable } from '@/src/shared/context/TableProvider'
 import { formatFaNumber, formatPrice } from '@/src/shared/libs/formatter'
 import { cn } from '@/src/shared/libs/utils'
@@ -21,15 +21,13 @@ type CashRegisterTableRowProps = {
 
 const CashRegisterTableRow = ({ data }: CashRegisterTableRowProps) => {
     const { TableColoumn } = useTable()
-    const [isRemoved, setIsRemoved] = useState(false)
+    const { mutate: closeCashBox } = useCloseCashBox()
 
     const onEdit = () => {}
 
     const onRemove = () => {
-        setIsRemoved(true)
+        closeCashBox(data.id)
     }
-
-    if (isRemoved) return null
 
     return (
         <>

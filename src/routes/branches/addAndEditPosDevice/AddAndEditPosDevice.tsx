@@ -1,34 +1,91 @@
 'use client'
 
-import { useMemo } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import {
+    useCreatePosDevice,
+    useGetPosDevice,
+    useUpdatePosDevice,
+} from '@/src/routes/branches/hooks/organization'
 import { Button } from '@/src/shared/components/ui/button'
 import { Input } from '@/src/shared/components/ui/Input'
+import { Switch } from '@/src/shared/components/ui/Switch'
 import {
     addAndEditPosDeviceSchema,
+    ADD_AND_EDIT_POS_DEVICE_DEFAULT_VALUES,
     getAddAndEditPosDeviceDefaultValues,
     type AddAndEditPosDeviceFormValues,
 } from './schema'
 
 const PosDeviceForm = ({ editId }: { editId: string | null }) => {
     const { back } = useRouter()
+    const searchParams = useSearchParams()
+    const branchId = searchParams.get('branchId') ?? ''
     const isEditing = Boolean(editId)
-
-    const defaultValues = useMemo(
-        () => getAddAndEditPosDeviceDefaultValues(editId),
-        [editId]
-    )
+    const { data: device } = useGetPosDevice(editId ?? '', isEditing)
+    const { mutate: updatePosDevice, isPending: isUpdating } = useUpdatePosDevice()
+    const { mutate: createPosDevice, isPending: isCreating } = useCreatePosDevice()
+    const isPending = isUpdating || isCreating
+    const defaultValues = isEditing
+        ? getAddAndEditPosDeviceDefaultValues(device)
+        : ADD_AND_EDIT_POS_DEVICE_DEFAULT_VALUES
 
     const { control, handleSubmit } = useForm<AddAndEditPosDeviceFormValues>({
         resolver: zodResolver(addAndEditPosDeviceSchema),
         defaultValues,
+        values: isEditing && device ? defaultValues : undefined,
         mode: 'onChange',
     })
 
-    const onSubmit = () => {
-        back()
+    const onSubmit = (values: AddAndEditPosDeviceFormValues) => {
+        if (editId) {
+            updatePosDevice(
+                {
+                    posDeviceId: editId,
+                    body: {
+                        title: values.title,
+                        bank_account_id: values.bank_account_id || null,
+                        is_active: values.is_active,
+                    },
+                },
+                {
+                    onSuccess: () => {
+                        toast.success('دستگاه کارت‌خوان به‌روز شد')
+                        back()
+                    },
+                    onError: () => {
+                        toast.error('به‌روزرسانی دستگاه انجام نشد')
+                    },
+                }
+            )
+            return
+        }
+
+        if (!branchId || !values.terminal_no.trim()) {
+            toast.error('شعبه و شماره پایانه الزامی است')
+            return
+        }
+
+        createPosDevice(
+            {
+                branch_id: branchId,
+                terminal_no: values.terminal_no.trim(),
+                title: values.title,
+                bank_account_id: values.bank_account_id || null,
+                is_active: values.is_active,
+            },
+            {
+                onSuccess: () => {
+                    toast.success('دستگاه کارت‌خوان ثبت شد')
+                    back()
+                },
+                onError: () => {
+                    toast.error('ثبت دستگاه انجام نشد')
+                },
+            }
+        )
     }
 
     return (
@@ -42,7 +99,7 @@ const PosDeviceForm = ({ editId }: { editId: string | null }) => {
                 <Button type="button" variant="outline" onClick={() => back()}>
                     انصراف
                 </Button>
-                <Button type="submit" variant="primary">
+                <Button type="submit" variant="primary" disabled={isPending}>
                     {isEditing ? 'ذخیره تغییرات' : 'ثبت دستگاه'}
                 </Button>
             </div>
@@ -50,20 +107,7 @@ const PosDeviceForm = ({ editId }: { editId: string | null }) => {
             <div className="grid grid-cols-2 gap-4 rounded-card-lg bg-surface-container-lowest p-6">
                 <Controller
                     control={control}
-                    name="index"
-                    render={({ field, fieldState }) => (
-                        <Input
-                            label="ردیف *"
-                            value={field.value}
-                            onChange={field.onChange}
-                            error={Boolean(fieldState.error)}
-                            msg={fieldState.error?.message}
-                        />
-                    )}
-                />
-                <Controller
-                    control={control}
-                    name="name"
+                    name="title"
                     render={({ field, fieldState }) => (
                         <Input
                             label="نام دستگاه *"
@@ -74,51 +118,28 @@ const PosDeviceForm = ({ editId }: { editId: string | null }) => {
                         />
                     )}
                 />
+                {!isEditing && (
+                    <Controller
+                        control={control}
+                        name="terminal_no"
+                        render={({ field, fieldState }) => (
+                            <Input
+                                label="شماره پایانه *"
+                                value={field.value}
+                                onChange={field.onChange}
+                                dir="ltr"
+                                error={Boolean(fieldState.error)}
+                                msg={fieldState.error?.message}
+                            />
+                        )}
+                    />
+                )}
                 <Controller
                     control={control}
-                    name="model"
+                    name="bank_account_id"
                     render={({ field, fieldState }) => (
                         <Input
-                            label="مدل دستگاه *"
-                            value={field.value}
-                            onChange={field.onChange}
-                            error={Boolean(fieldState.error)}
-                            msg={fieldState.error?.message}
-                        />
-                    )}
-                />
-                <Controller
-                    control={control}
-                    name="bank"
-                    render={({ field, fieldState }) => (
-                        <Input
-                            label="بانک متصل *"
-                            value={field.value}
-                            onChange={field.onChange}
-                            error={Boolean(fieldState.error)}
-                            msg={fieldState.error?.message}
-                        />
-                    )}
-                />
-                <Controller
-                    control={control}
-                    name="bankAccount"
-                    render={({ field, fieldState }) => (
-                        <Input
-                            label="حساب بانکی متصل *"
-                            value={field.value}
-                            onChange={field.onChange}
-                            error={Boolean(fieldState.error)}
-                            msg={fieldState.error?.message}
-                        />
-                    )}
-                />
-                <Controller
-                    control={control}
-                    name="terminalNumber"
-                    render={({ field, fieldState }) => (
-                        <Input
-                            label="شماره پایانه *"
+                            label="شناسه حساب بانکی"
                             value={field.value}
                             onChange={field.onChange}
                             dir="ltr"
@@ -129,29 +150,15 @@ const PosDeviceForm = ({ editId }: { editId: string | null }) => {
                 />
                 <Controller
                     control={control}
-                    name="terminalPassword"
-                    render={({ field, fieldState }) => (
-                        <Input
-                            label="رمز پایانه *"
-                            value={field.value}
-                            onChange={field.onChange}
-                            dir="ltr"
-                            error={Boolean(fieldState.error)}
-                            msg={fieldState.error?.message}
-                        />
-                    )}
-                />
-                <Controller
-                    control={control}
-                    name="cashRegister"
-                    render={({ field, fieldState }) => (
-                        <Input
-                            label="صندوق متصل *"
-                            value={field.value}
-                            onChange={field.onChange}
-                            error={Boolean(fieldState.error)}
-                            msg={fieldState.error?.message}
-                        />
+                    name="is_active"
+                    render={({ field }) => (
+                        <label className="flex items-center justify-between gap-3 rounded-card-md border border-outline-variant px-4 py-3">
+                            <span className="text-label-md text-on-surface">فعال</span>
+                            <Switch
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                            />
+                        </label>
                     )}
                 />
             </div>

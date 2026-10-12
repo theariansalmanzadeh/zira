@@ -2,8 +2,13 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import IconButton from '@/src/shared/components/ui/IconButton'
+import {
+    organizationKeys,
+    useDeactivatePosDevice,
+} from '@/src/routes/branches/hooks/organization'
 import { useModalStore } from '@/src/shared/store/modal-store'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 import { cn } from '@/src/shared/libs/utils'
@@ -11,24 +16,31 @@ import { POS_DEVICE_GRID_CLASS, type PosDeviceItem } from './constants'
 
 type TableRowProps = {
     data: PosDeviceItem
+    branchId: string
 }
 
-const TableRow = ({ data }: TableRowProps) => {
+const TableRow = ({ data, branchId }: TableRowProps) => {
     const { push } = useRouter()
+    const queryClient = useQueryClient()
     const closeModal = useModalStore((state) => state.closeModal)
+    const { mutate: deactivatePosDevice } = useDeactivatePosDevice()
     const [isExpanded, setIsExpanded] = useState(false)
-    const [isRemoved, setIsRemoved] = useState(false)
 
     const onEdit = () => {
-        closeModal()
         push(`/admin/branches/pos-device/${data.id}/edit`)
+        closeModal()
     }
 
     const onRemove = () => {
-        setIsRemoved(true)
+        deactivatePosDevice(data.id, {
+            onSuccess: () => {
+                if (!branchId) return
+                queryClient.invalidateQueries({
+                    queryKey: organizationKeys.branches.detail(branchId),
+                })
+            },
+        })
     }
-
-    if (isRemoved) return null
 
     return (
         <div className='border-b border-outline-variant bg-surface-container-lowest last:border-b-0'>

@@ -20,14 +20,14 @@ export type ApiAxiosError = AxiosError<ApiErrorResponseBody>
 
 export type ApiResponse<T> =
     | {
-          success: true
-          data: T
-      }
+        success: true
+        data: T
+    }
     | {
-          success: false
-          error: ApiError
-          data?: undefined
-      }
+        success: false
+        error: ApiError
+        data?: undefined
+    }
 
 export function toApiError(error: unknown): ApiError {
     if (isAxiosError(error)) {

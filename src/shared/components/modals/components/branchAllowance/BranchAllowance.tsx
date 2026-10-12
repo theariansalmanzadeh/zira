@@ -10,11 +10,10 @@ import { useUpdateBranchPermits } from '@/src/routes/branches/hooks/organization
 import type { BaseModalProps } from '../../types'
 
 export type BranchAllowanceKey =
-    | 'creditSales'
-    | 'chequeSales'
-    | 'consignmentSales'
-    | 'wasteRegistration'
-    | 'repricing'
+    | 'allow_credit_sale'
+    | 'allow_cheque_sale'
+    | 'allow_consignment_sale'
+    | 'allow_scrap_entry'
 
 export type BranchAllowanceModalData = {
     branchId?: string
@@ -25,44 +24,32 @@ export type BranchAllowanceModalData = {
 }
 
 const ALLOWANCE_ITEMS: { key: BranchAllowanceKey; label: string }[] = [
-    { key: 'creditSales', label: 'فروش اعتباری' },
-    { key: 'chequeSales', label: 'فروش چکی' },
-    { key: 'consignmentSales', label: 'فروش امانی' },
-    { key: 'wasteRegistration', label: 'ثبت ضایعات' },
-    { key: 'repricing', label: 'قیمت‌گذاری مجدد' },
+    { key: 'allow_credit_sale', label: 'فروش اعتباری' },
+    { key: 'allow_cheque_sale', label: 'فروش چکی' },
+    { key: 'allow_consignment_sale', label: 'فروش امانی' },
+    { key: 'allow_scrap_entry', label: 'ثبت ضایعات' },
 ]
 
 const DEFAULT_ALLOWANCES: Record<BranchAllowanceKey, boolean> = {
-    creditSales: false,
-    chequeSales: false,
-    consignmentSales: false,
-    wasteRegistration: false,
-    repricing: false,
+    allow_credit_sale: false,
+    allow_cheque_sale: false,
+    allow_consignment_sale: false,
+    allow_scrap_entry: false,
 }
 
 const permitToAllowances = (
     permit?: BranchPermit | null
 ): Record<BranchAllowanceKey, boolean> => ({
-    creditSales: Boolean(permit?.allow_credit_sale),
-    chequeSales: Boolean(permit?.allow_cheque_sale),
-    consignmentSales: Boolean(permit?.allow_consignment_sale),
-    wasteRegistration: Boolean(permit?.allow_scrap_entry),
-    repricing: Boolean(permit?.allow_repricing),
-})
-
-const allowancesToPermit = (
-    allowances: Record<BranchAllowanceKey, boolean>
-): BranchPermit => ({
-    allow_credit_sale: allowances.creditSales,
-    allow_cheque_sale: allowances.chequeSales,
-    allow_consignment_sale: allowances.consignmentSales,
-    allow_scrap_entry: allowances.wasteRegistration,
-    allow_repricing: allowances.repricing,
+    allow_credit_sale: Boolean(permit?.allow_credit_sale),
+    allow_cheque_sale: Boolean(permit?.allow_cheque_sale),
+    allow_consignment_sale: Boolean(permit?.allow_consignment_sale),
+    allow_scrap_entry: Boolean(permit?.allow_scrap_entry),
 })
 
 const BranchAllowance = ({ closeModal, data }: BaseModalProps) => {
     const modalData = data as BranchAllowanceModalData | null | undefined
-    const { mutate, isPending } = useUpdateBranchPermits()
+    const branchId = modalData?.branchId ?? ''
+    const { mutate: updateBranchPermits, isPending } = useUpdateBranchPermits()
     const [allowances, setAllowances] = useState<
         Record<BranchAllowanceKey, boolean>
     >(() => ({
@@ -77,22 +64,21 @@ const BranchAllowance = ({ closeModal, data }: BaseModalProps) => {
     }
 
     const handleSave = () => {
-        if (!modalData?.branchId) {
-            modalData?.onSave?.(allowances)
-            closeModal()
-            return
-        }
+        if (!branchId) return
 
-        mutate(
+        updateBranchPermits(
             {
-                branchId: modalData.branchId,
-                body: allowancesToPermit(allowances),
+                branchId,
+                body: allowances,
             },
             {
                 onSuccess: () => {
-                    modalData.onSave?.(allowances)
+                    modalData?.onSave?.(allowances)
                     toast.success('مجوزهای شعبه ذخیره شد')
                     closeModal()
+                },
+                onError: () => {
+                    toast.error('ذخیره مجوزها انجام نشد')
                 },
             }
         )
@@ -139,7 +125,7 @@ const BranchAllowance = ({ closeModal, data }: BaseModalProps) => {
                         variant='primary'
                         onClick={handleSave}
                         isLoading={isPending}
-                        disabled={!modalData?.branchId || isPending}
+                        disabled={!branchId || isPending}
                     >
                         ذخیره مجوزها
                     </Button>

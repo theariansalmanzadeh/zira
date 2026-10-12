@@ -12,7 +12,7 @@ export default function NotFound() {
             className="flex min-h-screen w-full flex-col items-center justify-center bg-surface-container-high px-4 py-12"
             dir="rtl"
         >
-            <div className="flex w-full max-w-md flex-col items-center gap-6 rounded-card-lg bg-surface-container-lowest p-8 text-center shadow-xs">
+            <div className="flex w-full max-w-[900px] flex-col items-center gap-6 rounded-card-lg bg-surface-container-lowest p-8 text-center shadow-xs">
                 <span className="text-display-lg font-black tracking-wider text-primary">
                     ۴۰۴
                 </span>

@@ -99,8 +99,8 @@ const ProductHeader = () => {
     }
 
     return (
-        <div className='flex flex-row justify-between items-center'>
-            <div className='flex flex-row items-center gap-2'>
+        <div className='flex flex-row justify-end items-center'>
+            {/* <div className='flex flex-row items-center gap-2'>
                 <IconButton
                     icon='rightArrow'
                     onClick={() => back()}
@@ -110,7 +110,7 @@ const ProductHeader = () => {
                 <span className='text-on-surface text-title-lg font-bold'>
                     ایجاد محصول جدید
                 </span>
-            </div>
+            </div> */}
             <div className='flex flex-row items-center gap-2'>
                 <Button
                     type='button'

@@ -1,6 +1,9 @@
 'use client'
 
 import { useMemo } from 'react'
+import type { CategoryNodeOut } from '@/src/api/types/admin/catalog'
+import { useListCategories } from '@/src/routes/catalog/hooks/catalog'
+import { Spinner } from '@/src/shared/components/ui/spinner'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import { useTable } from '@/src/shared/context/TableProvider'
 import {
@@ -11,70 +14,15 @@ import {
 import TableHeader from './components/TableHeader'
 import CategoryTableRow, { type CategoryRowData } from './components/TableRow'
 
-export const CATEGORY_TYPES_DUMMY: CategoryRowData[] = [
-    {
-        title: 'پوشاک زنانه',
-        id: 'CAT-6353',
-        level: 1,
-        directItems: 124,
-        totalProducts: 726,
-        status: 'active',
-        subCategories: [
-            {
-                title: 'لباس زیر زنانه',
-                id: 'CAT-6354',
-                level: 2,
-                directItems: 48,
-                totalProducts: 210,
-                status: 'active',
-                subCategories: [
-                    {
-                        title: 'لباس زیر زنانه',
-                        id: 'CAT-6354-3',
-                        level: 3,
-                        directItems: 48,
-                        totalProducts: 210,
-                        status: 'active',
-                    },
-                ],
-            },
-            {
-                title: 'لباس خواب',
-                id: 'CAT-6355',
-                level: 2,
-                directItems: 32,
-                totalProducts: 156,
-                status: 'active',
-            },
-        ],
-    },
-    {
-        title: 'پوشاک مردانه',
-        id: 'CAT-6401',
-        level: 1,
-        directItems: 89,
-        totalProducts: 412,
-        status: 'active',
-    },
-    {
-        title: 'اکسسوری',
-        id: 'CAT-6500',
-        level: 1,
-        directItems: 56,
-        totalProducts: 198,
-        status: 'inactive',
-        subCategories: [
-            {
-                title: 'کیف و کوله',
-                id: 'CAT-6501',
-                level: 2,
-                directItems: 22,
-                totalProducts: 74,
-                status: 'inactive',
-            },
-        ],
-    },
-]
+const toCategoryRow = (category: CategoryNodeOut): CategoryRowData => ({
+    title: category.name,
+    id: category.id,
+    level: category.level,
+    directItems: category.product_count ?? 0,
+    totalProducts: category.product_count ?? 0,
+    status: category.is_active ? 'active' : 'inactive',
+    children: category.children?.map(toCategoryRow),
+})
 
 const CategoryTypesGrid = ({ data }: { data: CategoryRowData[] }) => {
     const { visibleTableColoumn } = useTable()
@@ -101,11 +49,11 @@ const CategoryTypesGrid = ({ data }: { data: CategoryRowData[] }) => {
     )
 }
 
-const CategoryTypes = ({
-    data = CATEGORY_TYPES_DUMMY,
-}: {
-    data?: CategoryRowData[]
-}) => {
+const CategoryTypes = () => {
+    const { data, isPending } = useListCategories({ include_inactive: true })
+    const categories: CategoryNodeOut[] = data ?? []
+    const rows = categories.map(toCategoryRow)
+
     return (
         <TableListLayout
             TableColoumn={TABLE_COLOUMN}
@@ -116,7 +64,13 @@ const CategoryTypes = ({
             hasTableSettings={false}
             hasExpand={false}
         >
-            <CategoryTypesGrid data={data} />
+            {isPending ? (
+                <div className='flex justify-center py-10'>
+                    <Spinner className='size-6' />
+                </div>
+            ) : (
+                <CategoryTypesGrid data={rows} />
+            )}
         </TableListLayout>
     )
 }

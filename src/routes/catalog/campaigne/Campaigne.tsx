@@ -1,46 +1,83 @@
-"use client"
+'use client'
 
-import { useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import type { VariantProps } from 'class-variance-authority'
+import type { CampaignOut, CampaignStatusEnum } from '@/src/api/types/admin/pricing'
+import { useListCampaigns } from '@/src/routes/catalog/hooks/pricing'
 import { ROUTE_CONFIGS } from '@/src/shared/constants/routeConfigs'
+import { formatFaDate, formatFaNumber } from '@/src/shared/libs/formatter'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
+import { Spinner } from '@/src/shared/components/ui/spinner'
+import { PillVariants } from '@/src/shared/components/ui/Pill'
 import CampaigneCard from './components/CampaigneCard'
-import {
-    CAMPAIGNS_DUMMY,
-    getCampaignDetailHref,
-} from './constants'
+import { getCampaignDetailHref } from './constants'
+
+const STATUS_BY_FILTER: Record<string, CampaignStatusEnum> = {
+    active: 'PUBLISHED',
+    inactive: 'DISABLED',
+    archive: 'ARCHIVED',
+    draft: 'DRAFT',
+}
+
+const STATUS_LABEL: Record<CampaignStatusEnum, string> = {
+    DRAFT: 'پیش‌نویس',
+    PUBLISHED: 'فعال',
+    DISABLED: 'غیرفعال',
+    ARCHIVED: 'آرشیو',
+}
+
+const STATUS_VARIANT: Record<
+    CampaignStatusEnum,
+    VariantProps<typeof PillVariants>['variant']
+> = {
+    DRAFT: 'warning',
+    PUBLISHED: 'success',
+    DISABLED: 'error',
+    ARCHIVED: 'tonal',
+}
+
+const campaignTimeline = (campaign: CampaignOut) =>
+    `${formatFaDate(campaign.starts_at)} تا ${formatFaDate(campaign.ends_at)}`
 
 const Campaigne = () => {
-    const [statusFilter] = useState('all')
-
-    const filteredCampaigns = useMemo(() => {
-        if (statusFilter === 'all') return CAMPAIGNS_DUMMY
-        return CAMPAIGNS_DUMMY.filter(
-            (campaign) => campaign.status === statusFilter
-        )
-    }, [statusFilter])
+    const searchParams = useSearchParams()
+    const category = searchParams.get('cat') ?? 'all'
+    const status = STATUS_BY_FILTER[category]
+    const { data, isPending } = useListCampaigns({
+        page: 1,
+        page_size: 100,
+        status,
+    })
+    const campaigns: CampaignOut[] = data?.results ?? []
 
     return (
-        <div className="flex flex-col gap-3" dir="rtl">
+        <div className='flex flex-col gap-3' dir='rtl'>
             <TableListLayout
-                value={statusFilter}
+                value={category}
                 toggleButtonValue={ROUTE_CONFIGS.campaign.TOGGLE_BUTTON_VALUE}
                 isCardLayout
             >
-                {filteredCampaigns.map((campaign) => (
-                    <CampaigneCard
-                        key={campaign.id}
-                        title={campaign.title}
-                        subtitle={campaign.subtitle}
-                        status={campaign.statusLabel}
-                        statusVariant={campaign.statusVariant}
-                        discount={campaign.discount}
-                        timeline={campaign.timeline}
-                        visits={campaign.visits}
-                        orders={campaign.orders}
-                        conversionRate={campaign.conversionRate}
-                        href={getCampaignDetailHref(campaign.id)}
-                    />
-                ))}
+                {isPending ? (
+                    <div className='flex justify-center py-10'>
+                        <Spinner className='size-6' />
+                    </div>
+                ) : (
+                    campaigns.map((campaign) => (
+                        <CampaigneCard
+                            key={campaign.id}
+                            title={campaign.name}
+                            subtitle={campaign.nature_display}
+                            status={STATUS_LABEL[campaign.status]}
+                            statusVariant={STATUS_VARIANT[campaign.status]}
+                            discount={formatFaNumber(campaign.discount_count)}
+                            timeline={campaignTimeline(campaign)}
+                            visits='—'
+                            orders='—'
+                            conversionRate='—'
+                            href={getCampaignDetailHref(campaign.id)}
+                        />
+                    ))
+                )}
             </TableListLayout>
         </div>
     )

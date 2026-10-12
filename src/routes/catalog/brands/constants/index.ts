@@ -8,17 +8,19 @@ export type BrandItem = {
     slug: string
     initial: string
     avatarClassName: string
+    logoUrl?: string
     field: string
     productsCount: number
     country: string
     status: Exclude<BrandStatus, 'all'>
+    statusLabel?: string
 }
 
 export const TABLE_COLOUMN: TableFilterItem[] = [
     { id: 'col-0', header_label: 'برند', isChecked: true },
-    { id: 'col-1', header_label: 'حوزه', isChecked: true },
-    { id: 'col-2', header_label: 'کالا', isChecked: true },
-    { id: 'col-3', header_label: 'کشور', isChecked: true },
+    { id: 'col-1', header_label: 'معرفی', isChecked: true },
+    { id: 'col-2', header_label: 'تاریخچه', isChecked: true },
+    { id: 'col-3', header_label: 'نوع', isChecked: true },
     { id: 'col-4', header_label: 'وضعیت', isChecked: true },
     { id: 'actions-0', header_label: '', isChecked: true },
 ]

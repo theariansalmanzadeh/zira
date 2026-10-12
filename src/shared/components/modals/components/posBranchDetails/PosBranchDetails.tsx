@@ -11,6 +11,7 @@ import TableRow from './TableRow'
 
 type PosBranchDetailsModalData = {
     values?: string[]
+    branchId?: string
     posDevices?: BranchPosDevice[]
 }
 
@@ -64,7 +65,11 @@ const PosBranchDetails = ({ closeModal, data }: BaseModalProps) => {
                     type='button'
                     variant='primary'
                     className='gap-1.5'
-                    onClick={() => openDeviceForm('/admin/branches/pos-device/new')}
+                    onClick={() =>
+                        openDeviceForm(
+                            `/admin/branches/pos-device/new?branchId=${modalData?.branchId ?? ''}`
+                        )
+                    }
                 >
                     <Icon
                         label='addSm400Broken'
@@ -83,7 +88,11 @@ const PosBranchDetails = ({ closeModal, data }: BaseModalProps) => {
                             </p>
                         ) : (
                             rows.map((item) => (
-                                <TableRow key={item.id} data={item} />
+                                <TableRow
+                                    key={item.id}
+                                    data={item}
+                                    branchId={modalData?.branchId ?? ''}
+                                />
                             ))
                         )}
                     </div>

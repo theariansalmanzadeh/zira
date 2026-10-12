@@ -35,7 +35,7 @@ const CategoryDetail = ({
     const breadcrumb =
         modalData?.breadcrumb ?? ['زیرا مارکت', 'لباس زیر زنانه', category.title]
     const featureList = modalData?.features ?? features
-    const subCategories = category.subCategories ?? []
+    const children = category.children ?? []
     const activeProducts =
         modalData?.activeProducts ?? Math.max(0, category.totalProducts - 17)
 
@@ -84,7 +84,7 @@ const CategoryDetail = ({
             <div className='grid grid-cols-1 gap-3 sm:grid-cols-3'>
                 {[
                     { value: category.totalProducts, label: 'کل کالاها' },
-                    { value: subCategories.length, label: 'زیردسته' },
+                    { value: children.length, label: 'زیردسته' },
                     { value: activeProducts, label: 'کالای فعال' },
                 ].map((stat) => (
                     <div
@@ -121,9 +121,9 @@ const CategoryDetail = ({
                 <h4 className='text-label-lg font-semibold text-on-surface'>
                     دسته‌های زیرمجموعه
                 </h4>
-                {subCategories.length > 0 ? (
+                {children.length > 0 ? (
                     <div className='flex flex-col gap-2'>
-                        {subCategories.map((subCategory) => (
+                        {children.map((subCategory) => (
                             <div
                                 key={subCategory.id}
                                 className='flex flex-row items-center justify-between gap-3 rounded-card-md border border-outline-variant bg-surface-container-lowest px-4 py-3'

@@ -69,9 +69,10 @@ export const ROUTE_CONFIGS = {
     },
     pricing: {
         TOGGLE_BUTTON_VALUE: [
-            { label: "همه", value: "all" },
-            { label: "تخفیفی", value: "discount" },
-            { label: "افزایشی", value: "increase" },
+            { label: "پیش‌نویس", value: "DRAFT" },
+            { label: "زمان‌بندی‌شده", value: "SCHEDULED" },
+            { label: "منتشرشده", value: "PUBLISHED" },
+            { label: "لغو شده", value: "CANCELLED" },
         ],
     },
     preFactor: {

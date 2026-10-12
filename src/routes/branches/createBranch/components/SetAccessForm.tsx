@@ -1,6 +1,7 @@
 'use client'
 
 import { Dispatch, SetStateAction } from 'react'
+import { useRouter } from 'next/navigation'
 import { Switch } from '@/src/shared/components/ui/Switch'
 import { Button } from '@/src/shared/components/ui/button'
 import { Icon } from '@/src/shared/components/Icons/Icon'
@@ -36,11 +37,6 @@ const PERMISSION_CONFIGS: PermissionItemConfig[] = [
         label: 'ثبت ضایعات',
         description: 'دسترسی به ثبت ضایعات و اقلام مرجوعی/اسقاطی',
     },
-    {
-        key: 'allow_repricing',
-        label: 'قیمت‌گذاری مجدد',
-        description: 'مجوز تغییر یا بازبینی قیمت محصولات در سطح شعبه',
-    },
 ]
 
 type SetAccessFormProps = {
@@ -59,9 +55,12 @@ const SetAccessForm = ({
     } = useCreateBranchContext()
 
     const setActiveStep = propSetActiveStep || contextSetActiveStep
+    const router = useRouter()
 
     const handleSubmit = () => {
-        submitBranch()
+        submitBranch(() => {
+            router.push('/admin/branches?sub=list')
+        })
     }
 
     return (

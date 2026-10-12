@@ -1,6 +1,6 @@
 import type { TableFilterItem } from '@/src/shared/store/table-actions-store'
 import { ModalTypes, type ModalType } from '@/src/shared/components/modals/types'
-import type { Branch, BranchPermit } from '@/src/api/types/admin/organization'
+import type { Branch } from '@/src/api/types/admin/organization'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 
 export type QuickAccessStat = {
@@ -11,12 +11,17 @@ export type QuickAccessStat = {
     tableValue?: string
 }
 
-const PERMIT_VALUE_LABELS: Record<keyof BranchPermit, string> = {
+const PERMIT_VALUE_LABELS: Record<
+    | 'allow_credit_sale'
+    | 'allow_cheque_sale'
+    | 'allow_consignment_sale'
+    | 'allow_scrap_entry',
+    string
+> = {
     allow_credit_sale: 'فروش اعتباری',
     allow_cheque_sale: 'فروش چکی',
     allow_consignment_sale: 'فروش امانی',
     allow_scrap_entry: 'ثبت ضایعات',
-    allow_repricing: 'قیمت‌گذاری مجدد',
 }
 
 export const quickAccessValuesByLabel = (
@@ -33,7 +38,7 @@ export const quickAccessValuesByLabel = (
         case 'دستگاه های POS':
             return (branch.pos_devices ?? []).map((device) => device.title)
         case 'مجوزها':
-            return (Object.keys(PERMIT_VALUE_LABELS) as (keyof BranchPermit)[])
+            return (Object.keys(PERMIT_VALUE_LABELS) as (keyof typeof PERMIT_VALUE_LABELS)[])
                 .filter((key) => Boolean(branch.permit?.[key]))
                 .map((key) => PERMIT_VALUE_LABELS[key])
         default:

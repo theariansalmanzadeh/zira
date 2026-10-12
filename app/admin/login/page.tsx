@@ -24,13 +24,14 @@ import { toast } from 'sonner'
 const AdminLoginPage = () => {
     const { back, push } = useRouter()
     const setAccessToken = useStaffAuthStore((state) => state.setAccessToken)
-    const { mutate: login, isPending } = useStaffLogin()
+    const { mutate: login, isPending, error: loginError } = useStaffLogin()
 
     const {
         control,
         register,
         handleSubmit,
         formState: { errors },
+        setError,
     } = useForm<StaffLoginFormValues>({
         resolver: zodResolver(staffLoginSchema),
         defaultValues: STAFF_LOGIN_DEFAULTS,
@@ -45,6 +46,7 @@ const AdminLoginPage = () => {
             },
             onError: (error) => {
                 toast.error((error as ApiError).message)
+                setError('password', { message: (error as ApiError).message })
             },
         })
     }

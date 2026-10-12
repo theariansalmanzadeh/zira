@@ -7,6 +7,14 @@ import {
     useState,
     type ReactNode,
 } from 'react'
+import { toast } from 'sonner'
+import type { CategoryNodeOut } from '@/src/api/types/admin/catalog'
+import {
+    useCreateCategory as useCreateCategoryMutation,
+    useDeleteCategory,
+    useListCategories,
+} from '@/src/routes/catalog/hooks/catalog'
+import { formatFaNumber } from '@/src/shared/libs/formatter'
 
 export type CategoryItem = {
     id: string
@@ -33,152 +41,56 @@ type CreateCategoryContextValue = {
     removeSub: (id: string) => void
 }
 
-const MAIN_ITEMS: CategoryItem[] = [
-    {
-        id: 'main-1',
-        title: 'لباس زیر زنانه',
-        detail: '۲ دسته میانی · ۲۰ خانواده',
-        parentId: null,
-    },
-    {
-        id: 'main-2',
-        title: 'لباس خواب',
-        detail: '۲ دسته میانی · ۱۰ خانواده',
-        parentId: null,
-    },
-    {
-        id: 'main-3',
-        title: 'جوراب و ساق',
-        detail: '۲ دسته میانی · ۱۰ خانواده',
-        parentId: null,
-    },
-    {
-        id: 'main-4',
-        title: 'تیشرت و تاپ',
-        detail: '۲ دسته میانی · ۱۰ خانواده',
-        parentId: null,
-    },
-]
+const toCategoryItem = (
+    node: CategoryNodeOut,
+    parentId: string | null,
+    detail: string
+): CategoryItem => ({
+    id: node.id,
+    title: node.name,
+    detail,
+    parentId,
+})
 
-const MID_ITEMS: CategoryItem[] = [
-    {
-        id: 'mid-1',
-        title: 'شورت و تانگا',
-        detail: '۲ دسته فرعی · ۱۰ خانواده',
-        parentId: 'main-1',
-    },
-    {
-        id: 'mid-2',
-        title: 'سوتین',
-        detail: '۲ دسته فرعی · ۱۰ خانواده',
-        parentId: 'main-1',
-    },
-    {
-        id: 'mid-3',
-        title: 'پیراهن خواب',
-        detail: '۱ دسته فرعی · ۸ خانواده',
-        parentId: 'main-2',
-    },
-    {
-        id: 'mid-4',
-        title: 'تاپ خواب',
-        detail: '۱ دسته فرعی · ۶ خانواده',
-        parentId: 'main-2',
-    },
-    {
-        id: 'mid-5',
-        title: 'جوراب ساق بلند',
-        detail: '۱ دسته فرعی · ۴ خانواده',
-        parentId: 'main-3',
-    },
-    {
-        id: 'mid-6',
-        title: 'جوراب مچی',
-        detail: '۱ دسته فرعی · ۵ خانواده',
-        parentId: 'main-3',
-    },
-    {
-        id: 'mid-7',
-        title: 'تیشرت',
-        detail: '۲ دسته فرعی · ۱۲ خانواده',
-        parentId: 'main-4',
-    },
-    {
-        id: 'mid-8',
-        title: 'تاپ',
-        detail: '۱ دسته فرعی · ۷ خانواده',
-        parentId: 'main-4',
-    },
-]
+const splitCategories = (nodes: CategoryNodeOut[]) => {
+    const mainItems: CategoryItem[] = []
+    const midItems: CategoryItem[] = []
+    const subItems: CategoryItem[] = []
 
-const SUB_ITEMS: CategoryItem[] = [
-    {
-        id: 'sub-1',
-        title: 'نخی',
-        detail: '۱۰ کالا',
-        parentId: 'mid-1',
-    },
-    {
-        id: 'sub-2',
-        title: 'گیپور',
-        detail: '۸ کالا',
-        parentId: 'mid-1',
-    },
-    {
-        id: 'sub-3',
-        title: 'اسفنجی',
-        detail: '۶ کالا',
-        parentId: 'mid-2',
-    },
-    {
-        id: 'sub-4',
-        title: 'بدون فنر',
-        detail: '۴ کالا',
-        parentId: 'mid-2',
-    },
-    {
-        id: 'sub-5',
-        title: 'آستین کوتاه',
-        detail: '۵ کالا',
-        parentId: 'mid-3',
-    },
-    {
-        id: 'sub-6',
-        title: 'آستین بلند',
-        detail: '۳ کالا',
-        parentId: 'mid-4',
-    },
-    {
-        id: 'sub-7',
-        title: 'زیر زانو',
-        detail: '۴ کالا',
-        parentId: 'mid-5',
-    },
-    {
-        id: 'sub-8',
-        title: 'روزمره',
-        detail: '۶ کالا',
-        parentId: 'mid-6',
-    },
-    {
-        id: 'sub-9',
-        title: 'یقه‌گرد',
-        detail: '۹ کالا',
-        parentId: 'mid-7',
-    },
-    {
-        id: 'sub-10',
-        title: 'آستین حلقه‌ای',
-        detail: '۷ کالا',
-        parentId: 'mid-7',
-    },
-    {
-        id: 'sub-11',
-        title: 'بند نازک',
-        detail: '۵ کالا',
-        parentId: 'mid-8',
-    },
-]
+    for (const main of nodes) {
+        const midChildren = main.children ?? []
+        mainItems.push(
+            toCategoryItem(
+                main,
+                null,
+                `${formatFaNumber(midChildren.length)} دسته میانی · ${formatFaNumber(main.product_count ?? 0)} کالا`
+            )
+        )
+
+        for (const mid of midChildren) {
+            const subChildren = mid.children ?? []
+            midItems.push(
+                toCategoryItem(
+                    mid,
+                    main.id,
+                    `${formatFaNumber(subChildren.length)} دسته فرعی · ${formatFaNumber(mid.product_count ?? 0)} کالا`
+                )
+            )
+
+            for (const sub of subChildren) {
+                subItems.push(
+                    toCategoryItem(
+                        sub,
+                        mid.id,
+                        `${formatFaNumber(sub.product_count ?? 0)} کالا`
+                    )
+                )
+            }
+        }
+    }
+
+    return { mainItems, midItems, subItems }
+}
 
 const CreateCategoryContext = createContext<CreateCategoryContextValue | null>(
     null
@@ -196,24 +108,28 @@ export function useCreateCategory() {
     return context
 }
 
-const createItem = (
-    title: string,
-    detail: string,
-    parentId: string | null
-): CategoryItem => ({
-    id: crypto.randomUUID(),
-    title,
-    detail,
-    parentId,
-})
-
 const CreateCategoryProvider = ({ children }: { children: ReactNode }) => {
-    const [mainItems, setMainItems] = useState<CategoryItem[]>(MAIN_ITEMS)
-    const [midItems, setMidItems] = useState<CategoryItem[]>(MID_ITEMS)
-    const [subItems, setSubItems] = useState<CategoryItem[]>(SUB_ITEMS)
-    const [selectedMain, setSelectedMain] = useState<string | null>('main-1')
+    const { data } = useListCategories({ include_inactive: true })
+    const { mutate: createCategory } = useCreateCategoryMutation()
+    const { mutate: deleteCategory } = useDeleteCategory()
+    const { mainItems, midItems, subItems } = useMemo(
+        () => splitCategories(data ?? []),
+        [data]
+    )
+    const [selectedMain, setSelectedMain] = useState<string | null>(null)
     const [selectedMid, setSelectedMid] = useState<string | null>(null)
     const [selectedSub, setSelectedSub] = useState<string | null>(null)
+
+    const createNamedCategory = (name: string, parentId: string | null) => {
+        createCategory(
+            { name, parent_id: parentId },
+            {
+                onError: () => {
+                    toast.error('ایجاد دسته‌بندی انجام نشد')
+                },
+            }
+        )
+    }
 
     const selectMain = (id: string) => {
         setSelectedMain(id)
@@ -231,70 +147,38 @@ const CreateCategoryProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const addMain = (title: string) => {
-        setMainItems((current) => [
-            ...current,
-            createItem(title, '۰ دسته میانی · ۰ خانواده', null),
-        ])
+        createNamedCategory(title, null)
     }
 
     const addMid = (title: string) => {
         if (!selectedMain) return
-
-        setMidItems((current) => [
-            ...current,
-            createItem(title, '۰ دسته فرعی · ۰ خانواده', selectedMain),
-        ])
+        createNamedCategory(title, selectedMain)
     }
 
     const addSub = (title: string) => {
-        if (!selectedMain || !selectedMid) return
-
-        setSubItems((current) => [
-            ...current,
-            createItem(title, '۰ کالا', selectedMid),
-        ])
+        if (!selectedMid) return
+        createNamedCategory(title, selectedMid)
     }
 
     const removeMain = (id: string) => {
-        const childMidIds = new Set(
-            midItems
-                .filter((item) => item.parentId === id)
-                .map((item) => item.id)
-        )
-
-        setMainItems((current) => current.filter((item) => item.id !== id))
-        setMidItems((current) =>
-            current.filter((item) => item.parentId !== id)
-        )
-        setSubItems((current) =>
-            current.filter((item) => !childMidIds.has(item.parentId ?? ''))
-        )
-        if (selectedMain === id) setSelectedMain(null)
-        if (childMidIds.has(selectedMid ?? '')) setSelectedMid(null)
-        if (
-            childMidIds.has(
-                subItems.find((item) => item.id === selectedSub)?.parentId ?? ''
-            )
-        ) {
+        deleteCategory(id)
+        if (selectedMain === id) {
+            setSelectedMain(null)
+            setSelectedMid(null)
             setSelectedSub(null)
         }
     }
 
     const removeMid = (id: string) => {
-        setMidItems((current) => current.filter((item) => item.id !== id))
-        setSubItems((current) =>
-            current.filter((item) => item.parentId !== id)
-        )
-        if (selectedMid === id) setSelectedMid(null)
-        if (
-            subItems.find((item) => item.id === selectedSub)?.parentId === id
-        ) {
+        deleteCategory(id)
+        if (selectedMid === id) {
+            setSelectedMid(null)
             setSelectedSub(null)
         }
     }
 
     const removeSub = (id: string) => {
-        setSubItems((current) => current.filter((item) => item.id !== id))
+        deleteCategory(id)
         if (selectedSub === id) setSelectedSub(null)
     }
 

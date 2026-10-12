@@ -1,17 +1,13 @@
 import * as z from 'zod'
-import { POS_DEVICES_DUMMY } from '@/src/shared/components/modals/components/posBranchDetails/constants'
+import type { PosDevice } from '@/src/api/types/admin/organization'
 
-const requiredString = (message: string) => z.string().trim().min(1, message)
+const optionalString = z.string().trim()
 
 export const addAndEditPosDeviceSchema = z.object({
-    index: requiredString('ردیف الزامی است'),
-    name: requiredString('نام دستگاه الزامی است'),
-    model: requiredString('مدل دستگاه الزامی است'),
-    bank: requiredString('بانک متصل الزامی است'),
-    bankAccount: requiredString('حساب بانکی متصل الزامی است'),
-    terminalNumber: requiredString('شماره پایانه الزامی است'),
-    terminalPassword: requiredString('رمز پایانه الزامی است'),
-    cashRegister: requiredString('صندوق متصل الزامی است'),
+    title: z.string().trim().min(1, 'نام دستگاه الزامی است'),
+    terminal_no: optionalString,
+    bank_account_id: optionalString,
+    is_active: z.boolean(),
 })
 
 export type AddAndEditPosDeviceFormValues = z.infer<
@@ -20,32 +16,21 @@ export type AddAndEditPosDeviceFormValues = z.infer<
 
 export const ADD_AND_EDIT_POS_DEVICE_DEFAULT_VALUES: AddAndEditPosDeviceFormValues =
     {
-        index: '',
-        name: '',
-        model: '',
-        bank: '',
-        bankAccount: '',
-        terminalNumber: '',
-        terminalPassword: '',
-        cashRegister: '',
+        title: '',
+        terminal_no: '',
+        bank_account_id: '',
+        is_active: true,
     }
 
 export const getAddAndEditPosDeviceDefaultValues = (
-    id?: string | null
+    device?: PosDevice | null
 ): AddAndEditPosDeviceFormValues => {
-    if (!id) return { ...ADD_AND_EDIT_POS_DEVICE_DEFAULT_VALUES }
-
-    const device = POS_DEVICES_DUMMY.find((item) => item.id === id)
     if (!device) return { ...ADD_AND_EDIT_POS_DEVICE_DEFAULT_VALUES }
 
     return {
-        index: String(device.index),
-        name: device.name,
-        model: device.model,
-        bank: device.bank,
-        bankAccount: device.bankAccount,
-        terminalNumber: device.terminalNumber,
-        terminalPassword: device.terminalPassword,
-        cashRegister: device.cashRegister,
+        title: device.title ?? '',
+        terminal_no: device.terminal_no ?? '',
+        bank_account_id: device.bank_account_id ?? '',
+        is_active: device.is_active,
     }
 }

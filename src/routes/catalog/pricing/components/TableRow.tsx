@@ -13,20 +13,24 @@ import { getAdjustmentPercentDisplay } from "../utils";
 
 export interface PricingRowProps {
     data: {
+        id?: string;
         contractTitle: string;
         contractId: string;
         date: string;
         scope: string;
-        percent: string | number;
+        percent?: string | number | null;
         status?: "published" | "draft";
     };
 }
 
 const TableRow = ({
-    data: { contractTitle, contractId, date, scope, percent },
+    data: { id, contractTitle, contractId, date, scope, percent },
 }: PricingRowProps) => {
     const { TableColoumn } = useTable();
-    const percentDisplay = getAdjustmentPercentDisplay(percent);
+    const percentDisplay =
+        percent == null || percent === ''
+            ? null
+            : getAdjustmentPercentDisplay(percent);
 
     return (
         <>
@@ -46,16 +50,16 @@ const TableRow = ({
                         <span
                             className={cn(
                                 "font-semibold",
-                                percentDisplay.className
+                                percentDisplay?.className
                             )}
                         >
-                            {percentDisplay.text}
+                            {percentDisplay?.text ?? '—'}
                         </span>
                     </TableCell>
                 )}
 
                 <TableCell className="w-[1%] whitespace-nowrap">
-                    <Link href={`/admin/catalog/pricing/${contractId}`}>
+                    <Link href={`/admin/catalog/pricing/${id ?? contractId}`}>
                         <IconButton
                             icon="edit400Linear"
                             iconClassName="size-5! text-outline"

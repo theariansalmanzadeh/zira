@@ -9,13 +9,9 @@ import React, {
     type Dispatch,
     type SetStateAction,
 } from 'react'
-import { useRouter } from 'next/navigation'
 import { useCreateBranch } from '@/src/routes/branches/hooks/organization'
-import type {
-    Branch,
-    BranchPermit,
-    CreateBranchRequest,
-} from '@/src/api/types/admin/organization'
+import type { Branch } from '@/src/api/types/admin/organization'
+import { toCreateBranchRequest } from '../utils/toCreateBranchRequest'
 
 export type GeneralBranchData = {
     branchName: string
@@ -54,7 +50,6 @@ export type BranchPermissions = {
     allow_cheque_sale: boolean
     allow_consignment_sale: boolean
     allow_scrap_entry: boolean
-    allow_repricing: boolean
 }
 
 export const INITIAL_GENERAL_DATA: GeneralBranchData = {
@@ -98,7 +93,6 @@ export const INITIAL_PERMISSIONS: BranchPermissions = {
     allow_cheque_sale: false,
     allow_consignment_sale: true,
     allow_scrap_entry: true,
-    allow_repricing: false,
 }
 
 type CreateBranchContextValue = {
@@ -139,7 +133,6 @@ type CreateBranchProviderProps = {
 }
 
 const CreateBranchProvider = ({ children }: CreateBranchProviderProps) => {
-    const router = useRouter()
     const [activeStep, setActiveStep] = useState<number>(1)
     const [generalData, setGeneralData] = useState<GeneralBranchData>(INITIAL_GENERAL_DATA)
     const [workDays, setWorkDays] = useState<WorkDay[]>(INITIAL_WORK_DAYS)
@@ -182,61 +175,12 @@ const CreateBranchProvider = ({ children }: CreateBranchProviderProps) => {
 
     const submitBranch = useCallback(
         (onSuccess?: (branch: Branch) => void) => {
-            const working_hours = workDays.reduce<
-                Record<string, { enabled: boolean; start: string; end: string }>
-            >((acc, day) => {
-                acc[day.id] = {
-                    enabled: day.enabled,
-                    start: day.start,
-                    end: day.end,
-                }
-                return acc
-            }, {})
-
-            const addressDetails = [
-                generalData.plaque ? `پلاک ${generalData.plaque}` : '',
-                generalData.unit ? `واحد ${generalData.unit}` : '',
-            ]
-                .filter(Boolean)
-                .join('، ')
-
-            const fullAddress = [generalData.postalAddress, addressDetails]
-                .filter(Boolean)
-                .join(' - ')
-
-            const permits: BranchPermit = {
-                allow_credit_sale: permissions.allow_credit_sale,
-                allow_cheque_sale: permissions.allow_cheque_sale,
-                allow_consignment_sale: permissions.allow_consignment_sale,
-                allow_scrap_entry: permissions.allow_scrap_entry,
-                allow_repricing: permissions.allow_repricing,
-            }
-
-            const payload: CreateBranchRequest = {
-                code: generalData.branchCode || 'BR-5318_92',
-                name: generalData.branchName || 'شعبه جدید',
-                province: generalData.province,
-                city: generalData.city,
-                full_address: fullAddress || generalData.postalAddress || undefined,
-                address_details: addressDetails || undefined,
-                postal_code: generalData.postalCode || undefined,
-                phone: generalData.landlinePhone || undefined,
-                manager_id: generalData.branchManager || null,
-                activity_start_date: generalData.activityStartDate
-                    ? generalData.activityStartDate.toISOString().split('T')[0]
-                    : null,
-                working_hours,
-                permits,
-            }
-
-            createBranchMutation(payload, {
-                onSuccess: (data) => {
-                    onSuccess?.(data)
-                    router.push('/admin/branches?sub=list')
-                },
-            })
+            createBranchMutation(
+                toCreateBranchRequest({ generalData, workDays, permissions }),
+                { onSuccess }
+            )
         },
-        [workDays, generalData, permissions, createBranchMutation, router]
+        [workDays, generalData, permissions, createBranchMutation]
     )
 
     const value = useMemo<CreateBranchContextValue>(

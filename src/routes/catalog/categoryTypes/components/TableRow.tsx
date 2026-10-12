@@ -18,7 +18,7 @@ export type CategoryRowData = {
     directItems: number;
     totalProducts: number;
     status: CategoryStatus;
-    subCategories?: CategoryRowData[];
+    children?: CategoryRowData[];
 };
 
 type CategoryTableRowProps = {
@@ -41,7 +41,7 @@ const CategoryTableRow = ({
     const { TableColoumn } = useTable();
     const { openModal } = useModalStore();
     const [isExpanded, setIsExpanded] = useState(false);
-    const hasSubCategories = Boolean(data.subCategories?.length);
+    const hasSubCategories = Boolean(data.children?.length);
     const status = statusConfig[data.status];
 
     const openCategoryDetail = () => {
@@ -147,7 +147,7 @@ const CategoryTableRow = ({
                 </div>
             )}
             {isExpanded &&
-                data.subCategories?.map((subCategory) => (
+                data.children?.map((subCategory) => (
                     <CategoryTableRow
                         key={subCategory.id}
                         data={subCategory}

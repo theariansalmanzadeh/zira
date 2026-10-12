@@ -24,14 +24,22 @@ const TableRow = ({ data, onEdit, onMore }: TableRowProps) => {
                 {TableColoumn[0]?.isChecked && (
                     <TableCell>
                         <div className="flex items-center gap-3">
-                            <div
-                                className={cn(
-                                    'flex size-10 shrink-0 items-center justify-center rounded-card-md text-label-lg font-bold',
-                                    data.avatarClassName
-                                )}
-                            >
-                                {data.initial}
-                            </div>
+                            {data.logoUrl ? (
+                                <img
+                                    src={data.logoUrl}
+                                    alt=""
+                                    className="size-10 shrink-0 rounded-card-md object-cover"
+                                />
+                            ) : (
+                                <div
+                                    className={cn(
+                                        'flex size-10 shrink-0 items-center justify-center rounded-card-md text-label-lg font-bold',
+                                        data.avatarClassName
+                                    )}
+                                >
+                                    {data.initial}
+                                </div>
+                            )}
                             <div className="flex min-w-0 flex-col gap-0.5 text-right">
                                 <span className="font-semibold text-on-surface">
                                     {data.name}
@@ -51,7 +59,7 @@ const TableRow = ({ data, onEdit, onMore }: TableRowProps) => {
                 {TableColoumn[2]?.isChecked && (
                     <TableCell>
                         <span className="text-on-surface">
-                            {formatFaNumber(data.productsCount)} عدد
+                            {formatFaNumber(data.productsCount)}
                         </span>
                     </TableCell>
                 )}
@@ -63,7 +71,7 @@ const TableRow = ({ data, onEdit, onMore }: TableRowProps) => {
                 {TableColoumn[4]?.isChecked && (
                     <TableCell>
                         <Pill
-                            text={isActive ? 'فعال' : 'غیرفعال'}
+                            text={data.statusLabel || (isActive ? 'فعال' : 'غیرفعال')}
                             variant={isActive ? 'success' : 'tonal'}
                             hasDot
                             className="border-0"

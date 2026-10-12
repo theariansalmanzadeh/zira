@@ -144,19 +144,26 @@ export type BrandOrigin =
   | 'IMPORTED'
   | 'LICENSED';
 
+export type BrandHistoryOut = {
+  year: string;
+  title: string;
+  description: string;
+  sort_order: number;
+};
+
 export type BrandOut = {
   id: string;
   name: string;
-  latin_name: string;
-  scope: string;
-  country: string;
-  /** مبدا برند */
-  origin: BrandOrigin;
-  /** وضعیت برند */
+  logo_url: string;
+  tagline: string;
+  intro: string;
+  is_main: boolean;
+  catalog_brand_id: string;
+  sort_order: number;
   status: BrandStatus;
-  website: string;
-  description: string;
-  product_count?: number;
+  status_display: string;
+  history: BrandHistoryOut[];
+  updated_at: string;
 };
 
 export type BrandStatus =

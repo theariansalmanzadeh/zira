@@ -6,34 +6,39 @@ import { useStaffAuthStore } from '@shared/store/staff-auth-store'
 import { refreshSession, refreshStaffSession } from './register'
 
 /**
- * API base is baked at build time from `NEXT_PUBLIC_API_BASE_URL`.
- * Do not fall back to production here — an empty env would silently hit prod.
+ * Browser calls stay on this app's origin (`/api/v1/...`) so the Next rewrite
+ * can reach the backend. An absolute API host skips that proxy and triggers CORS.
  */
-const DEFAULT_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? ''
-const DEFAULT_ADMIN_API_URL =
-  process.env.NEXT_PUBLIC_ADMIN_API_BASE_URL ?? DEFAULT_API_URL
-
-const API_URL =
-  typeof window === 'undefined'
-    ? withTrailingSlash(DEFAULT_API_URL)
-    : withTrailingSlash(DEFAULT_API_URL)
-
-const ADMIN_API_URL =
-  typeof window === 'undefined'
-    ? withTrailingSlash(DEFAULT_ADMIN_API_URL)
-    : withTrailingSlash(DEFAULT_ADMIN_API_URL)
+const PUBLIC_API_PATH = '/api/v1/public/'
+const ADMIN_API_PATH = '/api/v1/admin/'
 
 function withTrailingSlash(url: string) {
   if (!url) return url
   return url.endsWith('/') ? url : `${url}/`
 }
 
+function toProxyPath(url: string | undefined, fallback: string) {
+  if (!url) return fallback
+  if (url.startsWith('/')) return withTrailingSlash(url)
+  try {
+    return withTrailingSlash(new URL(url).pathname)
+  } catch {
+    return fallback
+  }
+}
+
+const API_URL = toProxyPath(process.env.NEXT_PUBLIC_API_BASE_URL, PUBLIC_API_PATH)
+const ADMIN_API_URL = toProxyPath(
+  process.env.NEXT_PUBLIC_ADMIN_API_BASE_URL,
+  ADMIN_API_PATH
+)
+
 /**
- * Absolute API base (including origin). Use for EventSource and other
- * clients that cannot rely on axios `baseURL`.
+ * Same-origin API base. EventSource and other clients should use this so the
+ * request goes through the Next rewrite instead of the API host.
  */
 export function getApiBaseUrl() {
-  return withTrailingSlash(process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_URL)
+  return API_URL
 }
 
 const DEFAULT_PAYMENT_CALLBACK_URL = process.env.NEXT_PUBLIC_PAYMENT_CALLBACK_URL ?? ''

@@ -1,23 +1,27 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import type { VariantProps } from 'class-variance-authority'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import IconButton from '@/src/shared/components/ui/IconButton'
-import { Pill } from '@/src/shared/components/ui/Pill'
+import { Pill, PillVariants } from '@/src/shared/components/ui/Pill'
 import { Button } from '@/src/shared/components/ui/button'
+import { Spinner } from '@/src/shared/components/ui/spinner'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/shared/components/ui/Tabs'
-import { getCampaignById } from '@/src/routes/catalog/campaigne/constants'
+import type {
+    AudienceOut,
+    CampaignDetailOut,
+    CampaignStatusEnum,
+    ChannelEnum,
+} from '@/src/api/types/admin/pricing'
+import { useGetCampaign } from '@/src/routes/catalog/hooks/pricing'
+import { formatFaDateTime, formatFaNumber } from '@/src/shared/libs/formatter'
 import BudgetConsumption from './components/BudgetConsumption'
-import CampaigneDeputy, {
-    CAMPAIGNE_DEPUTY_DUMMY,
-} from './components/CampaigneDeputy'
+import CampaigneDeputy from './components/CampaigneDeputy'
 import CampaigneSpecs, {
-    CAMPAIGNE_SPECS_DUMMY,
+    type CampaigneSpecRow,
 } from './components/CampaigneSpecs'
-import Domains, {
-    DOMAIN_CUSTOMERS_DUMMY,
-    DOMAIN_PRODUCTS_DUMMY,
-} from './components/Domains'
+import Domains, { type DomainSection } from './components/Domains'
 import Reports, {
     CATEGORY_SHARE_DUMMY,
     DAILY_TREND_DUMMY,
@@ -25,13 +29,100 @@ import Reports, {
     TOP_PRODUCTS_DUMMY,
 } from './components/Reports'
 
-type CampaigneDetailProps = {
-    id?: string
+const STATUS_LABEL: Record<CampaignStatusEnum, string> = {
+    DRAFT: 'پیش‌نویس',
+    PUBLISHED: 'فعال',
+    DISABLED: 'غیرفعال',
+    ARCHIVED: 'آرشیو',
 }
 
-const CampaigneDetail = ({ id = '1' }: CampaigneDetailProps) => {
+const STATUS_VARIANT: Record<
+    CampaignStatusEnum,
+    VariantProps<typeof PillVariants>['variant']
+> = {
+    DRAFT: 'warning',
+    PUBLISHED: 'success',
+    DISABLED: 'error',
+    ARCHIVED: 'tonal',
+}
+
+const CHANNEL_LABEL: Record<ChannelEnum, string> = {
+    ALL: 'همه کانال‌ها',
+    ONLINE: 'آنلاین',
+    APP: 'اپلیکیشن',
+    IN_STORE: 'حضوری',
+}
+
+const dash = (value?: string | null) => value?.trim() || '—'
+
+const audienceLabel = (audience: AudienceOut) =>
+    audience.cooperation_level ||
+    audience.customer_id ||
+    audience.customer_group_id ||
+    audience.audience_type
+
+const budgetPercent = (used?: string | null, total?: string | null) => {
+    const usedAmount = Number(used)
+    const totalAmount = Number(total)
+    if (!totalAmount || Number.isNaN(usedAmount) || Number.isNaN(totalAmount)) {
+        return 0
+    }
+    return Math.min(100, Math.round((usedAmount / totalAmount) * 100))
+}
+
+const specRows = (campaign: CampaignDetailOut): CampaigneSpecRow[] => [
+    { label: 'نام کمپین', value: campaign.name },
+    { label: 'ماهیت کمپین', value: campaign.nature_display },
+    { label: 'هدف کمپین', value: dash(campaign.goal) },
+    { label: 'کانال', value: CHANNEL_LABEL[campaign.channel] },
+    { label: 'تاریخ و ساعت شروع', value: formatFaDateTime(campaign.starts_at) },
+    { label: 'تاریخ و ساعت خاتمه', value: formatFaDateTime(campaign.ends_at) },
+    { label: 'توضیحات', value: dash(campaign.description) },
+]
+
+const productDomain = (campaign: CampaignDetailOut): DomainSection => ({
+    label: 'محصولات مورد نظر',
+    summary: `${formatFaNumber(campaign.targets.length)} مورد`,
+    items: campaign.targets.map((target) => target.label),
+    pillClassName:
+        'border-0 bg-primary-container [&_span]:text-on-primary-container',
+})
+
+const customerDomain = (campaign: CampaignDetailOut): DomainSection => ({
+    label: 'مشتریان مورد هدف',
+    summary: `${formatFaNumber(campaign.audiences.length)} مورد`,
+    items: campaign.audiences.map(audienceLabel),
+    pillClassName: 'border-0 bg-info-container [&_span]:text-on-info-container',
+})
+
+type CampaigneDetailProps = {
+    id: string
+}
+
+const CampaigneDetail = ({ id }: CampaigneDetailProps) => {
     const { back } = useRouter()
-    const campaign = getCampaignById(id)
+    const { data, isPending } = useGetCampaign(id)
+    const campaign: CampaignDetailOut | undefined = data
+
+    if (isPending) {
+        return (
+            <div className='flex justify-center py-10'>
+                <Spinner className='size-6' />
+            </div>
+        )
+    }
+
+    if (!campaign) {
+        return (
+            <div className='py-10 text-center text-label-md text-outline'>
+                کمپین یافت نشد.
+            </div>
+        )
+    }
+
+    const discountLabel =
+        campaign.discounts[0]?.value_display ||
+        formatFaNumber(campaign.discount_count)
 
     return (
         <div className="w-full rounded-card-lg p-6" dir="rtl">
@@ -47,8 +138,8 @@ const CampaigneDetail = ({ id = '1' }: CampaigneDetailProps) => {
                         جزئیات کمپین
                     </span>
                     <Pill
-                        text={campaign.statusLabel}
-                        variant={campaign.statusVariant}
+                        text={STATUS_LABEL[campaign.status]}
+                        variant={STATUS_VARIANT[campaign.status]}
                         className="border-0"
                     />
                 </div>
@@ -73,17 +164,24 @@ const CampaigneDetail = ({ id = '1' }: CampaigneDetailProps) => {
             <div className="flex flex-col gap-6 rounded-card-md bg-surface-container-lowest p-6">
                 <div className="flex flex-col gap-2 text-right">
                     <h1 className="text-title-lg font-medium text-on-surface">
-                        {campaign.title}
+                        {campaign.name}
                     </h1>
                     <p className="text-label-md text-outline">
-                        {campaign.subtitle}
+                        {campaign.nature_display}
                     </p>
                     <BudgetConsumption
                         className="mt-2"
                         label="مصرف بودجه"
-                        usedLabel={campaign.budgetUsedLabel}
-                        totalLabel={campaign.budgetTotalLabel}
-                        percent={campaign.budgetPercent}
+                        usedLabel={formatFaNumber(campaign.budget_used)}
+                        totalLabel={
+                            campaign.budget
+                                ? formatFaNumber(campaign.budget)
+                                : '—'
+                        }
+                        percent={budgetPercent(
+                            campaign.budget_used,
+                            campaign.budget
+                        )}
                     />
                 </div>
 
@@ -92,7 +190,7 @@ const CampaigneDetail = ({ id = '1' }: CampaigneDetailProps) => {
                 <div className="flex flex-row items-start justify-between gap-4">
                     <div className="flex flex-col gap-2 text-right">
                         <span className="text-label-lg font-bold text-on-surface-variant">
-                            {campaign.discount}
+                            {discountLabel}
                         </span>
                         <span className="text-label-md text-outline">
                             درصد تخفیف
@@ -100,19 +198,19 @@ const CampaigneDetail = ({ id = '1' }: CampaigneDetailProps) => {
                     </div>
                     <div className="flex flex-col gap-2 text-right">
                         <span className="text-label-lg font-bold text-on-surface">
-                            {campaign.visits}
+                            —
                         </span>
                         <span className="text-label-md text-outline">بازدید</span>
                     </div>
                     <div className="flex flex-col gap-2 text-right">
                         <span className="text-label-lg font-bold text-on-surface">
-                            {campaign.orders}
+                            —
                         </span>
                         <span className="text-label-md text-outline">سفارش</span>
                     </div>
                     <div className="flex flex-col gap-2 text-right">
                         <span className="text-label-lg font-bold text-success">
-                            {campaign.conversionRate}
+                            —
                         </span>
                         <span className="text-label-md text-outline">
                             نرخ تبدیل
@@ -137,21 +235,21 @@ const CampaigneDetail = ({ id = '1' }: CampaigneDetailProps) => {
                             <div className="col-span-8 flex flex-col gap-4">
                                 <CampaigneSpecs
                                     title="مشخصات کمپین"
-                                    rows={CAMPAIGNE_SPECS_DUMMY}
+                                    rows={specRows(campaign)}
                                 />
                                 <Domains
                                     title="دامنه کمپین"
-                                    products={DOMAIN_PRODUCTS_DUMMY}
-                                    customers={DOMAIN_CUSTOMERS_DUMMY}
+                                    products={productDomain(campaign)}
+                                    customers={customerDomain(campaign)}
                                 />
                             </div>
                             <div className="col-span-4 flex flex-col gap-4">
                                 <CampaigneDeputy
                                     title="سابقه و مسئولین"
-                                    createdAt={CAMPAIGNE_DEPUTY_DUMMY.createdAt}
-                                    publishedAt={CAMPAIGNE_DEPUTY_DUMMY.publishedAt}
-                                    creatorName={CAMPAIGNE_DEPUTY_DUMMY.creatorName}
-                                    publisherName={CAMPAIGNE_DEPUTY_DUMMY.publisherName}
+                                    createdAt={campaign.created_at}
+                                    publishedAt={campaign.published_at || '—'}
+                                    creatorName="—"
+                                    publisherName="—"
                                 />
                             </div>
                         </div>
@@ -160,7 +258,7 @@ const CampaigneDetail = ({ id = '1' }: CampaigneDetailProps) => {
                     <TabsContent value="reports" className="pt-xl">
                         <Reports
                             title="گزارش عملکرد کمپین"
-                            subtitle={`روند فروش، بازدید و نرخ تبدیل کمپین «${campaign.title}».`}
+                            subtitle={`روند فروش، بازدید و نرخ تبدیل کمپین «${campaign.name}».`}
                             metrics={REPORT_METRICS_DUMMY}
                             chartTitle="روند روزانه کمپین"
                             chartSubtitle="مقایسه فروش با بازدید"
