@@ -27,11 +27,28 @@ function toProxyPath(url: string | undefined, fallback: string) {
   }
 }
 
-const API_URL = toProxyPath(process.env.NEXT_PUBLIC_API_BASE_URL, PUBLIC_API_PATH)
-const ADMIN_API_URL = toProxyPath(
+const API_ORIGIN = 'https://api.bonksaz.ir'
+const relativePublicApi = toProxyPath(
+  process.env.NEXT_PUBLIC_API_BASE_URL,
+  PUBLIC_API_PATH
+)
+const relativeAdminApi = toProxyPath(
   process.env.NEXT_PUBLIC_ADMIN_API_BASE_URL,
   ADMIN_API_PATH
 )
+
+/**
+ * The browser uses the same-origin `/api` proxy. Server rendering has no
+ * browser origin, so it calls the API host directly.
+ */
+const API_URL =
+  typeof window === 'undefined'
+    ? `${API_ORIGIN}${relativePublicApi}`
+    : relativePublicApi
+const ADMIN_API_URL =
+  typeof window === 'undefined'
+    ? `${API_ORIGIN}${relativeAdminApi}`
+    : relativeAdminApi
 
 /**
  * Same-origin API base. EventSource and other clients should use this so the

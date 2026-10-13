@@ -36,7 +36,7 @@ enum FormSteps {
 const CreateNewUser = () => {
     const { back, push } = useRouter()
     const { mutate: createStaffUser, isPending } = useCreateStaffUser()
-    const [formStep, setFormStep] = useState<FormSteps>(FormSteps.securityAndRole)
+    const [formStep, setFormStep] = useState<FormSteps>(FormSteps.documents)
 
     const methods = useForm<NewUserFormValues>({
         resolver: zodResolver(newUserFormSchema),

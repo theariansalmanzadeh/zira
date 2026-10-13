@@ -36,12 +36,24 @@ export const occupationInfoSchema = z.object({
     hasPercentageSalesContract: z.boolean(),
 })
 
+export const documentsFormSchema = z.object({
+    documents: z
+        .array(
+            z.object({
+                slot: z.string(),
+                file: z.string(),
+            })
+        )
+        .optional(),
+})
+
 export const newUserFormSchema = identityFormSchema
     .merge(addressFormSchema)
     .merge(emergencyFormFlatSchema)
     .merge(bankInfoSchema)
     .merge(securityAndRoleSchema)
     .merge(occupationInfoSchema)
+    .merge(documentsFormSchema)
 
 export type NewUserFormValues = z.infer<typeof newUserFormSchema>
 
@@ -96,6 +108,7 @@ export const NEW_USER_DEFAULT_VALUES: NewUserFormValues = {
     destinationBranch: '',
     assignedBranch: '',
     hasPercentageSalesContract: false,
+    documents: [],
 }
 
 export const EDIT_USER_DEFAULT_VALUES: NewUserFormValues = {
@@ -149,6 +162,7 @@ export const EDIT_USER_DEFAULT_VALUES: NewUserFormValues = {
     destinationBranch: 'vanak',
     assignedBranch: 'vanak',
     hasPercentageSalesContract: true,
+    documents: [],
 }
 
 export const IDENTITY_FIELDS = [

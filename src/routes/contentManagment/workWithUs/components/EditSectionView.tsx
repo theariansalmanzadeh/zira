@@ -35,7 +35,7 @@ const extensions = [
 ]
 
 const EditSectionView = ({ id, index, className }: EditSectionViewProps) => {
-    const { sections, updateSection } = useWorkWithUs()
+    const { sections, updateSection, saveSection } = useWorkWithUs()
     const section = sections.find((item) => item.id === id)
 
     const editor = useEditor({
@@ -99,7 +99,7 @@ const EditSectionView = ({ id, index, className }: EditSectionViewProps) => {
                         type="button"
                         variant="outline"
                         className="h-9 gap-1.5 rounded-button-md px-4"
-                        onClick={() => updateSection(id, { status: 'draft' })}
+                        onClick={() => saveSection(id)}
                     >
                         <Icon label="draft400Linear" className="size-4!" />
                         <span className="text-label-md font-semibold">

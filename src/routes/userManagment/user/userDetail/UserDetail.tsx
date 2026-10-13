@@ -1,6 +1,7 @@
 'use client'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/shared/components/ui/Tabs'
+import type { User } from '@/src/api/types/admin/user'
 import Departments from './component/Departments'
 import Header from './component/header'
 import PersonnelInfo from './component/PersonnelInfo'
@@ -8,10 +9,10 @@ import Role from './component/Role'
 import SecurityStatus from './component/SecurityStatus'
 import SessionManagement from './component/SessionManagement'
 
-const UserDetail = () => {
+const UserDetail = ({ user }: { user: User }) => {
     return (
         <div className='flex w-full flex-col gap-4' dir='rtl'>
-            <Header />
+            <Header user={user} />
             <Tabs defaultValue='personnel' dir='rtl' className='w-full'>
                 <TabsList className='w-full justify-start overflow-x-auto overflow-y-hidden'>
                     <TabsTrigger value='personnel'>اطلاعات پرسنلی</TabsTrigger>

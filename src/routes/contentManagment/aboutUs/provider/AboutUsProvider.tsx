@@ -4,19 +4,50 @@ import {
     createContext,
     useCallback,
     useContext,
+    useEffect,
     useMemo,
     useState,
     type ReactNode,
 } from 'react'
+import type {
+    ContentStatusEnum,
+    PageSectionOut,
+} from '@/src/api/types/admin/cms/staticPage'
 import {
-    ABOUT_US_SECTIONS,
-    type AboutSectionItem,
-} from '../constants'
+    useArchiveSection,
+    useCreateSection,
+    useReorderSections,
+    useStaticPageDetail,
+    useUpdateSection,
+} from '@/src/routes/contentManagment/hooks/staticPage'
+import type { EditSectionStatus } from '../components/EditSectionView'
+import type { AboutSectionItem } from '../constants'
+
+const PAGE = 'ABOUT'
+
+const toSectionStatus = (status: ContentStatusEnum): EditSectionStatus => {
+    if (status === 'PUBLISHED') return 'published'
+    if (status === 'HIDDEN' || status === 'ARCHIVED') return 'hidden'
+    return 'draft'
+}
+
+const toSectionItem = (
+    section: PageSectionOut,
+    pageDisplay: string
+): AboutSectionItem => ({
+    id: section.id,
+    title: section.title,
+    body: section.body,
+    page_display: pageDisplay,
+    visible: section.is_visible,
+    status: toSectionStatus(section.status),
+})
 
 type AboutUsContextValue = {
     sections: AboutSectionItem[]
     addSection: () => void
     updateSection: (id: string, patch: Partial<AboutSectionItem>) => void
+    setSectionVisible: (id: string, visible: boolean) => void
     moveSection: (index: number, direction: -1 | 1) => void
     removeSection: (id: string) => void
 }
@@ -38,21 +69,39 @@ type AboutUsProviderProps = {
 }
 
 const AboutUsProvider = ({ children }: AboutUsProviderProps) => {
-    const [sections, setSections] =
-        useState<AboutSectionItem[]>(ABOUT_US_SECTIONS)
+    const [sections, setSections] = useState<AboutSectionItem[]>([])
+    const { data } = useStaticPageDetail(PAGE)
+    const { mutate: createSection } = useCreateSection()
+    const { mutate: updateSectionMutation } = useUpdateSection()
+    const { mutate: archiveSection } = useArchiveSection()
+    const { mutate: reorderSections } = useReorderSections()
+
+    useEffect(() => {
+        if (!data) return
+
+        setSections(
+            data.sections.map((section) =>
+                toSectionItem(section, data.page_display)
+            )
+        )
+    }, [data])
 
     const addSection = useCallback(() => {
-        setSections((prev) => [
-            ...prev,
+        createSection(
             {
-                id: crypto.randomUUID(),
-                title: '',
-                body: '',
-                visible: true,
-                status: 'draft',
+                page: PAGE,
+                body: { title: '', body: '', is_visible: true },
             },
-        ])
-    }, [])
+            {
+                onSuccess: (section) => {
+                    setSections((prev) => [
+                        ...prev,
+                        toSectionItem(section, data?.page_display ?? ''),
+                    ])
+                },
+            }
+        )
+    }, [createSection, data?.page_display])
 
     const updateSection = useCallback(
         (id: string, patch: Partial<AboutSectionItem>) => {
@@ -65,31 +114,84 @@ const AboutUsProvider = ({ children }: AboutUsProviderProps) => {
         []
     )
 
-    const moveSection = useCallback((index: number, direction: -1 | 1) => {
-        setSections((prev) => {
-            const nextIndex = index + direction
-            if (nextIndex < 0 || nextIndex >= prev.length) return prev
+    const setSectionVisible = useCallback(
+        (id: string, visible: boolean) => {
+            updateSectionMutation(
+                {
+                    page: PAGE,
+                    sectionId: id,
+                    body: { is_visible: visible },
+                },
+                {
+                    onSuccess: (section) => {
+                        setSections((prev) =>
+                            prev.map((item) =>
+                                item.id === id
+                                    ? {
+                                          ...item,
+                                          visible: section.is_visible,
+                                          status: toSectionStatus(section.status),
+                                      }
+                                    : item
+                            )
+                        )
+                    },
+                }
+            )
+        },
+        [updateSectionMutation]
+    )
 
-            const next = [...prev]
+    const moveSection = useCallback(
+        (index: number, direction: -1 | 1) => {
+            const nextIndex = index + direction
+            if (nextIndex < 0 || nextIndex >= sections.length) return
+
+            const next = [...sections]
             const [item] = next.splice(index, 1)
             next.splice(nextIndex, 0, item)
-            return next
-        })
-    }, [])
+            setSections(next)
+            reorderSections({
+                page: PAGE,
+                body: { ids: next.map((section) => section.id) },
+            })
+        },
+        [reorderSections, sections]
+    )
 
-    const removeSection = useCallback((id: string) => {
-        setSections((prev) => prev.filter((section) => section.id !== id))
-    }, [])
+    const removeSection = useCallback(
+        (id: string) => {
+            archiveSection(
+                { page: PAGE, sectionId: id },
+                {
+                    onSuccess: () => {
+                        setSections((prev) =>
+                            prev.filter((section) => section.id !== id)
+                        )
+                    },
+                }
+            )
+        },
+        [archiveSection]
+    )
 
     const value = useMemo(
         () => ({
             sections,
             addSection,
             updateSection,
+            setSectionVisible,
             moveSection,
             removeSection,
         }),
-        [sections, addSection, updateSection, moveSection, removeSection]
+        [
+            sections,
+            addSection,
+            updateSection,
+            setSectionVisible,
+            moveSection,
+            removeSection,
+        ]
     )
 
     return (

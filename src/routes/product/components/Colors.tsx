@@ -6,13 +6,21 @@ import { cn } from '@/src/shared/libs/utils';
 import { COLOR_ITEMS } from '../content/dummy';
 import { useProduct } from '../context/Provider';
 
-const Colors = () => {
+export type ProductColorOption = {
+    id: string
+    label: string
+    value: string
+}
+
+const Colors = ({ items }: { items?: ProductColorOption[] }) => {
     const { colors: selectedColors, setColors, isCustomPack } = useProduct()
-    const colors = COLOR_ITEMS.map((item) => ({
-        id: item.value,
-        label: item.label,
-        value: item.color,
-    }))
+    const colors = items?.length
+        ? items
+        : COLOR_ITEMS.map((item) => ({
+              id: item.value,
+              label: item.label,
+              value: item.color,
+          }))
     const value = isCustomPack ? selectedColors : (selectedColors[0] ?? '')
     const selected = Array.isArray(value) ? value : [value]
 

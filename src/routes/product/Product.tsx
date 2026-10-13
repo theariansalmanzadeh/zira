@@ -13,7 +13,7 @@ import {
     QUANTITY_ITEMS,
     SIZE_ITEMS,
 } from './content/dummy'
-import type { PlpProduct } from '@/src/routes/productsList/constants'
+import type { CardOut, PDPOut } from '@/src/api/types/public/catalog'
 import { useModalStore } from '@/src/shared/store/modal-store'
 import { ModalTypes } from '@/src/shared/components/modals/types'
 import Images from './components/Images'
@@ -25,7 +25,40 @@ const handleToggleChange =
         if (value) setter(value)
     }
 
-const Product = ({ product }: { product?: PlpProduct }) => {
+const moneyAmount = (amount?: string | null) => {
+    const parsed = Number(amount)
+    return Number.isFinite(parsed) ? parsed : 0
+}
+
+const productImages = (product: PDPOut) => {
+    const urls = [
+        product.cover_url,
+        ...(product.items ?? []).flatMap((item) =>
+            (item.images ?? []).map((image) => image.url)
+        ),
+    ].filter((url): url is string => Boolean(url))
+
+    return [...new Set(urls)]
+}
+
+const productSizes = (product: PDPOut) => {
+    const fromCard = product.sizes ?? []
+    const fromItems = (product.items ?? [])
+        .map((item) => item.size?.name || item.size?.code)
+        .filter((size): size is string => Boolean(size))
+
+    return [...new Set([...fromCard, ...fromItems])]
+}
+
+const Product = ({
+    product,
+    relatedProducts,
+    similarProducts,
+}: {
+    product: PDPOut
+    relatedProducts: CardOut[]
+    similarProducts: CardOut[]
+}) => {
     const {
         quantity,
         setQuantity,
@@ -34,23 +67,54 @@ const Product = ({ product }: { product?: PlpProduct }) => {
         isCustomPack,
     } = useProduct()
     const openModal = useModalStore((state) => state.openModal)
+    const images = productImages(product)
+    const sizeOptions = productSizes(product)
+    const sizeItems = sizeOptions.length
+        ? sizeOptions.map((size) => ({ label: size, value: size }))
+        : SIZE_ITEMS
+    const packItems = (product.items ?? []).filter((item) => item.is_pack)
+    const quantityItems = packItems.length
+        ? packItems.map((item) => ({
+              label: item.display_name,
+              value: item.id,
+          }))
+        : QUANTITY_ITEMS
+    const colorItems = (product.colors ?? []).map((color) => ({
+        id: color.code,
+        label: color.name,
+        value: color.hex_code,
+    }))
+    const tags = (product.labels ?? []).map((label) => ({
+        id: label,
+        label,
+    }))
+    const description = product.items?.find((item) => item.description)?.description
+    const price = moneyAmount(
+        product.price_summary?.original_price?.amount ??
+            product.price_summary?.final_price?.amount
+    )
+    const discount = moneyAmount(product.price_summary?.discount_percent)
+    const details = [
+        { label: 'کد محصول', value: product.code },
+        { label: 'برند', value: product.brand?.name ?? '' },
+        { label: 'دسته‌بندی', value: product.category?.name ?? '' },
+        { label: 'جنس', value: product.material?.name ?? '' },
+        { label: 'خط مدل', value: product.model_line?.name ?? '' },
+    ].filter((item) => item.value)
 
     return (
         <div className='flex flex-col gap-xl pt-2xl'>
             <div className="flex flex-col md:flex-row justify-between md:gap-10 gap-xl w-full">
                 <Images
-                    images={[
-                        '/images/item-1.jpg',
-                        '/images/item-2.jpg',
-                        '/images/item-3.jpg',
-                        '/images/item-1.jpg',
-                        '/images/item-2.jpg',
-                        '/images/item-3.jpg',
-                    ]}
+                    images={
+                        images.length
+                            ? images
+                            : ['/images/item-1.jpg']
+                    }
                 />
                 <div className="relative -mt-xl flex min-w-0 basis-1/2 flex-col gap-xl rounded-t-2xl p-lg">
-                    <span className="text-outline">{product?.brand ?? 'برند'}</span>
-                    <h2 className="text-title-lg font-bold text-on-surface">{product?.title ?? 'عنوان محصول'}</h2>
+                    <span className="text-outline">{product.brand?.name ?? 'برند'}</span>
+                    <h2 className="text-title-lg font-bold text-on-surface">{product.name}</h2>
                     <div className="flex flex-col gap-3">
                         <span className="text-title-md font-normal text-on-surface-variant">تعداد</span>
                         <ToggleGroup
@@ -61,7 +125,7 @@ const Product = ({ product }: { product?: PlpProduct }) => {
                             value={quantity}
                             onValueChange={handleToggleChange(setQuantity)}
                         >
-                            {QUANTITY_ITEMS.map((item) => (
+                            {quantityItems.map((item) => (
                                 <ToggleGroupItem
                                     key={item.value}
                                     className='text-title-md'
@@ -101,7 +165,7 @@ const Product = ({ product }: { product?: PlpProduct }) => {
                             value={sizes}
                             onValueChange={setSizes}
                         >
-                            {SIZE_ITEMS.map((item) => (
+                            {sizeItems.map((item) => (
                                 <ToggleGroupItem
                                     key={item.value}
                                     className=' text-title-md'
@@ -123,7 +187,7 @@ const Product = ({ product }: { product?: PlpProduct }) => {
                                 if (value) setSizes([value])
                             }}
                         >
-                            {SIZE_ITEMS.map((item) => (
+                            {sizeItems.map((item) => (
                                 <ToggleGroupItem
                                     key={item.value}
                                     className=' text-title-md'
@@ -138,19 +202,26 @@ const Product = ({ product }: { product?: PlpProduct }) => {
                     </div>
                     <div className="flex flex-col gap-3">
                         <span className="text-title-md font-normal text-on-surface-variant">رنگ</span>
-                        <Colors />
+                        <Colors items={colorItems} />
                     </div>
-                    <Tags tags={PRODUCT_TAGS} />
+                    <Tags tags={tags.length ? tags : PRODUCT_TAGS} />
                     <DeliveryInfo quantity={10} deliveryTime="۳ تا ۵ روز کاری" />
-                    <CTA discount={10} price={1343930000} quantity={1} />
-                    <Details details={PRODUCT_DETAILS} />
+                    <CTA
+                        discount={discount}
+                        price={price}
+                        quantity={product.supply?.can_order === false ? 0 : 1}
+                    />
+                    <Details
+                        details={details.length ? details : PRODUCT_DETAILS}
+                        description={description}
+                    />
                 </div>
             </div>
             <div className='py-[64px]'>
-                <ProductCarousel title="محصولات مرتبط" />
+                <ProductCarousel title="محصولات مرتبط" products={relatedProducts} />
             </div>
             <div className='py-[64px]'>
-                <ProductCarousel title="محصولات مشابه" />
+                <ProductCarousel title="محصولات مشابه" products={similarProducts} />
             </div>
         </div>
     )

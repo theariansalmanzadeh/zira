@@ -27,6 +27,8 @@ import type {
     UpdateUserResponse,
     UpdateUserStatusRequest,
     UpdateUserStatusResponse,
+    UploadStaffDocumentRequest,
+    UploadStaffDocumentResponse,
     UserBranchAccessRequest,
 } from '../types/admin/user'
 
@@ -41,6 +43,32 @@ export const createStaffUser = (
         '/auth/staff',
         body,
         config
+    )
+
+const toUploadStaffDocumentFormData = ({
+    file,
+    slot,
+}: UploadStaffDocumentRequest) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    if (slot) formData.append('slot', slot)
+    return formData
+}
+
+export const uploadStaffDocument = (
+    body: UploadStaffDocumentRequest,
+    config?: AxiosRequestConfig
+) =>
+    staffAuthPost<UploadStaffDocumentResponse, FormData>(
+        '/auth/staff/documents/upload',
+        toUploadStaffDocumentFormData(body),
+        {
+            ...config,
+            headers: {
+                ...config?.headers,
+                'Content-Type': 'multipart/form-data',
+            },
+        }
     )
 
 export const listUsers = (config?: AxiosRequestConfig) =>

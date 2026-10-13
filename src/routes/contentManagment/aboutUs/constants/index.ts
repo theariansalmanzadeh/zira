@@ -4,6 +4,7 @@ export type AboutSectionItem = {
     id: string
     title: string
     body: string
+    page_display?: string
     visible: boolean
     status: EditSectionStatus
 }

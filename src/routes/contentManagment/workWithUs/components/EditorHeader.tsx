@@ -23,7 +23,7 @@ const STATUS_PILL: Record<
 }
 
 const EditorHeader = ({ id, index }: EditorHeaderProps) => {
-    const { sections, updateSection, moveSection, removeSection } =
+    const { sections, updateSection, setSectionVisible, moveSection, removeSection } =
         useWorkWithUs()
     const section = sections.find((item) => item.id === id)
 
@@ -48,7 +48,7 @@ const EditorHeader = ({ id, index }: EditorHeaderProps) => {
                 <Switch
                     checked={section.visible}
                     onCheckedChange={(visible) =>
-                        updateSection(id, { visible })
+                        setSectionVisible(id, visible)
                     }
                 />
                 <span className="text-label-sm font-semibold text-on-surface-variant">

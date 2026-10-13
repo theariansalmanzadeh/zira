@@ -1,7 +1,11 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
+import type { User } from '@/src/api/types/admin/user'
+import { userKeys, useUpdateUser } from '@/src/routes/userManagment/hooks/user'
 import { Button } from '@/src/shared/components/ui/button'
 import {
     Tabs,
@@ -17,32 +21,48 @@ import IdentityForm from '../createNewUser/components/IdentityForm'
 import OccupationInfo from '../createNewUser/components/OccupationInfo'
 import SecurityAndRole from '../createNewUser/components/SecurityAndRole'
 import {
-    EDIT_USER_DEFAULT_VALUES,
     newUserFormSchema,
     type NewUserFormValues,
 } from '../createNewUser/schema'
+import {
+    toEditUserFormValues,
+    toUpdateUserRequest,
+} from './utils/toEditUserFormValues'
 
-type EditUserProps = {
-    id: string
-}
-
-const EditUser = ({ id }: EditUserProps) => {
+const EditUser = ({ user }: { user: User }) => {
+    const router = useRouter()
+    const queryClient = useQueryClient()
+    const { mutate: updateUser, isPending } = useUpdateUser()
     const methods = useForm<NewUserFormValues>({
         resolver: zodResolver(newUserFormSchema),
-        defaultValues: EDIT_USER_DEFAULT_VALUES,
+        defaultValues: toEditUserFormValues(user),
         mode: 'onSubmit',
         reValidateMode: 'onBlur',
     })
 
-    const onSubmit = (_data: NewUserFormValues) => {
-        // Placeholder until update-user API is wired.
-        console.log('edit user', id, _data)
+    const onSubmit = (values: NewUserFormValues) => {
+        updateUser(
+            {
+                userId: user.id,
+                body: toUpdateUserRequest(values),
+            },
+            {
+                onSuccess: () => {
+                    queryClient.invalidateQueries({
+                        queryKey: userKeys.detail(user.id),
+                    })
+                    router.push(
+                        `/admin/user-management/user-details/${user.id}`
+                    )
+                },
+            }
+        )
     }
 
     return (
         <FormProvider {...methods}>
             <form
-                className='mx-auto flex w-full max-w-[900px] flex-col gap-6'
+                className='mx-auto flex w-full sm:max-w-[1000px] flex-col gap-6 bg-surface-container-lowest p-4 rounded-card-lg'
                 dir='rtl'
                 onSubmit={methods.handleSubmit(onSubmit)}
             >
@@ -85,6 +105,8 @@ const EditUser = ({ id }: EditUserProps) => {
                     variant='primary'
                     size='lg'
                     className='w-full text-label-lg'
+                    isLoading={isPending}
+                    disabled={isPending}
                 >
                     ذخیره تغییرات
                 </Button>

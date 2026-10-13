@@ -4,8 +4,10 @@ export type WorkWithUsSectionItem = {
     id: string
     title: string
     body: string
+    page_display?: string
     visible: boolean
     status: EditSectionStatus
+    isNew?: boolean
 }
 
 export const WORK_WITH_US_SECTIONS: WorkWithUsSectionItem[] = [

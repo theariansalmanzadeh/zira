@@ -5,27 +5,102 @@ export type UserDepartment = {
     is_active: boolean
 }
 
+export type UserIdentity = {
+    id: string
+    user_id: string
+    birth_certificate_no: string
+    father_name: string
+    birth_date: string
+    issue_place: string
+    gender: string
+    marital_status: string
+    children_count: number
+    social_security_no: string
+    educational_qualification: string
+    created_at: string
+    updated_at: string
+}
+
+export type UserAddress = {
+    id: string
+    user_id: string
+    province: string
+    city: string
+    full_address: string
+    postal_code: string
+    phone: string
+    mobile_1: string
+    mobile_2: string
+    created_at: string
+    updated_at: string
+}
+
+export type UserBankAccount = {
+    id: string
+    user_id: string
+    bank_name: string
+    iban: string
+    account_no: string
+    card_no: string
+    created_at: string
+    updated_at: string
+}
+
+export type UserNextOfKin = {
+    id: string
+    user_id: string
+    full_name: string
+    relation: string
+    phone: string
+    address: string
+    created_at: string
+    updated_at: string
+}
+
+export type UserDocument = {
+    id: string
+    user_id: string
+    doc_type: string
+    slot: string
+    file: string
+    uploaded_at: string
+    created_at: string
+    updated_at: string
+}
+
 export type User = {
     id: string
     phone_number: string
-    username?: string | null
-    email?: string | null
-    first_name?: string | null
-    last_name?: string | null
-    national_id?: string | null
-    personnel_code?: string | null
-    department?: string | null
-    departments?: UserDepartment[]
-    job_title?: string | null
+    username: string
+    email: string
+    first_name: string
+    last_name: string
+    national_id: string
+    personnel_code: string
+    department: string
+    departments: UserDepartment[]
+    job_title: string
+    job_description: string
+    account_description: string
+    has_commission_contract: boolean
+    commission_percent: number
     user_type: string
     status: string
     is_active: boolean
     is_verified: boolean
-    primary_branch_id?: string | null
-    direct_manager_id?: string | null
-    commission_percent: number
-    last_login_at?: string | null
-    created_by_id?: string | null
+    primary_branch_id: string
+    direct_manager_id: string
+    last_login_at: string
+    last_activity_at: string
+    created_at: string
+    created_by_id: string
+    roles: string[]
+    active_sessions_count: number
+    identity: UserIdentity
+    addresses: UserAddress[]
+    bank_accounts: UserBankAccount[]
+    next_of_kin: UserNextOfKin[]
+    documents: UserDocument[]
 }
 
 export type UserSession = {
@@ -97,6 +172,18 @@ export type StaffNextOfKin = {
 export type StaffDocument = {
     slot: string
     file: string
+}
+
+export type UploadStaffDocumentRequest = {
+    file: File
+    slot?: string | null
+}
+
+export type UploadStaffDocumentResponse = {
+    file: string
+    slot: string | null
+    file_size: number
+    content_type: string
 }
 
 export type CreateStaffUserRequest = {

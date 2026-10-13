@@ -19,8 +19,6 @@ const ActionButtons = () => {
 
     return (
         <div className='flex flex-row items-center justify-center gap-sm'>
-            <IconButton variant='outline' icon='cozy' onClick={() => { }} />
-            <IconButton variant='outline' icon='sort400Linear' onClick={() => { }} />
             <Popover open={sortOpen} onOpenChange={setSortOpen}>
                 <PopoverTrigger asChild>
                     <Button

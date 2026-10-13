@@ -1,11 +1,23 @@
+'use client'
+
+import { useParams } from 'next/navigation'
+import { useGetUser } from '@/src/routes/userManagment/hooks/user'
 import EditUser from '@/src/routes/userManagment/user/editUser/EditUser'
+import { Spinner } from '@/src/shared/components/ui/spinner'
 
-type EditUserPageProps = {
-    params: Promise<{ id: string }>
-}
+export default function EditUserPage() {
+    const { id } = useParams<{ id: string }>()
+    const { data: user, isPending } = useGetUser(id)
 
-export default async function EditUserPage({ params }: EditUserPageProps) {
-    const { id } = await params
+    if (isPending) {
+        return (
+            <div className='flex justify-center py-10'>
+                <Spinner className='size-6' />
+            </div>
+        )
+    }
 
-    return <EditUser id={id} />
+    if (!user) return null
+
+    return <EditUser user={user} />
 }

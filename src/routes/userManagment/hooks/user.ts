@@ -18,6 +18,7 @@ import {
     updateUser,
     updateUserBranchMaster,
     updateUserStatus,
+    uploadStaffDocument,
 } from '@/src/api/admin/user'
 import type {
     CreateStaffUserRequest,
@@ -26,6 +27,7 @@ import type {
     UpdateUserBranchMasterRequest,
     UpdateUserRequest,
     UpdateUserStatusRequest,
+    UploadStaffDocumentRequest,
     UserBranchAccessRequest,
 } from '@/src/api/types/admin/user'
 
@@ -66,6 +68,16 @@ export const useCreateStaffUser = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: userKeys.staff() })
+        },
+    })
+}
+
+export const useUploadStaffDocument = () => {
+    return useMutation({
+        mutationFn: async (body: UploadStaffDocumentRequest) => {
+            const result = await uploadStaffDocument(body)
+            if (!result.success) throw result.error
+            return result.data
         },
     })
 }

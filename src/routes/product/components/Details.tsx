@@ -7,9 +7,10 @@ interface DetailItem {
 
 interface DetailsProps {
     details: DetailItem[];
+    description?: string;
 }
 
-const Details = ({ details }: DetailsProps) => {
+const Details = ({ details, description }: DetailsProps) => {
     return (
         <Tabs defaultValue="specs" dir="rtl" className="w-full">
             <TabsList className="w-full">
@@ -35,7 +36,8 @@ const Details = ({ details }: DetailsProps) => {
             </TabsContent>
             <TabsContent value="description" className="pt-xl">
                 <p className="text-on-surface-variant text-body-lg leading-relaxed">
-                    این محصول با کیفیت بالا و طراحی مدرن، یکی از محبوب‌ترین محصولات فروشگاه ماست. جنس پارچه نرم و راحت بوده و برای استفاده روزمره مناسب است.
+                    {description ||
+                        'این محصول با کیفیت بالا و طراحی مدرن، یکی از محبوب‌ترین محصولات فروشگاه ماست. جنس پارچه نرم و راحت بوده و برای استفاده روزمره مناسب است.'}
                 </p>
             </TabsContent>
         </Tabs>

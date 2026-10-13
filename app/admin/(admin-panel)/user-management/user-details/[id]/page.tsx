@@ -1,5 +1,23 @@
+'use client'
+
+import { useParams } from 'next/navigation'
+import { useGetUser } from '@/src/routes/userManagment/hooks/user'
 import UserDetails from '@/src/routes/userManagment/user/userDetail/UserDetail'
+import { Spinner } from '@/src/shared/components/ui/spinner'
 
 export default function UserDetailsPage() {
-    return <UserDetails />
+    const { id } = useParams<{ id: string }>()
+    const { data: user, isPending } = useGetUser(id)
+
+    if (isPending) {
+        return (
+            <div className='flex justify-center py-10'>
+                <Spinner className='size-6' />
+            </div>
+        )
+    }
+
+    if (!user) return null
+
+    return <UserDetails user={user} />
 }

@@ -64,5 +64,8 @@ export const toCreateStaffUserRequest = (
     job_description: '',
     has_commission_contract: values.hasPercentageSalesContract,
     commission_percent: 0,
-    documents: [],
+    documents: (values.documents ?? []).map((document) => ({
+        slot: document.slot,
+        file: document.file,
+    })),
 })

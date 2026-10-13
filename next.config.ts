@@ -19,12 +19,14 @@ const API_PROTOCOL = API_ORIGIN.protocol.replace(":", "") as "http" | "https";
 
 const nextConfig: NextConfig = {
   async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination: `${API_ORIGIN.origin}/api/:path*`,
-      },
-    ];
+    return {
+      beforeFiles: [
+        {
+          source: "/api/:path*",
+          destination: `${API_ORIGIN.origin}/api/:path*`,
+        },
+      ],
+    };
   },
   images: {
     remotePatterns: [
