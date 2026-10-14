@@ -41,7 +41,7 @@ const TicketDetail = ({ id }: TicketDetailProps) => {
             />
             <div className='grid grid-cols-12 gap-6'>
                 <div className='col-span-12 lg:col-span-9'>
-                    <Conversation />
+                    <Conversation ticketId={ticket.id} />
                 </div>
                 <div className='col-span-12 lg:col-span-3'>
                     <Sidebar

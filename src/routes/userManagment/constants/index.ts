@@ -193,7 +193,6 @@ export const USER_MANAGEMENT_SUB_SIDEBAR_SECTIONS: readonly SubSidebarSection[] 
             title: 'مدیریت کاربران',
             links: [
                 { label: 'کاربران', href: '/admin/user-management?sub=user' },
-                { label: 'گروه‌ها', href: '/admin/user-management?sub=group' },
                 { label: 'نقش‌ها', href: '/admin/user-management?sub=role' },
                 {
                     label: 'دپارتمان‌ها',

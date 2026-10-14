@@ -174,7 +174,7 @@ export const SUB_SIDEBAR_CONTENT: Record<string, SubSidebarContent> = {
         headerIcon: 'groups',
         header: 'مدیریت کاربران',
         faLabel: 'مدیریت کاربران',
-        subheader: 'کاربران، گروه‌ها، نقش‌ها و دپارتمان‌ها',
+        subheader: 'کاربران، نقش‌ها و دپارتمان‌ها',
         itemsList: USER_MANAGEMENT_SUB_SIDEBAR_SECTIONS,
     },
 }

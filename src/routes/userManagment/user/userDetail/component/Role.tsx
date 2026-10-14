@@ -1,31 +1,11 @@
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { Pill } from '@/src/shared/components/ui/Pill'
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/src/shared/components/ui/Table'
-import { formatFaDate } from '@/src/shared/libs/formatter'
 
-const HEADERS = [
-    'نقش',
-    'دپارتمان',
-    'تاریخ انتساب',
-    'تاریخ انقضا',
-    'وضعیت',
-] as const
-
-const ROLE_ROW = {
-    title: 'مدیر سیستم',
-    slug: 'system_admin',
-    department: 'مدیریت',
-    assignedAt: '2019-05-05T00:00:00.000Z',
+type RoleProps = {
+    roles: string[]
 }
 
-const Role = () => {
+const Role = ({ roles }: RoleProps) => {
     return (
         <div
             className='flex flex-col gap-5 rounded-card-lg bg-surface-container-lowest px-6 py-5'
@@ -53,45 +33,10 @@ const Role = () => {
                 </p>
             </div>
 
-            <div className='overflow-x-auto rounded-card-md border border-outline-variant'>
-                <Table>
-                    <TableHeader>
-                        <TableRow className='bg-surface-container-high hover:bg-surface-container-high'>
-                            {HEADERS.map((header) => (
-                                <TableHead
-                                    key={header}
-                                    className='text-label-md font-medium text-outline'
-                                >
-                                    {header}
-                                </TableHead>
-                            ))}
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        <TableRow className='[&>*]:text-label-lg [&>*]:text-on-surface-variant'>
-                            <TableCell>
-                                <div className='flex flex-col gap-0.5'>
-                                    <span className='font-semibold text-on-surface'>
-                                        {ROLE_ROW.title}
-                                    </span>
-                                    <span className='text-label-sm text-info' dir='ltr'>
-                                        {ROLE_ROW.slug}
-                                    </span>
-                                </div>
-                            </TableCell>
-                            <TableCell>{ROLE_ROW.department}</TableCell>
-                            <TableCell>
-                                {formatFaDate(ROLE_ROW.assignedAt, { timeZone: 'UTC' })}
-                            </TableCell>
-                            <TableCell>
-                                <Pill text='نامحدود (دائمی)' variant='success' />
-                            </TableCell>
-                            <TableCell>
-                                <Pill text='فعال' variant='success' />
-                            </TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
+            <div className='flex flex-row flex-wrap gap-2'>
+                {roles.map((role) => (
+                    <Pill key={role} text={role} variant='info' />
+                ))}
             </div>
         </div>
     )

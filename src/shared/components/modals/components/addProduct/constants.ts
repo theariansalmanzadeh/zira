@@ -19,6 +19,7 @@ export type AddProductModalData = {
     hasQuantity?: boolean
     quantities?: Record<string, number>
     onConfirm?: (products: AddProductItem[]) => void
+    onSubmit?: (products: AddProductItem[]) => void
     addProduct?: (product: AddProductItem) => void
     removeProduct?: (id: string) => void
 }

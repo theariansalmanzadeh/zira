@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useFieldArray, useFormContext } from 'react-hook-form'
 import { Button } from '@/src/shared/components/ui/button'
 import IconButton from '@/src/shared/components/ui/IconButton'
 import {
@@ -12,46 +12,43 @@ import {
     TableRow,
 } from '@/src/shared/components/ui/Table'
 import { formatFaNumber, formatPrice } from '@/src/shared/libs/formatter'
-import {
-    SELECTED_PRODUCTS_DUMMY,
-    type SelectedProduct,
-} from '../constant'
 import { ModalTypes } from '@/src/shared/components/modals/types'
 import { useModalStore } from '@/src/shared/store/modal-store'
+import type { NewDiscountFormValues } from '../schema'
 
 const TABLE_HEADERS = ['کد کالا', 'نام کالا', 'قیمت', 'موجودی', ''] as const
 
 const ProductList = () => {
     const { openModal } = useModalStore()
-    const [products, setProducts] = useState<SelectedProduct[]>(
-        SELECTED_PRODUCTS_DUMMY
-    )
-
-    const handleRemove = (id: string) => {
-        setProducts((prev) => prev.filter((product) => product.id !== id))
-    }
+    const { control } = useFormContext<NewDiscountFormValues>()
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: 'products',
+        keyName: 'fieldId',
+    })
 
     const handleAddProduct = () => {
         openModal(ModalTypes.ADD_PRODUCT, {
-            selectedIds: products.map((product) => product.id),
-            onConfirm: (selected: {
-                id: string
-                productName: string
-                sku: string
-            }[]) => {
-                setProducts((prev) => {
-                    const existingIds = new Set(prev.map((item) => item.id))
-                    const next = selected
-                        .filter((item) => !existingIds.has(item.id))
-                        .map((item) => ({
+            selectedIds: fields.map((product) => product.id),
+            onConfirm: (
+                selected: {
+                    id: string
+                    productName: string
+                    sku: string
+                }[]
+            ) => {
+                const existingIds = new Set(fields.map((item) => item.id))
+                selected
+                    .filter((item) => !existingIds.has(item.id))
+                    .forEach((item) =>
+                        append({
                             id: item.id,
                             code: item.sku,
                             name: item.productName,
                             price: 0,
                             stock: 0,
-                        }))
-                    return [...prev, ...next]
-                })
+                        })
+                    )
             },
         })
     }
@@ -87,44 +84,41 @@ const ProductList = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {products.map((product) => (
-                            <>
-                                <TableRow
-                                    key={product.id}
-                                    className='[&>*]:text-label-lg [&>*]:text-on-surface-variant'
-                                >
-                                    <TableCell>
-                                        <span className='text-outline'>
-                                            {product.code}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className='font-semibold text-on-surface'>
-                                            {product.name}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className='text-on-surface'>
-                                            {formatPrice(product.price)}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <span className='text-on-surface'>
-                                            {formatFaNumber(product.stock)}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell className='w-[1%] whitespace-nowrap'>
-                                        <IconButton
-                                            icon='delete400Linear'
-                                            variant='ghost'
-                                            className='size-8!'
-                                            iconClassName='size-5! text-outline'
-                                            onClick={() => handleRemove(product.id)}
-                                        />
-                                    </TableCell>
-                                </TableRow>
-                                <div className="py-1" />
-                            </>
+                        {fields.map((product, index) => (
+                            <TableRow
+                                key={product.fieldId}
+                                className='[&>*]:text-label-lg [&>*]:text-on-surface-variant'
+                            >
+                                <TableCell>
+                                    <span className='text-outline'>
+                                        {product.code}
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <span className='font-semibold text-on-surface'>
+                                        {product.name}
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <span className='text-on-surface'>
+                                        {formatPrice(product.price)}
+                                    </span>
+                                </TableCell>
+                                <TableCell>
+                                    <span className='text-on-surface'>
+                                        {formatFaNumber(product.stock)}
+                                    </span>
+                                </TableCell>
+                                <TableCell className='w-[1%] whitespace-nowrap'>
+                                    <IconButton
+                                        icon='delete400Linear'
+                                        variant='ghost'
+                                        className='size-8!'
+                                        iconClassName='size-5! text-outline'
+                                        onClick={() => remove(index)}
+                                    />
+                                </TableCell>
+                            </TableRow>
                         ))}
                     </TableBody>
                 </Table>

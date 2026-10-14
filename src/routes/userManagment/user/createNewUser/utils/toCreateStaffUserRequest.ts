@@ -1,4 +1,5 @@
 import type { CreateStaffUserRequest } from '@/src/api/types/admin/user'
+import { toEnglishDigits } from '@/src/shared/schema/generalSchema'
 import type { NewUserFormValues } from '../schema'
 
 const text = (value?: string) => value?.trim() ?? ''
@@ -7,6 +8,12 @@ const toDate = (value?: string) => {
     const trimmed = text(value)
     if (!trimmed) return ''
     return trimmed.slice(0, 10)
+}
+
+const toIban = (value?: string) => {
+    const compact = toEnglishDigits(text(value)).replace(/[\s-]/g, '').toUpperCase()
+    if (!compact) return ''
+    return compact.startsWith('IR') ? compact : `IR${compact}`
 }
 
 export const toCreateStaffUserRequest = (
@@ -35,20 +42,20 @@ export const toCreateStaffUserRequest = (
     next_of_kin: [
         {
             full_name: `${text(values.contact1FirstName)} ${text(values.contact1LastName)}`.trim(),
-            relation: '',
+            relation: text(values.contact1Relation),
             phone: text(values.contact1Mobile) || text(values.contact1Landline),
             address: '',
         },
         {
             full_name: `${text(values.contact2FirstName)} ${text(values.contact2LastName)}`.trim(),
-            relation: '',
+            relation: text(values.contact2Relation),
             phone: text(values.contact2Mobile) || text(values.contact2Landline),
             address: '',
         },
     ],
     account_no: text(values.accountNumber),
     bank_name: text(values.bankName),
-    iban: text(values.shebaNumber),
+    iban: toIban(values.shebaNumber),
     card_no: text(values.cardNumber),
     phone_number: text(values.mobilePhone) || text(values.mobilePhone1),
     password: values.initialPassword,

@@ -54,6 +54,10 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
             },
         ],
     },
+    department: {
+        title: 'دپارتمان‌ها',
+        subtitle: SUPPORT_SUBTITLE,
+    },
 }
 
 export const getSupportSectionKey = (sub: string) => sub || 'dashboard'

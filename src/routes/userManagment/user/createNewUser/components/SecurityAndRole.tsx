@@ -1,14 +1,15 @@
 'use client'
 
+import { useMemo } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Button } from '@/src/shared/components/ui/button'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import CalendarButton from '@/src/shared/components/ui/CalendarButton'
 import { formatFaDate } from '@/src/shared/libs/formatter'
+import { useListRoles } from '@/src/routes/userManagment/hooks/role'
 import {
     ACCOUNT_STATUS_OPTIONS,
-    USER_ROLE_OPTIONS,
     USER_TYPE_OPTIONS,
 } from '../constants'
 import { SECURITY_AND_ROLE_FIELDS, type NewUserFormValues } from '../schema'
@@ -27,6 +28,15 @@ const SecurityAndRole = ({ onContinue }: SecurityAndRoleProps) => {
         trigger,
         formState: { errors },
     } = useFormContext<NewUserFormValues>()
+    const { data: roles } = useListRoles({ is_active: true })
+    const roleOptions = useMemo(
+        () =>
+            (roles ?? []).map((role) => ({
+                label: role.name,
+                value: role.id,
+            })),
+        [roles]
+    )
 
     const handleContinue = async () => {
         const isValid = await trigger([...SECURITY_AND_ROLE_FIELDS])
@@ -93,7 +103,7 @@ const SecurityAndRole = ({ onContinue }: SecurityAndRoleProps) => {
                                     <FormDropdown
                                         label='نقش کاربر *'
                                         value={field.value || undefined}
-                                        options={USER_ROLE_OPTIONS}
+                                        options={roleOptions}
                                         onChange={field.onChange}
                                         placeholder='انتخاب نقش'
                                     />

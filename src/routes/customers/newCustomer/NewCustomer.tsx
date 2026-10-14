@@ -33,7 +33,7 @@ const NewCustomer = () => {
     const { mutate: createRegistrationRequest, isPending } =
         useCreateRegistrationRequest()
     const [activeStep, setActiveStep] = useState<NewCustomerStep>(
-        NEW_CUSTOMER_STEPS.credit
+        NEW_CUSTOMER_STEPS.identity
     )
 
     const methods = useForm<NewCustomerFormValues>({

@@ -47,7 +47,7 @@ const NotificationRow = ({
 
 const Notification = () => {
     const { data, isPending, isError } = useListStaffNotifications()
-    const notifications = data ?? []
+    const notifications = data?.results ?? []
     const [selected, setSelected] = useState<StaffNotificationDelivery | null>(
         null
     )

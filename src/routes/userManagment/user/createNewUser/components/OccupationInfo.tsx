@@ -1,16 +1,16 @@
 'use client'
 
+import { useMemo } from 'react'
 import { Controller, useFormContext, useWatch } from 'react-hook-form'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Button } from '@/src/shared/components/ui/button'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { Switch } from '@/src/shared/components/ui/Switch'
 import { Icon } from '@/src/shared/components/Icons/Icon'
-import {
-    BRANCH_OPTIONS,
-    DEPARTMENT_OPTIONS,
-    MANAGER_OPTIONS,
-} from '../constants'
+import type { BranchListItem } from '@/src/api/types/admin/organization'
+import { useListBranches } from '@/src/routes/branches/hooks/organization'
+import { useListDepartments } from '@/src/routes/userManagment/hooks/departments'
+import { useListStaffUsers } from '@/src/routes/userManagment/hooks/user'
 import { OCCUPATION_INFO_FIELDS, type NewUserFormValues } from '../schema'
 
 type OccupationInfoProps = {
@@ -24,6 +24,41 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
         trigger,
         formState: { errors },
     } = useFormContext<NewUserFormValues>()
+    const { data: departments } = useListDepartments()
+    const { data: staffUsers } = useListStaffUsers()
+    const { data: branchesData } = useListBranches()
+
+    const departmentOptions = useMemo(
+        () =>
+            (departments ?? [])
+                .filter((department) => department.is_active)
+                .map((department) => ({
+                    label: department.name,
+                    value: department.id,
+                })),
+        [departments]
+    )
+    const managerOptions = useMemo(
+        () =>
+            (staffUsers ?? []).map((user) => ({
+                label:
+                    `${user.first_name} ${user.last_name}`.trim() ||
+                    user.username,
+                value: user.id,
+            })),
+        [staffUsers]
+    )
+    const branchOptions = useMemo(() => {
+        const branches: BranchListItem[] = Array.isArray(branchesData)
+            ? branchesData
+            : ((branchesData as { results?: BranchListItem[] } | undefined)
+                  ?.results ?? [])
+
+        return branches.map((branch) => ({
+            label: branch.name,
+            value: branch.id,
+        }))
+    }, [branchesData])
 
     const destinationBranch = useWatch({
         control,
@@ -35,7 +70,7 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
     })
 
     const assignedBranchLabel =
-        BRANCH_OPTIONS.find((option) => option.value === assignedBranch)
+        branchOptions.find((option) => option.value === assignedBranch)
             ?.label ?? null
 
     const handleAssignBranch = () => {
@@ -73,7 +108,7 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
                                 <FormDropdown
                                     label='بخش محل فعالیت *'
                                     value={field.value || undefined}
-                                    options={DEPARTMENT_OPTIONS}
+                                    options={departmentOptions}
                                     onChange={field.onChange}
                                     placeholder='انتخاب بخش'
                                 />
@@ -86,7 +121,7 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
                                 <FormDropdown
                                     label='مدیر مستقیم *'
                                     value={field.value || undefined}
-                                    options={MANAGER_OPTIONS}
+                                    options={managerOptions}
                                     onChange={field.onChange}
                                     placeholder='انتخاب مدیر'
                                 />
@@ -109,6 +144,21 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
                             />
                         </div>
                     </div>
+                    {errors.activityDepartment?.message ||
+                    errors.directManager?.message ? (
+                        <div className='flex flex-col gap-1'>
+                            {errors.activityDepartment?.message ? (
+                                <span className='text-label-sm text-error'>
+                                    {errors.activityDepartment.message}
+                                </span>
+                            ) : null}
+                            {errors.directManager?.message ? (
+                                <span className='text-label-sm text-error'>
+                                    {errors.directManager.message}
+                                </span>
+                            ) : null}
+                        </div>
+                    ) : null}
 
                     <div className='flex flex-col gap-4 rounded-card-md border border-outline-variant p-4'>
                         <div className='flex flex-col gap-1'>
@@ -136,7 +186,7 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
                                     <FormDropdown
                                         label='شعبه مقصد'
                                         value={field.value || undefined}
-                                        options={BRANCH_OPTIONS}
+                                        options={branchOptions}
                                         onChange={field.onChange}
                                         placeholder='انتخاب شعبه'
                                     />
@@ -156,6 +206,11 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
                                 تخصیص به شعبه
                             </Button>
                         </div>
+                        {errors.assignedBranch?.message ? (
+                            <span className='text-label-sm text-error'>
+                                {errors.assignedBranch.message}
+                            </span>
+                        ) : null}
                     </div>
 
                     <div className='flex flex-row items-center justify-between gap-4 rounded-card-md border border-outline-variant px-4 py-3'>
@@ -178,6 +233,16 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
                                 />
                             )}
                         />
+                        {errors.activityDepartment?.message ? (
+                            <span className='text-label-sm text-error'>
+                                {errors.activityDepartment.message}
+                            </span>
+                        ) : null}
+                        {errors.directManager?.message ? (
+                            <span className='text-label-sm text-error'>
+                                {errors.directManager.message}
+                            </span>
+                        ) : null}
                     </div>
                 </div>
             </div>

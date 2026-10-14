@@ -43,11 +43,9 @@ export const SCOPE_OPTIONS = [
 export type ScopeType = (typeof SCOPE_OPTIONS)[number]['value']
 
 export const CUSTOMER_LEVEL_OPTIONS = [
-    { label: 'طلایی', value: 'gold' },
-    { label: 'نقره‌ای', value: 'silver' },
-    { label: 'برنزی', value: 'bronze' },
-    { label: 'مشتری جدید', value: 'new-customer' },
-    { label: 'همکار عمده', value: 'wholesale' },
+    { label: 'طلایی', value: 'GOLD' },
+    { label: 'نقره‌ای', value: 'SILVER' },
+    { label: 'برنزی', value: 'BRONZE' },
 ] as const
 
 export type CustomerLevel = (typeof CUSTOMER_LEVEL_OPTIONS)[number]['value']

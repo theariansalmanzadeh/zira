@@ -107,7 +107,8 @@ export const LOCAL_SUB_SIDEBAR_CONTENT: Record<
                 links: [
                     { label: 'دسته‌بندی‌ها', href: '/admin/catalog?sub=category-types' },
                     { label: 'ویژگی‌ها و متغیرها', href: '/admin/catalog?sub=variable' },
-                    { label: 'قیمت‌گذاری', href: '/admin/catalog?sub=pricing' },
+                    { label: 'قراردادها', href: '/admin/catalog?sub=contracts' },
+                    { label: 'قیمت‌گذاری', href: '/admin/catalog/pricing' },
                 ],
             },
             {
@@ -137,6 +138,7 @@ export const LOCAL_SUB_SIDEBAR_CONTENT: Record<
                 links: [
                     { label: 'داشبورد پشتیبانی', href: '/admin/support?sub=dashboard' },
                     { label: 'صندوق تیکت‌ها', href: '/admin/support?sub=ticket' },
+                    { label: 'دپارتمان‌ها', href: '/admin/support?sub=department' },
                 ],
             },
         ],

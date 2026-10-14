@@ -1,11 +1,13 @@
 'use client'
 
-import { useId, useState } from 'react'
+import { useId } from 'react'
+import { Controller, useFormContext, useWatch } from 'react-hook-form'
 import AdornedInput from '@/src/shared/components/ui/AdornedInput'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Tabs, TabsList, TabsTrigger } from '@/src/shared/components/ui/Tabs'
 import { cn } from '@/src/shared/libs/utils'
 import { CODE_TYPE_TABS, type CodeType } from '../constant'
+import type { NewDiscountFormValues } from '../schema'
 
 export const RequiredLabel = ({
     htmlFor,
@@ -34,11 +36,8 @@ const tabTriggerClassName =
 
 const CodeSpecsCard = () => {
     const codeInputId = useId()
-    const [discountCode, setDiscountCode] = useState('WELCOME15')
-    const [codeType, setCodeType] = useState<CodeType>('free-shipping')
-    const [amount, setAmount] = useState('15')
-    const [minCartAmount, setMinCartAmount] = useState('0')
-
+    const { control } = useFormContext<NewDiscountFormValues>()
+    const codeType = useWatch({ control, name: 'codeType' })
     const amountSuffix = codeType === 'amount' ? 'تومان' : '%'
 
     return (
@@ -46,55 +45,85 @@ const CodeSpecsCard = () => {
             <SectionTitle>مشخصات کد</SectionTitle>
 
             <div className='grid grid-cols-1 gap-6 sm:grid-cols-2'>
-                <div className='flex flex-col'>
-                    <RequiredLabel htmlFor={codeInputId}>کد تخفیف</RequiredLabel>
-                    <Input
-                        id={codeInputId}
-                        value={discountCode}
-                        onChange={setDiscountCode}
-                        msg='فقط حروف و اعداد انگلیسی'
-                    />
-                </div>
-
-                <div className='flex flex-col'>
-                    <RequiredLabel>نوع</RequiredLabel>
-                    <Tabs
-                        value={codeType}
-                        onValueChange={(value) => setCodeType(value as CodeType)}
-                        dir='rtl'
-                        className='w-full gap-0'
-                    >
-                        <TabsList
-                            className={cn(
-                                'h-auto w-full gap-1 rounded-container-md border-0 bg-surface-container-high p-1.5'
-                            )}
-                        >
-                            {CODE_TYPE_TABS.map((tab) => (
-                                <TabsTrigger
-                                    key={tab.value}
-                                    value={tab.value}
-                                    className={tabTriggerClassName}
-                                >
-                                    {tab.label}
-                                </TabsTrigger>
-                            ))}
-                        </TabsList>
-                    </Tabs>
-                </div>
-
-                <AdornedInput
-                    label='مقدار'
-                    required
-                    value={amount}
-                    onChange={setAmount}
-                    suffix={amountSuffix}
+                <Controller
+                    control={control}
+                    name='discountCode'
+                    render={({ field, fieldState }) => (
+                        <div className='flex flex-col'>
+                            <RequiredLabel htmlFor={codeInputId}>کد تخفیف</RequiredLabel>
+                            <Input
+                                id={codeInputId}
+                                value={field.value}
+                                onChange={field.onChange}
+                                error={Boolean(fieldState.error)}
+                                msg={
+                                    fieldState.error?.message ||
+                                    'فقط حروف و اعداد انگلیسی'
+                                }
+                            />
+                        </div>
+                    )}
                 />
 
-                <AdornedInput
-                    label='حداقل مبلغ سبد'
-                    value={minCartAmount}
-                    onChange={setMinCartAmount}
-                    suffix='تومان'
+                <Controller
+                    control={control}
+                    name='codeType'
+                    render={({ field }) => (
+                        <div className='flex flex-col'>
+                            <RequiredLabel>نوع</RequiredLabel>
+                            <Tabs
+                                value={field.value}
+                                onValueChange={(value) =>
+                                    field.onChange(value as CodeType)
+                                }
+                                dir='rtl'
+                                className='w-full gap-0'
+                            >
+                                <TabsList
+                                    className={cn(
+                                        'h-auto w-full gap-1 rounded-container-md border-0 bg-surface-container-high p-1.5'
+                                    )}
+                                >
+                                    {CODE_TYPE_TABS.map((tab) => (
+                                        <TabsTrigger
+                                            key={tab.value}
+                                            value={tab.value}
+                                            className={tabTriggerClassName}
+                                        >
+                                            {tab.label}
+                                        </TabsTrigger>
+                                    ))}
+                                </TabsList>
+                            </Tabs>
+                        </div>
+                    )}
+                />
+
+                <Controller
+                    control={control}
+                    name='amount'
+                    render={({ field }) => (
+                        <AdornedInput
+                            label='مقدار'
+                            required
+                            value={field.value}
+                            onChange={field.onChange}
+                            suffix={amountSuffix}
+                        />
+                    )}
+                />
+
+                <Controller
+                    control={control}
+                    name='minCartAmount'
+                    render={({ field }) => (
+                        <AdornedInput
+                            label='حداقل مبلغ سبد'
+                            value={field.value}
+                            onChange={field.onChange}
+                            suffix='تومان'
+                        />
+                    )}
                 />
             </div>
         </div>

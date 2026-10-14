@@ -17,8 +17,8 @@ const CategoryTypes = dynamic(
     () => import('@/src/routes/catalog/categoryTypes/CategoryTypes'),
     { loading: () => <TableLoadingSkeleton isPending /> }
 )
-const Pricing = dynamic(
-    () => import('@/src/routes/catalog/pricing/Pricing'),
+const Contracts = dynamic(
+    () => import('@/src/routes/catalog/contracts/Contracts'),
     { loading: () => <TableLoadingSkeleton isPending /> }
 )
 const Discount = dynamic(
@@ -55,7 +55,7 @@ const CATEGORIES_PAGE_COMPONENTS: Record<string, ComponentType> = {
     list: ProductList,
     products: ProductList,
     'category-types': CategoryTypes,
-    pricing: Pricing,
+    contracts: Contracts,
     discounts: Discount,
     'discount-codes': Discount,
     campaigns: Campaigne,

@@ -12,7 +12,13 @@ import {
 import FormDropdown from '@shared/components/ui/FormDropdown'
 import { Progress } from '@shared/components/ui/ProgressBar'
 import { cn } from '@shared/libs/utils'
+import type { TicketPriority } from '@/src/api/types/admin/support'
 import { formatFaDateTime, formatFaNumber } from '@/src/shared/libs/formatter'
+import {
+    useCloseTicket,
+    useReopenTicket,
+    useUpdateTicketPriority,
+} from '@/src/routes/support/hooks/support'
 import type { TicketDetailView } from '../../utils/mapTicket'
 import {
     TICKET_PRIORITY_OPTIONS,
@@ -121,9 +127,44 @@ const getSlaProgress = (ticket: TicketDetailView) => {
     return 0
 }
 
+const isTicketPriority = (value: string): value is TicketPriority =>
+    value === 'URGENT' || value === 'IMPORTANT' || value === 'NORMAL'
+
 const Sidebar = ({ ticket }: SidebarProps) => {
     const [status, setStatus] = useState(ticket.status)
     const [priority, setPriority] = useState(ticket.priority)
+    const { mutate: updateTicketPriority } = useUpdateTicketPriority()
+    const { mutate: closeTicket, isPending: isClosePending } = useCloseTicket()
+    const { mutate: reopenTicket, isPending: isReopenPending } =
+        useReopenTicket()
+
+    const handlePriorityChange = (nextPriority: string) => {
+        if (nextPriority === priority || !isTicketPriority(nextPriority)) return
+
+        updateTicketPriority(
+            { ticketId: ticket.id, body: { priority: nextPriority } },
+            { onSuccess: (data) => setPriority(data.priority) }
+        )
+    }
+
+    const handleStatusChange = (nextStatus: string) => {
+        if (nextStatus === status || isClosePending || isReopenPending) return
+
+        if (nextStatus === 'CLOSED') {
+            closeTicket(
+                { ticketId: ticket.id, body: { resolution: 'بسته شد' } },
+                { onSuccess: (data) => setStatus(data.status) }
+            )
+            return
+        }
+
+        if (status === 'CLOSED') {
+            reopenTicket(
+                { ticketId: ticket.id, body: { reason: 'بازگشایی' } },
+                { onSuccess: (data) => setStatus(data.status) }
+            )
+        }
+    }
 
     return (
         <div
@@ -176,13 +217,13 @@ const Sidebar = ({ ticket }: SidebarProps) => {
                         label='وضعیت'
                         value={status}
                         options={TICKET_STATUS_OPTIONS}
-                        onChange={setStatus}
+                        onChange={handleStatusChange}
                     />
                     <FormDropdown
                         label='اولویت'
                         value={priority}
                         options={TICKET_PRIORITY_OPTIONS}
-                        onChange={setPriority}
+                        onChange={handlePriorityChange}
                     />
                 </div>
             </div>

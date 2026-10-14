@@ -29,7 +29,6 @@ const TableRow = ({
         contractId,
         date,
         scope,
-        discountPercent,
         status,
         startDate,
         endDate,
@@ -45,22 +44,23 @@ const TableRow = ({
                     <TableCell>{contractId}</TableCell>
                 )}
                 {TableColoumn[2]?.isChecked && (
-                    <TableCell>{formatFaDate(date)}</TableCell>
+                    <TableCell>{date}</TableCell>
                 )}
                 {TableColoumn[3]?.isChecked && <TableCell>{scope}</TableCell>}
                 {TableColoumn[4]?.isChecked && (
-                    <TableCell>{discountPercent}</TableCell>
+                    <TableCell>
+                        {startDate ? formatFaDate(startDate) : '—'}
+                    </TableCell>
                 )}
                 {TableColoumn[5]?.isChecked && (
-                    <TableCell>{formatFaDate(startDate)}</TableCell>
+                    <TableCell>
+                        {endDate ? formatFaDate(endDate) : '—'}
+                    </TableCell>
                 )}
                 {TableColoumn[6]?.isChecked && (
-                    <TableCell>{formatFaDate(endDate)}</TableCell>
-                )}
-                {TableColoumn[7]?.isChecked && (
                     <TableCell>{remainingDays}</TableCell>
                 )}
-                {TableColoumn[8]?.isChecked && (
+                {TableColoumn[7]?.isChecked && (
                     <TableCell>
                         <Pill
                             variant={
@@ -70,12 +70,18 @@ const TableRow = ({
                                       ? "error"
                                       : "warning"
                             }
-                            text={status || ""}
+                            text={
+                                status === "valid"
+                                    ? "معتبر"
+                                    : status === "invalid"
+                                      ? "نامعتبر"
+                                      : "پیش‌نویس"
+                            }
                             hasDot
                         />
                     </TableCell>
                 )}
-                {TableColoumn[9]?.isChecked && (
+                {TableColoumn[8]?.isChecked && (
                     <TableCell className="w-[1%] whitespace-nowrap">
                         <IconButton icon="chevronLeft400Linear" />
                     </TableCell>

@@ -33,10 +33,12 @@ export const emergencyFormFlatSchema = z.object({
     contact1LastName: requiredString('نام خانوادگی مخاطب ضروری ۱ الزامی است'),
     contact1Landline: optionalLandlineSchema,
     contact1Mobile: mobileSchema,
+    contact1Relation: requiredString('نسبت مخاطب ضروری ۱ الزامی است'),
     contact2FirstName: requiredString('نام مخاطب ضروری ۲ الزامی است'),
     contact2LastName: requiredString('نام خانوادگی مخاطب ضروری ۲ الزامی است'),
     contact2Landline: optionalLandlineSchema,
     contact2Mobile: mobileSchema,
+    contact2Relation: requiredString('نسبت مخاطب ضروری ۲ الزامی است'),
 })
 
 export type EmergencyFormFlatValues = z.infer<typeof emergencyFormFlatSchema>

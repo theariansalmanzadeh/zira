@@ -1,9 +1,11 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
+import type { DiscountOut, DiscountStatusEnum } from '@/src/api/types/admin/pricing'
+import { useListDiscounts } from '@/src/routes/catalog/hooks/pricing'
 import { Table, TableBody } from '@/src/shared/components/ui/Table'
-import { ROUTE_CONFIGS } from '@/src/shared/constants/routeConfigs'
+import { Spinner } from '@/src/shared/components/ui/spinner'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import TableHeader from './components/TableHeader'
 import DiscountRow, { DiscountRowProps } from './components/TableRow'
@@ -20,81 +22,113 @@ const DISCOUNT_CODE_TOGGLE = [
     { label: 'پیش‌نویس', value: 'draft' },
 ]
 
-export const DISCOUNT_LIST_DUMMY: DiscountRowProps[] = [
-    {
-        data: {
-            title: 'تخفیف عمده تابستان',
-            contractId: 'DS-2140',
-            date: '2025-12-09T00:00:00.000Z',
-            scope: 'همه محصولات',
-            discountPercent: '8%',
-            status: 'valid',
-            startDate: '2025-12-09T00:00:00.000Z',
-            endDate: '2025-12-09T00:00:00.000Z',
-            remainingDays: '10',
-        },
-    },
-    {
-        data: {
-            title: 'تخفیف دسته‌بندی ۱',
-            contractId: 'DS-2140',
-            date: '2025-12-09T00:00:00.000Z',
-            scope: '1 دسته اصلی',
-            discountPercent: '4%',
-            status: 'valid',
-            startDate: '2025-12-09T00:00:00.000Z',
-            endDate: '2025-12-09T00:00:00.000Z',
-            remainingDays: '10',
-        },
-    },
-    {
-        data: {
-            title: 'تخفیف VIP طلایی',
-            contractId: 'DS-2140',
-            date: '2025-12-09T00:00:00.000Z',
-            scope: '140 محصول',
-            discountPercent: '11%',
-            status: 'invalid',
-            startDate: '2025-12-09T00:00:00.000Z',
-            endDate: '2025-12-09T00:00:00.000Z',
-            remainingDays: '10',
-        },
-    },
-    {
-        data: {
-            title: 'تخفیف فصل بهار',
-            contractId: 'DS-2140',
-            date: '2025-12-09T00:00:00.000Z',
-            scope: '2 دسته اصلی',
-            discountPercent: '8%',
-            status: 'draft',
-            startDate: '2025-12-09T00:00:00.000Z',
-            endDate: '2025-12-09T00:00:00.000Z',
-            remainingDays: '10',
-        },
-    },
-]
+const STATUS_QUERY: Record<string, DiscountStatusEnum | undefined> = {
+    valid: 'ACTIVE',
+    invalid: 'INACTIVE',
+    draft: 'DRAFT',
+}
 
-const DiscountTable = ({ data }: { data: DiscountRowProps[] }) => (
-    <div className='bg-surface-container-high rounded-card-lg p-2'>
+const PAYMENT_SCOPE_LABEL = {
+    ALL: 'همه',
+    CASH: 'نقدی',
+    CREDIT: 'اعتباری',
+} as const
+
+const remainingDays = (endAt?: string | null) => {
+    if (!endAt) return '—'
+    const end = new Date(endAt).getTime()
+    if (Number.isNaN(end)) return '—'
+    const days = Math.ceil((end - Date.now()) / 86_400_000)
+    return String(Math.max(days, 0))
+}
+
+const toRowStatus = (discount: DiscountOut): DiscountStatus => {
+    if (discount.status === 'DRAFT') return 'draft'
+    if (discount.status === 'ACTIVE' && discount.validity !== 'EXPIRED') {
+        return 'valid'
+    }
+    return 'invalid'
+}
+
+const toDiscountRow = (discount: DiscountOut): DiscountRowProps => ({
+    data: {
+        title: discount.title,
+        contractId: discount.kind_display,
+        date: PAYMENT_SCOPE_LABEL[discount.payment_scope],
+        scope: discount.value_display,
+        discountPercent: discount.value_display,
+        status: toRowStatus(discount),
+        startDate: discount.start_at || '',
+        endDate: discount.end_at || '',
+        remainingDays: remainingDays(discount.end_at),
+    },
+})
+
+const DiscountTable = ({
+    data,
+    isPending,
+    isError,
+}: {
+    data: DiscountRowProps[]
+    isPending: boolean
+    isError: boolean
+}) => (
+    <div className='rounded-card-lg bg-surface-container-high p-2'>
         <Table className='border-collapse border-spacing-y-4'>
             <TableHeader />
             <TableBody>
-                {data.map((item, index) => (
-                    <DiscountRow key={index} data={item.data} />
-                ))}
+                {isPending ? (
+                    <tr>
+                        <td colSpan={9} className='py-10'>
+                            <div className='flex justify-center'>
+                                <Spinner className='size-6' />
+                            </div>
+                        </td>
+                    </tr>
+                ) : isError ? (
+                    <tr>
+                        <td
+                            colSpan={9}
+                            className='py-6 text-center text-label-md text-outline'
+                        >
+                            دریافت تخفیف‌ها با خطا مواجه شد.
+                        </td>
+                    </tr>
+                ) : data.length === 0 ? (
+                    <tr>
+                        <td
+                            colSpan={9}
+                            className='py-6 text-center text-label-md text-outline'
+                        >
+                            تخفیفی یافت نشد.
+                        </td>
+                    </tr>
+                ) : (
+                    data.map((item, index) => (
+                        <DiscountRow
+                            key={`${item.data.title}-${item.data.startDate}-${index}`}
+                            data={item.data}
+                        />
+                    ))
+                )}
             </TableBody>
         </Table>
     </div>
 )
 
-const DiscountList = ({ data }: { data: DiscountRowProps[] }) => {
-    const [statusFilter] = useState('all')
+const DiscountList = () => {
+    const searchParams = useSearchParams()
+    const statusFilter = searchParams.get('cat') ?? 'all'
+    const { data, isPending, isError } = useListDiscounts({
+        page: 1,
+        page_size: 100,
+        status: STATUS_QUERY[statusFilter],
+    })
 
-    const filteredData = useMemo(() => {
-        if (statusFilter === 'all') return data
-        return data.filter((item) => item.data.status === statusFilter)
-    }, [data, statusFilter])
+    const discounts = useMemo(
+        () => (data?.results ?? []).map(toDiscountRow),
+        [data?.results]
+    )
 
     return (
         <TableListLayout
@@ -102,12 +136,16 @@ const DiscountList = ({ data }: { data: DiscountRowProps[] }) => {
             value={statusFilter}
             toggleButtonValue={DISCOUNT_CODE_TOGGLE}
         >
-            <DiscountTable data={filteredData} />
+            <DiscountTable
+                data={discounts}
+                isPending={isPending}
+                isError={isError}
+            />
         </TableListLayout>
     )
 }
 
-const Discount = ({ data = DISCOUNT_LIST_DUMMY }: { data?: DiscountRowProps[] }) => {
+const Discount = () => {
     const searchParams = useSearchParams()
     const isDiscountCodes = searchParams.get('sub') === 'discount-codes'
     const cat = searchParams.get('cat')
@@ -116,7 +154,7 @@ const Discount = ({ data = DISCOUNT_LIST_DUMMY }: { data?: DiscountRowProps[] })
     if (isDiscountCodes) {
         return (
             <div className='flex flex-col gap-3' dir='rtl'>
-                <DiscountList data={data} />
+                <DiscountList />
             </div>
         )
     }
@@ -125,23 +163,9 @@ const Discount = ({ data = DISCOUNT_LIST_DUMMY }: { data?: DiscountRowProps[] })
         <div className='flex flex-col gap-3' dir='rtl'>
             {discountType === 'cash' ? (
                 <CashPurchaseDiscountForm />
-            ) : discountType === 'combined' ? (
-                <CombinedDiscountForm />
             ) : (
-                <DiscountTable data={data} />
+                <CombinedDiscountForm />
             )}
-            <TableListLayout
-                // TableColoumn={TABLE_COLOUMN}
-                value={discountType}
-                toggleButtonValue={ROUTE_CONFIGS.discount.TOGGLE_BUTTON_VALUE}
-            // hasSearch={discountType === 'all'}
-            // hasFilter={discountType === 'all'}
-            // hasSort={discountType === 'all'}
-            // hasTableSettings={discountType === 'all'}
-            // hasExpand={discountType === 'all'}
-            >
-                <DiscountList data={data} />
-            </TableListLayout>
         </div>
     )
 }

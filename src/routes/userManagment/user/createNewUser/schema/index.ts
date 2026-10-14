@@ -1,17 +1,32 @@
 import { addressFormSchema } from '@/src/shared/schema/admin/addressFormSchema'
 import { emergencyFormFlatSchema } from '@/src/shared/schema/admin/emergencyFormSchema'
 import { identityFormSchema } from '@/src/shared/schema/admin/identityFormSchema'
+import { toEnglishDigits } from '@/src/shared/schema/generalSchema'
+import { REQUIRED_DOCUMENT_SLOTS } from '../constants'
 import type { FieldPath } from 'react-hook-form'
 import { z } from 'zod'
 
 const requiredString = (message: string) => z.string().trim().min(1, message)
 const optionalString = z.string().trim().optional().or(z.literal(''))
 
+const toIban = (value: string) => {
+    const compact = toEnglishDigits(value).replace(/[\s-]/g, '').toUpperCase()
+    return compact.startsWith('IR') ? compact : `IR${compact}`
+}
+
 export const bankInfoSchema = z.object({
     bankName: requiredString('نام بانک الزامی است'),
     accountNumber: requiredString('شماره حساب الزامی است'),
     cardNumber: requiredString('شماره کارت الزامی است'),
-    shebaNumber: requiredString('شماره شبا الزامی است'),
+    shebaNumber: z
+        .string()
+        .trim()
+        .min(1, 'شماره شبا الزامی است')
+        .transform(toIban)
+        .refine(
+            (value) => /^IR\d{24}$/.test(value),
+            'شماره شبا باید با IR شروع شود و ۲۶ کاراکتر باشد'
+        ),
 })
 
 export const securityAndRoleSchema = z.object({
@@ -32,9 +47,11 @@ export const occupationInfoSchema = z.object({
     directManager: requiredString('مدیر مستقیم الزامی است'),
     jobTitle: requiredString('عنوان شغلی الزامی است'),
     destinationBranch: optionalString,
-    assignedBranch: optionalString,
+    assignedBranch: requiredString('شعبه تخصیص‌یافته الزامی است'),
     hasPercentageSalesContract: z.boolean(),
 })
+
+const requiredDocumentSlots = REQUIRED_DOCUMENT_SLOTS.map((slot) => slot.value)
 
 export const documentsFormSchema = z.object({
     documents: z
@@ -44,7 +61,15 @@ export const documentsFormSchema = z.object({
                 file: z.string(),
             })
         )
-        .optional(),
+        .superRefine((documents, context) => {
+            const uploaded = new Set(documents.map((document) => document.slot))
+            const missing = requiredDocumentSlots.filter((slot) => !uploaded.has(slot))
+            if (missing.length === 0) return
+            context.addIssue({
+                code: 'custom',
+                message: 'مدارک الزامی را بارگذاری کنید',
+            })
+        }),
 })
 
 export const newUserFormSchema = identityFormSchema
@@ -87,17 +112,19 @@ export const NEW_USER_DEFAULT_VALUES: NewUserFormValues = {
     contact1LastName: '',
     contact1Landline: '',
     contact1Mobile: '',
+    contact1Relation: '',
     contact2FirstName: '',
     contact2LastName: '',
     contact2Landline: '',
     contact2Mobile: '',
+    contact2Relation: '',
     bankName: '',
     accountNumber: '',
     cardNumber: '',
     shebaNumber: '',
     username: '',
     initialPassword: '',
-    userType: 'internal_employee',
+    userType: 'STAFF',
     userRole: '',
     roleExpirationDate: '',
     initialAccountStatus: 'active',
@@ -141,17 +168,19 @@ export const EDIT_USER_DEFAULT_VALUES: NewUserFormValues = {
     contact1LastName: 'رضایی',
     contact1Landline: '02144112233',
     contact1Mobile: '09123334455',
+    contact1Relation: 'همسر',
     contact2FirstName: 'حسین',
     contact2LastName: 'محمدی',
     contact2Landline: '',
     contact2Mobile: '09125556677',
+    contact2Relation: 'برادر',
     bankName: 'melli',
     accountNumber: '0102030405',
     cardNumber: '6037991234567890',
     shebaNumber: 'IR120170000000123456789001',
     username: 'ali.rezaei',
     initialPassword: 'Password1',
-    userType: 'internal_employee',
+    userType: 'STAFF',
     userRole: 'system_admin',
     roleExpirationDate: '',
     initialAccountStatus: 'active',
@@ -201,10 +230,12 @@ export const EMERGENCY_FIELDS = [
     'contact1LastName',
     'contact1Landline',
     'contact1Mobile',
+    'contact1Relation',
     'contact2FirstName',
     'contact2LastName',
     'contact2Landline',
     'contact2Mobile',
+    'contact2Relation',
 ] as const satisfies readonly FieldPath<NewUserFormValues>[]
 
 export const BANK_INFO_FIELDS = [

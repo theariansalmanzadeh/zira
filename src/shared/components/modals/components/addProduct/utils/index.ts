@@ -95,5 +95,6 @@ export const confirmAddProductSelection = ({
     }
 
     modalData?.onConfirm?.(selected)
+    modalData?.onSubmit?.(selected)
     closeModal()
 }

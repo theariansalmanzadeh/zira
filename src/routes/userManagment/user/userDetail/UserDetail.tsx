@@ -25,10 +25,10 @@ const UserDetail = ({ user }: { user: User }) => {
                     <PersonnelInfo />
                 </TabsContent>
                 <TabsContent value='role'>
-                    <Role />
+                    <Role roles={user.roles} />
                 </TabsContent>
                 <TabsContent value='departments'>
-                    <Departments />
+                    <Departments departments={user.departments} />
                 </TabsContent>
                 <TabsContent value='sessions'>
                     <SessionManagement />

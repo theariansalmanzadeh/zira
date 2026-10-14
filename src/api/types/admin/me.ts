@@ -44,7 +44,12 @@ export type StaffNotificationDelivery = {
     created_at: string
 }
 
-export type ListStaffNotificationsResponse = StaffNotificationDelivery[]
+export type ListStaffNotificationsResponse = {
+    total: number
+    page: number
+    page_size: number
+    results: StaffNotificationDelivery[]
+}
 
 export type DeliveryActionRequest = {
     delivery_ids: string[]

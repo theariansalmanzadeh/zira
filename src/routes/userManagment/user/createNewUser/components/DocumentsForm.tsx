@@ -8,14 +8,13 @@ import { Button } from '@/src/shared/components/ui/button'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 import { cn } from '@/src/shared/libs/utils'
+import { REQUIRED_DOCUMENT_SLOTS } from '../constants'
 import type { NewUserFormValues } from '../schema'
 
-const DOCUMENT_TYPE_OPTIONS = [
-    { label: 'کارت ملی', value: 'NATIONAL_CARD' },
-    { label: 'شناسنامه', value: 'BIRTH_CERTIFICATE' },
-    { label: 'مدرک تحصیلی', value: 'EDUCATION_CERT' },
-    { label: 'سایر', value: 'OTHER' },
-]
+const DOCUMENT_TYPE_OPTIONS = REQUIRED_DOCUMENT_SLOTS.map((slot) => ({
+    label: slot.label,
+    value: slot.value,
+}))
 
 type UploadedDocument = {
     file: string
@@ -28,7 +27,11 @@ type UploadedDocument = {
 
 const DocumentsForm = () => {
     const fileInputRef = useRef<HTMLInputElement>(null)
-    const { getValues, setValue } = useFormContext<NewUserFormValues>()
+    const {
+        getValues,
+        setValue,
+        formState: { errors },
+    } = useFormContext<NewUserFormValues>()
     const { mutateAsync: uploadStaffDocument, isPending } =
         useUploadStaffDocument()
     const [slot, setSlot] = useState('')
@@ -47,12 +50,17 @@ const DocumentsForm = () => {
             const storedSlot = uploaded.slot || slot
 
             const nextDocuments = [
-                ...(getValues('documents') ?? []),
+                ...(getValues('documents') ?? []).filter(
+                    (document) => document.slot !== storedSlot
+                ),
                 { slot: storedSlot, file: uploaded.file },
             ]
-            setValue('documents', nextDocuments, { shouldDirty: true })
+            setValue('documents', nextDocuments, {
+                shouldDirty: true,
+                shouldValidate: true,
+            })
             setDocuments((prev) => [
-                ...prev,
+                ...prev.filter((document) => document.slot !== storedSlot),
                 {
                     file: uploaded.file,
                     slot: storedSlot,
@@ -72,7 +80,7 @@ const DocumentsForm = () => {
     }
 
     return (
-        <div className='mb-6 flex flex-col gap-4' dir='rtl'>
+        <div className='mb-6 flex flex-col gap-4 bg-surface-container-lowest p-4 rounded-card-lg' dir='rtl'>
             <FormDropdown
                 label='نوع مدرک'
                 placeholder='انتخاب نوع مدرک'
@@ -81,7 +89,7 @@ const DocumentsForm = () => {
                 onChange={setSlot}
             />
 
-            <div className='flex flex-col items-stretch gap-3 sm:flex-row sm:items-center'>
+            <div className='flex flex-col items-stretch gap-3 sm:flex-row sm:items-center p-4 rounded-card-lg'>
                 <span className='shrink-0 text-label-md text-on-surface-variant'>
                     فایل مدرک
                 </span>
@@ -133,6 +141,14 @@ const DocumentsForm = () => {
                         {formatFaNumber(documents.length)} فایل
                     </span>
                 </div>
+
+                {errors.documents?.message ||
+                errors.documents?.root?.message ? (
+                    <p className='border-b border-outline-variant px-4 py-3 text-label-sm text-error'>
+                        {errors.documents.message ||
+                            errors.documents.root?.message}
+                    </p>
+                ) : null}
 
                 {documents.length === 0 ? (
                     <div className='flex flex-col items-center gap-1 px-4 py-10 text-center'>

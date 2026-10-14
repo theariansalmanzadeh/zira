@@ -25,11 +25,23 @@ export type CustomerListRowData = {
 
 const LEVEL_CONFIG: Record<
     CustomerLevel,
-    { text: string; variant: "warning" | "tonal" | "outlined" }
+    { text: string; className: string }
 > = {
-    gold: { text: "طلایی", variant: "warning" },
-    silver: { text: "نقره‌ای", variant: "tonal" },
-    bronze: { text: "برنزی", variant: "outlined" },
+    gold: {
+        text: "طلایی",
+        className:
+            "border-0 bg-warning-container [&_span]:text-on-warning-container [&_#dot]:bg-warning",
+    },
+    silver: {
+        text: "نقره‌ای",
+        className:
+            "border-0 bg-surface-container-highest [&_span]:text-on-surface [&_#dot]:bg-outline",
+    },
+    bronze: {
+        text: "برنزی",
+        className:
+            "border-0 bg-[#F4E1D2] [&_span]:text-[#8C5A32] [&_#dot]:bg-[#C47B45]",
+    },
 };
 
 export type TableRowProps = {
@@ -62,8 +74,7 @@ const TableRow = ({ data }: TableRowProps) => {
                 {TableColoumn[2]?.isChecked && (
                     <TableCell>
                         <Pill
-                            className="border-0"
-                            variant={levelConfig.variant}
+                            className={levelConfig.className}
                             text={levelConfig.text}
                             hasDot
                         />

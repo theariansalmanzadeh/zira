@@ -99,10 +99,10 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
     },
     pricing: {
         title: 'قیمت‌گذاری',
-        subtitle: 'مدیریت قراردادها و قوانین تعدیل قیمت',
+        subtitle: 'لیست‌های قیمت و بازه اعتبار',
         buttons: [
             {
-                label: 'قرارداد جدید',
+                label: 'لیست جدید',
                 icon: 'addSm400Broken',
                 href: '/admin/catalog/pricing/new',
                 variant: 'primary',
@@ -110,6 +110,56 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
         ],
     },
     'pricing-new': {
+        title: 'لیست قیمت جدید',
+        subtitle: 'کالاها را انتخاب کنید و قیمت جدید را ثبت کنید.',
+        hasBackButton: true,
+        buttons: [
+            {
+                label: 'ثبت لیست',
+                icon: 'checkSm400Linear',
+                variant: 'primary',
+                type: 'submit',
+                form: 'add-edit-pricing-form',
+            },
+            {
+                label: 'انصراف',
+                variant: 'outline',
+                href: '/admin/catalog/pricing',
+            },
+        ],
+    },
+    'pricing-detail': {
+        title: 'ویرایش لیست قیمت',
+        subtitle: 'کالاها و قیمت‌های این لیست را تغییر دهید.',
+        hasBackButton: true,
+        buttons: [
+            {
+                label: 'ثبت لیست',
+                icon: 'checkSm400Linear',
+                variant: 'primary',
+                type: 'submit',
+                form: 'add-edit-pricing-form',
+            },
+            {
+                label: 'انصراف',
+                variant: 'outline',
+                href: '/admin/catalog/pricing',
+            },
+        ],
+    },
+    contracts: {
+        title: 'قراردادها',
+        subtitle: 'مدیریت قراردادها و قوانین تعدیل قیمت',
+        buttons: [
+            {
+                label: 'قرارداد جدید',
+                icon: 'addSm400Broken',
+                href: '/admin/catalog/contracts/new',
+                variant: 'primary',
+            },
+        ],
+    },
+    'contracts-new': {
         title: 'قرارداد قیمت‌گذاری جدید',
         subtitle: 'یک قاعده تعدیل قیمت بسازید تا روی لیست قیمت اعمال شود.',
         hasBackButton: true,
@@ -119,16 +169,16 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
                 icon: 'checkSm400Linear',
                 variant: 'primary',
                 type: 'submit',
-                form: 'add-edit-pricing-form',
+                form: 'add-edit-contract-form',
             },
             {
                 label: 'انصراف',
                 variant: 'outline',
-                href: '/admin/catalog?sub=pricing',
+                href: '/admin/catalog?sub=contracts',
             },
         ],
     },
-    'pricing-detail': {
+    'contracts-detail': {
         title: 'قرارداد قیمت‌گذاری تغییر',
         subtitle: 'تغییر قاعده تعدیل قیمت تا روی لیست قیمت اعمال شود.',
         hasBackButton: true,
@@ -138,12 +188,12 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
                 icon: 'checkSm400Linear',
                 variant: 'primary',
                 type: 'submit',
-                form: 'add-edit-pricing-form',
+                form: 'add-edit-contract-form',
             },
             {
                 label: 'انصراف',
                 variant: 'outline',
-                href: '/admin/catalog?sub=pricing',
+                href: '/admin/catalog?sub=contracts',
             },
         ],
     },
@@ -173,6 +223,11 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
                 variant: 'default',
             },
         ],
+    },
+    'discounts-detail': {
+        title: 'ویرایش کد تخفیف',
+        subtitle: 'تغییر کد تخفیف',
+        hasBackButton: true,
     },
     'discount-codes': {
         title: 'کدهای تخفیف',
@@ -389,7 +444,10 @@ export const getCategoriesSectionKeyFromPath = (pathname: string): string => {
     if (section === 'brands' && pathSegments[2] === 'edit') return 'brands-edit'
     if (section === 'pricing' && nested === 'new') return 'pricing-new'
     if (section === 'pricing' && nested) return 'pricing-detail'
+    if (section === 'contracts' && nested === 'new') return 'contracts-new'
+    if (section === 'contracts' && nested) return 'contracts-detail'
     if (section === 'discounts' && nested === 'new') return 'discounts-new'
+    if (section === 'discounts' && nested) return 'discounts-detail'
     if (section === 'discount-codes' && nested === 'new') {
         return 'discount-codes-new'
     }

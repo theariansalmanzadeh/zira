@@ -1,9 +1,10 @@
 import type { TableFilterItem } from '@/src/shared/store/table-actions-store'
 
 export const TABLE_COLOUMN: TableFilterItem[] = [
-    { id: "col-0", header_label: "عنوان قرارداد", isChecked: true },
-    { id: "col-1", header_label: "شناسه قرارداد", isChecked: true },
-    { id: "col-2", header_label: "تاریخ", isChecked: true },
-    { id: "col-3", header_label: "دامنه", isChecked: true },
-    { id: "col-4", header_label: "درصد تعدیل", isChecked: true },
+    { id: 'name', header_label: 'نام لیست', isChecked: true },
+    { id: 'type', header_label: 'نوع', isChecked: true },
+    { id: 'code', header_label: 'کد', isChecked: true },
+    { id: 'validity', header_label: 'بازه اعتبار', isChecked: true },
+    { id: 'status', header_label: 'وضعیت', isChecked: true },
+    { id: 'actions', header_label: '', isChecked: true, className: 'w-[1%]' },
 ]

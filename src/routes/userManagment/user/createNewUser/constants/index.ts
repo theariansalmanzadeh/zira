@@ -41,10 +41,18 @@ export const BANK_OPTIONS: FormDropdownOption[] = [
 ]
 
 export const USER_TYPE_OPTIONS: FormDropdownOption[] = [
-    { label: 'کارمند داخلی', value: 'internal_employee' },
-    { label: 'پیمانکار', value: 'contractor' },
-    { label: 'مهمان', value: 'guest' },
+    { label: 'کارمند', value: 'STAFF' },
+    { label: 'مدیر ارشد', value: 'SUPERADMIN' },
 ]
+
+export const REQUIRED_DOCUMENT_SLOTS = [
+    { label: 'شناسنامه صفحه ۱', value: 'BIRTH_CERTIFICATE_PAGE_1' },
+    { label: 'شناسنامه صفحه ۲', value: 'BIRTH_CERTIFICATE_PAGE_2' },
+    { label: 'شناسنامه صفحه ۳', value: 'BIRTH_CERTIFICATE_PAGE_3' },
+    { label: 'شناسنامه صفحه ۴', value: 'BIRTH_CERTIFICATE_PAGE_4' },
+    { label: 'قرارداد', value: 'CONTRACT' },
+    { label: 'ضمانت', value: 'GUARANTEE' },
+] as const
 
 export const USER_ROLE_OPTIONS: FormDropdownOption[] = [
     { label: 'مدیر سیستم', value: 'system_admin' },

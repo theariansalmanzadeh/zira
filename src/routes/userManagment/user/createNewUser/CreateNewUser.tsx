@@ -1,6 +1,5 @@
 'use client'
 
-import IconButton from '@/src/shared/components/ui/IconButton'
 import { Button } from '@/src/shared/components/ui/button'
 import { Spinner } from '@/src/shared/components/ui/spinner'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -9,6 +8,8 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { useCreateStaffUser } from '@/src/routes/userManagment/hooks/user'
+import StepperStatus from '@/src/shared/components/StepperStatus/StepperStatus'
+import type { StepperStatusStep } from '@/src/shared/components/StepperStatus/types'
 import AddressForm from './components/AddressForm'
 import BankInfo from './components/BankInfo'
 import DocumentsForm from './components/DocumentsForm'
@@ -23,20 +24,50 @@ import {
 } from './schema'
 import { toCreateStaffUserRequest } from './utils/toCreateStaffUserRequest'
 
-enum FormSteps {
-    identity,
-    ADDRESS,
-    emergencyContact,
-    bankInfo,
-    securityAndRole,
-    occupationInfo,
-    documents,
+const FormSteps = {
+    identity: 'identity',
+    ADDRESS: 'address',
+    emergencyContact: 'emergencyContact',
+    bankInfo: 'bankInfo',
+    securityAndRole: 'securityAndRole',
+    occupationInfo: 'occupationInfo',
+    documents: 'documents',
+} as const
+
+type FormStep = (typeof FormSteps)[keyof typeof FormSteps]
+
+const CREATE_USER_STEPS: StepperStatusStep[] = [
+    { id: FormSteps.identity, label: 'اطلاعات هویتی', status: 'pending' },
+    { id: FormSteps.ADDRESS, label: 'آدرس', status: 'not_reached' },
+    { id: FormSteps.emergencyContact, label: 'تماس اضطراری', status: 'not_reached' },
+    { id: FormSteps.bankInfo, label: 'اطلاعات بانکی', status: 'not_reached' },
+    { id: FormSteps.securityAndRole, label: 'امنیت و نقش', status: 'not_reached' },
+    { id: FormSteps.occupationInfo, label: 'اطلاعات شغلی', status: 'not_reached' },
+    { id: FormSteps.documents, label: 'مدارک', status: 'not_reached' },
+]
+
+const toFormSteps = (activeStep: FormStep): StepperStatusStep[] => {
+    const activeIndex = CREATE_USER_STEPS.findIndex((step) => step.id === activeStep)
+
+    return CREATE_USER_STEPS.map((step, index) => ({
+        ...step,
+        status:
+            index < activeIndex
+                ? 'complete'
+                : index === activeIndex
+                    ? 'pending'
+                    : 'not_reached',
+    }))
 }
 
 const CreateNewUser = () => {
-    const { back, push } = useRouter()
+    const { push } = useRouter()
     const { mutate: createStaffUser, isPending } = useCreateStaffUser()
-    const [formStep, setFormStep] = useState<FormSteps>(FormSteps.documents)
+    const [formStep, setFormStep] = useState<StepperStatusStep[]>(() =>
+        toFormSteps(FormSteps.identity)
+    )
+
+    const activeStep = formStep.find((step) => step.status === 'pending')?.id
 
     const methods = useForm<NewUserFormValues>({
         resolver: zodResolver(newUserFormSchema),
@@ -57,67 +88,58 @@ const CreateNewUser = () => {
         })
     }
 
-    const navigationHandler = () => {
-        if (formStep === FormSteps.identity) {
-            back()
-            return
-        }
-        setFormStep((prev) => prev - 1)
-    }
-
     return (
         <FormProvider {...methods}>
             <div
                 className='mx-auto flex w-full max-w-[900px] flex-col gap-6'
                 dir='rtl'
             >
-                <div className='flex flex-row items-center gap-2'>
-                    <IconButton
-                        icon='rightArrow'
-                        variant='ghost'
-                        iconClassName='size-6'
-                        onClick={navigationHandler}
-                    />
-                    <span>ایجاد کاربر جدید</span>
-                </div>
+                <StepperStatus steps={formStep} indexBased />
+
                 <div className='mx-auto w-full max-w-[900px] pt-3'>
-                    {formStep === FormSteps.identity && (
+                    {activeStep === FormSteps.identity && (
                         <IdentityForm
-                            onContinue={() => setFormStep(FormSteps.ADDRESS)}
+                            onContinue={() =>
+                                setFormStep(toFormSteps(FormSteps.ADDRESS))
+                            }
                         />
                     )}
-                    {formStep === FormSteps.ADDRESS && (
+                    {activeStep === FormSteps.ADDRESS && (
                         <AddressForm
                             onContinue={() =>
-                                setFormStep(FormSteps.emergencyContact)
+                                setFormStep(toFormSteps(FormSteps.emergencyContact))
                             }
                         />
                     )}
-                    {formStep === FormSteps.emergencyContact && (
+                    {activeStep === FormSteps.emergencyContact && (
                         <EmergencyForm
-                            onContinue={() => setFormStep(FormSteps.bankInfo)}
+                            onContinue={() =>
+                                setFormStep(toFormSteps(FormSteps.bankInfo))
+                            }
                         />
                     )}
-                    {formStep === FormSteps.bankInfo && (
+                    {activeStep === FormSteps.bankInfo && (
                         <BankInfo
                             onContinue={() =>
-                                setFormStep(FormSteps.securityAndRole)
+                                setFormStep(toFormSteps(FormSteps.securityAndRole))
                             }
                         />
                     )}
-                    {formStep === FormSteps.securityAndRole && (
+                    {activeStep === FormSteps.securityAndRole && (
                         <SecurityAndRole
                             onContinue={() =>
-                                setFormStep(FormSteps.occupationInfo)
+                                setFormStep(toFormSteps(FormSteps.occupationInfo))
                             }
                         />
                     )}
-                    {formStep === FormSteps.occupationInfo && (
+                    {activeStep === FormSteps.occupationInfo && (
                         <OccupationInfo
-                            onContinue={() => setFormStep(FormSteps.documents)}
+                            onContinue={() =>
+                                setFormStep(toFormSteps(FormSteps.documents))
+                            }
                         />
                     )}
-                    {formStep === FormSteps.documents && (
+                    {activeStep === FormSteps.documents && (
                         <>
                             <DocumentsForm />
                             <Button

@@ -97,6 +97,20 @@ const EmergencyForm = ({ onContinue }: EmergencyFormProps) => {
                         />
                     )}
                 />
+                <Controller
+                    name="contact1Relation"
+                    control={control}
+                    render={({ field }) => (
+                        <Input
+                            label="نسبت *"
+                            placeholder="مثلاً همسر"
+                            value={field.value}
+                            onChange={field.onChange}
+                            error={!!errors.contact1Relation}
+                            msg={errors.contact1Relation?.message}
+                        />
+                    )}
+                />
             </ContactSection>
 
             <ContactSection title="مخاطب ضروری ۲">
@@ -151,6 +165,20 @@ const EmergencyForm = ({ onContinue }: EmergencyFormProps) => {
                             onChange={field.onChange}
                             error={!!errors.contact2Mobile}
                             msg={errors.contact2Mobile?.message}
+                        />
+                    )}
+                />
+                <Controller
+                    name="contact2Relation"
+                    control={control}
+                    render={({ field }) => (
+                        <Input
+                            label="نسبت *"
+                            placeholder="مثلاً برادر"
+                            value={field.value}
+                            onChange={field.onChange}
+                            error={!!errors.contact2Relation}
+                            msg={errors.contact2Relation?.message}
                         />
                     )}
                 />

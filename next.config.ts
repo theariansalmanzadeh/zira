@@ -18,16 +18,9 @@ if (
 const API_PROTOCOL = API_ORIGIN.protocol.replace(":", "") as "http" | "https";
 
 const nextConfig: NextConfig = {
-  async rewrites() {
-    return {
-      beforeFiles: [
-        {
-          source: "/api/:path*",
-          destination: `${API_ORIGIN.origin}/api/:path*`,
-        },
-      ],
-    };
-  },
+  // Liara gzip-encodes responses. Compressing again in Next makes the browser
+  // fail to decode the body.
+  compress: false,
   images: {
     remotePatterns: [
       {

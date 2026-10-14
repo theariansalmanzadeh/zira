@@ -11,9 +11,14 @@ const TicketsList = dynamic(
     () => import('@/src/routes/support/tickets/ticketList/TicketsList'),
     { loading: () => <TableLoadingSkeleton isPending /> }
 )
+const DepartmentList = dynamic(
+    () => import('@/src/routes/support/department/departmentList/DepartmentList'),
+    { loading: () => <TableLoadingSkeleton isPending /> }
+)
 const SUPPORT_PAGE_COMPONENTS: Record<string, ComponentType> = {
     dashboard: SupportDashboard,
     ticket: TicketsList,
+    department: DepartmentList,
 }
 
 async function SupportPage({

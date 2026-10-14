@@ -27,6 +27,7 @@ export const meKeys = {
 export const useGetStaffProfile = () => {
     return useQuery({
         queryKey: meKeys.profile(),
+        retry: false,
         queryFn: async () => {
             const result = await getStaffProfile()
             if (!result.success) throw result.error

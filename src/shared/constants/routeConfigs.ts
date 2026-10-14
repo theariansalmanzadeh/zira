@@ -67,12 +67,18 @@ export const ROUTE_CONFIGS = {
             { label: "پیش‌نویس", value: "draft" },
         ],
     },
-    pricing: {
+    contracts: {
         TOGGLE_BUTTON_VALUE: [
             { label: "پیش‌نویس", value: "DRAFT" },
-            { label: "زمان‌بندی‌شده", value: "SCHEDULED" },
-            { label: "منتشرشده", value: "PUBLISHED" },
+            { label: "اعمال‌شده", value: "APPLIED" },
             { label: "لغو شده", value: "CANCELLED" },
+        ],
+    },
+    pricing: {
+        TOGGLE_BUTTON_VALUE: [
+            { label: "همه", value: "all" },
+            { label: "فعال", value: "PUBLISHED" },
+            { label: "زمان‌بندی‌شده", value: "SCHEDULED" },
         ],
     },
     preFactor: {

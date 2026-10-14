@@ -9,7 +9,7 @@ const Header = ({ user }: { user: User }) => {
 
     return (
         <div
-            className='flex flex-row items-center gap-4 rounded-card-lg bg-surface-container-low px-5 py-4'
+            className='flex flex-row items-center gap-4 rounded-card-lg bg-surface-container-lowest px-5 py-4'
             dir='rtl'
         >
             <div className='flex size-14 shrink-0 items-center justify-center rounded-full bg-[#C96B86] text-title-lg font-semibold text-white'>

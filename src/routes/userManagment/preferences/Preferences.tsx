@@ -86,7 +86,7 @@ const AccountTab = () => {
     }
 
     return (
-        <div className='flex flex-col gap-3 sm:max-w-[900px] mx-auto'>
+        <div className='flex flex-col gap-3 w-full sm:max-w-[600px] mx-auto'>
             <p className='text-body-sm text-on-surface-variant'>اطلاعات حساب</p>
             <div className='flex flex-col gap-6 rounded-2xl bg-surface-container-lowest p-6'>
                 <div className='flex flex-col items-center gap-3'>

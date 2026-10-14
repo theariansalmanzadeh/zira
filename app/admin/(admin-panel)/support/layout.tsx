@@ -16,15 +16,19 @@ const SupportLayoutContent = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname()
     const { push } = useRouter()
     const searchParams = useSearchParams()
-    const sectionKey = getSupportSectionKeyFromPath(searchParams)
+    const isDepartmentDetail = pathname.includes('/support/department/')
+    const sectionKey = isDepartmentDetail
+        ? null
+        : getSupportSectionKeyFromPath(searchParams)
     const heading = sectionKey ? sectionToHeading[sectionKey] : null
 
     useEffect(() => {
+        if (isDepartmentDetail) return
 
         const url = new URL(window.location.href)
         const sub = url.searchParams.get('sub') || 'dashboard'
         push(`?sub=${sub}`)
-    }, [pathname, push])
+    }, [isDepartmentDetail, pathname, push])
 
     return (
         <div className='flex flex-col gap-3' dir='rtl'>

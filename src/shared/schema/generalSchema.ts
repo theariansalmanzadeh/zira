@@ -18,12 +18,26 @@ export const mobileSchema = z
     .transform(toEnglishDigits)
     .refine((value) => /^09\d{9}$/.test(value), 'شماره موبایل معتبر نیست');
 
+export function isValidIranianNationalId(value: string) {
+    if (!/^\d{10}$/.test(value)) return false
+    if (/^(\d)\1{9}$/.test(value)) return false
+
+    const digits = value.split('').map(Number)
+    const sum = digits
+        .slice(0, 9)
+        .reduce((total, digit, index) => total + digit * (10 - index), 0)
+    const remainder = sum % 11
+    const check = remainder < 2 ? remainder : 11 - remainder
+    return check === digits[9]
+}
+
 export const nationalIdSchema = z
     .string()
     .trim()
     .min(1, 'کدملی الزامی است')
     .transform(toEnglishDigits)
-    .refine((value) => /^\d{10}$/.test(value), 'کدملی باید ۱۰ رقم باشد');
+    .refine((value) => /^\d{10}$/.test(value), 'کدملی باید ۱۰ رقم باشد')
+    .refine(isValidIranianNationalId, 'کدملی معتبر نیست');
 
 export const postalCodeSchema = z
     .string()
