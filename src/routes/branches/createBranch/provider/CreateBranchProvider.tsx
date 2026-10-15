@@ -135,7 +135,13 @@ const CreateBranchProvider = ({ children }: CreateBranchProviderProps) => {
         (onSuccess?: (branch: Branch) => void) => {
             createBranchMutation(
                 toCreateBranchRequest({ generalData, workDays, permissions }),
-                { onSuccess }
+                {
+                    onSuccess, onError: (error) => {
+                        console.log(error);
+
+                        // toast.error(toError(error))
+                    }
+                },
             )
         },
         [workDays, generalData, permissions, createBranchMutation]

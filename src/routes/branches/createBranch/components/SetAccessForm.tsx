@@ -101,7 +101,7 @@ const SetAccessForm = ({
                             type="button"
                             variant="ghost"
                             className="w-fit gap-2 self-end text-on-surface-variant"
-                            onClick={() => setActiveStep(3)}
+                            onClick={() => setActiveStep(2)}
                             disabled={isPending}
                         >
                             <Icon

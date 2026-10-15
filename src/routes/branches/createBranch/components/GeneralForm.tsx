@@ -1,6 +1,6 @@
 'use client'
 
-import { Dispatch, SetStateAction, type ChangeEvent } from 'react'
+import { useMemo, type ChangeEvent, type Dispatch, type SetStateAction } from 'react'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Button } from '@/src/shared/components/ui/button'
 import FormDropdown, {
@@ -8,13 +8,8 @@ import FormDropdown, {
 } from '@/src/shared/components/ui/FormDropdown'
 import { CopyableInput } from '@/src/shared/components/ui/CopyableInput'
 import CalendarButton from '@/src/shared/components/ui/CalendarButton'
+import { useListStaffUsers } from '@/src/routes/userManagment/hooks/user'
 import { useCreateBranchContext } from '../provider/CreateBranchProvider'
-
-const MANAGER_OPTIONS: FormDropdownOption[] = [
-    { label: 'نام کاربر ۱', value: 'user-1' },
-    { label: 'نام کاربر ۲', value: 'user-2' },
-    { label: 'نام کاربر ۳', value: 'user-3' },
-]
 
 const PROVINCE_OPTIONS: FormDropdownOption[] = [
     { label: 'تهران', value: 'tehran' },
@@ -52,6 +47,17 @@ const GeneralForm = ({ setActiveStep: propSetActiveStep }: GeneralFormProps) => 
         updateGeneralData,
         setActiveStep: contextSetActiveStep,
     } = useCreateBranchContext()
+    const { data: staffUsers } = useListStaffUsers()
+    const managerOptions = useMemo(
+        () =>
+            (staffUsers?.results ?? []).map((user) => ({
+                label:
+                    `${user.first_name} ${user.last_name}`.trim() ||
+                    user.username,
+                value: user.id,
+            })),
+        [staffUsers?.results]
+    )
 
     const setActiveStep = propSetActiveStep || contextSetActiveStep
 
@@ -89,7 +95,7 @@ const GeneralForm = ({ setActiveStep: propSetActiveStep }: GeneralFormProps) => 
                 <FormDropdown
                     label="مسئول شعبه"
                     value={generalData.branchManager}
-                    options={MANAGER_OPTIONS}
+                    options={managerOptions}
                     onChange={(branchManager) =>
                         updateGeneralData({ branchManager })
                     }
