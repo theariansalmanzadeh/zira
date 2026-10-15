@@ -1,10 +1,13 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { toast } from 'sonner'
 import { Controller, useForm, useWatch } from 'react-hook-form'
+import type { BrandIn } from '@/src/api/types/admin/catalog'
 import DocumentFileUpload from '@/src/routes/contentManagment/liecense/new/components/DocumentFileUpload'
+import { useCreateBrand, useUpdateBrand } from '@/src/routes/catalog/hooks/catalog'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Textarea } from '@/src/shared/components/ui/TextArea'
@@ -12,10 +15,8 @@ import {
     ToggleGroup,
     ToggleGroupItem,
 } from '@/src/shared/components/ui/ToggleGroup'
-import { BRANDS_LIST_DUMMY } from '../brands/constants'
 import {
     ACTIVITY_FIELD_OPTIONS,
-    BRAND_FORM_PRESETS,
     BRAND_ORIGIN_OPTIONS,
     BRAND_STATUS_OPTIONS,
     COUNTRY_OPTIONS,
@@ -24,51 +25,58 @@ import {
     type AddAndEditBrandFormValues,
 } from './schema'
 
-const activityByLabel = Object.fromEntries(
-    ACTIVITY_FIELD_OPTIONS.map((option) => [option.label, option.value])
-)
-const countryByLabel = Object.fromEntries(
-    COUNTRY_OPTIONS.map((option) => [option.label, option.value])
-)
-
 const choiceGroupClassName =
     'w-fit rounded-container-md bg-surface-container-high p-1'
 
-const AddAndEditBrands = () => {
+const toBrandRequest = (values: AddAndEditBrandFormValues): BrandIn => ({
+    name: values.persianName,
+    latin_name: values.latinName,
+    scope: values.activityField,
+    logo_url: '',
+    country: values.country,
+    origin: values.origin,
+    status: values.status,
+    website: '',
+    description: values.description,
+})
+
+type AddAndEditBrandsProps = {
+    id?: string
+}
+
+const AddAndEditBrands = ({ id }: AddAndEditBrandsProps) => {
     const { push } = useRouter()
-    const params = useParams<{ id?: string }>()
-    const brandId = params?.id
-    const isEditing = Boolean(brandId)
+    const isEditing = Boolean(id)
     const [logo, setLogo] = useState<File | null>(null)
-
-    const defaultValues = useMemo(() => {
-        if (!brandId) return getAddAndEditBrandDefaultValues()
-
-        const preset = BRAND_FORM_PRESETS[brandId]
-        if (preset) return getAddAndEditBrandDefaultValues(preset)
-
-        const existing = BRANDS_LIST_DUMMY.find((item) => item.id === brandId)
-        if (!existing) return getAddAndEditBrandDefaultValues()
-
-        return getAddAndEditBrandDefaultValues({
-            persianName: existing.name,
-            activityField: activityByLabel[existing.field] ?? '',
-            country: countryByLabel[existing.country] ?? '',
-            status: existing.status === 'active' ? 'active' : 'inactive',
-        })
-    }, [brandId])
+    const { mutate: createBrand, isPending: isCreating } = useCreateBrand()
+    const { mutate: updateBrand, isPending: isUpdating } = useUpdateBrand()
+    const isPending = isCreating || isUpdating
 
     const { control, handleSubmit } = useForm<AddAndEditBrandFormValues>({
         resolver: zodResolver(addAndEditBrandSchema),
-        defaultValues,
+        defaultValues: getAddAndEditBrandDefaultValues(),
         mode: 'onChange',
     })
 
     const persianName = useWatch({ control, name: 'persianName' })
     const latinName = useWatch({ control, name: 'latinName' })
 
-    const onSubmit = (_values: AddAndEditBrandFormValues) => {
-        push('/admin/catalog/brands')
+    const onSubmit = (values: AddAndEditBrandFormValues) => {
+        const body = toBrandRequest(values)
+        const onSuccess = () => {
+            toast.success(isEditing ? 'برند به‌روزرسانی شد' : 'برند ایجاد شد')
+            push('/admin/catalog/brands')
+        }
+        const onError = () => {
+            toast.error(isEditing ? 'به‌روزرسانی برند انجام نشد' : 'ایجاد برند انجام نشد')
+        }
+
+        if (id) {
+            updateBrand({ brandId: id, body }, { onSuccess, onError })
+            return
+        }
+
+        createBrand(body, { onSuccess, onError })
     }
 
     return (
@@ -77,6 +85,7 @@ const AddAndEditBrands = () => {
             className="flex w-full flex-col gap-4 rounded-card-lg border border-outline-variant bg-surface-container-lowest p-5"
             dir="rtl"
             onSubmit={handleSubmit(onSubmit)}
+            aria-busy={isPending}
         >
             {isEditing ? (
                 <div className="flex items-center gap-4 rounded-card-lg bg-surface-container-high p-3">
@@ -219,17 +228,6 @@ const AddAndEditBrands = () => {
                                 ))}
                             </ToggleGroup>
                         </div>
-                    )}
-                />
-                <Controller
-                    control={control}
-                    name="website"
-                    render={({ field }) => (
-                        <Input
-                            label="وب‌سایت یا صفحه برند"
-                            value={field.value}
-                            onChange={field.onChange}
-                        />
                     )}
                 />
                 <Controller

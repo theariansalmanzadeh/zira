@@ -37,14 +37,6 @@ export type WorkDay = {
     end: string
 }
 
-export type BranchEmployeeItem = {
-    id: string
-    name: string
-    role?: string
-    workHours?: string
-    status?: string
-}
-
 export type BranchPermissions = {
     allow_credit_sale: boolean
     allow_cheque_sale: boolean
@@ -78,16 +70,6 @@ export const INITIAL_WORK_DAYS: WorkDay[] = [
     { id: 'friday', label: 'جمعه', enabled: false, start: '09:00', end: '14:00' },
 ]
 
-export const INITIAL_EMPLOYEES: BranchEmployeeItem[] = [
-    {
-        id: 'emp-1',
-        name: 'علی محمدی',
-        role: 'manager',
-        workHours: 'full_time',
-        status: 'فعال',
-    },
-]
-
 export const INITIAL_PERMISSIONS: BranchPermissions = {
     allow_credit_sale: true,
     allow_cheque_sale: false,
@@ -104,11 +86,6 @@ type CreateBranchContextValue = {
     workDays: WorkDay[]
     setWorkDays: Dispatch<SetStateAction<WorkDay[]>>
     updateWorkDay: (id: string, patch: Partial<WorkDay>) => void
-    employees: BranchEmployeeItem[]
-    setEmployees: Dispatch<SetStateAction<BranchEmployeeItem[]>>
-    addEmployees: (newEmployees: BranchEmployeeItem[]) => void
-    removeEmployee: (id: string) => void
-    updateEmployee: (id: string, patch: Partial<BranchEmployeeItem>) => void
     permissions: BranchPermissions
     setPermissions: Dispatch<SetStateAction<BranchPermissions>>
     togglePermission: (key: keyof BranchPermissions, enabled: boolean) => void
@@ -136,7 +113,6 @@ const CreateBranchProvider = ({ children }: CreateBranchProviderProps) => {
     const [activeStep, setActiveStep] = useState<number>(1)
     const [generalData, setGeneralData] = useState<GeneralBranchData>(INITIAL_GENERAL_DATA)
     const [workDays, setWorkDays] = useState<WorkDay[]>(INITIAL_WORK_DAYS)
-    const [employees, setEmployees] = useState<BranchEmployeeItem[]>(INITIAL_EMPLOYEES)
     const [permissions, setPermissions] = useState<BranchPermissions>(INITIAL_PERMISSIONS)
 
     const { mutate: createBranchMutation, isPending } = useCreateBranch()
@@ -148,24 +124,6 @@ const CreateBranchProvider = ({ children }: CreateBranchProviderProps) => {
     const updateWorkDay = useCallback((id: string, patch: Partial<WorkDay>) => {
         setWorkDays((days) =>
             days.map((day) => (day.id === id ? { ...day, ...patch } : day))
-        )
-    }, [])
-
-    const addEmployees = useCallback((newEmployees: BranchEmployeeItem[]) => {
-        setEmployees((prev) => {
-            const existingIds = new Set(prev.map((e) => e.id))
-            const toAdd = newEmployees.filter((e) => !existingIds.has(e.id))
-            return [...prev, ...toAdd]
-        })
-    }, [])
-
-    const removeEmployee = useCallback((id: string) => {
-        setEmployees((prev) => prev.filter((e) => e.id !== id))
-    }, [])
-
-    const updateEmployee = useCallback((id: string, patch: Partial<BranchEmployeeItem>) => {
-        setEmployees((prev) =>
-            prev.map((e) => (e.id === id ? { ...e, ...patch } : e))
         )
     }, [])
 
@@ -193,11 +151,6 @@ const CreateBranchProvider = ({ children }: CreateBranchProviderProps) => {
             workDays,
             setWorkDays,
             updateWorkDay,
-            employees,
-            setEmployees,
-            addEmployees,
-            removeEmployee,
-            updateEmployee,
             permissions,
             setPermissions,
             togglePermission,
@@ -210,10 +163,6 @@ const CreateBranchProvider = ({ children }: CreateBranchProviderProps) => {
             updateGeneralData,
             workDays,
             updateWorkDay,
-            employees,
-            addEmployees,
-            removeEmployee,
-            updateEmployee,
             permissions,
             togglePermission,
             submitBranch,

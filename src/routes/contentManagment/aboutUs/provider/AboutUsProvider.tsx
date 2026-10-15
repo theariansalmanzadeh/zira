@@ -16,6 +16,7 @@ import type {
 import {
     useArchiveSection,
     useCreateSection,
+    usePublishSection,
     useReorderSections,
     useStaticPageDetail,
     useUpdateSection,
@@ -47,6 +48,7 @@ type AboutUsContextValue = {
     sections: AboutSectionItem[]
     addSection: () => void
     updateSection: (id: string, patch: Partial<AboutSectionItem>) => void
+    saveAndPublish: (id: string) => Promise<PageSectionOut>
     setSectionVisible: (id: string, visible: boolean) => void
     moveSection: (index: number, direction: -1 | 1) => void
     removeSection: (id: string) => void
@@ -71,37 +73,90 @@ type AboutUsProviderProps = {
 const AboutUsProvider = ({ children }: AboutUsProviderProps) => {
     const [sections, setSections] = useState<AboutSectionItem[]>([])
     const { data } = useStaticPageDetail(PAGE)
-    const { mutate: createSection } = useCreateSection()
-    const { mutate: updateSectionMutation } = useUpdateSection()
+    const { mutateAsync: createSection } = useCreateSection()
+    const {
+        mutate: updateSectionMutation,
+        mutateAsync: updateSectionAsync,
+    } = useUpdateSection()
+    const { mutateAsync: publishSection } = usePublishSection()
     const { mutate: archiveSection } = useArchiveSection()
     const { mutate: reorderSections } = useReorderSections()
 
     useEffect(() => {
         if (!data) return
 
-        setSections(
-            data.sections.map((section) =>
-                toSectionItem(section, data.page_display)
-            )
-        )
+        setSections((prev) => {
+            const drafts = prev.filter((section) => section.isNew)
+            return [
+                ...data.sections.map((section) =>
+                    toSectionItem(section, data.page_display)
+                ),
+                ...drafts,
+            ]
+        })
     }, [data])
 
     const addSection = useCallback(() => {
-        createSection(
+        setSections((prev) => [
+            ...prev,
             {
-                page: PAGE,
-                body: { title: '', body: '', is_visible: true },
+                id: `draft-${Date.now()}`,
+                title: '',
+                body: '',
+                page_display: data?.page_display ?? '',
+                visible: true,
+                status: 'draft',
+                isNew: true,
             },
-            {
-                onSuccess: (section) => {
-                    setSections((prev) => [
-                        ...prev,
-                        toSectionItem(section, data?.page_display ?? ''),
-                    ])
-                },
+        ])
+    }, [data?.page_display])
+
+    const saveAndPublish = useCallback(
+        async (id: string) => {
+            const section = sections.find((item) => item.id === id)
+            if (!section) {
+                throw new Error('Section not found')
             }
-        )
-    }, [createSection, data?.page_display])
+
+            const pageDisplay =
+                section.page_display ?? data?.page_display ?? ''
+            const body = {
+                title: section.title,
+                body: section.body,
+                is_visible: section.visible,
+            }
+
+            const saved = section.isNew
+                ? await createSection({ page: PAGE, body })
+                : await updateSectionAsync({
+                      page: PAGE,
+                      sectionId: id,
+                      body,
+                  })
+
+            const published = await publishSection({
+                page: PAGE,
+                sectionId: saved.id,
+            })
+
+            setSections((prev) =>
+                prev.map((item) =>
+                    item.id === id || item.id === saved.id
+                        ? toSectionItem(published, pageDisplay)
+                        : item
+                )
+            )
+
+            return published
+        },
+        [
+            createSection,
+            data?.page_display,
+            publishSection,
+            sections,
+            updateSectionAsync,
+        ]
+    )
 
     const updateSection = useCallback(
         (id: string, patch: Partial<AboutSectionItem>) => {
@@ -116,6 +171,16 @@ const AboutUsProvider = ({ children }: AboutUsProviderProps) => {
 
     const setSectionVisible = useCallback(
         (id: string, visible: boolean) => {
+            const section = sections.find((item) => item.id === id)
+            if (!section || section.isNew) {
+                setSections((prev) =>
+                    prev.map((item) =>
+                        item.id === id ? { ...item, visible } : item
+                    )
+                )
+                return
+            }
+
             updateSectionMutation(
                 {
                     page: PAGE,
@@ -139,7 +204,7 @@ const AboutUsProvider = ({ children }: AboutUsProviderProps) => {
                 }
             )
         },
-        [updateSectionMutation]
+        [sections, updateSectionMutation]
     )
 
     const moveSection = useCallback(
@@ -151,6 +216,8 @@ const AboutUsProvider = ({ children }: AboutUsProviderProps) => {
             const [item] = next.splice(index, 1)
             next.splice(nextIndex, 0, item)
             setSections(next)
+            if (next.some((section) => section.isNew)) return
+
             reorderSections({
                 page: PAGE,
                 body: { ids: next.map((section) => section.id) },
@@ -161,6 +228,14 @@ const AboutUsProvider = ({ children }: AboutUsProviderProps) => {
 
     const removeSection = useCallback(
         (id: string) => {
+            const section = sections.find((item) => item.id === id)
+            if (!section) return
+
+            if (section.isNew) {
+                setSections((prev) => prev.filter((item) => item.id !== id))
+                return
+            }
+
             archiveSection(
                 { page: PAGE, sectionId: id },
                 {
@@ -172,7 +247,7 @@ const AboutUsProvider = ({ children }: AboutUsProviderProps) => {
                 }
             )
         },
-        [archiveSection]
+        [archiveSection, sections]
     )
 
     const value = useMemo(
@@ -180,6 +255,7 @@ const AboutUsProvider = ({ children }: AboutUsProviderProps) => {
             sections,
             addSection,
             updateSection,
+            saveAndPublish,
             setSectionVisible,
             moveSection,
             removeSection,
@@ -188,6 +264,7 @@ const AboutUsProvider = ({ children }: AboutUsProviderProps) => {
             sections,
             addSection,
             updateSection,
+            saveAndPublish,
             setSectionVisible,
             moveSection,
             removeSection,

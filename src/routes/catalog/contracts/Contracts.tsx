@@ -5,6 +5,7 @@ import type { ContractOut, ContractStatusEnum } from '@/src/api/types/admin/pric
 import { useListContracts } from '@/src/routes/catalog/hooks/pricing'
 import { Table, TableBody } from '@/src/shared/components/ui/Table'
 import { Spinner } from '@/src/shared/components/ui/spinner'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import { ROUTE_CONFIGS } from '@/src/shared/constants/routeConfigs'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
@@ -66,6 +67,11 @@ const Contracts = () => {
                                         </div>
                                     </td>
                                 </tr>
+                            ) : contracts.length === 0 ? (
+                                <TableEmptyState
+                                    colSpan={TABLE_COLOUMN.length}
+                                    title='قراردادی یافت نشد.'
+                                />
                             ) : (
                                 contracts.map((contract) => (
                                     <ContractRow

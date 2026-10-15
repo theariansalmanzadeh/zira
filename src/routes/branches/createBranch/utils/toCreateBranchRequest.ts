@@ -1,6 +1,7 @@
 import type {
+    BranchDayHours,
     CreateBranchRequest,
-    WorkingHours,
+    CreateBranchWorkingHours,
 } from '@/src/api/types/admin/organization'
 import type {
     BranchPermissions,
@@ -14,35 +15,45 @@ export type CreateBranchFormState = {
     permissions: BranchPermissions
 }
 
-const optionalText = (value?: string) => {
-    const trimmed = value?.trim()
-    return trimmed ? trimmed : undefined
+const text = (value?: string) => value?.trim() ?? ''
+
+const WEEK_DAYS = [
+    'saturday',
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+] as const
+
+const toDayHours = (day?: WorkDay): BranchDayHours => {
+    if (!day?.enabled) return { is_closed: true }
+    return { is_closed: false, open: day.start, close: day.end }
 }
 
-const toWorkingHours = (workDays: WorkDay[]): WorkingHours =>
-    workDays.reduce<WorkingHours>((hours, day) => {
-        hours[day.id] = {
-            enabled: day.enabled,
-            start: day.start,
-            end: day.end,
-        }
+const toWorkingHours = (workDays: WorkDay[]): CreateBranchWorkingHours => {
+    const byId = new Map(workDays.map((day) => [day.id, day]))
+    return WEEK_DAYS.reduce((hours, dayId) => {
+        hours[dayId] = toDayHours(byId.get(dayId))
         return hours
-    }, {})
+    }, {} as CreateBranchWorkingHours)
+}
 
 export const toCreateBranchRequest = ({
     generalData,
     workDays,
     permissions,
 }: CreateBranchFormState): CreateBranchRequest => {
-    const plaque = optionalText(generalData.plaque)
-    const unit = optionalText(generalData.unit)
+    const plaque = text(generalData.plaque)
+    const unit = text(generalData.unit)
     const addressDetails = [
         plaque ? `پلاک ${plaque}` : '',
         unit ? `واحد ${unit}` : '',
     ]
         .filter(Boolean)
         .join('، ')
-    const postalAddress = optionalText(generalData.postalAddress)
+    const postalAddress = text(generalData.postalAddress)
     const fullAddress = [postalAddress, addressDetails]
         .filter(Boolean)
         .join(' - ')
@@ -50,18 +61,19 @@ export const toCreateBranchRequest = ({
     return {
         code: generalData.branchCode.trim(),
         name: generalData.branchName.trim(),
-        province: optionalText(generalData.province),
-        city: optionalText(generalData.city),
-        full_address: fullAddress || undefined,
-        address_details: addressDetails || undefined,
-        postal_code: optionalText(generalData.postalCode),
-        phone: optionalText(generalData.landlinePhone),
-        latitude: generalData.latitude ?? null,
-        longitude: generalData.longitude ?? null,
-        manager_id: generalData.branchManager || null,
+        province: text(generalData.province),
+        county: '',
+        city: text(generalData.city),
+        full_address: fullAddress,
+        address_details: addressDetails,
+        postal_code: text(generalData.postalCode),
+        phone: text(generalData.landlinePhone),
+        latitude: generalData.latitude ?? 0,
+        longitude: generalData.longitude ?? 0,
+        manager_id: generalData.branchManager ?? '',
         activity_start_date: generalData.activityStartDate
             ? generalData.activityStartDate.toISOString().slice(0, 10)
-            : null,
+            : '',
         working_hours: toWorkingHours(workDays),
         permits: {
             allow_credit_sale: permissions.allow_credit_sale,

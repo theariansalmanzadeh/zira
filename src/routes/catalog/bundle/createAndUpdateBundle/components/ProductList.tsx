@@ -13,6 +13,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/src/shared/components/ui/Table'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import { ModalTypes } from '@/src/shared/components/modals/types'
 import type { AddProductItem } from '@/src/shared/components/modals/components/addProduct'
 import { formatFaNumber, formatPrice } from '@/src/shared/libs/formatter'
@@ -149,6 +150,12 @@ const ProductList = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
+                        {products.length === 0 ? (
+                            <TableEmptyState
+                                colSpan={TABLE_HEADERS.length}
+                                title='محصولی اضافه نشده است.'
+                            />
+                        ) : null}
                         {products.map((product) => {
                             const turnover = TURNOVER_META[product.turnover]
                             const bundlePrice = Math.round(

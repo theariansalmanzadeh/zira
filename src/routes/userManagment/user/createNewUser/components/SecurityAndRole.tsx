@@ -31,7 +31,7 @@ const SecurityAndRole = ({ onContinue }: SecurityAndRoleProps) => {
     const { data: roles } = useListRoles({ is_active: true })
     const roleOptions = useMemo(
         () =>
-            (roles ?? []).map((role) => ({
+            (roles?.results ?? []).map((role) => ({
                 label: role.name,
                 value: role.id,
             })),

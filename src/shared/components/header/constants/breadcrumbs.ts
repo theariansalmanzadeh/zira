@@ -209,6 +209,7 @@ export const ROUTE_BREADCRUMBS: Record<string, string[]> = {
     'user-management?sub=role': ['مدیریت کاربران'],
     'user-management?sub=department': ['مدیریت کاربران'],
     'user-management?sub=announcements': ['مدیریت کاربران'],
+    'user-management?sub=branch-assignment': ['مدیریت کاربران', 'انتصاب به شعبه'],
     'user-management/create-new-user': ['مدیریت کاربران', 'ایجاد کاربر'],
     'user-management/edit/[id]': ['مدیریت کاربران', 'ویرایش کاربر'],
     'user-management/create-new-group': ['مدیریت کاربران', 'ایجاد گروه'],

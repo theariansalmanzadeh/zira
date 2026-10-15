@@ -3,6 +3,6 @@ export const FOOTER_CONTENT = [
     { label: 'تماس با ما', link: '/contact-us' },
     { label: 'گواهی‌ها و مجوزها', link: '/liecense' },
     { label: 'سوال‌های پرتکرار', link: '/faq' },
-    { label: 'بلاگ', link: '/blog' },
+    { label: 'بلاگ', link: '/blogs' },
     { label: 'همکاری با ما', link: '/work-with-us' },
 ]

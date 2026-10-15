@@ -7,13 +7,16 @@ import { FormProvider, useForm } from 'react-hook-form'
 import {
     useCreatePost,
     usePostDetail,
+    usePublishPost,
+    useSetPostCover,
     useUpdatePost,
 } from '@/src/routes/contentManagment/hooks/blog'
-import { Button } from '@/src/shared/components/ui/button'
 import BlogDetailsCard from './components/BlogDetailsCard'
 import SeoCard from './components/SeoCard'
 import BlogImage from './components/BlogImage'
 import Categories from './components/Categories'
+import EditorView from './components/EditorView'
+import Actions from './components/Actions'
 import {
     ADD_BLOG_EMPTY_VALUES,
     addAndEditBlogFormSchema,
@@ -39,9 +42,12 @@ const AddAndEditBlog = () => {
     const isEdit = paramsIncludeEdit(params)
     const postId = searchParams.get('id') ?? ''
     const { data: post } = usePostDetail(postId, isEdit && Boolean(postId))
-    const { mutate: createPost, isPending: isCreating } = useCreatePost()
-    const { mutate: updatePost, isPending: isUpdating } = useUpdatePost()
-    const isPending = isCreating || isUpdating
+    const { mutateAsync: createPost, isPending: isCreating } = useCreatePost()
+    const { mutateAsync: updatePost, isPending: isUpdating } = useUpdatePost()
+    const { mutateAsync: publishPost, isPending: isPublishing } = usePublishPost()
+    const { mutateAsync: setPostCover, isPending: isSettingCover } =
+        useSetPostCover()
+    const isPending = isCreating || isUpdating || isPublishing || isSettingCover
     const editValues = useMemo(
         () => (isEdit && post ? toBlogFormValues(post) : undefined),
         [isEdit, post]
@@ -54,9 +60,10 @@ const AddAndEditBlog = () => {
         mode: 'onChange',
     })
 
-    const { handleSubmit } = methods
+    const { handleSubmit, formState } = methods
+    const onSuccess = () => push(BLOGS_ROUTE)
 
-    const onSubmit = (values: AddAndEditBlogFormValues) => {
+    const onSubmit = async (values: AddAndEditBlogFormValues) => {
         const body = {
             title: values.details.title.trim(),
             subject: values.details.subject.trim(),
@@ -68,16 +75,35 @@ const AddAndEditBlog = () => {
             source: values.categories.source.trim(),
             meta_title: values.seo.metaTitle.trim(),
             meta_description: values.seo.metaDescription.trim(),
+            content: values.content,
         }
 
-        const onSuccess = () => push(BLOGS_ROUTE)
-
         if (isEdit && postId) {
-            updatePost({ postId, body }, { onSuccess })
+            await updatePost({ postId, body })
+            await publishPost({ postId })
+            if (
+                formState.touchedFields.imageName &&
+                values.imageName &&
+                values.coverFile
+            ) {
+                await setPostCover({
+                    postId,
+                    body: { image: values.coverFile },
+                })
+            }
+            onSuccess()
             return
         }
 
-        createPost({ body }, { onSuccess })
+        const created = await createPost({ body })
+        await publishPost({ postId: created.id })
+        if (values.imageName && values.coverFile) {
+            await setPostCover({
+                postId: created.id,
+                body: { image: values.coverFile },
+            })
+        }
+        onSuccess()
     }
 
     return (
@@ -90,19 +116,18 @@ const AddAndEditBlog = () => {
                 <div className="col-span-12 flex flex-col gap-4 lg:col-span-8">
                     <BlogDetailsCard />
                     <SeoCard />
+                    <EditorView />
                 </div>
 
                 <div className="col-span-12 flex flex-col gap-4 lg:col-span-4">
                     <BlogImage />
                     <Categories />
-                    <Button
-                        type="submit"
-                        variant="primary"
-                        className="self-end"
-                        isLoading={isPending}
-                    >
-                        {isEdit ? 'ذخیره تغییرات' : 'ثبت مقاله'}
-                    </Button>
+                    <Actions
+                        isEdit={isEdit}
+                        postId={postId}
+                        isPending={isPending}
+                        onDeleted={onSuccess}
+                    />
                 </div>
             </form>
         </FormProvider>

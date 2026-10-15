@@ -14,7 +14,7 @@ const DepartmentList = () => {
 
     const departments = useMemo(
         () =>
-            (data ?? []).map((department) => ({
+            (data?.results ?? []).map((department) => ({
                 id: department.id,
                 name: department.name,
                 code: department.code,

@@ -39,7 +39,7 @@ const Preview = () => {
         [attributes]
     )
     const brandLabel =
-        brands?.items.find((item) => item.id === brand)?.name || 'برند'
+        (brands?.items ?? []).find((item) => item.id === brand)?.name || 'برند'
 
     return (
         <div className='w-full'>

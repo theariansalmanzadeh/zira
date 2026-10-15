@@ -25,7 +25,12 @@ export type CreateDepartmentRequest = {
 
 export type CreateDepartmentResponse = Department
 
-export type ListDepartmentsResponse = Department[]
+export type ListDepartmentsResponse = {
+    total: number
+    page: number
+    page_size: number
+    results: Department[]
+}
 
 export type GetDepartmentResponse = Department
 

@@ -11,6 +11,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/src/shared/components/ui/Table'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import { formatFaDate, formatFaNumber, formatPrice } from '@/src/shared/libs/formatter'
 import { cn } from '@shared/libs/utils'
 import {
@@ -72,6 +73,12 @@ const CampaignSummaryTable = ({
                         </TableRow>
                     </TableHeader>
                     <TableBody>
+                        {items.length === 0 ? (
+                            <TableEmptyState
+                                colSpan={TABLE_HEADERS.length}
+                                title='کمپینی یافت نشد.'
+                            />
+                        ) : null}
                         {items.map((item) => (
                             <>
                                 <TableRow

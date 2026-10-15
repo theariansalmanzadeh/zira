@@ -1,35 +1,61 @@
 'use client'
 
+import { useState } from 'react'
 import { Controller, useFormContext, useWatch } from 'react-hook-form'
+import {
+    useCreateBlogCategory,
+    useListBlogCategories,
+} from '@/src/routes/contentManagment/hooks/blog'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Pill } from '@/src/shared/components/ui/Pill'
 import { cn } from '@shared/libs/utils'
-import { BLOG_FORM_CATEGORIES } from '../constants'
-import type { AddAndEditBlogFormValues } from '../schema'
 
 export type BlogCategoryOption = {
     id: string
     label: string
 }
 
-type CategoriesProps = {
-    onAddCategory?: () => void
-}
-
-const Categories = ({ onAddCategory }: CategoriesProps) => {
-    const { control, setValue } = useFormContext<AddAndEditBlogFormValues>()
+const Categories = () => {
+    const { control, setValue } = useFormContext()
+    const [categoryName, setCategoryName] = useState('')
+    const { data: categoryPage } = useListBlogCategories({
+        page: 1,
+        page_size: 100,
+    })
+    const { mutate: createCategory, isPending } = useCreateBlogCategory()
+    const categories = categoryPage?.results ?? []
     const selectedCategoryIds =
         useWatch({ control, name: 'categories.selectedCategoryIds' }) ?? []
 
     const toggleCategory = (id: string) => {
         const selected = selectedCategoryIds.includes(id)
-            ? selectedCategoryIds.filter((item) => item !== id)
+            ? selectedCategoryIds.filter((item: string) => item !== id)
             : [...selectedCategoryIds, id]
 
         setValue('categories.selectedCategoryIds', selected, {
             shouldDirty: true,
             shouldValidate: true,
         })
+    }
+
+    const onAddCategory = () => {
+        const name = categoryName.trim()
+        if (!name) return
+
+        createCategory(
+            { body: { name } },
+            {
+                onSuccess: (created) => {
+                    setCategoryName('')
+                    if (selectedCategoryIds.includes(created.id)) return
+                    setValue(
+                        'categories.selectedCategoryIds',
+                        [...selectedCategoryIds, created.id],
+                        { shouldDirty: true, shouldValidate: true }
+                    )
+                },
+            }
+        )
     }
 
     return (
@@ -46,7 +72,7 @@ const Categories = ({ onAddCategory }: CategoriesProps) => {
                     دسته‌بندی
                 </span>
                 <div className="flex flex-wrap items-center gap-2">
-                    {BLOG_FORM_CATEGORIES.map((category) => {
+                    {categories.map((category) => {
                         const isSelected = selectedCategoryIds.includes(
                             category.id
                         )
@@ -54,7 +80,7 @@ const Categories = ({ onAddCategory }: CategoriesProps) => {
                         return (
                             <Pill
                                 key={category.id}
-                                text={category.label}
+                                text={category.name}
                                 variant="tonal"
                                 size="sm"
                                 className={cn(
@@ -65,18 +91,27 @@ const Categories = ({ onAddCategory }: CategoriesProps) => {
                             />
                         )
                     })}
+                    <div className="flex flex-row gap-2">
 
-                    <button
-                        type="button"
-                        onClick={onAddCategory}
-                        className="inline-flex items-center rounded-full border border-dashed border-primary/40 px-3 py-1 text-label-md font-bold text-primary transition-colors hover:bg-primary/5"
-                    >
-                        + افزودن دسته
-                    </button>
+                        <Input
+                            value={categoryName}
+                            onChange={setCategoryName}
+                            placeholder="نام دسته"
+                            wrapperClassName="w-40"
+                        />
+                        <button
+                            type="button"
+                            onClick={onAddCategory}
+                            disabled={isPending}
+                            className="inline-flex items-center rounded-full border border-dashed border-primary/40 px-3 py-1 text-label-md font-bold text-primary transition-colors hover:bg-primary/5"
+                        >
+                            + افزودن دسته
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3.5">
                 <div className="flex flex-col">
                     <label className="mb-1.5 text-label-md text-on-surface-variant">
                         نویسنده

@@ -47,7 +47,9 @@ export const useCreateCertificate = () => {
             return result.data
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: cmsCertificatesKeys.all })
+            queryClient.invalidateQueries({
+                queryKey: [...cmsCertificatesKeys.all, 'listCertificates'],
+            })
         },
     })
 }

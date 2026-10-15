@@ -1,48 +1,54 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import type { User } from '@/src/api/types/admin/user'
+import { useListUsers } from '@/src/routes/userManagment/hooks/user'
 import { Button } from '@/src/shared/components/ui/button'
 import { Checkbox } from '@/src/shared/components/ui/Checkbox'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 import type { BaseModalProps } from '../../types'
 import Filter from './components/Filter'
-import ItemRow from './components/ItemRow'
-import { DEFAULT_USERS } from './constants'
-import type { SelectUsersModalData } from './types'
+import UserList from './components/UserList'
+import type { SelectAnnouncementUserItem, SelectUsersModalData } from './types'
+import {
+    EMPTY_USER_LIST_FILTER,
+    filterUsers,
+    type UserListFilter,
+} from './utils/filterUsers'
 
 export type {
     SelectAnnouncementUserItem,
     SelectUsersModalData,
 } from './types'
 
+const toSelectableUser = (user: User): SelectAnnouncementUserItem => ({
+    id: user.id,
+    name:
+        [user.first_name, user.last_name].filter(Boolean).join(' ') ||
+        user.username,
+    personnelCode: user.personnel_code || user.username,
+    role: user.job_title || '—',
+    branch: user.department || '—',
+    status: user.is_active ? 'active' : 'inactive',
+    phone: user.phone_number,
+})
+
 const SelectUsers = ({ closeModal, data }: BaseModalProps) => {
     const modalData = data as SelectUsersModalData | null | undefined
-    const users = modalData?.users ?? DEFAULT_USERS
-    const [search, setSearch] = useState('')
-    const [role, setRole] = useState('all')
-    const [branch, setBranch] = useState('all')
+    const { data: usersData, isPending, isError } = useListUsers()
+    const [filter, setFilter] = useState<UserListFilter>(EMPTY_USER_LIST_FILTER)
     const [selectedIds, setSelectedIds] = useState<Set<string>>(
         () => new Set(modalData?.selectedIds ?? [])
     )
 
-    const filteredUsers = useMemo(() => {
-        const query = search.trim().toLowerCase()
-
-        return users.filter((user) => {
-            const matchesSearch =
-                !query ||
-                user.name.toLowerCase().includes(query) ||
-                user.personnelCode.toLowerCase().includes(query) ||
-                (user.phone?.includes(query) ?? false)
-            const matchesRole = role === 'all' || user.roleId === role
-            const matchesBranch =
-                branch === 'all' ||
-                user.branchId === branch ||
-                user.branchId === 'all'
-
-            return matchesSearch && matchesRole && matchesBranch
-        })
-    }, [users, search, role, branch])
+    const users = useMemo(
+        () => (Array.isArray(usersData) ? usersData : []),
+        [usersData]
+    )
+    const filteredUsers = useMemo(
+        () => filterUsers(users, filter).map(toSelectableUser),
+        [users, filter]
+    )
 
     const allFilteredSelected =
         filteredUsers.length > 0 &&
@@ -74,7 +80,10 @@ const SelectUsers = ({ closeModal, data }: BaseModalProps) => {
         })
     }
 
-    const selectedUsers = users.filter((user) => selectedIds.has(user.id))
+    const selectedUsers = useMemo(() => {
+        const selected = users.filter((user) => selectedIds.has(user.id))
+        return selected.map(toSelectableUser)
+    }, [users, selectedIds])
 
     const handleConfirm = () => {
         modalData?.onConfirm?.(selectedUsers)
@@ -83,14 +92,7 @@ const SelectUsers = ({ closeModal, data }: BaseModalProps) => {
 
     return (
         <div className='flex w-full flex-col gap-5' dir='rtl'>
-            <Filter
-                search={search}
-                role={role}
-                branch={branch}
-                onSearchChange={setSearch}
-                onRoleChange={setRole}
-                onBranchChange={setBranch}
-            />
+            <Filter value={filter} onChange={setFilter} />
 
             <div className='flex items-center justify-between gap-3'>
                 <label className='flex cursor-pointer items-center gap-2'>
@@ -110,19 +112,13 @@ const SelectUsers = ({ closeModal, data }: BaseModalProps) => {
                 </span>
             </div>
 
-            <div className='flex flex-col gap-2'>
-                {filteredUsers.map((user, index) => (
-                    <ItemRow
-                        key={user.id}
-                        user={user}
-                        index={index}
-                        checked={selectedIds.has(user.id)}
-                        onCheckedChange={(checked) =>
-                            toggleUser(user.id, checked)
-                        }
-                    />
-                ))}
-            </div>
+            <UserList
+                users={filteredUsers}
+                selectedIds={selectedIds}
+                isPending={isPending}
+                isError={isError}
+                onToggle={toggleUser}
+            />
 
             <div className='flex flex-wrap items-center justify-between gap-3 border-t border-outline-variant pt-4'>
                 <span className='text-label-md text-on-surface-variant'>

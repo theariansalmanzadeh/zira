@@ -13,6 +13,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/src/shared/components/ui/Table'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { ModalTypes } from '@/src/shared/components/modals/types'
 import type { ChangeWarehouseGradePayload } from '@/src/shared/components/modals/components/ChangeWarehouseGrade'
@@ -136,6 +137,12 @@ const WarehouseAndGrade = ({
                         </TableRow>
                     </TableHeader>
                     <TableBody>
+                        {rows.length === 0 ? (
+                            <TableEmptyState
+                                colSpan={TABLE_HEADERS.length}
+                                title='انباری ثبت نشده است.'
+                            />
+                        ) : null}
                         {rows.map((item) => {
                             const isExpanded = expandedId === item.id
 

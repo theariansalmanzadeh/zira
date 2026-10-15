@@ -7,7 +7,6 @@ import Stepper from './components/Stepper'
 import GeneralForm from './components/GeneralForm'
 import WorkTimeForm from './components/WorkTimeForm'
 import SetAccessForm from './components/SetAccessForm'
-import ChooseEmployeeForm from './components/ChooseEmployeeForm'
 
 const CreateBranchContent = () => {
     const { activeStep } = useCreateBranchContext()
@@ -31,11 +30,6 @@ const CreateBranchContent = () => {
                         <Stepper.Step
                             activeStep={activeStep}
                             step={3}
-                            label="کارمندان"
-                        />
-                        <Stepper.Step
-                            activeStep={activeStep}
-                            step={4}
                             label="دسترسی‌ها و مجوزها"
                         />
                     </Stepper.List>
@@ -44,8 +38,7 @@ const CreateBranchContent = () => {
             <div className="col-span-1 md:col-span-6" dir="rtl">
                 {activeStep === 1 && <GeneralForm />}
                 {activeStep === 2 && <WorkTimeForm />}
-                {activeStep === 3 && <ChooseEmployeeForm />}
-                {activeStep === 4 && <SetAccessForm />}
+                {activeStep === 3 && <SetAccessForm />}
             </div>
         </div>
     )

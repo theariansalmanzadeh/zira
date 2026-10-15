@@ -16,6 +16,7 @@ import type {
 import {
     useArchiveSection,
     useCreateSection,
+    usePublishSection,
     useReorderSections,
     useStaticPageDetail,
     useUpdateSection,
@@ -47,7 +48,7 @@ type WorkWithUsContextValue = {
     sections: WorkWithUsSectionItem[]
     addSection: () => void
     updateSection: (id: string, patch: Partial<WorkWithUsSectionItem>) => void
-    saveSection: (id: string) => void
+    saveAndPublish: (id: string) => Promise<PageSectionOut>
     setSectionVisible: (id: string, visible: boolean) => void
     moveSection: (index: number, direction: -1 | 1) => void
     removeSection: (id: string) => void
@@ -72,8 +73,12 @@ type WorkWithUsProviderProps = {
 const WorkWithUsProvider = ({ children }: WorkWithUsProviderProps) => {
     const [sections, setSections] = useState<WorkWithUsSectionItem[]>([])
     const { data } = useStaticPageDetail(PAGE)
-    const { mutate: createSection } = useCreateSection()
-    const { mutate: updateSectionMutation } = useUpdateSection()
+    const { mutateAsync: createSection } = useCreateSection()
+    const {
+        mutate: updateSectionMutation,
+        mutateAsync: updateSectionAsync,
+    } = useUpdateSection()
+    const { mutateAsync: publishSection } = usePublishSection()
     const { mutate: archiveSection } = useArchiveSection()
     const { mutate: reorderSections } = useReorderSections()
 
@@ -106,57 +111,51 @@ const WorkWithUsProvider = ({ children }: WorkWithUsProviderProps) => {
         ])
     }, [data?.page_display])
 
-    const saveSection = useCallback(
-        (id: string) => {
+    const saveAndPublish = useCallback(
+        async (id: string) => {
             const section = sections.find((item) => item.id === id)
-            if (!section) return
+            if (!section) {
+                throw new Error('Section not found')
+            }
 
+            const pageDisplay =
+                section.page_display ?? data?.page_display ?? ''
             const body = {
                 title: section.title,
                 body: section.body,
                 is_visible: section.visible,
             }
 
-            if (section.isNew) {
-                createSection(
-                    { page: PAGE, body },
-                    {
-                        onSuccess: (created) => {
-                            setSections((prev) =>
-                                prev.map((item) =>
-                                    item.id === id
-                                        ? toSectionItem(
-                                              created,
-                                              data?.page_display ?? ''
-                                          )
-                                        : item
-                                )
-                            )
-                        },
-                    }
-                )
-                return
-            }
+            const saved = section.isNew
+                ? await createSection({ page: PAGE, body })
+                : await updateSectionAsync({
+                      page: PAGE,
+                      sectionId: id,
+                      body,
+                  })
 
-            updateSectionMutation(
-                { page: PAGE, sectionId: id, body },
-                {
-                    onSuccess: (updated) => {
-                        setSections((prev) =>
-                            prev.map((item) =>
-                                item.id === id
-                                    ? toSectionItem(
-                                          updated,
-                                          item.page_display ?? data?.page_display ?? ''
-                                      )
-                                    : item
-                            )
-                        )
-                    },
-                }
+            const published = await publishSection({
+                page: PAGE,
+                sectionId: saved.id,
+            })
+
+            setSections((prev) =>
+                prev.map((item) =>
+                    item.id === id || item.id === saved.id
+                        ? toSectionItem(published, pageDisplay)
+                        : item
+                )
             )
+
+            return published
         },
-        [createSection, data?.page_display, sections, updateSectionMutation]
+        [
+            createSection,
+            data?.page_display,
+            publishSection,
+            sections,
+            updateSectionAsync,
+        ]
     )
 
     const updateSection = useCallback(
@@ -256,7 +255,7 @@ const WorkWithUsProvider = ({ children }: WorkWithUsProviderProps) => {
             sections,
             addSection,
             updateSection,
-            saveSection,
+            saveAndPublish,
             setSectionVisible,
             moveSection,
             removeSection,
@@ -265,7 +264,7 @@ const WorkWithUsProvider = ({ children }: WorkWithUsProviderProps) => {
             sections,
             addSection,
             updateSection,
-            saveSection,
+            saveAndPublish,
             setSectionVisible,
             moveSection,
             removeSection,

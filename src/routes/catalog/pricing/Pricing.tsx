@@ -5,6 +5,7 @@ import type { PriceListOut, PriceListStatusEnum } from '@/src/api/types/admin/pr
 import { useListPriceLists } from '@/src/routes/catalog/hooks/pricing'
 import { Table, TableBody } from '@/src/shared/components/ui/Table'
 import { Spinner } from '@/src/shared/components/ui/spinner'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import { ROUTE_CONFIGS } from '@/src/shared/constants/routeConfigs'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import TableHeader from './components/TableHeader'
@@ -55,14 +56,10 @@ const Pricing = () => {
                                     </td>
                                 </tr>
                             ) : priceLists.length === 0 ? (
-                                <tr>
-                                    <td
-                                        colSpan={6}
-                                        className='py-6 text-center text-label-md text-outline'
-                                    >
-                                        لیست قیمتی یافت نشد.
-                                    </td>
-                                </tr>
+                                <TableEmptyState
+                                    colSpan={TABLE_COLOUMN.length}
+                                    title='لیست قیمتی یافت نشد.'
+                                />
                             ) : (
                                 priceLists.map((priceList) => (
                                     <PriceListRow

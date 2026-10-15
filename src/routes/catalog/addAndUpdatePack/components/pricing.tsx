@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { Button } from '@/src/shared/components/ui/button'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import type { TableFilterItem } from '@/src/shared/store/table-actions-store'
 import PricingFilters, { FILTER_DEFAULTS } from './PricingFilters'
@@ -204,6 +205,12 @@ const Pricing = () => {
             >
                 <div className='flex flex-col gap-2 rounded-card-lg bg-surface-container-high p-2'>
                     <PricingTableHeader showAmount={showAmount} />
+                    {filteredItems.length === 0 ? (
+                        <TableEmptyState
+                            colSpan={TABLE_COLOUMN.length}
+                            title='کالایی یافت نشد.'
+                        />
+                    ) : null}
                     {filteredItems.map((item) => (
                         <PricingTableRow
                             key={item.id}

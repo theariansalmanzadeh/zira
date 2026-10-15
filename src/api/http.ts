@@ -91,6 +91,27 @@ export async function publicGet<T>(
     }
 }
 
+export async function publicGetBlob(
+    url: string,
+    config?: AxiosRequestConfig
+): Promise<ApiResponse<Blob>> {
+    try {
+        const response = await publicApi.get<Blob>(url, {
+            ...config,
+            responseType: 'blob',
+        })
+        return {
+            success: true,
+            data: response.data,
+        }
+    } catch (error) {
+        return {
+            success: false,
+            error: toApiError(error),
+        }
+    }
+}
+
 export async function publicPost<T, TBody = unknown>(
     url: string,
     isToastError = true,

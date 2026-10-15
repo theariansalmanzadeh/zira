@@ -48,7 +48,7 @@ const ProductInfoCard = ({
   }
 
   return (
-    <Card className={cn("w-full max-w-[390px] rounded-container-lg bg-surface-container-lowest p-xl gap-xl shadow-none", isExpanded && "absolute top-0 left-0")} dir="ltr">
+    <Card className={cn("w-full rounded-container-lg bg-surface-container-lowest p-xl gap-xl shadow-none", isExpanded && "absolute top-0 left-0")} dir="ltr">
       <div className="flex flex-col gap-xs items-end w-full">
         <div className="flex flex-row-reverse items-center justify-between w-full">
           <h3 className="text-title-md text-on-surface">{title}</h3>

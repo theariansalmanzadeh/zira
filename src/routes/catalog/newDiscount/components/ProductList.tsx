@@ -12,6 +12,7 @@ import {
     TableRow,
 } from '@/src/shared/components/ui/Table'
 import { formatFaNumber, formatPrice } from '@/src/shared/libs/formatter'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import { ModalTypes } from '@/src/shared/components/modals/types'
 import { useModalStore } from '@/src/shared/store/modal-store'
 import type { NewDiscountFormValues } from '../schema'
@@ -84,6 +85,12 @@ const ProductList = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
+                        {fields.length === 0 ? (
+                            <TableEmptyState
+                                colSpan={TABLE_HEADERS.length}
+                                title='کالایی اضافه نشده است.'
+                            />
+                        ) : null}
                         {fields.map((product, index) => (
                             <TableRow
                                 key={product.fieldId}

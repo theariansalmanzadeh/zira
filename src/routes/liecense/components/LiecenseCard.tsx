@@ -2,6 +2,7 @@ import { Icon } from '@/src/shared/components/Icons/Icon'
 import { LICENSE_FILE_TYPE_STYLES } from '@/src/routes/contentManagment/liecenses/constants'
 import { cn } from '@shared/libs/utils'
 import type { LiecenseDetailsData } from '@/src/routes/contentManagment/liecenseDetails/constants'
+import Image from 'next/image'
 
 type LiecenseCardProps = {
     data: LiecenseDetailsData
@@ -20,10 +21,12 @@ const LiecenseCard = ({ data, className }: LiecenseCardProps) => {
             dir="rtl"
         >
             {data.fileType === 'image' ? (
-                <img
-                    src={data.previewUrl}
+                <Image
+                    src={`${'https://api.bonksaz.ir'}${data.previewUrl}`}
                     alt={data.title}
                     className="h-48 w-full object-cover"
+                    width={1920}
+                    height={1080}
                 />
             ) : (
                 <div

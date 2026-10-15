@@ -30,7 +30,7 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
 
     const departmentOptions = useMemo(
         () =>
-            (departments ?? [])
+            (departments?.results ?? [])
                 .filter((department) => department.is_active)
                 .map((department) => ({
                     label: department.name,
@@ -40,7 +40,7 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
     )
     const managerOptions = useMemo(
         () =>
-            (staffUsers ?? []).map((user) => ({
+            (staffUsers?.results ?? []).map((user) => ({
                 label:
                     `${user.first_name} ${user.last_name}`.trim() ||
                     user.username,

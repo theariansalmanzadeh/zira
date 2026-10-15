@@ -7,6 +7,7 @@ export type AboutSectionItem = {
     page_display?: string
     visible: boolean
     status: EditSectionStatus
+    isNew?: boolean
 }
 
 export const ABOUT_US_SECTIONS: AboutSectionItem[] = [

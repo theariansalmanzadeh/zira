@@ -9,9 +9,15 @@ import {
     CASH_PURCHASE_DISCOUNT_DEFAULTS,
     cashPurchaseDiscountSchema,
     type CashPurchaseDiscountValues,
-} from '../schema'
+} from '@/src/routes/catalog/discount/schema'
 
-const CashPurchaseDiscountForm = () => {
+type CashPurchaseDiscountFormProps = {
+    showSubmitButton?: boolean
+}
+
+const CashPurchaseDiscountForm = ({
+    showSubmitButton = true,
+}: CashPurchaseDiscountFormProps) => {
     const { control, handleSubmit } = useForm<CashPurchaseDiscountValues>({
         resolver: zodResolver(cashPurchaseDiscountSchema),
         defaultValues: CASH_PURCHASE_DISCOUNT_DEFAULTS,
@@ -23,6 +29,7 @@ const CashPurchaseDiscountForm = () => {
 
     return (
         <form
+            id='cash-purchase-discount-form'
             className='flex flex-col gap-6 rounded-card-lg bg-surface-container-lowest p-6'
             dir='rtl'
             onSubmit={handleSubmit(onSubmit)}
@@ -94,11 +101,13 @@ const CashPurchaseDiscountForm = () => {
                 />
             </div>
 
-            <div className='flex justify-end'>
-                <Button type='submit' variant='primary'>
-                    ثبت تخفیف
-                </Button>
-            </div>
+            {showSubmitButton ? (
+                <div className='flex justify-end'>
+                    <Button type='submit' variant='primary'>
+                        ثبت تخفیف
+                    </Button>
+                </div>
+            ) : null}
         </form>
     )
 }

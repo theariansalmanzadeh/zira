@@ -11,6 +11,7 @@ import {
     type LandingSectionItem,
 } from '../constants'
 import type { LandingSectionType } from '../types'
+import { useReorderHomeBlocks } from '@/src/routes/contentManagment/hooks/homePage'
 import { useLanding } from '../provider'
 import SectionTypeThumbnail from './SectionTypeThumbnail'
 import SectionTypeBody from './sectionTypeBody'
@@ -23,21 +24,27 @@ type SectionCardProps = {
 
 const SectionCard = ({ data, index, type }: SectionCardProps) => {
     const { sections, moveSection, toggleVisibility } = useLanding()
+    const { mutate: reorderHomeBlocks } = useReorderHomeBlocks()
     const [isOpen, setIsOpen] = useState(false)
 
     const isFirst = index === 0
     const isLast = index === sections.length - 1
     const isVisible = data.status !== 'hidden'
 
-    const onMoveUp = () => {
-        if (isFirst) return
-        moveSection(index, -1)
+    const reorder = (direction: -1 | 1) => {
+        const nextIndex = index + direction
+        if (nextIndex < 0 || nextIndex >= sections.length) return
+
+        const next = [...sections]
+        const [item] = next.splice(index, 1)
+        next.splice(nextIndex, 0, item)
+        moveSection(index, direction)
+        reorderHomeBlocks({ body: { ids: next.map((section) => section.id) } })
     }
 
-    const onMoveDown = () => {
-        if (isLast) return
-        moveSection(index, 1)
-    }
+    const onMoveUp = () => reorder(-1)
+
+    const onMoveDown = () => reorder(1)
 
     const statusMeta = LANDING_STATUS_META[data.status]
 

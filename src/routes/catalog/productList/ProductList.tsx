@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import TablePagination from '@/src/shared/components/adminTable/components/TablePagination'
 import { Table, TableBody } from '@/src/shared/components/ui/Table'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import Tablerow, { TablerowData, TablerowProps } from './components/Tablerow'
 import Filter from './components/Filter'
 import TableHeader from './components/TableHeader'
@@ -213,14 +214,10 @@ const ProductList = ({ data: propData }: ProductListProps) => {
                                         <Tablerow key={item.id} data={item} />
                                     ))}
                                     {products.length === 0 && (
-                                        <tr>
-                                            <td
-                                                colSpan={TABLE_COLOUMN.length}
-                                                className="py-8 text-center text-label-md text-outline"
-                                            >
-                                                محصولی یافت نشد.
-                                            </td>
-                                        </tr>
+                                        <TableEmptyState
+                                            colSpan={TABLE_COLOUMN.length}
+                                            title='محصولی یافت نشد.'
+                                        />
                                     )}
                                 </TableBody>
                             </Table>

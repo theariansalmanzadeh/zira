@@ -4,6 +4,7 @@ import GroupList from './groups/groupList/GroupList'
 import RoleLists from './role/roleLists/RoleLists'
 import UserLists from './user/userLists/UserLists'
 import SessionList from './sessionList/SessionList'
+import AssignToBranch from './assignToBranch/AssignToBranch'
 
 export type UserManagementSearchParams = {
     sub?: string
@@ -37,6 +38,10 @@ const UserManagement = ({ searchParams }: UserManagementProps) => {
 
     if (section === 'sessions') {
         return <SessionList userId={searchParams.user} />
+    }
+
+    if (section === 'branch-assignment') {
+        return <AssignToBranch />
     }
 
     return <UserLists />

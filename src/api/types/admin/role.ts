@@ -16,7 +16,12 @@ export type ListRolesParams = {
     is_active?: boolean | null
 }
 
-export type ListRolesResponse = Role[]
+export type ListRolesResponse = {
+    total: number
+    page: number
+    page_size: number
+    results: Role[]
+}
 
 export type GetRoleResponse = Role
 

@@ -128,15 +128,16 @@ export type BarcodeIn = {
 
 export type BrandIn = {
   name: string;
-  latin_name?: string;
-  scope?: string;
-  country?: string;
+  latin_name: string;
+  scope: string;
+  logo_url: string;
+  country: string;
   /** مبدا برند: DOMESTIC (داخلی)، IMPORTED (وارداتی)، LICENSED (تحت لیسانس) */
-  origin?: BrandOrigin;
+  origin: BrandOrigin;
   /** وضعیت برند: ACTIVE (فعال)، DRAFT (پیش‌نویس)، INACTIVE (غیرفعال) */
-  status?: BrandStatus;
-  website?: string;
-  description?: string;
+  status: BrandStatus;
+  website: string;
+  description: string;
 };
 
 export type BrandOrigin =
@@ -154,16 +155,14 @@ export type BrandHistoryOut = {
 export type BrandOut = {
   id: string;
   name: string;
-  logo_url: string;
-  tagline: string;
-  intro: string;
-  is_main: boolean;
-  catalog_brand_id: string;
-  sort_order: number;
+  latin_name: string;
+  scope: string;
+  country: string;
+  origin: BrandOrigin;
   status: BrandStatus;
-  status_display: string;
-  history: BrandHistoryOut[];
-  updated_at: string;
+  website: string;
+  description: string;
+  product_count: number;
 };
 
 export type BrandStatus =
@@ -171,18 +170,7 @@ export type BrandStatus =
   | 'DRAFT'
   | 'INACTIVE';
 
-export type BrandUpdateIn = {
-  name?: string | null;
-  latin_name?: string | null;
-  scope?: string | null;
-  country?: string | null;
-  /** مبدا برند */
-  origin?: BrandOrigin | null;
-  /** وضعیت برند */
-  status?: BrandStatus | null;
-  website?: string | null;
-  description?: string | null;
-};
+export type BrandUpdateIn = BrandIn;
 
 export type BundleCreateIn = {
   name: string;

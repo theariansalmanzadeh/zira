@@ -229,7 +229,12 @@ export type CreateStaffUserRequest = {
     documents: StaffDocument[]
 }
 
-export type ListStaffUsersResponse = StaffUser[]
+export type ListStaffUsersResponse = {
+    total: number
+    page: number
+    page_size: number
+    results: StaffUser[]
+}
 
 export type CreateStaffUserResponse = StaffUser
 

@@ -13,7 +13,7 @@ import { useCreateProducts } from '../provider/createProductsProvider'
 
 const CATALOG_LIST_PATH = '/admin/catalog?sub=list'
 
-const ProductHeader = () => {
+const ProductActions = () => {
     const { back, push } = useRouter()
     const {
         productTitle,
@@ -99,7 +99,7 @@ const ProductHeader = () => {
     }
 
     return (
-        <div className='flex flex-row justify-end items-center'>
+        <div className='flex flex-row justify-end items-center mt-6'>
             {/* <div className='flex flex-row items-center gap-2'>
                 <IconButton
                     icon='rightArrow'
@@ -137,4 +137,4 @@ const ProductHeader = () => {
     )
 }
 
-export default ProductHeader
+export default ProductActions

@@ -14,7 +14,7 @@ import {
     COMBINED_SCOPE_OPTIONS,
     combinedDiscountSchema,
     type CombinedDiscountValues,
-} from '../schema'
+} from '@/src/routes/catalog/discount/schema'
 
 const tabTriggerClassName =
     'rounded-container-md flex-1 border-0 px-4 py-2 data-[state=active]:-mb-0 data-[state=active]:bg-surface-container-lowest data-[state=active]:text-on-surface data-[state=active]:shadow-sm data-[state=active]:after:hidden'
@@ -31,7 +31,12 @@ const CombinedDiscountForm = () => {
     }
 
     return (
-        <form className='flex flex-col gap-4' dir='rtl' onSubmit={handleSubmit(onSubmit)}>
+        <form
+            id='combined-discount-form'
+            className='flex flex-col gap-4 bg-surface-container-lowest'
+            dir='rtl'
+            onSubmit={handleSubmit(onSubmit)}
+        >
             <Controller
                 name='scope'
                 control={control}

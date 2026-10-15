@@ -21,6 +21,8 @@ export const addAndEditBlogFormSchema = z.object({
         source: z.string(),
     }),
     imageName: z.string(),
+    coverFile: z.custom<File | null>(() => true).nullable(),
+    content: z.string(),
 })
 
 export type AddAndEditBlogFormValues = z.infer<typeof addAndEditBlogFormSchema>
@@ -43,6 +45,8 @@ export const ADD_BLOG_EMPTY_VALUES: AddAndEditBlogFormValues = {
         source: '',
     },
     imageName: '',
+    coverFile: null,
+    content: '',
 }
 
 export const toBlogFormValues = (
@@ -65,6 +69,8 @@ export const toBlogFormValues = (
         source: post.source ?? '',
     },
     imageName: '',
+    coverFile: null,
+    content: post.content ?? '',
 })
 
 export const EDIT_BLOG_DEFAULT_VALUES: AddAndEditBlogFormValues = {
@@ -87,4 +93,6 @@ export const EDIT_BLOG_DEFAULT_VALUES: AddAndEditBlogFormValues = {
         source: 'واحد کیفیت',
     },
     imageName: '',
+    coverFile: null,
+    content: '',
 }

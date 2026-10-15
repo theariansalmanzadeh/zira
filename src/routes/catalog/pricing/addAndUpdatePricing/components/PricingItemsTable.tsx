@@ -11,6 +11,7 @@ import {
     TableRow,
 } from '@/src/shared/components/ui/Table'
 import { formatPrice } from '@/src/shared/libs/formatter'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 
 export type PricingItem = {
     id: string
@@ -64,14 +65,10 @@ const PricingItemsTable = ({
                 </TableHeader>
                 <TableBody>
                     {items.length === 0 ? (
-                        <TableRow>
-                            <TableCell
-                                colSpan={HEADERS.length + 1}
-                                className='py-8 text-center text-label-md text-outline'
-                            >
-                                کالایی اضافه نشده است.
-                            </TableCell>
-                        </TableRow>
+                        <TableEmptyState
+                            colSpan={HEADERS.length + 1}
+                            title='کالایی اضافه نشده است.'
+                        />
                     ) : (
                         items.map((item) => (
                             <TableRow

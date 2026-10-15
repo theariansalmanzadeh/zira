@@ -1,17 +1,33 @@
-"use client"
 import React from "react";
 import BlogCard from "../../shared/components/ui/BlogCard";
 import Link from "next/link";
 import { Icon } from "@/src/shared/components/Icons/Icon";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, CarouselDots } from "@/src/shared/components/ui/Carousel";
 import SubscribeBlogs from "@/src/shared/components/ui/SubscribeBlogs";
-import { BLOGS_CAROUSEL, BLOGS_LATEST } from "./content";
+import type { PublicBlogPostCardOut } from "@/src/api/types/public/cms";
 
-const Blogs = () => {
+const toBlogCard = (post: PublicBlogPostCardOut) => ({
+    href: post.slug,
+    image: post.cover_url ?? "",
+    title: post.title,
+    date: post.published_at ?? "",
+    readTime: Math.max(1, Math.round((post.summary?.length ?? 0) / 400)),
+});
+
+type BlogsProps = {
+    posts: PublicBlogPostCardOut[];
+};
+
+const Blogs = ({ posts }: BlogsProps) => {
+    const cards = posts.map(toBlogCard);
+    const carouselPosts = cards.slice(0, 5);
+    console.log(carouselPosts);
+    console.log(cards);
+
     return <div>
         <Carousel className="h-[80vh]! lg:h-40vh!">
             <CarouselContent className="h-full">
-                {BLOGS_CAROUSEL.map((blog) => (
+                {carouselPosts.map((blog) => (
                     <CarouselItem key={blog.href} className="h-full overflow-hidden">
                         <BlogCard
                             isCarousel
@@ -36,7 +52,7 @@ const Blogs = () => {
             </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pb-6xl">
-            {BLOGS_LATEST.map((blog) => (
+            {cards.map((blog) => (
                 <BlogCard
                     key={blog.href}
                     href={blog.href}

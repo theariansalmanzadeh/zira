@@ -3,7 +3,7 @@ import { ADD_PRODUCT_TABS, TAB_CONTENT } from './Tabs'
 
 const AttributeSection = () => {
     return (
-        <div className='w-full mt-6'>
+        <div className='w-full'>
             <span className='text-outline text-label-lg'>
                 مشخصات
             </span>

@@ -30,8 +30,8 @@ export const toCreateCouponRequest = (
             ? 'ITEM'
             : values.scope === 'selected-customers' ||
                 values.scope === 'customer-level'
-              ? 'ITEM_CUSTOMER'
-              : 'CART'
+                ? 'ITEM_CUSTOMER'
+                : 'CART'
 
     return {
         discount: {
@@ -42,8 +42,8 @@ export const toCreateCouponRequest = (
                 values.codeType === 'amount'
                     ? 'AMOUNT'
                     : values.codeType === 'free-shipping'
-                      ? 'FREE_SHIPPING'
-                      : 'PERCENT',
+                        ? 'FREE_SHIPPING'
+                        : 'PERCENT',
             percent,
             fixed_amount: fixedAmount,
             start_at: toApiDate(values.startDate),
@@ -61,18 +61,18 @@ export const toCreateCouponRequest = (
             targets:
                 values.scope === 'selected-products'
                     ? values.products.map((product) => ({
-                          target_type: 'ITEM' as const,
-                          target_id: product.id,
-                      }))
+                        target_type: 'ITEM' as const,
+                        target_id: product.id,
+                    }))
                     : [],
             audiences: [
                 ...(values.scope === 'selected-customers' && values.customerGroup
                     ? [
-                          {
-                              audience_type: 'GROUP' as const,
-                              customer_group_id: values.customerGroup,
-                          },
-                      ]
+                        {
+                            audience_type: 'GROUP' as const,
+                            customer_group_id: values.customerGroup,
+                        },
+                    ]
                     : []),
                 ...values.customerLevels.map((level) => ({
                     audience_type: 'COOPERATION_LEVEL' as const,
@@ -84,6 +84,7 @@ export const toCreateCouponRequest = (
             code_text: values.discountCode.trim(),
             expires_at: toApiDate(values.endDate),
         },
+
     }
 }
 

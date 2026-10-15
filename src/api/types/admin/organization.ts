@@ -134,22 +134,45 @@ export type ListBranchesParams = {
     status?: BranchStatus | string
 }
 
+export type BranchDayHours = {
+    is_closed: boolean
+    open?: string
+    close?: string
+}
+
+export type CreateBranchWorkingHours = {
+    saturday: BranchDayHours
+    sunday: BranchDayHours
+    monday: BranchDayHours
+    tuesday: BranchDayHours
+    wednesday: BranchDayHours
+    thursday: BranchDayHours
+    friday: BranchDayHours
+}
+
+export type CreateBranchPermits = {
+    allow_credit_sale: boolean
+    allow_cheque_sale: boolean
+    allow_consignment_sale: boolean
+    allow_scrap_entry: boolean
+}
+
 export type CreateBranchRequest = {
     code: string
     name: string
-    province?: string
-    county?: string
-    city?: string
-    full_address?: string
-    address_details?: string
-    postal_code?: string
-    phone?: string
-    latitude?: number | null
-    longitude?: number | null
-    manager_id?: string | null
-    working_hours?: WorkingHours | null
-    activity_start_date?: string | null
-    permits?: BranchPermit
+    province: string
+    county: string
+    city: string
+    full_address: string
+    address_details: string
+    postal_code: string
+    phone: string
+    latitude: number
+    longitude: number
+    manager_id: string
+    working_hours: CreateBranchWorkingHours
+    activity_start_date: string
+    permits: CreateBranchPermits
 }
 
 export type UpdateBranchRequest = {

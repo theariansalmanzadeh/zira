@@ -10,6 +10,7 @@ import { Textarea } from '@/src/shared/components/ui/TextArea'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { cn } from '@shared/libs/utils'
 import {
+    useCreateFaqCategory,
     useCreateFaqItem,
     useListFaqCategories,
     useUpdateFaqItem,
@@ -29,6 +30,8 @@ const AddNewFaq = ({ closeModal, data }: BaseModalProps) => {
     const isEditing = Boolean(modalData.id)
     const { mutate: createFaqItem, isPending: isCreating } = useCreateFaqItem()
     const { mutate: updateFaqItem, isPending: isUpdating } = useUpdateFaqItem()
+    const { mutate: createFaqCategory, isPending: isCreatingCategory } =
+        useCreateFaqCategory()
     const { data: categoryPage } = useListFaqCategories()
     const isPending = isCreating || isUpdating
 
@@ -73,15 +76,29 @@ const AddNewFaq = ({ closeModal, data }: BaseModalProps) => {
     )
 
     const handleAddCategory = () => {
-        const label = getValues('newCategoryName').trim()
-        if (!label) return
+        const name = getValues('newCategoryName').trim()
+        if (!name || isCreatingCategory) return
 
-        const id = `custom-${Date.now()}`
-        const nextCategories = [...getValues('categories'), { id, label }]
-        setValue('categories', nextCategories, { shouldDirty: true })
-        setValue('categoryId', id, { shouldValidate: true, shouldDirty: true })
-        setValue('newCategoryName', '')
-        setValue('isAddingCategory', false)
+        createFaqCategory(
+            { body: { name } },
+            {
+                onSuccess: (created) => {
+                    const nextCategories = [
+                        ...getValues('categories').filter(
+                            (category) => category.id !== created.id
+                        ),
+                        { id: created.id, label: created.name },
+                    ]
+                    setValue('categories', nextCategories, { shouldDirty: true })
+                    setValue('categoryId', created.id, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                    })
+                    setValue('newCategoryName', '')
+                    setValue('isAddingCategory', false)
+                },
+            }
+        )
     }
 
     const onSubmit = (values: AddNewFaqFormValues) => {
@@ -188,6 +205,8 @@ const AddNewFaq = ({ closeModal, data }: BaseModalProps) => {
                             variant="primary"
                             className="shrink-0 bg-[#8E6CB0]! hover:bg-[#7d5c9e]!"
                             onClick={handleAddCategory}
+                            isLoading={isCreatingCategory}
+                            disabled={isCreatingCategory}
                         >
                             افزودن
                         </Button>

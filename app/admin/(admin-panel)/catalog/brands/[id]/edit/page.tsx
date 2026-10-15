@@ -7,11 +7,17 @@ const AddAndEditBrands = dynamic(
     { loading: () => <TableLoadingSkeleton isPending /> }
 )
 
-export default function EditBrandPage() {
+type EditBrandPageProps = {
+    params: Promise<{ id: string }>
+}
+
+export default async function EditBrandPage({ params }: EditBrandPageProps) {
+    const { id } = await params
+
     return (
         <Suspense fallback={<TableLoadingSkeleton isPending />}>
             <div className="w-full max-w-[900px] mx-auto">
-                <AddAndEditBrands />
+                <AddAndEditBrands id={id} />
             </div>
         </Suspense>
     )

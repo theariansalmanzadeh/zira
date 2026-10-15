@@ -1,13 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Textarea } from '@/src/shared/components/ui/TextArea'
 import { Button } from '@/src/shared/components/ui/button'
-import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { CopyableInput } from '@/src/shared/components/ui/CopyableInput'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { ModalTypes } from '@/src/shared/components/modals/types'
@@ -18,12 +17,6 @@ import {
     useGetDepartment,
     useUpdateDepartment,
 } from '../../hooks/departments'
-import {
-    MANAGER_OPTIONS,
-    RELATED_SECTION_OPTIONS,
-    SLA_OPTIONS,
-} from './constants'
-import TimeSelectRow from './components/TimeSelectRow'
 import {
     createAndUpdateDepartmentSchema,
     DEPARTMENT_FORM_DEFAULTS,
@@ -39,7 +32,6 @@ const CreateAndUpdateDepartment = ({ id }: CreateAndUpdateDepartmentProps) => {
     const { push } = useRouter()
     const isEdit = Boolean(id)
     const openModal = useModalStore((state) => state.openModal)
-    const [managerSearchQuery, setManagerSearchQuery] = useState('')
 
     const { data, isPending: isLoadingDepartment } = useGetDepartment(
         id ?? '',
@@ -128,56 +120,6 @@ const CreateAndUpdateDepartment = ({ id }: CreateAndUpdateDepartmentProps) => {
                                     groupClassName='bg-surface-container-high h-10 rounded-container-lg border-0'
                                 />
                             </div>
-                        )}
-                    />
-                    <Controller
-                        name='relatedSection'
-                        control={control}
-                        render={({ field }) => (
-                            <FormDropdown
-                                label='بخش مربوطه *'
-                                value={field.value || undefined}
-                                options={RELATED_SECTION_OPTIONS}
-                                onChange={field.onChange}
-                            />
-                        )}
-                    />
-                    <Controller
-                        name='departmentManager'
-                        control={control}
-                        render={({ field }) => (
-                            <FormDropdown
-                                hasSearch
-                                searchQuery={managerSearchQuery}
-                                onSearch={setManagerSearchQuery}
-                                label='مسئول دپارتمان'
-                                placeholder='انتخاب کاربر'
-                                value={field.value || undefined}
-                                options={MANAGER_OPTIONS}
-                                onChange={field.onChange}
-                            />
-                        )}
-                    />
-                    <Controller
-                        name='slaResponse'
-                        control={control}
-                        render={({ field }) => (
-                            <FormDropdown
-                                label='پاسخ SLA *'
-                                value={field.value || undefined}
-                                options={SLA_OPTIONS}
-                                onChange={field.onChange}
-                            />
-                        )}
-                    />
-                    <Controller
-                        name='responseHours'
-                        control={control}
-                        render={({ field }) => (
-                            <TimeSelectRow
-                                value={field.value}
-                                onChange={field.onChange}
-                            />
                         )}
                     />
                     <div className='col-span-2 flex flex-col'>

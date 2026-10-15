@@ -57,10 +57,10 @@ const GeneralForm = ({ setActiveStep: propSetActiveStep }: GeneralFormProps) => 
 
     const handleInputChange =
         (field: keyof typeof generalData) =>
-        (value: string | ChangeEvent<HTMLInputElement>) => {
-            const nextVal = typeof value === 'string' ? value : value.target.value
-            updateGeneralData({ [field]: nextVal })
-        }
+            (value: string | ChangeEvent<HTMLInputElement>) => {
+                const nextVal = typeof value === 'string' ? value : value.target.value
+                updateGeneralData({ [field]: nextVal })
+            }
 
     return (
         <div
@@ -81,9 +81,9 @@ const GeneralForm = ({ setActiveStep: propSetActiveStep }: GeneralFormProps) => 
                     <CopyableInput
                         value={generalData.branchCode}
                         onChange={handleInputChange('branchCode')}
-                        onCopy={() => {}}
+                        onCopy={() => { }}
                         readOnly={false}
-                        groupClassName="bg-surface-container-high h-10 rounded-container-lg border-0"
+                        groupClassName="bg-surface-container-high! h-10 rounded-container-lg border-0"
                     />
                 </div>
                 <FormDropdown
@@ -145,12 +145,12 @@ const GeneralForm = ({ setActiveStep: propSetActiveStep }: GeneralFormProps) => 
                     value={generalData.landlinePhone}
                     onChange={handleInputChange('landlinePhone')}
                 />
-                <div className="col-span-2 flex flex-col gap-1.5">
+                {/* <div className="col-span-2 flex flex-col gap-1.5">
                     <span className="text-label-md text-on-surface-variant">
                         انتخاب موقعیت روی نقشه *
                     </span>
                     <div className="min-h-48 w-full rounded-container-lg bg-surface-container-high" />
-                </div>
+                </div> */}
             </FormSection>
 
             <Button

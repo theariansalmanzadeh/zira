@@ -1,57 +1,41 @@
 'use client'
 
-import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { Input } from '@/src/shared/components/ui/Input'
-import { BRANCH_FILTER_OPTIONS, ROLE_FILTER_OPTIONS } from '../constants'
+import type { UserListFilter } from '../utils/filterUsers'
 
 type FilterProps = {
-    search: string
-    role: string
-    branch: string
-    onSearchChange: (value: string) => void
-    onRoleChange: (value: string) => void
-    onBranchChange: (value: string) => void
+    value: UserListFilter
+    onChange: (value: UserListFilter) => void
 }
 
-const Filter = ({
-    search,
-    role,
-    branch,
-    onSearchChange,
-    onRoleChange,
-    onBranchChange,
-}: FilterProps) => {
+const Filter = ({ value, onChange }: FilterProps) => {
+    const update = (key: keyof UserListFilter, next: string) => {
+        onChange({ ...value, [key]: next })
+    }
+
     return (
-        <>
-            <div
-                className='flex flex-col gap-3 sm:flex-row sm:items-end'
-                dir='rtl'
-            >
-                <FormDropdown
-                    value={role}
-                    options={ROLE_FILTER_OPTIONS}
-                    onChange={onRoleChange}
-                    placeholder='همه نقش‌ها'
-                    className='w-full sm:w-40 [&>span:first-child]:mb-0 [&>span:first-child]:hidden'
-                />
-                <FormDropdown
-                    value={branch}
-                    options={BRANCH_FILTER_OPTIONS}
-                    onChange={onBranchChange}
-                    placeholder='همه شعب'
-                    className='w-full sm:w-40 [&>span:first-child]:mb-0 [&>span:first-child]:hidden'
-                />
-            </div>
+        <div className='grid grid-cols-1 gap-3 sm:grid-cols-2' dir='rtl'>
             <Input
-                value={search}
-                onChange={onSearchChange}
-                placeholder='نام، کد پرسنلی یا موبایل...'
-                iconId='search400Linear'
-                iconClassName='text-on-surface-variant'
-                wrapperClassName='w-full flex-1 flex-row-reverse bg-surface-container-lowest border border-outline-variant'
-                className='text-right'
+                label='عنوان شغلی'
+                value={value.job_title}
+                onChange={(next) => update('job_title', next)}
             />
-        </>
+            <Input
+                label='نام کاربری'
+                value={value.username}
+                onChange={(next) => update('username', next)}
+            />
+            <Input
+                label='نام'
+                value={value.first_name}
+                onChange={(next) => update('first_name', next)}
+            />
+            <Input
+                label='شماره تلفن'
+                value={value.phone_number}
+                onChange={(next) => update('phone_number', next)}
+            />
+        </div>
     )
 }
 

@@ -3,6 +3,7 @@
 import { useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Table, TableBody } from '@/src/shared/components/ui/Table'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import TableLoadingSkeleton from '@/src/shared/components/loading/TableLoadingSkeleton'
 import { ROUTE_CONFIGS } from '@/src/shared/constants/routeConfigs'
@@ -82,14 +83,10 @@ const BundleList = ({ data: propData }: BundleListProps) => {
                                     <TableRow key={bundle.id} data={bundle} />
                                 ))}
                                 {bundles.length === 0 && (
-                                    <tr>
-                                        <td
-                                            colSpan={TABLE_COLOUMN.length}
-                                            className="py-8 text-center text-label-md text-outline"
-                                        >
-                                            باندلی یافت نشد.
-                                        </td>
-                                    </tr>
+                                    <TableEmptyState
+                                        colSpan={TABLE_COLOUMN.length}
+                                        title='باندلی یافت نشد.'
+                                    />
                                 )}
                             </TableBody>
                         </Table>

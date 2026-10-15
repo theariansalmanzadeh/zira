@@ -56,25 +56,3 @@ export const newDiscountSchema = z.object({
 })
 
 export type NewDiscountFormValues = z.infer<typeof newDiscountSchema>
-
-export const NEW_DISCOUNT_DEFAULT_VALUES: NewDiscountFormValues = {
-    discountCode: '',
-    codeType: 'percentage',
-    amount: '',
-    minCartAmount: '0',
-    scope: 'all-products',
-    scopeMinPurchaseQty: '0',
-    scopeMinCartAmount: '0',
-    products: [],
-    customerGroup: 'loyalty-club',
-    customerLevels: [],
-    discountPercent: '',
-    maxDiscountCap: '',
-    minPurchaseQty: '',
-    startDate: undefined,
-    endDate: undefined,
-    duration: '',
-    status: 'active',
-    useWithOtherDiscounts: true,
-    useWithDiscountCode: false,
-}

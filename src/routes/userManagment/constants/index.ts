@@ -65,6 +65,10 @@ export const sectionToHeading: Record<string, SectionHeading> = {
             },
         ],
     },
+    'branch-assignment': {
+        title: 'انتصاب به شعبه',
+        subtitle: 'انتخاب پرسنل و انتصاب به شعبه',
+    },
     announcements: {
         title: 'اعلان‌ها',
         subtitle: 'مشاهده و مدیریت اعلان‌های سامانه',
@@ -184,6 +188,7 @@ export const getUserManagementSectionKey = (
     if (sub === 'department') return 'department'
     if (sub === 'announcements') return 'announcements'
     if (sub === 'sessions') return 'sessions'
+    if (sub === 'branch-assignment') return 'branch-assignment'
     return 'user'
 }
 
@@ -197,6 +202,10 @@ export const USER_MANAGEMENT_SUB_SIDEBAR_SECTIONS: readonly SubSidebarSection[] 
                 {
                     label: 'دپارتمان‌ها',
                     href: '/admin/user-management?sub=department',
+                },
+                {
+                    label: 'انتصاب به شعبه',
+                    href: '/admin/user-management?sub=branch-assignment',
                 },
             ],
         },

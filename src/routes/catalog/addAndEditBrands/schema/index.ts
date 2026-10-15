@@ -3,15 +3,15 @@ import * as z from 'zod'
 const requiredString = (message: string) => z.string().trim().min(1, message)
 
 export const BRAND_ORIGIN_OPTIONS = [
-    { label: 'داخلی', value: 'internal' },
-    { label: 'وارداتی', value: 'imported' },
-    { label: 'لایسنس', value: 'license' },
+    { label: 'داخلی', value: 'DOMESTIC' },
+    { label: 'وارداتی', value: 'IMPORTED' },
+    { label: 'لایسنس', value: 'LICENSED' },
 ] as const
 
 export const BRAND_STATUS_OPTIONS = [
-    { label: 'فعال', value: 'active' },
-    { label: 'پیش‌نویس', value: 'draft' },
-    { label: 'غیرفعال', value: 'inactive' },
+    { label: 'فعال', value: 'ACTIVE' },
+    { label: 'پیش‌نویس', value: 'DRAFT' },
+    { label: 'غیرفعال', value: 'INACTIVE' },
 ] as const
 
 export const ACTIVITY_FIELD_OPTIONS = [
@@ -32,9 +32,8 @@ export const addAndEditBrandSchema = z.object({
     latinName: z.string(),
     activityField: requiredString('حوزه فعالیت الزامی است'),
     country: z.string(),
-    origin: z.enum(['internal', 'imported', 'license']),
-    status: z.enum(['active', 'draft', 'inactive']),
-    website: z.string(),
+    origin: z.enum(['DOMESTIC', 'IMPORTED', 'LICENSED']),
+    status: z.enum(['ACTIVE', 'DRAFT', 'INACTIVE']),
     description: z.string(),
 })
 
@@ -45,23 +44,9 @@ export const ADD_AND_EDIT_BRAND_DEFAULT_VALUES: AddAndEditBrandFormValues = {
     latinName: '',
     activityField: '',
     country: '',
-    origin: 'internal',
-    status: 'active',
-    website: '',
+    origin: 'DOMESTIC',
+    status: 'ACTIVE',
     description: '',
-}
-
-export const BRAND_FORM_PRESETS: Record<string, AddAndEditBrandFormValues> = {
-    'brand-1': {
-        persianName: 'لمیس',
-        latinName: 'Lamis',
-        activityField: 'underwear',
-        country: 'iran',
-        origin: 'internal',
-        status: 'active',
-        website: 'lamis.ir',
-        description: '',
-    },
 }
 
 export const getAddAndEditBrandDefaultValues = (

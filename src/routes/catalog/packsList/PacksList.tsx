@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import TablePagination from '@/src/shared/components/adminTable/components/TablePagination'
 import { Table, TableBody } from '@/src/shared/components/ui/Table'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import { ROUTE_CONFIGS } from '@/src/shared/constants/routeConfigs'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import TableHeader from './components/TableHeader'
@@ -35,9 +36,16 @@ const PacksList = ({ data = PACKS_LIST_DUMMY }: { data?: PackListItem[] }) => {
                     <Table className="border-collapse border-spacing-y-4">
                         <TableHeader />
                         <TableBody>
-                            {filteredPacks.map((pack) => (
-                                <TableRow key={pack.id} data={pack} />
-                            ))}
+                            {filteredPacks.length === 0 ? (
+                                <TableEmptyState
+                                    colSpan={TABLE_COLOUMN.length}
+                                    title='پکی یافت نشد.'
+                                />
+                            ) : (
+                                filteredPacks.map((pack) => (
+                                    <TableRow key={pack.id} data={pack} />
+                                ))
+                            )}
                         </TableBody>
                     </Table>
                 </div>

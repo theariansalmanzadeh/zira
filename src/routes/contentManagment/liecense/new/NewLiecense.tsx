@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form'
@@ -9,6 +10,7 @@ import { Textarea } from '@/src/shared/components/ui/TextArea'
 import IconButton from '@/src/shared/components/ui/IconButton'
 import CalendarButton from '@/src/shared/components/ui/CalendarButton'
 import { Icon } from '@/src/shared/components/Icons/Icon'
+import { useCreateCertificate } from '@/src/routes/contentManagment/hooks/certificates'
 import { DOCUMENT_TAB_OPTIONS } from './constants'
 import {
     NEW_LIECENSE_DEFAULT_VALUES,
@@ -19,8 +21,17 @@ import ChoiceGroup from './components/ChoiceGroup'
 import DocumentFileUpload from './components/DocumentFileUpload'
 import FileAndVisibilityFields from './components/FileAndVisibilityFields'
 
+const toApiDate = (date: Date) => {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+}
+
 const NewLiecense = () => {
     const { push, back } = useRouter()
+    const [file, setFile] = useState<File | null>(null)
+    const { mutate: createCertificate, isPending } = useCreateCertificate()
 
     const methods = useForm<NewLiecenseFormValues>({
         resolver: zodResolver(newLiecenseFormSchema),
@@ -43,6 +54,7 @@ const NewLiecense = () => {
     const handlePickFile = (file?: File | null) => {
         if (!file) return
 
+        setFile(file)
         const isPdf = file.type === 'application/pdf'
         setValue('fileName', file.name, { shouldValidate: true, shouldDirty: true })
         setValue(
@@ -56,8 +68,33 @@ const NewLiecense = () => {
         })
     }
 
-    const onSubmit = () => {
-        push('/admin/content-managment/liecense')
+    const onSubmit = (values: NewLiecenseFormValues) => {
+        if (!file || !values.issuedAt) return
+
+        createCertificate(
+            {
+                body: {
+                    category:
+                        values.tab === 'license' ? 'LICENSE' : 'CERTIFICATE',
+                    title: values.title.trim(),
+                    issuer: values.issuer.trim(),
+                    document_no: values.documentNo?.trim() ?? '',
+                    issued_on: toApiDate(values.issuedAt),
+                    expires_on: values.expiresAt
+                        ? toApiDate(values.expiresAt)
+                        : null,
+                    description: values.description?.trim() ?? '',
+                    is_visible: values.visibility === 'visible',
+                    sort_order: 0,
+                    file,
+                },
+            },
+            {
+                onSuccess: () => {
+                    push('/admin/content-managment/liecense')
+                },
+            }
+        )
     }
 
     return (
@@ -203,6 +240,8 @@ const NewLiecense = () => {
                         type="submit"
                         variant="primary"
                         className="flex-1 gap-2"
+                        isLoading={isPending}
+                        disabled={isPending}
                     >
                         <Icon
                             label="checkSm400Linear"

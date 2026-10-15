@@ -5,6 +5,7 @@ import type { BrandOut } from '@/src/api/types/admin/catalog'
 import { useListBrands } from '@/src/routes/catalog/hooks/catalog'
 import { ROUTE_CONFIGS } from '@/src/shared/constants/routeConfigs'
 import { Spinner } from '@/src/shared/components/ui/spinner'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import { Table, TableBody } from '@/src/shared/components/ui/Table'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import TableHeader from './components/TableHeader'
@@ -16,18 +17,23 @@ const API_STATUS: Record<Exclude<BrandStatus, 'all'>, string> = {
     inactive: 'INACTIVE',
 }
 
+const STATUS_LABEL = {
+    ACTIVE: 'فعال',
+    DRAFT: 'پیش‌نویس',
+    INACTIVE: 'غیرفعال',
+} as const
+
 const toBrandItem = (brand: BrandOut): BrandItem => ({
     id: brand.id,
     name: brand.name,
-    slug: brand.tagline,
+    slug: brand.latin_name || '—',
     initial: brand.name.trim().charAt(0) || '—',
     avatarClassName: 'bg-primary/70 text-on-primary',
-    logoUrl: brand.logo_url,
-    field: brand.intro,
-    productsCount: brand.history.length,
-    country: brand.is_main ? 'برند اصلی' : '—',
+    field: brand.scope || '—',
+    productsCount: brand.product_count,
+    country: brand.country || '—',
     status: brand.status === 'ACTIVE' ? 'active' : 'inactive',
-    statusLabel: brand.status_display,
+    statusLabel: STATUS_LABEL[brand.status],
 })
 
 const BrandsList = () => {
@@ -58,17 +64,24 @@ const BrandsList = () => {
                         <Table className="border-collapse border-spacing-y-4">
                             <TableHeader />
                             <TableBody>
-                                {brands.map((brand) => (
-                                    <TableRow
-                                        key={brand.id}
-                                        data={brand}
-                                        onEdit={() =>
-                                            push(
-                                                `/admin/catalog/brands/${brand.id}/edit`
-                                            )
-                                        }
+                                {brands.length === 0 ? (
+                                    <TableEmptyState
+                                        colSpan={TABLE_COLOUMN.length}
+                                        title='برندی یافت نشد.'
                                     />
-                                ))}
+                                ) : (
+                                    brands.map((brand) => (
+                                        <TableRow
+                                            key={brand.id}
+                                            data={brand}
+                                            onEdit={() =>
+                                                push(
+                                                    `/admin/catalog/brands/${brand.id}/edit`
+                                                )
+                                            }
+                                        />
+                                    ))
+                                )}
                             </TableBody>
                         </Table>
                     )}

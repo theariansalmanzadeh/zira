@@ -9,6 +9,7 @@ import {
     TableRow,
 } from '@/src/shared/components/ui/Table'
 import { useTable } from '@/src/shared/context/TableProvider'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import type { TableFilterItem } from '@/src/shared/store/table-actions-store'
@@ -72,6 +73,12 @@ const KardexTable = ({ rows }: { rows: KardexRow[] }) => {
             <Table className='border-collapse'>
                 <KardexHeader />
                 <TableBody>
+                    {rows.length === 0 ? (
+                        <TableEmptyState
+                            colSpan={visibleTableColoumn.length || 1}
+                            title='گردشی ثبت نشده است.'
+                        />
+                    ) : null}
                     {rows.map((row) => {
                         const rowCells = cells(row)
                         return (

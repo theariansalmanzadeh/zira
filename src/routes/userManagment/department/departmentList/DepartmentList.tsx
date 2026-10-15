@@ -27,7 +27,7 @@ const DepartmentList = () => {
     const { data, isPending, isError } = useListDepartments()
 
     const departments = useMemo(
-        () => (data ?? []).map(mapDepartmentToRow),
+        () => (data?.results ?? []).map(mapDepartmentToRow),
         [data]
     )
 

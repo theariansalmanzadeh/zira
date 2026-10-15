@@ -28,7 +28,7 @@ const RoleLists = () => {
     const { data, isPending, isError } = useListRoles()
 
     const roles = useMemo(
-        () => (data ?? []).map(mapRoleToRow),
+        () => (data?.results ?? []).map(mapRoleToRow),
         [data]
     )
 

@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import type { CategoryNodeOut } from '@/src/api/types/admin/catalog'
 import { useListCategories } from '@/src/routes/catalog/hooks/catalog'
 import { Spinner } from '@/src/shared/components/ui/spinner'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import { useTable } from '@/src/shared/context/TableProvider'
 import {
@@ -42,9 +43,13 @@ const CategoryTypesGrid = ({ data }: { data: CategoryRowData[] }) => {
             dir='rtl'
         >
             <TableHeader />
-            {data.map((item) => (
-                <CategoryTableRow key={item.id} data={item} />
-            ))}
+            {data.length === 0 ? (
+                <TableEmptyState title='دسته‌ای یافت نشد.' />
+            ) : (
+                data.map((item) => (
+                    <CategoryTableRow key={item.id} data={item} />
+                ))
+            )}
         </div>
     )
 }

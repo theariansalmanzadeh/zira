@@ -16,8 +16,10 @@ const BlogImage = () => {
         if (!file) return
         setValue('imageName', file.name, {
             shouldDirty: true,
+            shouldTouch: true,
             shouldValidate: true,
         })
+        setValue('coverFile', file, { shouldDirty: true })
     }
 
     return (

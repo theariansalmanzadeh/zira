@@ -52,7 +52,7 @@ const UserLists = () => {
     const { data, isPending, isError } = useListStaffUsers()
 
     const users = useMemo(() => {
-        const rows = (data ?? []).map(mapUserToRow)
+        const rows = (data?.results ?? []).map(mapUserToRow)
         const status = category ? CAT_TO_STATUS[category] : undefined
         if (!status) return rows
         return rows.filter((user) => user.status === status)
@@ -87,7 +87,11 @@ const UserLists = () => {
                     </Table>
                 )}
             </div>
-            <TablePagination className='mt-2' totalAmount={users.length} />
+            <TablePagination
+                className='mt-2'
+                page={data?.page}
+                totalAmount={data?.total ?? users.length}
+            />
         </TableListLayout>
     )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { EditorContent, useEditor, useEditorState } from '@tiptap/react'
 import { TextStyleKit } from '@tiptap/extension-text-style'
 import StarterKit from '@tiptap/starter-kit'
@@ -10,6 +10,11 @@ import { Button } from '@/src/shared/components/ui/button'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 import { cn } from '@shared/libs/utils'
+import {
+    editorContentType,
+    MarkdownExtension,
+    readEditorMarkdown,
+} from '@/src/routes/contentManagment/editor/markdownContent'
 import { useWorkWithUs } from '../provider'
 import EditorHeader from './EditorHeader'
 import MenuBarEditor from './MenuBarEditor'
@@ -32,15 +37,42 @@ const extensions = [
             class: 'text-primary underline',
         },
     }),
+    MarkdownExtension,
 ]
 
 const EditSectionView = ({ id, index, className }: EditSectionViewProps) => {
-    const { sections, updateSection, saveSection } = useWorkWithUs()
+    const { sections, updateSection, saveAndPublish } = useWorkWithUs()
     const section = sections.find((item) => item.id === id)
+    const [isTouched, setIsTouched] = useState(false)
+    const baselineRef = useRef<{
+        id: string
+        title: string
+        body: string
+    } | null>(null)
+
+    if (section) {
+        const baseline = baselineRef.current
+        if (!baseline || baseline.id !== section.id) {
+            baselineRef.current = {
+                id: section.id,
+                title: section.title,
+                body: section.body,
+            }
+            if (isTouched) setIsTouched(false)
+        } else if (
+            !isTouched &&
+            (baseline.title !== section.title || baseline.body !== section.body)
+        ) {
+            setIsTouched(true)
+        }
+    }
+
+    const initialBody = section?.body ?? ''
 
     const editor = useEditor({
         extensions,
-        content: section?.body ?? '',
+        content: initialBody,
+        contentType: editorContentType(initialBody),
         immediatelyRender: false,
         editorProps: {
             attributes: {
@@ -56,14 +88,24 @@ const EditSectionView = ({ id, index, className }: EditSectionViewProps) => {
             },
         },
         onUpdate: ({ editor: currentEditor }) => {
-            updateSection(id, { body: currentEditor.getHTML() })
+            updateSection(id, { body: readEditorMarkdown(currentEditor) })
         },
     })
 
     useEffect(() => {
         if (!editor || !section) return
-        if (editor.getHTML() === section.body) return
-        editor.commands.setContent(section.body, { emitUpdate: false })
+        const markdown = readEditorMarkdown(editor)
+        if (markdown === section.body) return
+        if (
+            editorContentType(section.body) === 'html' &&
+            editor.getHTML() === section.body
+        ) {
+            return
+        }
+        editor.commands.setContent(section.body, {
+            emitUpdate: false,
+            contentType: editorContentType(section.body),
+        })
     }, [section?.body, editor, section])
 
     const characterCount =
@@ -97,9 +139,18 @@ const EditSectionView = ({ id, index, className }: EditSectionViewProps) => {
                     </span>
                     <Button
                         type="button"
-                        variant="outline"
+                        variant="primary"
                         className="h-9 gap-1.5 rounded-button-md px-4"
-                        onClick={() => saveSection(id)}
+                        disabled={!isTouched}
+                        onClick={async () => {
+                            const published = await saveAndPublish(id)
+                            baselineRef.current = {
+                                id: published.id,
+                                title: published.title,
+                                body: published.body,
+                            }
+                            setIsTouched(false)
+                        }}
                     >
                         <Icon label="draft400Linear" className="size-4!" />
                         <span className="text-label-md font-semibold">
