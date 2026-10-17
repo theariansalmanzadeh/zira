@@ -41,7 +41,7 @@ const BasicInfoTab = () => {
     )
     const brandOptions = useMemo(
         () =>
-            (brands?.items ?? []).map((item) => ({
+            (brands?.results ?? []).map((item) => ({
                 label: item.name,
                 value: item.id,
             })),

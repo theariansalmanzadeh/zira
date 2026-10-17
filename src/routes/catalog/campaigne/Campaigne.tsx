@@ -8,6 +8,7 @@ import { ROUTE_CONFIGS } from '@/src/shared/constants/routeConfigs'
 import { formatFaDate, formatFaNumber } from '@/src/shared/libs/formatter'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import { Spinner } from '@/src/shared/components/ui/spinner'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import { PillVariants } from '@/src/shared/components/ui/Pill'
 import CampaigneCard from './components/CampaigneCard'
 import { getCampaignDetailHref } from './constants'
@@ -61,6 +62,8 @@ const Campaigne = () => {
                     <div className='flex justify-center py-10'>
                         <Spinner className='size-6' />
                     </div>
+                ) : campaigns.length === 0 ? (
+                    <TableEmptyState title='کمپینی یافت نشد.' />
                 ) : (
                     campaigns.map((campaign) => (
                         <CampaigneCard

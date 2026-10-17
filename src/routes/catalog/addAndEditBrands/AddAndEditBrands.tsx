@@ -1,16 +1,18 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import type { BrandIn } from '@/src/api/types/admin/catalog'
 import DocumentFileUpload from '@/src/routes/contentManagment/liecense/new/components/DocumentFileUpload'
-import { useCreateBrand, useUpdateBrand } from '@/src/routes/catalog/hooks/catalog'
+import { catalogKeys, useCreateBrand, useUpdateBrand } from '@/src/routes/catalog/hooks/catalog'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Textarea } from '@/src/shared/components/ui/TextArea'
+import { Button } from '@/src/shared/components/ui/button'
 import {
     ToggleGroup,
     ToggleGroupItem,
@@ -32,7 +34,7 @@ const toBrandRequest = (values: AddAndEditBrandFormValues): BrandIn => ({
     name: values.persianName,
     latin_name: values.latinName,
     scope: values.activityField,
-    logo_url: '',
+    logo: values.logo,
     country: values.country,
     origin: values.origin,
     status: values.status,
@@ -46,13 +48,12 @@ type AddAndEditBrandsProps = {
 
 const AddAndEditBrands = ({ id }: AddAndEditBrandsProps) => {
     const { push } = useRouter()
+    const queryClient = useQueryClient()
     const isEditing = Boolean(id)
-    const [logo, setLogo] = useState<File | null>(null)
     const { mutate: createBrand, isPending: isCreating } = useCreateBrand()
     const { mutate: updateBrand, isPending: isUpdating } = useUpdateBrand()
     const isPending = isCreating || isUpdating
-
-    const { control, handleSubmit } = useForm<AddAndEditBrandFormValues>({
+    const { control, handleSubmit, setValue } = useForm<AddAndEditBrandFormValues>({
         resolver: zodResolver(addAndEditBrandSchema),
         defaultValues: getAddAndEditBrandDefaultValues(),
         mode: 'onChange',
@@ -60,10 +61,26 @@ const AddAndEditBrands = ({ id }: AddAndEditBrandsProps) => {
 
     const persianName = useWatch({ control, name: 'persianName' })
     const latinName = useWatch({ control, name: 'latinName' })
+    const logo = useWatch({ control, name: 'logo' })
+    const [logoPreview, setLogoPreview] = useState<string | null>(null)
+
+    useEffect(() => {
+        if (!logo) {
+            setLogoPreview(null)
+            return
+        }
+
+        const previewUrl = URL.createObjectURL(logo)
+        setLogoPreview(previewUrl)
+        return () => URL.revokeObjectURL(previewUrl)
+    }, [logo])
 
     const onSubmit = (values: AddAndEditBrandFormValues) => {
         const body = toBrandRequest(values)
         const onSuccess = () => {
+            queryClient.invalidateQueries({
+                queryKey: catalogKeys.brands.lists(),
+            })
             toast.success(isEditing ? 'برند به‌روزرسانی شد' : 'برند ایجاد شد')
             push('/admin/catalog/brands')
         }
@@ -106,10 +123,25 @@ const AddAndEditBrands = ({ id }: AddAndEditBrandsProps) => {
                     </div>
                 </div>
             ) : (
-                <DocumentFileUpload
-                    fileName={logo?.name}
-                    onChange={(file) => setLogo(file ?? null)}
-                />
+                <div className="flex items-center gap-3">
+                    {logoPreview ? (
+                        <img
+                            src={logoPreview}
+                            alt=""
+                            className="size-16 shrink-0 rounded-card-md object-cover"
+                        />
+                    ) : null}
+                    <div className="min-w-0 flex-1">
+                        <DocumentFileUpload
+                            fileName={logo?.name}
+                            onChange={(file) =>
+                                setValue('logo', file ?? null, {
+                                    shouldDirty: true,
+                                })
+                            }
+                        />
+                    </div>
+                </div>
             )}
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -254,6 +286,15 @@ const AddAndEditBrands = ({ id }: AddAndEditBrandsProps) => {
                     )}
                 />
             </div>
+            <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                className="self-end"
+                isLoading={isPending}
+            >
+                ثبت برند
+            </Button>
         </form>
     )
 }

@@ -1,28 +1,37 @@
 'use client'
 
 import { MapPin } from 'lucide-react'
+import { useFormContext } from 'react-hook-form'
 import { Textarea } from '@/src/shared/components/ui/TextArea'
-import { CONTACT_ADDRESS_DEFAULT } from '../constants'
+import { cn } from '@shared/libs/utils'
+import type { ContactUsFormValues } from '../schema'
 
 type AddressSectionProps = {
-    value?: string
-    onChange?: (value: string) => void
     onMapClick?: () => void
 }
 
-const AddressSection = ({
-    value = CONTACT_ADDRESS_DEFAULT,
-    onChange,
-    onMapClick,
-}: AddressSectionProps) => {
+const AddressSection = ({ onMapClick }: AddressSectionProps) => {
+    const {
+        register,
+        formState: { errors },
+    } = useFormContext<ContactUsFormValues>()
+
     return (
         <section className="rounded-card-lg border border-outline-variant bg-surface-container-lowest p-5">
             <h2 className="mb-4 text-title-md font-semibold text-on-surface">آدرس</h2>
             <Textarea
-                value={value}
-                onChange={(event) => onChange?.(event.target.value)}
-                className="min-h-20 resize-y"
+                {...register('address')}
+                aria-invalid={!!errors.address}
+                className={cn(
+                    'min-h-20 resize-y',
+                    errors.address && 'border border-red-600'
+                )}
             />
+            {errors.address?.message ? (
+                <span className="mt-1 text-sm text-error">
+                    {errors.address.message}
+                </span>
+            ) : null}
             <button
                 type="button"
                 onClick={onMapClick}

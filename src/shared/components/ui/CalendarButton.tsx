@@ -1,17 +1,16 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { faIR } from "@daypicker/persian"
-import { Icon } from "@shared/components/Icons/Icon"
-import { Button } from "@shared/components/ui/button"
-import { Calendar } from "@shared/components/ui/Calendar"
+import { useState } from 'react'
+import { DayPicker, faIR } from '@daypicker/persian'
+import { Icon } from '@shared/components/Icons/Icon'
+import { Button } from '@shared/components/ui/button'
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@shared/components/ui/Popover"
-import { cn } from "@shared/libs/utils"
-import { formatFaDate } from "@/src/shared/libs/formatter"
+} from '@shared/components/ui/Popover'
+import { cn } from '@shared/libs/utils'
+import { formatFaDate } from '@/src/shared/libs/formatter'
 
 type CalendarButtonProps = {
     label?: string
@@ -24,7 +23,7 @@ type CalendarButtonProps = {
 
 const CalendarButton = ({
     label,
-    placeholder = "انتخاب تاریخ",
+    placeholder = 'انتخاب تاریخ',
     value,
     onChange,
     className,
@@ -32,57 +31,74 @@ const CalendarButton = ({
 }: CalendarButtonProps) => {
     const [open, setOpen] = useState(false)
 
-    const handleSelect = (date: Date | undefined) => {
-        onChange?.(date)
-        if (date) {
-            setOpen(false)
-        }
-    }
-
     return (
-        <div className={cn("flex flex-col", className)}>
+        <div className={cn('flex flex-col', className)}>
             {label && (
-                <span className="mb-1.5 text-label-md text-on-surface-variant">
+                <span className='mb-1.5 text-label-md text-on-surface-variant'>
                     {label}
                 </span>
             )}
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button
-                        type="button"
-                        variant="default-high"
+                        type='button'
+                        variant='default-high'
                         disabled={disabled}
-                        className="h-auto w-full justify-start gap-2 rounded-container-lg px-3 py-3 font-normal"
+                        className='h-auto w-full justify-start gap-2 rounded-container-lg px-3 py-3 font-normal'
                     >
                         <span
                             className={cn(
-                                "text-base md:text-sm",
-                                value ? "text-on-surface" : "text-outline",
+                                'text-base md:text-sm',
+                                value ? 'text-on-surface' : 'text-outline'
                             )}
                         >
                             {value ? formatFaDate(value) : placeholder}
                         </span>
                         <Icon
-                            label="calendar300Linear"
-
-                            className="size-6 shrink-0 text-on-surface-variant mr-auto"
+                            label='calendar300Linear'
+                            className='mr-auto size-6 shrink-0 text-on-surface-variant'
                         />
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent
-                    className="w-[300px] border-0 bg-surface-container-lowest p-0 shadow-lg ring-4 ring-outline-variant"
-                    align="start"
+                    className='w-auto border-0 bg-surface-container-lowest p-4 shadow-lg ring-4 ring-outline-variant'
+                    align='start'
                 >
-                    <Calendar
-                        mode="single"
-                        classNames={{
-                            root: "w-full",
-                            focused: "ring-4 ring-red-500",
-                        }}
-                        selected={value}
-                        onSelect={handleSelect}
-                        dir="rtl"
+                    <DayPicker
+                        mode='single'
                         locale={faIR}
+                        selected={value}
+                        onSelect={(date) => {
+                            onChange?.(date)
+                            if (date) setOpen(false)
+                        }}
+                        classNames={{
+                            root: 'w-[26rem] text-base text-on-surface',
+                            months: 'relative flex flex-col',
+                            month: 'flex w-full flex-col gap-3',
+                            nav: 'absolute inset-x-0 top-0 flex h-12 items-center justify-between',
+                            button_previous:
+                                'inline-flex size-10 items-center justify-center rounded-full hover:bg-surface-container-high',
+                            button_next:
+                                'inline-flex size-10 items-center justify-center rounded-full hover:bg-surface-container-high',
+                            month_caption:
+                                'flex h-12 items-center justify-center px-12 text-lg font-semibold',
+                            caption_label: 'text-lg font-semibold',
+                            month_grid: 'w-full border-collapse',
+                            weekdays: 'flex',
+                            weekday:
+                                'w-14 text-center text-sm font-medium text-on-surface-variant',
+                            week: 'mt-1 flex w-full',
+                            day: 'relative size-14 p-0 text-center',
+                            day_button:
+                                'inline-flex size-12 items-center justify-center rounded-full text-base hover:bg-surface-container-high',
+                            selected:
+                                '[&>button]:bg-primary [&>button]:font-semibold [&>button]:text-on-primary [&>button]:hover:bg-primary',
+                            today: '[&>button]:ring-2 [&>button]:ring-outline',
+                            outside: 'text-outline',
+                            disabled: 'opacity-40',
+                            chevron: 'size-5 fill-current',
+                        }}
                     />
                 </PopoverContent>
             </Popover>

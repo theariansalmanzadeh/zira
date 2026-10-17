@@ -4,14 +4,14 @@ import { useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import TableLoadingSkeleton from '@/src/shared/components/loading/TableLoadingSkeleton'
-import type { UserSession } from '@/src/api/types/admin/user'
+import type { SessionListItem } from '@/src/api/types/admin/securityAndEvents'
 import {
     SESSION_TABLE_COLOUMN,
     type SessionRowData,
 } from '@/src/routes/events/constants'
 import TableHeader from '@/src/routes/events/sessionList/components/TableHeader'
 import TableRow from '@/src/routes/events/sessionList/components/TableRow'
-import { useListUserSessions } from '../hooks/user'
+import { useListActiveSessions } from '@/src/routes/events/hooks/sessions'
 
 const AVATAR_COLORS = [
     'bg-error-container text-error',
@@ -21,10 +21,8 @@ const AVATAR_COLORS = [
     'bg-primary-container text-primary',
 ] as const
 
-const mapSessionStatus = (session: UserSession) => {
-    if (session.terminated_at) return 'غیرفعال'
-    if (!session.is_alive) return 'منقضی'
-    const normalized = session.status.toLowerCase()
+const mapSessionStatus = (status: string) => {
+    const normalized = status.toLowerCase()
     if (
         normalized === 'active' ||
         normalized === 'alive' ||
@@ -38,11 +36,11 @@ const mapSessionStatus = (session: UserSession) => {
     ) {
         return 'منقضی'
     }
-    return session.status || 'غیرفعال'
+    return status || 'غیرفعال'
 }
 
 const mapSessionToRow = (
-    session: UserSession,
+    session: SessionListItem,
     index: number
 ): SessionRowData => {
     const device = session.device_type || 'نامشخص'
@@ -55,11 +53,12 @@ const mapSessionToRow = (
         id: session.id,
         sessionId: session.id,
         userName: session.user_id,
-        role: session.branch_id || '—',
+        role: session.role_id || session.branch_id || '—',
         avatarClassName: AVATAR_COLORS[index % AVATAR_COLORS.length],
         deviceBrowser: `${device} ، ${browser}`,
         ip: `${session.ip_address || '—'}${location}`,
-        status: mapSessionStatus(session),
+        status: mapSessionStatus(session.status),
+        expiresAt: session.expires_at,
     }
 }
 
@@ -71,26 +70,16 @@ const SessionList = ({ userId: userIdProp }: SessionListProps) => {
     const searchParams = useSearchParams()
     const userId = userIdProp || searchParams.get('user') || ''
 
-    const { data, isPending, isError } = useListUserSessions(
-        userId,
-        Boolean(userId)
-    )
+    const { data, isPending, isError } = useListActiveSessions({
+        page: 1,
+        page_size: 20,
+        user_id: userId || undefined,
+    })
 
     const sessions = useMemo(
-        () => (data ?? []).map(mapSessionToRow),
+        () => (data?.results ?? []).map(mapSessionToRow),
         [data]
     )
-
-    if (!userId) {
-        return (
-            <div
-                className='rounded-card-md bg-surface-container-lowest p-6 text-center text-label-md text-outline'
-                dir='rtl'
-            >
-                برای مشاهده نشست‌ها، یک کاربر را انتخاب کنید.
-            </div>
-        )
-    }
 
     if (isPending) {
         return <TableLoadingSkeleton isPending rows={5} />

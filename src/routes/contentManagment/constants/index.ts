@@ -198,6 +198,7 @@ export const sectionToHeading: Record<ContentSubParam, SectionHeading> = {
     'liecense-details': {
         title: 'جزئیات سند',
         subtitle: 'اطلاعات صدور و فایل مجوز',
+        hasBackButton: true,
         buttons: [
             {
                 label: 'ویرایش',

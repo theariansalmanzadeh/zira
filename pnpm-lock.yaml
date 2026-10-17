@@ -11,6 +11,9 @@ importers:
       '@daypicker/persian':
         specifier: ^10.0.1
         version: 10.0.2(@types/react@19.3.0)(react@19.2.3)
+      '@daypicker/react':
+        specifier: ^10.0.2
+        version: 10.0.2(@types/react@19.3.0)(react@19.2.3)
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.9.1(@standard-schema/spec@1.1.0)(ajv@8.20.0)(react-hook-form@7.90.0(@types/react@19.3.0)(react@19.2.3))(zod@4.6.6)

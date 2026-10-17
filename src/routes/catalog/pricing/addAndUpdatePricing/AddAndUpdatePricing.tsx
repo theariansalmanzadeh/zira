@@ -12,6 +12,7 @@ import {
     useUpdatePriceList,
 } from '@/src/routes/catalog/hooks/pricing'
 import { Spinner } from '@/src/shared/components/ui/spinner'
+import { Button } from '@/src/shared/components/ui/button'
 import PricingForm from './components/PricingForm'
 import PricingItemsTable, {
     type PricingItem,
@@ -197,6 +198,23 @@ const AddAndUpdatePricing = ({ id }: AddAndUpdatePricingProps) => {
                 onSelectedIdsChange={setSelectedIds}
                 onNewPriceChange={handleNewPriceChange}
             />
+            <div className='flex gap-3'>
+                <Button
+                    type='submit'
+                    variant='primary'
+                    isLoading={isCreating || isUpdating}
+                >
+                    ثبت لیست
+                </Button>
+                <Button
+                    type='button'
+                    variant='outline'
+                    disabled={isCreating || isUpdating}
+                    onClick={() => push('/admin/catalog/pricing')}
+                >
+                    انصراف
+                </Button>
+            </div>
         </form>
     )
 }

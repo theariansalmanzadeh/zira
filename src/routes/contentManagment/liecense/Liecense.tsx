@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense, useMemo } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import type { CertificateOut } from '@/src/api/types/admin/cms/certificates'
 import {
     useArchiveCertificate,
@@ -31,6 +31,7 @@ const toLicenseCard = (item: CertificateOut): LicenseCardData => ({
 })
 
 const LiecenseContent = () => {
+    const { push } = useRouter()
     const searchParams = useSearchParams()
     const activeTab = (searchParams.get('cat') ??
         'certificates') as LicenseTab | string
@@ -68,6 +69,9 @@ const LiecenseContent = () => {
                     <LicenseCard
                         key={item.id}
                         data={item}
+                        onEdit={() => {
+                            push(`/admin/content-managment/liecense/${item.id}`)
+                        }}
                         onVisibleChange={(visibleOnSite) =>
                             updateCertificate({
                                 certificateId: item.id,

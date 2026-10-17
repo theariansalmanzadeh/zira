@@ -146,8 +146,7 @@ export const TABLE_COLOUMN: TableFilterItem[] = [
     { id: 'col-2', header_label: 'نام کاربر', isChecked: true },
     { id: 'col-3', header_label: 'تاریخ', isChecked: true },
     { id: 'col-4', header_label: 'زمان', isChecked: true },
-    { id: 'col-5', header_label: 'نوع فعالیت', isChecked: true },
-    { id: 'col-6', header_label: 'جزئیات فعالیت', isChecked: true },
+    { id: 'col-5', header_label: 'جزئیات فعالیت', isChecked: true },
 ]
 
 export type EventFilterTab = 'all' | 'sensitive' | 'failed'
@@ -368,6 +367,7 @@ export type SessionRowData = {
     deviceBrowser: string
     ip: string
     status: string
+    expiresAt?: string
 }
 
 export const SESSION_TABLE_COLOUMN: TableFilterItem[] = [
@@ -376,7 +376,8 @@ export const SESSION_TABLE_COLOUMN: TableFilterItem[] = [
     { id: 'col-2', header_label: 'دستگاه / مرورگر', isChecked: true },
     { id: 'col-3', header_label: 'IP / مکان', isChecked: true },
     { id: 'col-4', header_label: 'وضعیت', isChecked: true },
-    { id: 'col-5', header_label: '', isChecked: true },
+    { id: 'col-5', header_label: 'انقضا', isChecked: true },
+    { id: 'col-6', header_label: '', isChecked: true },
 ]
 
 export const SESSIONS_DUMMY: SessionRowData[] = [

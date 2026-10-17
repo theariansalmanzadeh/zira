@@ -6,6 +6,7 @@ import {
     createDepartment,
     getDepartment,
     listDepartmentPicker,
+    listDepartmentUsers,
     listDepartments,
     updateDepartment,
 } from '@/src/api/admin/departments'
@@ -23,6 +24,8 @@ export const departmentKeys = {
     details: () => [...departmentKeys.all, 'detail'] as const,
     detail: (departmentId: string) =>
         [...departmentKeys.details(), departmentId] as const,
+    users: (departmentId: string) =>
+        [...departmentKeys.detail(departmentId), 'users'] as const,
 }
 
 export const useListDepartmentPicker = () => {
@@ -41,6 +44,21 @@ export const useListDepartments = () => {
         queryKey: departmentKeys.list(),
         queryFn: async () => {
             const result = await listDepartments()
+            if (!result.success) throw result.error
+            return result.data
+        },
+    })
+}
+
+export const useListDepartmentUsers = (
+    departmentId: string,
+    enabled = true
+) => {
+    return useQuery({
+        queryKey: departmentKeys.users(departmentId),
+        enabled: Boolean(departmentId) && enabled,
+        queryFn: async () => {
+            const result = await listDepartmentUsers(departmentId)
             if (!result.success) throw result.error
             return result.data
         },

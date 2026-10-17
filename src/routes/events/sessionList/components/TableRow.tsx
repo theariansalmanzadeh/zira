@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { Pill } from '@/src/shared/components/ui/Pill'
 import { useTable } from '@/src/shared/context/TableProvider'
+import { formatFaTime } from '@/src/shared/libs/formatter'
 import { cn } from '@shared/libs/utils'
 import type { SessionRowData } from '../../constants'
 
@@ -22,13 +23,14 @@ const TableRow = ({ data }: TableRowProps) => {
         deviceBrowser,
         ip,
         status,
+        expiresAt,
     } = data
     const isActive = status === 'فعال'
 
     return (
         <Link
             href={`/admin/events/session/${id}`}
-            className='grid grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1.1fr)_minmax(0,0.8fr)_auto] items-center gap-3 rounded-card-md bg-surface-container-lowest px-4 py-3 text-label-lg font-normal text-on-surface-variant transition-colors hover:bg-surface-container-high'
+            className='grid grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1.1fr)_minmax(0,0.8fr)_minmax(0,0.8fr)_auto] items-center gap-3 rounded-card-md bg-surface-container-lowest px-4 py-3 text-label-lg font-normal text-on-surface-variant transition-colors hover:bg-surface-container-high'
             dir='rtl'
         >
             {TableColoumn[0]?.isChecked && (
@@ -72,6 +74,11 @@ const TableRow = ({ data }: TableRowProps) => {
                 </div>
             )}
             {TableColoumn[5]?.isChecked && (
+                <span dir='ltr' className='text-left'>
+                    {expiresAt ? formatFaTime(expiresAt) : '—'}
+                </span>
+            )}
+            {TableColoumn[6]?.isChecked && (
                 <Icon
                     label='chevronLeft400Linear'
                     className='size-5! text-outline'

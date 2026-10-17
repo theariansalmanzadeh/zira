@@ -5,7 +5,7 @@ import { Icon } from '@/src/shared/components/Icons/Icon'
 import { Button } from '@/src/shared/components/ui/button'
 import { Pill } from '@/src/shared/components/ui/Pill'
 import { cn } from '@shared/libs/utils'
-import { useRevokeSession } from '@/src/routes/userManagment/hooks/sessions'
+import { useRevokeSession } from '@/src/routes/events/hooks/sessions'
 import type { SessionDetailData } from '../../constants'
 
 type HeaderProps = {

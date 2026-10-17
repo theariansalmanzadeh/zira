@@ -411,6 +411,7 @@ export type CustomerDocument = {
     rejection_reason?: string | null
     verified_by_id?: string | null
     verified_at?: string | null
+    version?: number
     created_at: string
     download_url: string
 }
@@ -507,10 +508,12 @@ export type UpdateCustomerProfileResponse = CustomerProfile
 export type ListRegistrationRequestsResponse =
     PaginatedResponse<RegistrationRequestListItem>
 export type GetRegistrationRequestResponse = RegistrationRequest
-export type ListCustomerDocumentsResponse = CustomerDocument[]
+export type ListCustomerDocumentsResponse =
+    PaginatedResponse<CustomerDocument>
 export type ListRegistrationRequestDocumentsResponse =
     PaginatedResponse<CustomerDocument>
 export type ListCustomerGroupsResponse = PaginatedResponse<CustomerGroupListItem>
 export type ListCustomerGroupMembersResponse =
     PaginatedResponse<CustomerGroupMember>
-export type ListCustomerGroupMembershipsResponse = CustomerGroupMembership[]
+export type ListCustomerGroupMembershipsResponse =
+    PaginatedResponse<CustomerGroupMembership>

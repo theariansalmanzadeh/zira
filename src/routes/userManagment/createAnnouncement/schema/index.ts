@@ -3,10 +3,10 @@ import { z } from 'zod'
 const requiredString = (message: string) => z.string().trim().min(1, message)
 
 export const announcementPrioritySchema = z.enum([
-    'low',
-    'normal',
-    'high',
-    'urgent',
+    'LOW',
+    'NORMAL',
+    'HIGH',
+    'URGENT',
 ])
 export type AnnouncementFormPriority = z.infer<typeof announcementPrioritySchema>
 
@@ -23,7 +23,7 @@ export const selectedUserSchema = z.object({
 })
 
 export const createAnnouncementSchema = z.object({
-    title: z.string(),
+    title: requiredString('عنوان الزامی است'),
     body: requiredString('متن پیام الزامی است'),
     subject: requiredString('موضوع الزامی است'),
     priority: announcementPrioritySchema,
@@ -37,7 +37,7 @@ export type CreateAnnouncementValues = z.infer<typeof createAnnouncementSchema>
 export const CREATE_ANNOUNCEMENT_DEFAULTS: CreateAnnouncementValues = {
     title: '',
     body: '',
-    subject: 'system',
-    priority: 'normal',
+    subject: 'SYSTEM',
+    priority: 'NORMAL',
     selectedUsers: [],
 }

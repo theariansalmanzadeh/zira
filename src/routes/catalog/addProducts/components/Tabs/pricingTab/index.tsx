@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import {
     DropdownMenu,
@@ -12,7 +12,10 @@ import {
 import { Button } from '@/src/shared/components/ui/button'
 import { Input } from '@/src/shared/components/ui/Input'
 import { cn } from '@shared/libs/utils'
+import { useListAttributes } from '@/src/routes/catalog/hooks/catalog'
+import { useCreateProducts } from '../../../provider/createProductsProvider'
 import { DropdownOption } from '../../../types'
+import { PRODUCT_ATTRIBUTE_LIST_PARAMS } from '../../../utils/attributes'
 import PriceInputSection from './components/priceInputSection'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 
@@ -35,12 +38,6 @@ interface FormMultiSelectProps {
 const DISCOUNT_TYPE_OPTIONS: DropdownOption[] = [
     { label: 'درصد', value: 'percentage' },
     { label: 'مبلغ', value: 'amount' },
-]
-
-const BASE_PRICE_BASIS_OPTIONS: DropdownOption[] = [
-    { label: 'واحد فروش', value: 'sales-unit' },
-    { label: 'سایز', value: 'size' },
-    { label: 'رنگ', value: 'color' },
 ]
 
 const dropdownContentClassName =
@@ -170,7 +167,26 @@ const FormMultiSelect = ({
 
 const PricingTab = () => {
     const [discountType, setDiscountType] = useState('percentage')
-    const [basePriceBasis, setBasePriceBasis] = useState<string[]>(['sales-unit', 'size'])
+    const { attributeSelections, basePriceBasis, setBasePriceBasis } =
+        useCreateProducts()
+    const { data } = useListAttributes(PRODUCT_ATTRIBUTE_LIST_PARAMS)
+    const basisOptions = useMemo(
+        () =>
+            (data?.results ?? [])
+                .filter(
+                    (attribute) =>
+                        (attributeSelections[attribute.id]?.values ?? []).length > 0
+                )
+                .sort((left, right) => left.sort_order - right.sort_order)
+                .map((attribute) => ({
+                    label: attribute.name,
+                    value: attribute.id,
+                })),
+        [attributeSelections, data]
+    )
+    const selectedBasis = basePriceBasis.filter((id) =>
+        basisOptions.some((option) => option.value === id)
+    )
 
     return (
         <div className='flex flex-col gap-6'>
@@ -189,8 +205,8 @@ const PricingTab = () => {
 
             <FormMultiSelect
                 label='قیمت پایه بر اساس'
-                value={basePriceBasis}
-                options={BASE_PRICE_BASIS_OPTIONS}
+                value={selectedBasis}
+                options={basisOptions}
                 onChange={setBasePriceBasis}
             />
 

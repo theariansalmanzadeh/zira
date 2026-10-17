@@ -1,5 +1,6 @@
 'use client'
 
+import { useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
@@ -11,6 +12,9 @@ import {
     ToggleGroup,
     ToggleGroupItem,
 } from '@/src/shared/components/ui/ToggleGroup'
+import type { StaffUser } from '@/src/api/types/admin/user'
+import type { SelectAnnouncementUserItem } from '@/src/shared/components/modals/components/selectUsers/types'
+import { useListStaffUsers } from '../hooks/user'
 import { useSendNotification } from '../hooks/notification'
 import RecipientsSelector from './components/RecipientsSelector'
 import {
@@ -23,9 +27,26 @@ import {
     type CreateAnnouncementValues,
 } from './schema'
 
+const toSelectableUser = (user: StaffUser): SelectAnnouncementUserItem => ({
+    id: user.id,
+    name:
+        [user.first_name, user.last_name].filter(Boolean).join(' ') ||
+        user.username,
+    personnelCode: user.personnel_code || user.username,
+    role: user.job_title || '—',
+    branch: user.primary_branch_id || '—',
+    status: user.is_active ? 'active' : 'inactive',
+    phone: user.phone_number,
+})
+
 const CreateAnnouncement = () => {
     const { push } = useRouter()
     const { mutateAsync, isPending } = useSendNotification()
+    const { data: staffUsers } = useListStaffUsers()
+    const users = useMemo(
+        () => (staffUsers?.results ?? []).map(toSelectableUser),
+        [staffUsers?.results]
+    )
     const { control, handleSubmit, watch, setValue } =
         useForm<CreateAnnouncementValues>({
             resolver: zodResolver(createAnnouncementSchema),
@@ -38,11 +59,15 @@ const CreateAnnouncement = () => {
     const onSubmit = async (data: CreateAnnouncementValues) => {
         try {
             await mutateAsync({
-                title: data.title.trim() || undefined,
+                title: data.title.trim(),
                 body: data.body.trim(),
                 topic: data.subject,
                 priority: data.priority,
-                recipient_mode: 'USERS',
+                recipient_mode:
+                    users.length > 0 &&
+                    data.selectedUsers.length === users.length
+                        ? 'ALL'
+                        : 'SPECIFIC',
                 recipient_ids: data.selectedUsers.map((user) => user.id),
             })
             push('/admin/user-management?sub=announcements')
@@ -60,12 +85,14 @@ const CreateAnnouncement = () => {
             <Controller
                 name='title'
                 control={control}
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                     <Input
-                        label='عنوان'
+                        label='عنوان *'
                         placeholder='عنوان کوتاه اعلان'
                         value={field.value}
                         onChange={field.onChange}
+                        error={!!fieldState.error}
+                        msg={fieldState.error?.message}
                     />
                 )}
             />
@@ -138,6 +165,7 @@ const CreateAnnouncement = () => {
             </div>
 
             <RecipientsSelector
+                users={users}
                 selectedUsers={selectedUsers}
                 onUsersChange={(users) =>
                     setValue('selectedUsers', users, { shouldValidate: true })

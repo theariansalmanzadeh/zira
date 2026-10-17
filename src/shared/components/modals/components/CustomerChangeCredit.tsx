@@ -2,7 +2,11 @@
 
 import { useState } from 'react'
 import { useParams } from 'next/navigation'
-import { usePatchCustomerCreditPolicy } from '@/src/routes/customers/hooks/customers'
+import { toast } from 'sonner'
+import {
+    useCreateCreditChangeRequest,
+    useGetCustomerCreditSummary,
+} from '@/src/routes/customers/hooks/customerDetails'
 import { Button } from '@/src/shared/components/ui/button'
 import { Input } from '@/src/shared/components/ui/Input'
 import SelectItem from '@/src/shared/components/ui/SelectItem'
@@ -48,11 +52,19 @@ const CustomerChangeCredit = ({ closeModal, data }: BaseModalProps) => {
         modalData.currentCap !== undefined ? String(modalData.currentCap) : ''
     )
     const [guaranteeType, setGuaranteeType] = useState<GuaranteeType>('cheque')
+    const creditType = modalData.cardId === 'gold' ? 'GOLDEN' : 'CHEQUE'
+    const { data: creditSummary, isFetching: isSummaryFetching } =
+        useGetCustomerCreditSummary(customerId, Boolean(customerId))
+    const accountId = creditSummary?.credit_accounts.find(
+        (account) => account.credit_type === creditType
+    )?.id
 
-    const { mutate: updateCreditPolicy, isPending } =
-        usePatchCustomerCreditPolicy()
+    const { mutate: createCreditChangeRequest, isPending } =
+        useCreateCreditChangeRequest()
 
     const numericAmount = amount ? Number(amount) : 0
+    const currentCap = modalData.currentCap ?? 0
+    const delta = numericAmount - currentCap
 
     const handleSubmit = () => {
         if (!customerId) {
@@ -61,19 +73,28 @@ const CustomerChangeCredit = ({ closeModal, data }: BaseModalProps) => {
             return
         }
 
-        updateCreditPolicy(
+        if (!accountId || delta === 0) {
+            toast.error(
+                accountId
+                    ? 'مبلغ جدید با سقف فعلی یکسان است'
+                    : 'حساب اعتباری یافت نشد'
+            )
+            return
+        }
+
+        createCreditChangeRequest(
             {
-                customerId,
+                accountId,
                 body: {
-                    golden_credit_amount: numericAmount,
-                    reason: `تغییر اعتبار ${modalData.cardTitle ?? ''} با نوع ضمانت ${
-                        guaranteeType === 'cheque' ? 'چک شخصی' : 'سفته'
-                    }`,
-                    expected_version: modalData.expectedVersion ?? 1,
+                    direction: delta > 0 ? 'INCREASE' : 'DECREASE',
+                    amount: Math.abs(delta),
+                    note: '',
+                    guarantee_ids: [],
                 },
             },
             {
                 onSuccess: () => {
+                    toast.success('درخواست تغییر اعتبار ثبت شد')
                     modalData.onConfirm?.(numericAmount, guaranteeType)
                     closeModal()
                 },
@@ -119,7 +140,7 @@ const CustomerChangeCredit = ({ closeModal, data }: BaseModalProps) => {
                     type="button"
                     variant="primary"
                     onClick={handleSubmit}
-                    disabled={isPending}
+                    disabled={isPending || isSummaryFetching || delta === 0}
                     isLoading={isPending}
                 >
                     ثبت تغییرات

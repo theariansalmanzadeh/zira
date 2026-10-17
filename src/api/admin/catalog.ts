@@ -209,6 +209,22 @@ export const listBrands = (
         params: toParams(params),
     })
 
+const toBrandFormData = (body: BrandIn) => {
+    const formData = new FormData()
+    formData.append('name', body.name)
+    formData.append('latin_name', body.latin_name)
+    formData.append('scope', body.scope)
+    formData.append('country', body.country)
+    formData.append('origin', body.origin)
+    formData.append('status', body.status)
+    formData.append('website', body.website)
+    formData.append('description', body.description)
+    if (body.logo) formData.append('logo', body.logo)
+    return formData
+}
+
+const toBrandJson = ({ logo: _logo, ...body }: BrandIn) => body
+
 /**
  * Create Brand Endpoint
  */
@@ -216,7 +232,17 @@ export const createBrand = (
     body: BrandIn,
     config?: AxiosRequestConfig
 ) =>
-    staffAuthPost<BrandOut, BrandIn>(`/catalog/brands`, body, config)
+    body.logo
+        ? staffAuthPost<BrandOut, FormData>(
+              `/catalog/brands`,
+              toBrandFormData(body),
+              multipartConfig(config)
+          )
+        : staffAuthPost<BrandOut, Omit<BrandIn, 'logo'>>(
+              `/catalog/brands`,
+              toBrandJson(body),
+              config
+          )
 
 /**
  * Update Brand Endpoint
@@ -226,7 +252,17 @@ export const updateBrand = (
     body: BrandUpdateIn,
     config?: AxiosRequestConfig
 ) =>
-    staffAuthPatch<BrandOut, BrandUpdateIn>(`/catalog/brands/${brand_id}`, body, config)
+    body.logo
+        ? staffAuthPatch<BrandOut, FormData>(
+              `/catalog/brands/${brand_id}`,
+              toBrandFormData(body),
+              multipartConfig(config)
+          )
+        : staffAuthPatch<BrandOut, Omit<BrandUpdateIn, 'logo'>>(
+              `/catalog/brands/${brand_id}`,
+              toBrandJson(body),
+              config
+          )
 
 /**
  * Delete Brand Endpoint
@@ -285,9 +321,13 @@ export const createAttribute = (
  */
 export const getAttribute = (
     attribute_id: string,
+    params?: Pick<ListAttributesParams, 'page' | 'page_size'>,
     config?: AxiosRequestConfig
 ) =>
-    staffAuthGet<AttributeOut>(`/catalog/attributes/${attribute_id}`, config)
+    staffAuthGet<PaginationOut_AttributeOut_>(`/catalog/attributes/${attribute_id}`, {
+        ...config,
+        params: toParams(params),
+    })
 
 /**
  * Update Attribute Endpoint

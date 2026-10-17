@@ -155,6 +155,7 @@ export type PublicBlogPostCardOut = {
     published_at: string | null
     category: PublicBlogCategoryOut | null
     tags: Array<PublicBlogTagOut>
+    images: Array<PublicBlogImageOut>
 }
 
 export type PublicBlogPostDetailOut = {

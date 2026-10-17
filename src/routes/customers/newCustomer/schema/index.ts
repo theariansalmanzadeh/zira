@@ -8,8 +8,6 @@ import {
 
 const requiredString = (message: string) => z.string().trim().min(1, message)
 
-const dropdownValue = (message: string) => z.string().min(1, message)
-
 const optionalString = z.string().trim().optional().or(z.literal(''))
 
 const optionalMobileSchema = z
@@ -30,20 +28,22 @@ const optionalLandlineSchema = z
         'شماره تلفن ثابت معتبر نیست'
     )
 
-const amountSchema = z
+const optionalAmountSchema = z
     .string()
     .trim()
-    .min(1, 'این فیلد الزامی است')
     .transform(toEnglishDigits)
-    .refine((value) => /^\d+$/.test(value.replace(/,/g, '')), 'مبلغ معتبر نیست')
+    .refine(
+        (value) => value === '' || /^\d+$/.test(value.replace(/,/g, '')),
+        'مبلغ معتبر نیست'
+    )
 
 const digitsOnly = (value: string) => toEnglishDigits(value).replace(/\D/g, '')
 
 const guaranteeSchema = z
     .object({
         type: z.enum(['personal-cheque', 'promissory-note']),
-        creditRelated: dropdownValue('انتخاب اعتبار مربوطه الزامی است'),
-        amount: amountSchema,
+        creditRelated: z.string(),
+        amount: optionalAmountSchema,
         chequeNumber: z.string(),
         bank: z.string(),
         branch: z.string(),
@@ -52,73 +52,21 @@ const guaranteeSchema = z
         guarantorName: z.string(),
         guarantorNationalId: z.string(),
         dueDate: z.date().optional(),
-        status: dropdownValue('وضعیت ضمانت الزامی است'),
+        status: z.string(),
         fileName: z.string(),
     })
     .superRefine((values, ctx) => {
-        if (!values.dueDate) {
+        const chequeNumber = digitsOnly(values.chequeNumber)
+        if (chequeNumber && !/^\d{16}$/.test(chequeNumber)) {
             ctx.addIssue({
                 code: 'custom',
-                path: ['dueDate'],
-                message: 'تاریخ سررسید الزامی است',
+                path: ['chequeNumber'],
+                message: 'شماره چک باید ۱۶ رقم باشد',
             })
         }
 
-        if (!values.fileName.trim()) {
-            ctx.addIssue({
-                code: 'custom',
-                path: ['fileName'],
-                message: 'بارگذاری تصویر الزامی است',
-            })
-        }
-
-        if (values.type === 'personal-cheque') {
-            if (!/^\d{16}$/.test(digitsOnly(values.chequeNumber))) {
-                ctx.addIssue({
-                    code: 'custom',
-                    path: ['chequeNumber'],
-                    message: 'شماره چک باید ۱۶ رقم باشد',
-                })
-            }
-            if (!values.bank.trim()) {
-                ctx.addIssue({
-                    code: 'custom',
-                    path: ['bank'],
-                    message: 'نام بانک الزامی است',
-                })
-            }
-            if (!values.branch.trim()) {
-                ctx.addIssue({
-                    code: 'custom',
-                    path: ['branch'],
-                    message: 'شعبه الزامی است',
-                })
-            }
-            if (!values.accountHolder.trim()) {
-                ctx.addIssue({
-                    code: 'custom',
-                    path: ['accountHolder'],
-                    message: 'صاحب حساب الزامی است',
-                })
-            }
-            return
-        }
-
-        if (!digitsOnly(values.noteNumber)) {
-            ctx.addIssue({
-                code: 'custom',
-                path: ['noteNumber'],
-                message: 'شماره سفته الزامی است',
-            })
-        }
-        if (!values.guarantorName.trim()) {
-            ctx.addIssue({
-                code: 'custom',
-                path: ['guarantorName'],
-                message: 'نام ضامن الزامی است',
-            })
-        }
-        if (!/^\d{10}$/.test(digitsOnly(values.guarantorNationalId))) {
+        const guarantorNationalId = digitsOnly(values.guarantorNationalId)
+        if (guarantorNationalId && !/^\d{10}$/.test(guarantorNationalId)) {
             ctx.addIssue({
                 code: 'custom',
                 path: ['guarantorNationalId'],
@@ -130,45 +78,49 @@ const guaranteeSchema = z
 export const newCustomerFormSchema = z.object({
     firstName: requiredString('نام الزامی است'),
     lastName: requiredString('نام خانوادگی الزامی است'),
-    gender: dropdownValue('انتخاب جنسیت الزامی است'),
+    gender: z.string(),
     nationalId: nationalIdSchema,
     businessLicenseNumber: z
         .string()
         .trim()
-        .min(1, 'شماره پروانه کسب الزامی است')
         .transform(toEnglishDigits)
-        .refine((value) => /^\d+$/.test(value), 'شماره پروانه کسب معتبر نیست'),
+        .refine(
+            (value) => value === '' || /^\d+$/.test(value),
+            'شماره پروانه کسب معتبر نیست'
+        ),
     mobile1: mobileSchema,
     mobile2: optionalMobileSchema,
     landline: optionalLandlineSchema,
     referrerName: optionalString,
-    address: requiredString('آدرس الزامی است'),
-    marketerId: dropdownValue('تخصیص بازاریاب الزامی است'),
+    address: optionalString,
+    marketerId: z.string(),
     marketerPercent: z
         .string()
         .trim()
-        .min(1, 'درصد بازاریاب الزامی است')
         .transform(toEnglishDigits)
-        .refine((value) => /^\d+(\.\d+)?$/.test(value), 'درصد معتبر نیست'),
-    chequeCredit: amountSchema,
-    chequeLevel: dropdownValue('سطح اعتبار چک الزامی است'),
-    goldCredit: amountSchema,
-    goldStepIncrease: dropdownValue('انتخاب افزایش پله‌ای الزامی است'),
+        .refine(
+            (value) => value === '' || /^\d+(\.\d+)?$/.test(value),
+            'درصد معتبر نیست'
+        ),
+    chequeCredit: optionalAmountSchema,
+    chequeLevel: z.string(),
+    goldCredit: optionalAmountSchema,
+    goldStepIncrease: z.string(),
     guarantee: guaranteeSchema,
-    username: requiredString('نام کاربری الزامی است'),
+    username: optionalString,
     password: z
         .string()
         .trim()
-        .min(8, 'رمز ورود باید حداقل ۸ کاراکتر باشد'),
-    customerType: z.enum([
-        'WHOLESALE',
-        'RETAIL',
-        'ORGANIZATIONAL',
-        'OTHER',
-    ]),
-    cooperationLevel: dropdownValue('انتخاب سطح همکاری الزامی است'),
-    userLevel: dropdownValue('انتخاب سطح کاربر الزامی است'),
-    customerStatus: dropdownValue('انتخاب وضعیت مشتری الزامی است'),
+        .refine(
+            (value) => value === '' || value.length >= 8,
+            'رمز ورود باید حداقل ۸ کاراکتر باشد'
+        ),
+    customerType: z
+        .enum(['WHOLESALE', 'RETAIL', 'ORGANIZATIONAL', 'OTHER'])
+        .or(z.literal('')),
+    cooperationLevel: z.string(),
+    userLevel: z.string(),
+    customerStatus: z.string(),
 })
 
 export type NewCustomerFormValues = z.infer<typeof newCustomerFormSchema>

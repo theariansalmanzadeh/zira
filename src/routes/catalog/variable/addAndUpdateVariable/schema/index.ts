@@ -40,7 +40,12 @@ export const addAndUpdateVariableSchema = z.object({
     required: z.boolean(),
     showInStoreFilters: z.boolean(),
     showOnPublicProductPage: z.boolean(),
-    values: z.array(z.string()),
+    values: z.array(
+        z.object({
+            value: z.string(),
+            hexCode: z.string().nullable().optional(),
+        })
+    ),
 })
 
 export type AddAndUpdateVariableFormValues = z.infer<
@@ -76,6 +81,9 @@ export const getAddAndUpdateVariableDefaultValues = (
         required: Boolean(attribute.is_required),
         showInStoreFilters: Boolean(attribute.is_filterable),
         showOnPublicProductPage: Boolean(attribute.show_in_public),
-        values: (attribute.values ?? []).map((item) => item.value),
+        values: (attribute.values ?? []).map((item) => ({
+            value: item.value,
+            hexCode: item.hex_code ?? null,
+        })),
     }
 }

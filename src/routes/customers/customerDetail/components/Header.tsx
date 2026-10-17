@@ -17,7 +17,7 @@ export type CustomerDetailHeaderProps = {
 const statusVariant = (status?: string) => {
     if (status === 'ACTIVE') return 'success' as const
     if (status === 'PENDING') return 'warning' as const
-    return 'outlined' as const
+    return 'error' as const
 }
 
 const Header = ({

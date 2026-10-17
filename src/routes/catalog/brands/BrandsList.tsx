@@ -45,7 +45,7 @@ const BrandsList = () => {
         page_size: 100,
         status: statusFilter === 'all' ? undefined : API_STATUS[statusFilter],
     })
-    const items: BrandOut[] = data?.items ?? []
+    const items: BrandOut[] = data?.results ?? []
     const brands = items.map(toBrandItem)
 
     return (

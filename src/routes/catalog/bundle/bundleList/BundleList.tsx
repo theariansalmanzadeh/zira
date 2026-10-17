@@ -43,8 +43,8 @@ const BundleList = ({ data: propData }: BundleListProps) => {
                 statusFilter === 'active'
                     ? true
                     : statusFilter === 'inactive'
-                    ? false
-                    : undefined,
+                        ? false
+                        : undefined,
             search: searchQuery,
         },
         !propData
@@ -56,7 +56,7 @@ const BundleList = ({ data: propData }: BundleListProps) => {
             return propData.filter((bundle) => bundle.status === statusFilter)
         }
 
-        const items = (apiData?.items ?? []).map(mapBundleToItem)
+        const items = (apiData?.results ?? []).map(mapBundleToItem)
         if (statusFilter === 'all') return items
         return items.filter((bundle) => bundle.status === statusFilter)
     }, [propData, apiData, statusFilter])

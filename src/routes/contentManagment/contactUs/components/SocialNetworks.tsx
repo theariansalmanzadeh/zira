@@ -2,24 +2,14 @@
 
 import type { LucideIcon } from 'lucide-react'
 import { Globe, Instagram, MessageCircle, Send } from 'lucide-react'
+import { useFormContext } from 'react-hook-form'
 import { Input } from '@/src/shared/components/ui/Input'
 import { cn } from '@shared/libs/utils'
-import { CONTACT_SOCIALS_DEFAULT } from '../constants'
-
-export type SocialNetworksValues = {
-    instagram: string
-    telegram: string
-    whatsapp: string
-    website: string
-}
-
-type SocialNetworksProps = {
-    values?: SocialNetworksValues
-    onChange?: (values: SocialNetworksValues) => void
-}
+import { registerInput } from '../registerInput'
+import type { ContactUsFormValues } from '../schema'
 
 const SOCIAL_FIELDS: {
-    key: keyof SocialNetworksValues
+    key: 'instagram' | 'telegram' | 'whatsapp' | 'website'
     label: string
     icon: LucideIcon
     iconClassName: string
@@ -55,13 +45,11 @@ const SOCIAL_FIELDS: {
     },
 ]
 
-const SocialNetworks = ({
-    values = CONTACT_SOCIALS_DEFAULT,
-    onChange,
-}: SocialNetworksProps) => {
-    const update = (key: keyof SocialNetworksValues, value: string) => {
-        onChange?.({ ...values, [key]: value })
-    }
+const SocialNetworks = () => {
+    const {
+        register,
+        formState: { errors },
+    } = useFormContext<ContactUsFormValues>()
 
     return (
         <section className="rounded-card-lg border border-outline-variant bg-surface-container-lowest p-5">
@@ -89,8 +77,11 @@ const SocialNetworks = ({
                                 </div>
                                 <div className="min-w-0 flex-1">
                                     <Input
-                                        value={values[key]}
-                                        onChange={(value) => update(key, value)}
+                                        {...registerInput(
+                                            register(`socials.${key}`)
+                                        )}
+                                        error={!!errors.socials?.[key]}
+                                        msg={errors.socials?.[key]?.message}
                                         dir="ltr"
                                         className="text-left"
                                     />

@@ -1,14 +1,14 @@
 import type { AxiosRequestConfig } from 'axios'
 
-import { staffAuthDelete } from '../http'
+import { staffAuthPatch } from '../http'
 import type { MessageResponse } from '../types/admin/user'
 
 export const revokeSession = (
     sessionId: string,
     config?: AxiosRequestConfig
 ) =>
-    staffAuthDelete<MessageResponse>(
-        `/auth/sessions/${sessionId}`,
+    staffAuthPatch<MessageResponse>(
+        `/auth/sessions/${sessionId}/revoke`,
         undefined,
         config
     )

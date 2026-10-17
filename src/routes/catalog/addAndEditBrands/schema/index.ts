@@ -35,6 +35,7 @@ export const addAndEditBrandSchema = z.object({
     origin: z.enum(['DOMESTIC', 'IMPORTED', 'LICENSED']),
     status: z.enum(['ACTIVE', 'DRAFT', 'INACTIVE']),
     description: z.string(),
+    logo: z.custom<File | null>(() => true).nullable(),
 })
 
 export type AddAndEditBrandFormValues = z.infer<typeof addAndEditBrandSchema>
@@ -47,6 +48,7 @@ export const ADD_AND_EDIT_BRAND_DEFAULT_VALUES: AddAndEditBrandFormValues = {
     origin: 'DOMESTIC',
     status: 'ACTIVE',
     description: '',
+    logo: null,
 }
 
 export const getAddAndEditBrandDefaultValues = (

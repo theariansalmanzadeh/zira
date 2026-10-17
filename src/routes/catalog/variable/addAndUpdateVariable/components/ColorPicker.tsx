@@ -45,9 +45,8 @@ const ColorPicker = ({ value = DEFAULT_HEX, onChange }: ColorPickerProps) => {
                     placeholder="#RRGGBB"
                     onChange={(next) => {
                         const parsed = toHex(next)
-                        if (!parsed) return
-                        setHex(parsed)
-                        onChange?.(parsed)
+                        setHex(parsed ?? DEFAULT_HEX)
+                        onChange?.(parsed ?? DEFAULT_HEX)
                     }}
                 />
             </div>

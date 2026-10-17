@@ -6,11 +6,13 @@ import {
     createRole,
     deleteRole,
     getRole,
+    listRoleAssignments,
     listRoles,
     updateRole,
 } from '@/src/api/admin/role'
 import type {
     CreateRoleRequest,
+    ListRoleAssignmentsParams,
     ListRolesParams,
     UpdateRoleRequest,
 } from '@/src/api/types/admin/role'
@@ -22,6 +24,8 @@ export const roleKeys = {
         [...roleKeys.lists(), params ?? {}] as const,
     details: () => [...roleKeys.all, 'detail'] as const,
     detail: (roleId: string) => [...roleKeys.details(), roleId] as const,
+    assignments: (params?: ListRoleAssignmentsParams) =>
+        [...roleKeys.all, 'assignments', params ?? {}] as const,
 }
 
 export const useListRoles = (params?: ListRolesParams) => {
@@ -29,6 +33,21 @@ export const useListRoles = (params?: ListRolesParams) => {
         queryKey: roleKeys.list(params),
         queryFn: async () => {
             const result = await listRoles(params)
+            if (!result.success) throw result.error
+            return result.data
+        },
+    })
+}
+
+export const useListRoleAssignments = (
+    params?: ListRoleAssignmentsParams,
+    enabled = true
+) => {
+    return useQuery({
+        queryKey: roleKeys.assignments(params),
+        enabled,
+        queryFn: async () => {
+            const result = await listRoleAssignments(params)
             if (!result.success) throw result.error
             return result.data
         },

@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/src/shared/components/ui/button'
 import CheckboxDropdown from '@/src/shared/components/ui/CheckboxDropdown'
@@ -10,11 +10,13 @@ import type { AttributeOut } from '@/src/api/types/admin/catalog'
 import { useCreateProducts } from '../../provider/createProductsProvider'
 import {
     PRODUCT_ATTRIBUTE_LIST_PARAMS,
-    attributeField,
+    isColorAttribute,
     isMultiAttribute,
     isSelectableAttribute,
     toAttributeOptions,
 } from '../../utils/attributes'
+
+const PRESET_ATTRIBUTE_CODES = ['material', 'pack', 'unit', 'color'] as const
 
 const AttributesTab = () => {
     const { push } = useRouter()
@@ -22,28 +24,60 @@ const AttributesTab = () => {
     const {
         attributeSelections,
         setAttributeSelection,
-        setSalesUnit,
-        setSizes,
         setColors,
         setPacks,
+        setSalesUnit,
     } = useCreateProducts()
 
     const attributes = useMemo(
         () =>
-            [...(data?.items ?? [])]
+            [...(data?.results ?? [])]
                 .filter(isSelectableAttribute)
                 .sort((left, right) => left.sort_order - right.sort_order),
         [data]
     )
 
-    const applySelection = (attribute: AttributeOut, values: string[]) => {
-        setAttributeSelection(attribute.id, values)
+    useEffect(() => {
+        for (const attribute of attributes) {
+            if (
+                !PRESET_ATTRIBUTE_CODES.includes(
+                    attribute.code as (typeof PRESET_ATTRIBUTE_CODES)[number]
+                ) ||
+                attributeSelections[attribute.id]
+            ) {
+                continue
+            }
 
-        const field = attributeField(attribute)
-        if (field === 'size') setSizes(values)
-        if (field === 'color') setColors(values)
-        if (field === 'pack') setPacks(values)
-        if (field === 'unit') setSalesUnit(values[0] ?? '')
+            const values = (attribute.values ?? []).map((item) => item.id)
+            setAttributeSelection(attribute.id, {
+                name: attribute.name,
+                code: attribute.code,
+                values,
+            })
+            if (attribute.code === 'color') setColors(values)
+            if (attribute.code === 'pack') setPacks(values)
+            if (attribute.code === 'unit') setSalesUnit(values[0] ?? '')
+        }
+    }, [
+        attributes,
+        attributeSelections,
+        setAttributeSelection,
+        setColors,
+        setPacks,
+        setSalesUnit,
+    ])
+
+    const applySelection = (attribute: AttributeOut, values: string[]) => {
+        setAttributeSelection(attribute.id, {
+            name: attribute.name,
+            code: attribute.code,
+            values,
+        })
+        if (attribute.code === 'color' || isColorAttribute(attribute)) {
+            setColors(values)
+        }
+        if (attribute.code === 'pack') setPacks(values)
+        if (attribute.code === 'unit') setSalesUnit(values[0] ?? '')
     }
 
     return (
@@ -51,7 +85,7 @@ const AttributesTab = () => {
             <div className='grid grid-cols-2 gap-6'>
                 {attributes.map((attribute) => {
                     const options = toAttributeOptions(attribute)
-                    const selected = attributeSelections[attribute.id] ?? []
+                    const selected = attributeSelections[attribute.id]?.values ?? []
 
                     if (isMultiAttribute(attribute)) {
                         return (

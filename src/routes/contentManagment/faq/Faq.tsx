@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Table, TableBody } from '@/src/shared/components/ui/Table'
 import TablePagination from '@/src/shared/components/adminTable/components/TablePagination'
@@ -12,6 +12,7 @@ import {
     useArchiveFaqItem,
     useListFaqCategories,
     useListFaqItems,
+    useUpdateFaqItem,
 } from '@/src/routes/contentManagment/hooks/faq'
 import {
     DEFAULT_CATEGORIES,
@@ -64,6 +65,7 @@ const FaqContent = () => {
         activeCategory !== 'all' ? { category_id: activeCategory } : undefined
     )
     const { mutate: archiveFaqItem } = useArchiveFaqItem()
+    const { mutate: updateFaqItem } = useUpdateFaqItem()
     const toggleButtonValue = useMemo(
         () => [
             { label: 'همه', value: 'all' },
@@ -90,11 +92,42 @@ const FaqContent = () => {
         [items, activeCategory]
     )
 
-    const updateItem = (id: string, patch: Partial<FaqRowData>) => {
-        setItems((prev) =>
-            prev.map((item) => (item.id === id ? { ...item, ...patch } : item))
-        )
-    }
+    const updateItem = useCallback(
+        (id: string, patch: Partial<FaqRowData>) => {
+            const categoryId =
+                patch.categoryId ??
+                (patch.category
+                    ? categoryPage?.results.find(
+                          (category) =>
+                              category.id === patch.category ||
+                              category.name === patch.category
+                      )?.id
+                    : undefined)
+
+            updateFaqItem({
+                itemId: id,
+                body: {
+                    ...(patch.question !== undefined
+                        ? { question: patch.question }
+                        : {}),
+                    ...(patch.answer !== undefined
+                        ? { answer: patch.answer }
+                        : {}),
+                    ...(patch.visible !== undefined
+                        ? { is_visible: patch.visible }
+                        : {}),
+                    ...(categoryId ? { category_id: categoryId } : {}),
+                },
+            })
+
+            setItems((prev) =>
+                prev.map((item) =>
+                    item.id === id ? { ...item, ...patch } : item
+                )
+            )
+        },
+        [categoryPage?.results, updateFaqItem]
+    )
 
     const removeItem = (id: string) => {
         archiveFaqItem(
@@ -169,7 +202,7 @@ const FaqContent = () => {
 
         window.addEventListener(UPSERT_FAQ_EVENT, handleUpsert)
         return () => window.removeEventListener(UPSERT_FAQ_EVENT, handleUpsert)
-    }, [])
+    }, [updateItem])
 
     return (
         <div className="flex flex-col gap-3" dir="rtl">

@@ -30,8 +30,20 @@ type CreateProductsContextValue = {
     setColors: (values: string[]) => void
     packs: string[]
     setPacks: (values: string[]) => void
-    attributeSelections: Record<string, string[]>
-    setAttributeSelection: (attributeId: string, values: string[]) => void
+    attributeSelections: Record<
+        string,
+        {
+            name: string
+            code: string
+            values: string[]
+        }
+    >
+    setAttributeSelection: (
+        attributeId: string,
+        selection: { name: string; code: string; values: string[] }
+    ) => void
+    basePriceBasis: string[]
+    setBasePriceBasis: (values: string[]) => void
 }
 
 const CreateProductsContext = createContext<CreateProductsContextValue | null>(
@@ -66,14 +78,18 @@ const CreateProductsProvider = ({ children }: CreateProductsProviderProps) => {
     const [colors, setColors] = useState<string[]>([])
     const [packs, setPacks] = useState<string[]>([])
     const [attributeSelections, setAttributeSelections] = useState<
-        Record<string, string[]>
+        Record<string, { name: string; code: string; values: string[] }>
     >({})
+    const [basePriceBasis, setBasePriceBasis] = useState<string[]>([])
 
     const setAttributeSelection = useCallback(
-        (attributeId: string, values: string[]) => {
+        (
+            attributeId: string,
+            selection: { name: string; code: string; values: string[] }
+        ) => {
             setAttributeSelections((current) => ({
                 ...current,
-                [attributeId]: values,
+                [attributeId]: selection,
             }))
         },
         []
@@ -103,6 +119,8 @@ const CreateProductsProvider = ({ children }: CreateProductsProviderProps) => {
             setPacks,
             attributeSelections,
             setAttributeSelection,
+            basePriceBasis,
+            setBasePriceBasis,
         }),
         [
             productTitle,
@@ -117,6 +135,7 @@ const CreateProductsProvider = ({ children }: CreateProductsProviderProps) => {
             packs,
             attributeSelections,
             setAttributeSelection,
+            basePriceBasis,
         ]
     )
 

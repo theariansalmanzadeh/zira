@@ -3,7 +3,7 @@
  */
 
 export type PaginationOut<T> = {
-  items: Array<T>;
+  results: Array<T>;
   page: number;
   page_size: number;
   total: number;
@@ -130,7 +130,7 @@ export type BrandIn = {
   name: string;
   latin_name: string;
   scope: string;
-  logo_url: string;
+  logo?: File | null;
   country: string;
   /** مبدا برند: DOMESTIC (داخلی)، IMPORTED (وارداتی)، LICENSED (تحت لیسانس) */
   origin: BrandOrigin;

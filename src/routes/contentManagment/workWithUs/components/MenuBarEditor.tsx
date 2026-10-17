@@ -1,8 +1,11 @@
 'use client'
 
+import { useRef } from 'react'
 import type { Editor } from '@tiptap/react'
 import type { ReactNode } from 'react'
+import { Image as ImageIcon } from 'lucide-react'
 import { cn } from '@shared/libs/utils'
+import { insertEditorImage } from '@/src/routes/contentManagment/editor/editorImages'
 import { useMenuBarEditorState } from '../hooks/useMenuBarEditorState'
 
 export type MenuBarEditorProps = {
@@ -12,6 +15,7 @@ export type MenuBarEditorProps = {
 
 const MenuBarEditor = ({ editor, header }: MenuBarEditorProps) => {
     const { editorState, handleLink } = useMenuBarEditorState(editor)
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
     return (
         <>
@@ -106,6 +110,26 @@ const MenuBarEditor = ({ editor, header }: MenuBarEditorProps) => {
                     >
                         ❝
                     </button>
+                    <button
+                        type="button"
+                        title="تصویر"
+                        disabled={!editor}
+                        onClick={() => fileInputRef.current?.click()}
+                        className="flex size-7 items-center justify-center rounded-button-sm text-label-md font-bold text-outline transition-colors hover:bg-surface-container-lowest hover:text-on-surface disabled:opacity-40"
+                    >
+                        <ImageIcon className="size-4" />
+                    </button>
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(event) => {
+                            const file = event.target.files?.[0]
+                            if (file && editor) insertEditorImage(editor, file)
+                            event.target.value = ''
+                        }}
+                    />
                 </div>
             </div>
         </>

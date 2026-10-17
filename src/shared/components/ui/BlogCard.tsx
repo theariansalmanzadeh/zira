@@ -18,7 +18,7 @@ const BlogCard = ({ image, title, href, date, readTime, isCarousel }: BlogCardPr
             <div className={cn("flex flex-col gap-md relative", isCarousel ? "h-full" : "h-auto")}>
                 <div className={cn("relative rounded-xl overflow-hidden bg-surface-container-high", isCarousel ? "h-full min-h-[410px] w-full" : "h-auto min-h-[264px] min-w-[260px]")}>
                     {image && <Image
-                        src={image}
+                        src={`https://api.bonksaz.ir${image}`}
                         alt={title}
                         fill
                         className="object-cover w-full h-full absolute top-0 left-0 right-0 bottom-0"

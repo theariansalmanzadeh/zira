@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -12,13 +13,17 @@ import type {
     AttributeRole,
 } from '@/src/api/types/admin/catalog'
 import {
+    catalogKeys,
     useCreateAttribute,
+    useDeleteAttribute,
     useGetAttribute,
     useUpdateAttribute,
 } from '@/src/routes/catalog/hooks/catalog'
 import { Button } from '@/src/shared/components/ui/button'
+import { Checkbox } from '@/src/shared/components/ui/Checkbox'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { Input } from '@/src/shared/components/ui/Input'
+import { RadioGroup, RadioGroupItem } from '@/src/shared/components/ui/RadioGroup'
 import ColorPicker from './components/ColorPicker'
 import VariableSettings from './components/VariableSettings'
 import VariableValues from './components/VariableValues'
@@ -31,6 +36,14 @@ import {
     type AddAndUpdateVariableFormValues,
 } from './schema'
 
+const PRESET_ATTRIBUTES = [
+    { code: 'material', name: 'جنس' },
+    { code: 'color', name: 'رنگ' },
+    { code: 'size', name: 'سایز' },
+    { code: 'pack', name: 'پک' },
+    { code: 'unit', name: 'واحد' },
+] as const
+
 const toAttributeCode = (name: string) => {
     const code = name
         .trim()
@@ -41,9 +54,10 @@ const toAttributeCode = (name: string) => {
 }
 
 const toAttributeIn = (
-    values: AddAndUpdateVariableFormValues
+    values: AddAndUpdateVariableFormValues,
+    code?: string
 ): AttributeIn => ({
-    code: toAttributeCode(values.name),
+    code: code || toAttributeCode(values.name),
     name: values.name.trim(),
     kind: values.inputType as AttributeKind,
     role: values.productRole as AttributeRole,
@@ -54,21 +68,27 @@ const toAttributeIn = (
     is_required: values.required,
     is_filterable: values.showInStoreFilters,
     show_in_public: values.showOnPublicProductPage,
-    values: values.values.map((value, index) => ({
-        value,
+    values: values.values.map((item, index) => ({
+        value: item.value,
         sort_order: index,
+        ...(values.formDisplayControl === 'SWATCH' && item.hexCode
+            ? { hex_code: item.hexCode }
+            : {}),
     })),
 })
 
 const VariableForm = ({ editId }: { editId: string | null }) => {
     const { push } = useRouter()
+    const queryClient = useQueryClient()
     const isEditing = Boolean(editId)
     const { data: attribute } = useGetAttribute(editId ?? '', isEditing)
     const { mutate: createAttribute, isPending: isCreating } =
         useCreateAttribute()
     const { mutate: updateAttribute, isPending: isUpdating } =
         useUpdateAttribute()
-    const isPending = isCreating || isUpdating
+    const { mutate: removeAttribute, isPending: isDeleting } =
+        useDeleteAttribute()
+    const isPending = isCreating || isUpdating || isDeleting
 
     const defaultValues = useMemo(
         () => getAddAndUpdateVariableDefaultValues(attribute),
@@ -86,9 +106,37 @@ const VariableForm = ({ editId }: { editId: string | null }) => {
         name: 'formDisplayControl',
     })
     const [colorHex, setColorHex] = useState('#d64545')
+    const [presetEnabled, setPresetEnabled] = useState(false)
+    const [presetCode, setPresetCode] = useState('')
+
+    const applyPreset = (code: string) => {
+        setPresetCode(code)
+        const preset = PRESET_ATTRIBUTES.find((item) => item.code === code)
+        if (!preset) return
+        methods.setValue('name', preset.name, {
+            shouldDirty: true,
+            shouldValidate: true,
+        })
+    }
+
+    const handleDelete = () => {
+        if (!editId) return
+        removeAttribute(editId, {
+            onSuccess: () => {
+                queryClient.invalidateQueries({
+                    queryKey: catalogKeys.attributes.lists(),
+                })
+                toast.success('ویژگی حذف شد')
+                push('/admin/catalog?sub=variable')
+            },
+        })
+    }
 
     const onSubmit = (values: AddAndUpdateVariableFormValues) => {
         const onSuccess = () => {
+            queryClient.invalidateQueries({
+                queryKey: catalogKeys.attributes.lists(),
+            })
             toast.success(isEditing ? 'ویژگی به‌روزرسانی شد' : 'ویژگی ثبت شد')
             push('/admin/catalog?sub=variable')
         }
@@ -114,7 +162,13 @@ const VariableForm = ({ editId }: { editId: string | null }) => {
             return
         }
 
-        createAttribute(toAttributeIn(values), { onSuccess })
+        createAttribute(
+            toAttributeIn(
+                values,
+                presetEnabled && presetCode ? presetCode : undefined
+            ),
+            { onSuccess }
+        )
     }
 
     return (
@@ -133,6 +187,17 @@ const VariableForm = ({ editId }: { editId: string | null }) => {
                     >
                         انصراف
                     </Button>
+                    {isEditing && (
+                        <Button
+                            type="button"
+                            variant="error"
+                            onClick={handleDelete}
+                            isLoading={isDeleting}
+                            disabled={isPending}
+                        >
+                            حذف ویژگی
+                        </Button>
+                    )}
                     <Button
                         type="submit"
                         variant="primary"
@@ -157,6 +222,38 @@ const VariableForm = ({ editId }: { editId: string | null }) => {
                             />
                         )}
                     />
+                    <div className="flex flex-col gap-3 sm:col-span-2">
+                        <label className="flex items-center gap-2 text-label-md text-on-surface">
+                            <Checkbox
+                                checked={presetEnabled}
+                                onCheckedChange={(checked) => {
+                                    const enabled = checked === true
+                                    setPresetEnabled(enabled)
+                                    if (!enabled) setPresetCode('')
+                                }}
+                            />
+                            استفاده از کد آماده
+                        </label>
+                        <RadioGroup
+                            value={presetCode}
+                            onValueChange={applyPreset}
+                            disabled={!presetEnabled}
+                            className="grid grid-cols-2 gap-3 sm:grid-cols-5"
+                        >
+                            {PRESET_ATTRIBUTES.map((preset) => (
+                                <label
+                                    key={preset.code}
+                                    className="flex items-center gap-2 rounded-container-lg bg-surface-container-high px-3 py-3 text-label-md text-on-surface"
+                                >
+                                    <RadioGroupItem
+                                        value={preset.code}
+                                        disabled={!presetEnabled}
+                                    />
+                                    {preset.name}
+                                </label>
+                            ))}
+                        </RadioGroup>
+                    </div>
                     <Controller
                         control={methods.control}
                         name="inputType"

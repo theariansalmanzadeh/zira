@@ -45,8 +45,8 @@ const BranchesList = () => {
         activeFilter === 'active'
             ? 'ACTIVE'
             : activeFilter === 'inactive'
-              ? 'INACTIVE'
-              : undefined
+                ? 'INACTIVE'
+                : undefined
 
     const { data, isPending, isError } = useListBranches({
         status: statusParam,
@@ -139,9 +139,9 @@ const BranchesList = () => {
                                             .manager_name || '—',
                                 }}
                                 email={{
-                                    label: 'ایمیل',
+                                    label: 'محله',
                                     value:
-                                        (branch as { email?: string }).email ||
+                                        (branch as { province?: string }).province ||
                                         '—',
                                 }}
                                 phone={{

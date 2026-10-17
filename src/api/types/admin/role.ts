@@ -44,3 +44,23 @@ export type UpdateRoleRequest = {
 }
 
 export type UpdateRoleResponse = Role
+
+export type UserRoleAssignment = {
+    id: string
+    user_id: string
+    role_id: string
+    assigned_at: string
+    expires_at?: string | null
+    is_active: boolean
+}
+
+export type ListRoleAssignmentsParams = {
+    query?: string | null
+    role_id?: string | null
+    user_id?: string | null
+    is_active?: boolean | null
+    page?: number | null
+    page_size?: number | null
+}
+
+export type ListRoleAssignmentsResponse = UserRoleAssignment[]

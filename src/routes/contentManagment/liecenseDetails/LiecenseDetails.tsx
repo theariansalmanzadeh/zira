@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation'
 import { cn } from '@shared/libs/utils'
 import { formatFaDate } from '@/src/shared/libs/formatter'
 import { useCertificateDetail } from '@/src/routes/contentManagment/hooks/certificates'
+import Image from 'next/image'
 
 const displayValue = (value?: string | null) =>
     value == null || value.trim() === '' ? '-' : value
@@ -55,8 +56,10 @@ const LiecenseDetails = () => {
 
             <div className="overflow-hidden rounded-card-md bg-surface-container-lowest">
                 {data?.file_url && (
-                    <img
-                        src={data.file_url}
+                    <Image
+                        src={`https://api.bonksaz.ir${data.file_url}`}
+                        width={300}
+                        height={400}
                         alt={data.title}
                         className="max-h-180 w-full object-contain"
                     />

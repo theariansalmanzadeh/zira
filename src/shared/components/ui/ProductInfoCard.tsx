@@ -20,6 +20,18 @@ export type ProductPreviewColor = {
   hex: string;
 };
 
+export type ProductPreviewAttributeValue = {
+  value: string;
+  label: string;
+  hex?: string;
+};
+
+export type ProductPreviewAttribute = {
+  id: string;
+  title: string;
+  values: ProductPreviewAttributeValue[];
+};
+
 interface ProductInfoCardProps {
   imgUrl?: string;
   title?: string;
@@ -28,6 +40,7 @@ interface ProductInfoCardProps {
   sizes?: string[];
   colors?: ProductPreviewColor[];
   packs?: { value: string; label: string }[];
+  attributes?: ProductPreviewAttribute[];
   breadcrumbs?: string[];
 }
 
@@ -39,6 +52,7 @@ const ProductInfoCard = ({
   sizes = [],
   colors = [],
   packs = [],
+  attributes,
   breadcrumbs = [],
 }: ProductInfoCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -88,6 +102,40 @@ const ProductInfoCard = ({
           </div>
         </div>
 
+        {attributes
+          ? attributes.map((attribute) => (
+              <div
+                key={attribute.id}
+                className="w-full flex flex-col items-end gap-lg py-xl"
+              >
+                <span className="text-title-md text-on-surface-variant">
+                  {attribute.title}
+                </span>
+                <ToggleGroup
+                  type="single"
+                  className="w-full flex flex-wrap justify-end gap-sm"
+                  variant="outline-variant"
+                >
+                  {attribute.values.map((item) => (
+                    <ToggleGroupItem
+                      key={item.value}
+                      value={item.value}
+                      className="gap-xs"
+                    >
+                      {item.hex ? (
+                        <span
+                          className="size-4 rounded-full border border-outline-variant"
+                          style={{ backgroundColor: item.hex }}
+                        />
+                      ) : null}
+                      {item.label}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              </div>
+            ))
+          : (
+            <>
         <div className="w-full flex flex-col items-end gap-sm py-xl">
           <span className="text-title-md text-on-surface-variant">تعداد</span>
           <ToggleGroup
@@ -134,6 +182,8 @@ const ProductInfoCard = ({
             ))}
           </ToggleGroup>
         </div>
+            </>
+          )}
       </div>
     </Card>
   );

@@ -11,7 +11,12 @@ export type Notification = {
     created_at: string
 }
 
-export type ListNotificationsResponse = Notification[]
+export type ListNotificationsResponse = {
+    total: number
+    page: number
+    page_size: number
+    results: Notification[]
+}
 
 export type GetNotificationResponse = Notification
 

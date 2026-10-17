@@ -29,24 +29,29 @@ const VariableValues = ({
 }: VariableValuesProps) => {
     const { control, setValue } = useFormContext<AddAndUpdateVariableFormValues>()
     const [draftValue, setDraftValue] = useState('')
-    const [colorByLabel, setColorByLabel] = useState<Record<string, string>>({})
     const values = useWatch({ control, name: 'values' }) ?? []
     const isColorSwatch = formDisplayControl === 'SWATCH'
 
     const addValue = () => {
         const next = draftValue.trim()
-        if (!next || values.includes(next)) return
-        if (isColorSwatch) {
-            setColorByLabel((prev) => ({ ...prev, [next]: colorHex }))
-        }
-        setValue('values', [...values, next], { shouldDirty: true })
+        if (!next || values.some((item) => item.value === next)) return
+        setValue(
+            'values',
+            [
+                ...values,
+                isColorSwatch
+                    ? { value: next, hexCode: colorHex }
+                    : { value: next },
+            ],
+            { shouldDirty: true }
+        )
         setDraftValue('')
     }
 
     const removeValue = (value: string) => {
         setValue(
             'values',
-            values.filter((item) => item !== value),
+            values.filter((item) => item.value !== value),
             { shouldDirty: true }
         )
     }
@@ -78,24 +83,24 @@ const VariableValues = ({
             </div>
             {values.length > 0 && (
                 <div className="flex flex-wrap gap-2">
-                    {values.map((value) =>
+                    {values.map((item) =>
                         isColorSwatch ? (
                             <ColorPill
-                                key={value}
+                                key={item.value}
                                 hex={
-                                    colorByLabel[value] ??
-                                    COLOR_HEX_BY_LABEL[value] ??
+                                    item.hexCode ??
+                                    COLOR_HEX_BY_LABEL[item.value] ??
                                     FALLBACK_COLOR
                                 }
-                                label={value}
-                                onClose={() => removeValue(value)}
+                                label={item.value}
+                                onClose={() => removeValue(item.value)}
                             />
                         ) : (
                             <Pill
-                                key={value}
+                                key={item.value}
                                 variant="primary"
-                                text={value}
-                                onClose={() => removeValue(value)}
+                                text={item.value}
+                                onClose={() => removeValue(item.value)}
                             />
                         )
                     )}

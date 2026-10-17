@@ -2,10 +2,14 @@
 
 import { useState } from 'react'
 import { useParams } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import type { CustomerDocumentType } from '@/src/api/types/admin/customers'
 import DocumentFileUpload from '@/src/routes/contentManagment/liecense/new/components/DocumentFileUpload'
-import { useUploadCustomerDocument } from '@/src/routes/customers/hooks/customers'
+import {
+    customerKeys,
+    useUploadCustomerDocument,
+} from '@/src/routes/customers/hooks/customers'
 import { Button } from '@/src/shared/components/ui/button'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
@@ -37,6 +41,7 @@ const formatFileSize = (bytes: number) => {
 }
 
 const AddCustomerDocuments = ({ closeModal, data }: BaseModalProps) => {
+    const queryClient = useQueryClient()
     const params = useParams<{ id: string }>()
     const modalData = data as AddCustomerDocumentsModalData | null | undefined
     const customerId = modalData?.customerId || params.id || ''
@@ -57,6 +62,9 @@ const AddCustomerDocuments = ({ closeModal, data }: BaseModalProps) => {
             },
             {
                 onSuccess: () => {
+                    queryClient.invalidateQueries({
+                        queryKey: customerKeys.profiles.documents(customerId),
+                    })
                     toast.success('مدرک ثبت شد')
                     closeModal()
                 },

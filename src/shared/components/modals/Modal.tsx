@@ -68,6 +68,10 @@ const AddCustomerDocuments = dynamic(
   () => import('./components/addCustomerDocuments/AddCustomerDocuments'),
   { ssr: false }
 );
+const AddCustomerGuarantee = dynamic(
+  () => import('./components/addCustomerGuarantee/AddCustomerGuarantee'),
+  { ssr: false }
+);
 const AddNewFaq = dynamic(
   () => import('./components/addNewFaq'),
   { ssr: false }
@@ -167,6 +171,7 @@ const MODAL_COMPONENTS: Record<
   [ModalTypes.CUSTOMER_CHANGE_CREDIT]: CustomerChangeCredit,
   [ModalTypes.ADD_CUSTOMER]: AddCustomer,
   [ModalTypes.ADD_CUSTOMER_DOCUMENTS]: AddCustomerDocuments,
+  [ModalTypes.ADD_CUSTOMER_GUARANTEE]: AddCustomerGuarantee,
   [ModalTypes.ADD_NEW_FAQ]: AddNewFaq,
   [ModalTypes.ADD_BANNER]: AddAndEditBanner,
   [ModalTypes.ADD_BRAND]: AddAndEditBrand,
@@ -277,6 +282,12 @@ const MODAL_CONFIG: Record<
     showCloseButton: true,
     className:
       'min-w-[520px]! max-h-[90vh] w-full max-w-[560px]! overflow-y-auto border-0 sm:max-w-[560px]!',
+  },
+  [ModalTypes.ADD_CUSTOMER_GUARANTEE]: {
+    title: 'افزودن ضمانت',
+    showCloseButton: true,
+    className:
+      'min-w-[640px]! max-h-[90vh] w-full max-w-[760px]! overflow-y-auto border-0 sm:max-w-[760px]!',
   },
   [ModalTypes.ADD_NEW_FAQ]: {
     title: 'ثبت سوال جدید',

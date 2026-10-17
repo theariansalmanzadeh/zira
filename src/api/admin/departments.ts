@@ -11,6 +11,7 @@ import type {
     GetDepartmentResponse,
     ListDepartmentPickerResponse,
     ListDepartmentsResponse,
+    ListDepartmentUsersResponse,
     UpdateDepartmentRequest,
     UpdateDepartmentResponse,
 } from '../types/admin/department'
@@ -40,6 +41,15 @@ export const getDepartment = (
 ) =>
     staffAuthGet<GetDepartmentResponse>(
         `/auth/departments/${departmentId}`,
+        config
+    )
+
+export const listDepartmentUsers = (
+    departmentId: string,
+    config?: AxiosRequestConfig
+) =>
+    staffAuthGet<ListDepartmentUsersResponse>(
+        `/auth/departments/${departmentId}/users`,
         config
     )
 

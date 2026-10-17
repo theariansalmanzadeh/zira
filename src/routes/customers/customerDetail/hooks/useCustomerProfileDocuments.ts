@@ -34,7 +34,7 @@ const toRow = (document: CustomerDocument): CustomerProfileDocumentRow => ({
 
 export const useCustomerProfileDocuments = (customerId: string) => {
     const query = useListCustomerDocuments(customerId, Boolean(customerId))
-    const documents = Array.isArray(query.data) ? query.data : []
+    const documents = query.data?.results ?? []
 
     return {
         ...query,

@@ -80,7 +80,6 @@ const AddAndEditBlog = () => {
 
         if (isEdit && postId) {
             await updatePost({ postId, body })
-            await publishPost({ postId })
             if (
                 formState.touchedFields.imageName &&
                 values.imageName &&
@@ -91,18 +90,19 @@ const AddAndEditBlog = () => {
                     body: { image: values.coverFile },
                 })
             }
+            await publishPost({ postId })
             onSuccess()
             return
         }
 
         const created = await createPost({ body })
-        await publishPost({ postId: created.id })
         if (values.imageName && values.coverFile) {
             await setPostCover({
                 postId: created.id,
                 body: { image: values.coverFile },
             })
         }
+        await publishPost({ postId: created.id })
         onSuccess()
     }
 

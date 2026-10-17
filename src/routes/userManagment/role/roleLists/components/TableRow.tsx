@@ -8,7 +8,7 @@ import {
     TableRow as UiTableRow,
 } from '@/src/shared/components/ui/Table'
 import { useTable } from '@/src/shared/context/TableProvider'
-import { formatFaDateTime, formatFaNumber } from '@/src/shared/libs/formatter'
+import { formatFaDateTime } from '@/src/shared/libs/formatter'
 import {
     ROLE_STATUS_CONFIG,
     ROLE_TYPE_CONFIG,
@@ -41,11 +41,6 @@ const TableRow = ({ data }: TableRowProps) => {
                 )}
                 {TableColoumn[3]?.isChecked && (
                     <TableCell>
-                        {formatFaNumber(data.usersCount)} کاربر
-                    </TableCell>
-                )}
-                {TableColoumn[4]?.isChecked && (
-                    <TableCell>
                         <Pill
                             className='border-0'
                             text={typeConfig.label}
@@ -53,7 +48,7 @@ const TableRow = ({ data }: TableRowProps) => {
                         />
                     </TableCell>
                 )}
-                {TableColoumn[5]?.isChecked && (
+                {TableColoumn[4]?.isChecked && (
                     <TableCell>
                         <Pill
                             className='border-0'
@@ -62,12 +57,12 @@ const TableRow = ({ data }: TableRowProps) => {
                         />
                     </TableCell>
                 )}
-                {TableColoumn[6]?.isChecked && (
+                {TableColoumn[5]?.isChecked && (
                     <TableCell>
                         {formatFaDateTime(data.createdAt)}
                     </TableCell>
                 )}
-                {TableColoumn[7]?.isChecked && (
+                {TableColoumn[6]?.isChecked && (
                     <TableCell className='w-[1%] whitespace-nowrap text-end'>
                         <IconButton
                             icon='chevronLeft400Linear'

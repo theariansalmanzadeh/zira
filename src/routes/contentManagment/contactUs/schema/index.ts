@@ -21,10 +21,10 @@ export const contactUsFormSchema = z.object({
         mobile2: z.string(),
     }),
     emailHours: z.object({
-        email: requiredString('ایمیل پشتیبانی الزامی است'),
-        hours: requiredString('ساعات کاری الزامی است'),
+        email: z.string(),
+        hours: z.string(),
     }),
-    address: requiredString('آدرس الزامی است'),
+    address: z.string(),
     socials: z.object({
         instagram: z.string(),
         telegram: z.string(),

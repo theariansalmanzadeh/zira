@@ -10,7 +10,6 @@ export type RoleListRowData = {
     code: string
     name: string
     department: string
-    usersCount: number
     type: RoleType
     status: RoleStatus
     createdAt: string
@@ -38,7 +37,6 @@ export const ROLE_LIST_TABLE_COLUMNS: TableFilterItem[] = [
     { id: 'code', header_label: 'کد نقش', isChecked: true },
     { id: 'name', header_label: 'نام نقش', isChecked: true },
     { id: 'department', header_label: 'دپارتمان', isChecked: true },
-    { id: 'users', header_label: 'کاربران', isChecked: true },
     { id: 'type', header_label: 'نوع', isChecked: true },
     { id: 'status', header_label: 'وضعیت', isChecked: true },
     { id: 'createdAt', header_label: 'تاریخ ایجاد', isChecked: true },
@@ -51,7 +49,6 @@ export const ROLE_LIST_DUMMY: RoleListRowData[] = [
         code: 'system_admin',
         name: 'مدیر سیستم',
         department: 'مدیریت',
-        usersCount: 2,
         type: 'system',
         status: 'active',
         createdAt: '2025-11-01T10:00:00.000Z',
@@ -61,7 +58,6 @@ export const ROLE_LIST_DUMMY: RoleListRowData[] = [
         code: 'sales_manager',
         name: 'مدیر فروش',
         department: 'فروش',
-        usersCount: 5,
         type: 'custom',
         status: 'active',
         createdAt: '2025-11-12T08:30:00.000Z',
@@ -71,7 +67,6 @@ export const ROLE_LIST_DUMMY: RoleListRowData[] = [
         code: 'warehouse_staff',
         name: 'کارشناس انبار',
         department: 'انبار',
-        usersCount: 8,
         type: 'custom',
         status: 'inactive',
         createdAt: '2025-10-20T14:15:00.000Z',
@@ -81,7 +76,6 @@ export const ROLE_LIST_DUMMY: RoleListRowData[] = [
         code: 'support_agent',
         name: 'پشتیبان',
         department: 'پشتیبانی',
-        usersCount: 12,
         type: 'system',
         status: 'active',
         createdAt: '2025-09-05T09:45:00.000Z',

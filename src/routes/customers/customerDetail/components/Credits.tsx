@@ -14,6 +14,7 @@ import {
     type CreditCardItem,
 } from '../constants/credits'
 import CreditCard from './CreditCard'
+import GuaranteesList from './GuaranteesList'
 
 const toAmount = (value?: string | number | null) => {
     if (value === undefined || value === null || value === '') return null
@@ -40,11 +41,11 @@ const Credits = () => {
         {
             ...chequeTheme,
             levelLabel:
-                profileChequeMonths !== undefined
+                typeof profileChequeMonths === 'number'
                     ? `راس تا ${formatFaNumber(profileChequeMonths)} ماه`
                     : displayValue(
-                          policy?.cheque_term_display || policy?.cheque_term_months
-                      ),
+                        policy?.cheque_term_display || policy?.cheque_term_months
+                    ),
             cap: toAmount(policy?.cheque_credit_limit),
             used: null,
             guarantee: '-',
@@ -82,6 +83,7 @@ const Credits = () => {
                     onChangeCredit={() => handleOpenChangeCredit(card)}
                 />
             ))}
+            <GuaranteesList customerId={customerId} />
         </div>
     )
 }

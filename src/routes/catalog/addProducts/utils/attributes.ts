@@ -10,7 +10,9 @@ export const PRODUCT_ATTRIBUTE_LIST_PARAMS: ListAttributesParams = {
     is_active: true,
 }
 
-export type AttributeField = 'size' | 'color' | 'pack' | 'unit'
+export const isColorAttribute = (attribute: AttributeOut) =>
+    attribute.kind === 'SWATCH' &&
+    (attribute.values ?? []).some((value) => Boolean(value.hex_code))
 
 export const isSelectableAttribute = (attribute: AttributeOut) => {
     if ((attribute.values?.length ?? 0) > 0) return true
@@ -27,28 +29,7 @@ export const isSelectableAttribute = (attribute: AttributeOut) => {
 }
 
 export const isMultiAttribute = (attribute: AttributeOut) =>
-    attribute.kind === 'MULTI' ||
-    attribute.kind === 'SWATCH' ||
-    attribute.input_control === 'CHIP_MULTI' ||
-    attribute.input_control === 'SWATCH'
-
-export const attributeField = (attribute: AttributeOut): AttributeField | null => {
-    const text = `${attribute.code} ${attribute.name}`.toLowerCase()
-
-    if (
-        text.includes('color') ||
-        text.includes('رنگ') ||
-        attribute.kind === 'SWATCH'
-    ) {
-        return 'color'
-    }
-
-    if (text.includes('size') || text.includes('سایز')) return 'size'
-    if (text.includes('pack') || text.includes('پک')) return 'pack'
-    if (text.includes('unit') || text.includes('واحد')) return 'unit'
-
-    return null
-}
+    attribute.kind === 'MULTI' || isColorAttribute(attribute)
 
 export const toAttributeOptions = (attribute: AttributeOut): DropdownOption[] =>
     [...(attribute.values ?? [])]
@@ -67,7 +48,7 @@ export const attributeValueMap = (attributes: AttributeOut[]) => {
         for (const value of attribute.values ?? []) {
             map.set(value.id, {
                 label: value.value,
-                hex: value.hex_code || '#BFBFBF',
+                hex: value.hex_code || '',
             })
         }
     }

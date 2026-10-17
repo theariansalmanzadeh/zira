@@ -1,27 +1,16 @@
 'use client'
 
+import { useFormContext } from 'react-hook-form'
 import { Input } from '@/src/shared/components/ui/Input'
-import { CONTACT_NUMBERS_DEFAULT } from '../constants'
+import { registerInput } from '../registerInput'
+import type { ContactUsFormValues } from '../schema'
 
-export type ContactNumbersValues = {
-    landline1: string
-    landline2: string
-    mobile1: string
-    mobile2: string
-}
-
-type ContactNumbersProps = {
-    values?: ContactNumbersValues
-    onChange?: (values: ContactNumbersValues) => void
-}
-
-const ContactNumbers = ({
-    values = CONTACT_NUMBERS_DEFAULT,
-    onChange,
-}: ContactNumbersProps) => {
-    const update = (key: keyof ContactNumbersValues, value: string) => {
-        onChange?.({ ...values, [key]: value })
-    }
+const ContactNumbers = () => {
+    const {
+        register,
+        formState: { errors },
+    } = useFormContext<ContactUsFormValues>()
+    const phoneErrors = errors.phones
 
     return (
         <section className="rounded-card-lg border border-outline-variant bg-surface-container-lowest p-5">
@@ -31,29 +20,33 @@ const ContactNumbers = ({
             <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                 <Input
                     label="تلفن ثابت ۱"
-                    value={values.landline1}
-                    onChange={(value) => update('landline1', value)}
+                    {...registerInput(register('phones.landline1'))}
+                    error={!!phoneErrors?.landline1}
+                    msg={phoneErrors?.landline1?.message}
                     dir="ltr"
                     className="text-right"
                 />
                 <Input
                     label="تلفن ثابت ۲"
-                    value={values.landline2}
-                    onChange={(value) => update('landline2', value)}
+                    {...registerInput(register('phones.landline2'))}
+                    error={!!phoneErrors?.landline2}
+                    msg={phoneErrors?.landline2?.message}
                     dir="ltr"
                     className="text-right"
                 />
                 <Input
                     label="موبایل ۱"
-                    value={values.mobile1}
-                    onChange={(value) => update('mobile1', value)}
+                    {...registerInput(register('phones.mobile1'))}
+                    error={!!phoneErrors?.mobile1}
+                    msg={phoneErrors?.mobile1?.message}
                     dir="ltr"
                     className="text-right"
                 />
                 <Input
                     label="موبایل ۲ (پشتیبانی)"
-                    value={values.mobile2}
-                    onChange={(value) => update('mobile2', value)}
+                    {...registerInput(register('phones.mobile2'))}
+                    error={!!phoneErrors?.mobile2}
+                    msg={phoneErrors?.mobile2?.message}
                     dir="ltr"
                     className="text-right"
                 />

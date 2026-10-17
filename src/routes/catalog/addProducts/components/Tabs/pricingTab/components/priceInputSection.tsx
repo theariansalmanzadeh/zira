@@ -7,7 +7,7 @@ import { useListAttributes } from '@/src/routes/catalog/hooks/catalog'
 import { useCreateProducts } from '../../../../provider/createProductsProvider'
 import {
     PRODUCT_ATTRIBUTE_LIST_PARAMS,
-    attributeValueMap,
+    isColorAttribute,
 } from '../../../../utils/attributes'
 
 type RowState = {
@@ -16,34 +16,80 @@ type RowState = {
     active: boolean
 }
 
+type MatrixItem = {
+    value: string
+    label: string
+    hex?: string | null
+}
+
+type MatrixAxis = {
+    id: string
+    name: string
+    items: MatrixItem[]
+}
+
 const emptyRow = (): RowState => ({
     basePrice: '',
     capacity: '',
     active: true,
 })
 
+const combinations = (axes: MatrixAxis[]): MatrixItem[][] =>
+    axes.reduce<MatrixItem[][]>(
+        (rows, axis) =>
+            rows.flatMap((row) => axis.items.map((item) => [...row, item])),
+        [[]]
+    )
+
+const MatrixLabel = ({ item }: { item: MatrixItem }) => (
+    <span className='flex items-center gap-2 text-label-md text-on-surface'>
+        {item.hex ? (
+            <span
+                className='size-4 shrink-0 rounded-full border border-outline-variant'
+                style={{ backgroundColor: item.hex }}
+            />
+        ) : null}
+        {item.label}
+    </span>
+)
+
 const PriceInputSection = () => {
-    const { packs, sizes, colors } = useCreateProducts()
+    const { attributeSelections, basePriceBasis } = useCreateProducts()
     const { data: attributes } = useListAttributes(PRODUCT_ATTRIBUTE_LIST_PARAMS)
     const [rows, setRows] = useState<Record<string, RowState>>({})
-    const values = useMemo(
-        () => attributeValueMap(attributes?.items ?? []),
-        [attributes]
-    )
-    const salesUnitGroups = packs.map((pack) => ({
-        id: pack,
-        label: values.get(pack)?.label ?? pack,
-    }))
-    const sizeItems = sizes.map((value) => ({
-        value,
-        label: values.get(value)?.label ?? value,
-    }))
-    const colorItems = colors.map((value) => ({
-        value,
-        label: values.get(value)?.label ?? value,
-        hex: values.get(value)?.hex ?? '#BFBFBF',
-    }))
-    const matrixColors = colorItems.length > 0 ? colorItems : [null]
+
+    const axes = useMemo(() => {
+        const byId = new Map(
+            (attributes?.results ?? []).map((attribute) => [attribute.id, attribute])
+        )
+
+        return basePriceBasis.flatMap((attributeId) => {
+            const attribute = byId.get(attributeId)
+            const selected = attributeSelections[attributeId]?.values ?? []
+            if (!attribute || selected.length === 0) return []
+
+            const selectedIds = new Set(selected)
+            const showHex = isColorAttribute(attribute)
+            const items = [...(attribute.values ?? [])]
+                .filter((value) => selectedIds.has(value.id))
+                .sort((left, right) => left.sort_order - right.sort_order)
+                .map((value) => ({
+                    value: value.id,
+                    label: value.value,
+                    hex: showHex ? value.hex_code : null,
+                }))
+
+            if (items.length === 0) return []
+
+            return [
+                {
+                    id: attribute.id,
+                    name: attribute.name,
+                    items,
+                },
+            ]
+        })
+    }, [attributeSelections, attributes, basePriceBasis])
 
     const updateRow = (key: string, updates: Partial<RowState>) => {
         setRows((current) => ({
@@ -52,12 +98,21 @@ const PriceInputSection = () => {
         }))
     }
 
+    if (axes.length === 0) return null
+
+    const [lead, ...nestedAxes] = axes
+    const nestedRows = nestedAxes.length > 0 ? combinations(nestedAxes) : [[]]
+    const gridTemplateColumns = `repeat(${axes.length}, minmax(4rem, auto)) minmax(16rem, 1fr)`
+
     return (
         <div className='grid gap-y-2 bg-surface-container-high' dir='rtl'>
-            <div className='grid grid-cols-[minmax(7rem,auto)_minmax(4rem,auto)_minmax(6rem,auto)_1fr] items-center gap-x-4 px-2 text-label-md text-outline'>
-                <span>واحد فروش</span>
-                <span>سایز</span>
-                <span>رنگ</span>
+            <div
+                className='grid items-center gap-x-4 px-2 text-label-md text-outline'
+                style={{ gridTemplateColumns }}
+            >
+                {axes.map((axis) => (
+                    <span key={axis.id}>{axis.name}</span>
+                ))}
                 <div className='flex items-center gap-x-4 px-4'>
                     <span>قیمت پایه</span>
                     <span>ظرفیت پیش‌سفارش</span>
@@ -65,78 +120,63 @@ const PriceInputSection = () => {
                 </div>
             </div>
 
-            {salesUnitGroups.map((unit) => (
+            {lead.items.map((leadItem) => (
                 <div
-                    key={unit.id}
-                    className='grid grid-cols-[minmax(7rem,auto)_minmax(4rem,auto)_minmax(6rem,auto)_1fr] gap-x-4 gap-y-2 items-center rounded-card-lg p-2'
+                    key={leadItem.value}
+                    className='grid items-center gap-x-4 gap-y-2 rounded-card-lg p-2'
+                    style={{ gridTemplateColumns }}
                 >
                     <div
-                        className='flex items-start self-stretch text-label-lg text-on-surface-variant'
-                        style={{
-                            gridRow: `span ${Math.max(sizeItems.length * matrixColors.length, 1)}`,
-                        }}
+                        className='flex items-start self-stretch'
+                        style={{ gridRow: `span ${nestedRows.length}` }}
                     >
-                        {unit.label}
+                        <MatrixLabel item={leadItem} />
                     </div>
 
-                    {sizeItems.flatMap((size) =>
-                        matrixColors.map((color) => {
-                            const key = `${unit.id}-${size.value}-${color?.value ?? 'none'}`
-                            const row = rows[key] ?? emptyRow()
+                    {nestedRows.map((row) => {
+                        const cells = [leadItem, ...row]
+                        const key = cells.map((item) => item.value).join('-')
+                        const rowState = rows[key] ?? emptyRow()
 
-                            return (
-                                <Fragment key={key}>
-                                    <span className='text-label-md text-on-surface-variant'>
-                                        {size.label}
-                                    </span>
-                                    <span className='flex items-center gap-2 text-label-md text-on-surface'>
-                                        {color ? (
-                                            <>
-                                                <span
-                                                    className='size-4 shrink-0 rounded-full border border-outline-variant'
-                                                    style={{ backgroundColor: color.hex }}
-                                                />
-                                                {color.label}
-                                            </>
-                                        ) : (
-                                            '—'
-                                        )}
-                                    </span>
-                                    <div className='flex bg-surface-container-lowest justify-between px-3 py-3.5'>
-                                        <div className='flex flex-row grow w-full'>
-                                            <Input
-                                                className='w-full'
-                                                placeholder='-'
-                                                value={row.basePrice}
-                                                onChange={(value) =>
-                                                    updateRow(key, { basePrice: value })
-                                                }
-                                            />
-                                            <Input
-                                                className='w-full'
-                                                placeholder='-'
-                                                value={row.capacity}
-                                                onChange={(value) =>
-                                                    updateRow(key, { capacity: value })
-                                                }
-                                            />
-                                        </div>
-                                        <div className='grid grid-cols-[auto_auto] items-center gap-x-2'>
-                                            <Switch
-                                                checked={row.active}
-                                                onCheckedChange={(active) =>
-                                                    updateRow(key, { active })
-                                                }
-                                            />
-                                            <span className='text-label-md text-on-surface-variant'>
-                                                فعال
-                                            </span>
-                                        </div>
+                        return (
+                            <Fragment key={key}>
+                                {row.map((item) => (
+                                    <MatrixLabel key={item.value} item={item} />
+                                ))}
+                                <div className='flex justify-between bg-surface-container-lowest px-3 py-3.5'>
+                                    <div className='flex w-full grow flex-row'>
+                                        <Input
+                                            className='w-full'
+                                            placeholder='-'
+                                            value={rowState.basePrice}
+                                            onChange={(value) =>
+                                                updateRow(key, { basePrice: value })
+                                            }
+                                        />
+                                        <Input
+                                            className='w-full'
+                                            placeholder='-'
+                                            value={rowState.capacity}
+                                            onChange={(value) =>
+                                                updateRow(key, { capacity: value })
+                                            }
+                                        />
                                     </div>
-                                </Fragment>
-                            )
-                        })
-                    )}
+                                    <div className='grid grid-cols-[auto_auto] items-center gap-x-2'>
+                                        <Switch
+                                            checked={rowState.active}
+                                            onCheckedChange={(active) =>
+                                                updateRow(key, { active })
+                                            }
+                                        />
+                                        <span className='text-label-md text-on-surface-variant'>
+                                            فعال
+                                        </span>
+                                    </div>
+                                </div>
+                            </Fragment>
+                        )
+                    })}
                 </div>
             ))}
         </div>

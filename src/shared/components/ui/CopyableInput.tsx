@@ -26,7 +26,7 @@ const CopyableInput = React.forwardRef<HTMLInputElement, CopyableInputProps>(
             copyButtonClassName,
             copyIconClassName,
             label,
-            readOnly = true,
+            readOnly = false,
             ...props
         },
         ref

@@ -495,6 +495,21 @@ export const useListAttributes = (params?: ListAttributesParams, enabled = true)
     })
 }
 
+const toAttribute = (
+    data: PaginationOut_AttributeOut_ | AttributeOut,
+    attributeId: string
+): AttributeOut | null => {
+    if ('results' in data) {
+        const page = data as PaginationOut_AttributeOut_
+        return (
+            page.results.find((item) => item.id === attributeId) ??
+            page.results[0] ??
+            null
+        )
+    }
+    return data
+}
+
 export const useGetAttribute = (attributeId: string, enabled = true) => {
     return useQuery({
         queryKey: catalogKeys.attributes.detail(attributeId),
@@ -502,7 +517,10 @@ export const useGetAttribute = (attributeId: string, enabled = true) => {
         queryFn: async () => {
             const result = await getAttribute(attributeId)
             if (!result.success) throw result.error
-            return result.data
+            return toAttribute(
+                result.data as PaginationOut_AttributeOut_ | AttributeOut,
+                attributeId
+            )
         },
     })
 }

@@ -41,3 +41,15 @@ export type UpdateDepartmentRequest = {
 }
 
 export type UpdateDepartmentResponse = Department
+
+export type DepartmentUser = {
+    id: string
+    display_name: string
+}
+
+export type ListDepartmentUsersResponse = {
+    total: number
+    page: number
+    page_size: number
+    results: DepartmentUser[]
+}

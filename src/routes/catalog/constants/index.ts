@@ -113,39 +113,11 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
         title: 'لیست قیمت جدید',
         subtitle: 'کالاها را انتخاب کنید و قیمت جدید را ثبت کنید.',
         hasBackButton: true,
-        buttons: [
-            {
-                label: 'ثبت لیست',
-                icon: 'checkSm400Linear',
-                variant: 'primary',
-                type: 'submit',
-                form: 'add-edit-pricing-form',
-            },
-            {
-                label: 'انصراف',
-                variant: 'outline',
-                href: '/admin/catalog/pricing',
-            },
-        ],
     },
     'pricing-detail': {
         title: 'ویرایش لیست قیمت',
         subtitle: 'کالاها و قیمت‌های این لیست را تغییر دهید.',
         hasBackButton: true,
-        buttons: [
-            {
-                label: 'ثبت لیست',
-                icon: 'checkSm400Linear',
-                variant: 'primary',
-                type: 'submit',
-                form: 'add-edit-pricing-form',
-            },
-            {
-                label: 'انصراف',
-                variant: 'outline',
-                href: '/admin/catalog/pricing',
-            },
-        ],
     },
     contracts: {
         title: 'قراردادها',
@@ -163,39 +135,11 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
         title: 'قرارداد قیمت‌گذاری جدید',
         subtitle: 'یک قاعده تعدیل قیمت بسازید تا روی لیست قیمت اعمال شود.',
         hasBackButton: true,
-        buttons: [
-            {
-                label: 'ثبت قرارداد',
-                icon: 'checkSm400Linear',
-                variant: 'primary',
-                type: 'submit',
-                form: 'add-edit-contract-form',
-            },
-            {
-                label: 'انصراف',
-                variant: 'outline',
-                href: '/admin/catalog?sub=contracts',
-            },
-        ],
     },
     'contracts-detail': {
         title: 'قرارداد قیمت‌گذاری تغییر',
         subtitle: 'تغییر قاعده تعدیل قیمت تا روی لیست قیمت اعمال شود.',
         hasBackButton: true,
-        buttons: [
-            {
-                label: 'ثبت قرارداد',
-                icon: 'checkSm400Linear',
-                variant: 'primary',
-                type: 'submit',
-                form: 'add-edit-contract-form',
-            },
-            {
-                label: 'انصراف',
-                variant: 'outline',
-                href: '/admin/catalog?sub=contracts',
-            },
-        ],
     },
     discounts: {
         title: 'مدیریت تخفیف',
@@ -299,20 +243,6 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
         title: 'برند جدید',
         subtitle: 'ثبت برند و اطلاعات نمایش آن',
         hasBackButton: true,
-        buttons: [
-            {
-                label: 'ثبت برند',
-                icon: 'checkSm400Linear',
-                variant: 'primary',
-                type: 'submit',
-                form: 'add-edit-brand-form',
-            },
-            {
-                label: 'انصراف',
-                variant: 'outline',
-                href: '/admin/catalog/brands',
-            },
-        ],
     },
     'brands-edit': {
         title: 'ویرایش برند',

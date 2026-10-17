@@ -6,7 +6,12 @@ import type { StaffUser } from '@/src/api/types/admin/user'
 import { useListBranches } from '@/src/routes/branches/hooks/organization'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { cn } from '@shared/libs/utils'
-import { useListStaffUsers } from '../hooks/user'
+import {
+    useGrantUserBranches,
+    useListStaffUsers,
+    useListUserBranches,
+    useRevokeUserBranches,
+} from '../hooks/user'
 
 const AVATAR_COLORS = [
     'bg-[#E8B4C4] text-[#7A3148]',
@@ -31,17 +36,19 @@ const AssignToBranch = () => {
     const { data: branchesData } = useListBranches()
     const [userSearch, setUserSearch] = useState('')
     const [selectedId, setSelectedId] = useState<string | null>(null)
-    const [branchId, setBranchId] = useState<string | undefined>()
+    const { data: userBranches, isPending: isLoadingUserBranches } =
+        useListUserBranches(selectedId ?? '', Boolean(selectedId))
+    const { mutate: grantUserBranches, isPending: isGranting } =
+        useGrantUserBranches()
+    const { mutate: revokeUserBranches, isPending: isRevoking } =
+        useRevokeUserBranches()
+    const isUpdatingBranches = isGranting || isRevoking
 
     const branches: BranchListItem[] = Array.isArray(branchesData)
         ? branchesData
         : ((branchesData as { results?: BranchListItem[] } | undefined)
             ?.results ?? [])
 
-    const branchNameById = useMemo(
-        () => new Map(branches.map((branch) => [branch.id, branch.name])),
-        [branches]
-    )
     const branchOptions = useMemo(
         () =>
             branches.map((branch) => ({
@@ -49,6 +56,22 @@ const AssignToBranch = () => {
                 value: branch.id,
             })),
         [branches]
+    )
+    const branchNameById = useMemo(
+        () => new Map(branches.map((branch) => [branch.id, branch.name])),
+        [branches]
+    )
+    const assignedBranchIds = useMemo(
+        () => new Set(userBranches?.results ?? []),
+        [userBranches?.results]
+    )
+    const assignedBranches = useMemo(
+        () =>
+            (userBranches?.results ?? []).map((branchId) => ({
+                id: branchId,
+                name: branchNameById.get(branchId) || branchId,
+            })),
+        [branchNameById, userBranches?.results]
     )
 
     const userOptions = useMemo(
@@ -68,7 +91,15 @@ const AssignToBranch = () => {
 
     const selectUser = (user: StaffUser) => {
         setSelectedId(user.id)
-        setBranchId(user.primary_branch_id || undefined)
+    }
+
+    const toggleBranch = (branchId: string, isAssigned: boolean) => {
+        if (!selectedId || isUpdatingBranches) return
+        const mutation = isAssigned ? revokeUserBranches : grantUserBranches
+        mutation({
+            userId: selectedId,
+            body: { branch_ids: [branchId] },
+        })
     }
 
     return (
@@ -130,11 +161,19 @@ const AssignToBranch = () => {
                                     </p>
                                 </div>
                             </div>
-                            <p className="text-label-md text-on-surface">
-                                شعبه اصلی:{' '}
+                            <p
+                                className={cn(
+                                    'text-label-md text-on-surface',
+                                    isLoadingUserBranches && 'animate-pulse'
+                                )}
+                            >
+                                شعبه‌ها:{' '}
                                 <span className="font-semibold">
-                                    {branchNameById.get(selected.primary_branch_id) ||
-                                        '—'}
+                                    {assignedBranches.length
+                                        ? assignedBranches
+                                              .map((branch) => branch.name)
+                                              .join('، ')
+                                        : '—'}
                                 </span>
                             </p>
                         </div>
@@ -147,9 +186,13 @@ const AssignToBranch = () => {
                 <FormDropdown
                     label="انتخاب شعبه"
                     placeholder="شعبه را انتخاب کنید"
-                    value={branchId}
                     options={branchOptions}
-                    onChange={setBranchId}
+                    checkedValues={[...assignedBranchIds]}
+                    disabled={!selected || isUpdatingBranches}
+                    className={cn(isUpdatingBranches && 'animate-pulse')}
+                    onChange={(branchId) =>
+                        toggleBranch(branchId, assignedBranchIds.has(branchId))
+                    }
                 />
             </section>
         </div>

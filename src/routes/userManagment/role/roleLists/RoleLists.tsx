@@ -18,7 +18,6 @@ const mapRoleToRow = (role: Role): RoleListRowData => ({
     code: role.code,
     name: role.name,
     department: role.department || '—',
-    usersCount: 0,
     type: role.is_system ? 'system' : 'custom',
     status: role.is_active ? 'active' : 'inactive',
     createdAt: role.created_at,

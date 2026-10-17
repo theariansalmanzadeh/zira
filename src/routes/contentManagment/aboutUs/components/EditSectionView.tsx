@@ -6,6 +6,11 @@ import { TextStyleKit } from '@tiptap/extension-text-style'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import Link from '@tiptap/extension-link'
+import Image from '@tiptap/extension-image'
+import {
+    imageFileFromList,
+    insertImageFile,
+} from '@/src/routes/contentManagment/editor/editorImages'
 import { Button } from '@/src/shared/components/ui/button'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
@@ -31,6 +36,10 @@ const extensions = [
     TextStyleKit,
     StarterKit,
     Underline,
+    Image.configure({
+        inline: false,
+        allowBase64: true,
+    }),
     Link.configure({
         openOnClick: false,
         HTMLAttributes: {
@@ -83,8 +92,23 @@ const EditSectionView = ({ id, index, className }: EditSectionViewProps) => {
                     '[&_ul]:list-disc [&_ul]:ps-5',
                     '[&_ol]:list-decimal [&_ol]:ps-5',
                     '[&_blockquote]:border-s-2 [&_blockquote]:border-outline-variant [&_blockquote]:ps-3 [&_blockquote]:text-on-surface-variant',
-                    '[&_a]:text-primary [&_a]:underline'
+                    '[&_a]:text-primary [&_a]:underline',
+                    '[&_img]:my-3 [&_img]:max-h-80 [&_img]:w-full [&_img]:rounded-card-md [&_img]:object-contain'
                 ),
+            },
+            handlePaste: (view, event) => {
+                const file = imageFileFromList(event.clipboardData?.files)
+                if (!file) return false
+                event.preventDefault()
+                insertImageFile(view, file)
+                return true
+            },
+            handleDrop: (view, event) => {
+                const file = imageFileFromList(event.dataTransfer?.files)
+                if (!file) return false
+                event.preventDefault()
+                insertImageFile(view, file)
+                return true
             },
         },
         onUpdate: ({ editor: currentEditor }) => {

@@ -11,6 +11,7 @@ import { useCreateProducts } from '../provider/createProductsProvider'
 import {
     PRODUCT_ATTRIBUTE_LIST_PARAMS,
     attributeValueMap,
+    isColorAttribute,
 } from '../utils/attributes'
 import { categoryName, flattenCategories } from '../utils/categories'
 
@@ -22,9 +23,7 @@ const Preview = () => {
         mainCategory,
         midCategory,
         subCategory,
-        sizes,
-        colors,
-        packs,
+        attributeSelections,
     } = useCreateProducts()
     const { data: brands } = useListBrands({ page: 1, page_size: 100 })
     const { data: categoryTree } = useListCategories()
@@ -35,11 +34,30 @@ const Preview = () => {
         [categoryTree]
     )
     const values = useMemo(
-        () => attributeValueMap(attributes?.items ?? []),
+        () => attributeValueMap(attributes?.results ?? []),
         [attributes]
     )
     const brandLabel =
-        (brands?.items ?? []).find((item) => item.id === brand)?.name || 'برند'
+        (brands?.results ?? []).find((item) => item.id === brand)?.name || 'برند'
+    const selectedAttributes = (attributes?.results ?? []).filter(
+        (attribute) =>
+            (attributeSelections[attribute.id]?.values ?? []).length > 0
+    )
+    const previewAttributes = selectedAttributes.map((attribute) => {
+        const selection = attributeSelections[attribute.id]
+        const selectedIds = selection?.values ?? []
+        const isColor = isColorAttribute(attribute)
+
+        return {
+            id: attribute.id,
+            title: selection?.name || attribute.name,
+            values: selectedIds.map((value) => ({
+                value,
+                label: values.get(value)?.label ?? value,
+                hex: isColor ? values.get(value)?.hex || '#BFBFBF' : undefined,
+            })),
+        }
+    })
 
     return (
         <div className='w-full'>
@@ -50,16 +68,7 @@ const Preview = () => {
                 title={productTitle || 'عنوان محصول'}
                 productCode={productCode || 'کد محصول'}
                 brand={brandLabel}
-                sizes={sizes.map((value) => values.get(value)?.label ?? value)}
-                colors={colors.map((value) => ({
-                    value,
-                    label: values.get(value)?.label ?? value,
-                    hex: values.get(value)?.hex ?? '#BFBFBF',
-                }))}
-                packs={packs.map((value) => ({
-                    value,
-                    label: values.get(value)?.label ?? value,
-                }))}
+                attributes={previewAttributes}
                 breadcrumbs={[
                     categoryName(categories, subCategory, 'دسته‌ فرعی'),
                     categoryName(categories, midCategory, 'دسته میانی'),

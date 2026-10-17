@@ -63,7 +63,7 @@ const AnnouncementList = () => {
     const { data, isPending, isError } = useListNotifications()
 
     const announcements = useMemo(
-        () => (data ?? []).map(mapNotificationToRow),
+        () => (data?.results ?? []).map(mapNotificationToRow),
         [data]
     )
 

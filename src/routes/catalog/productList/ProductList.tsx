@@ -11,8 +11,8 @@ import TableHeader from './components/TableHeader'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import TableLoadingSkeleton from '@/src/shared/components/loading/TableLoadingSkeleton'
 import { PRODUCT_LIST_TOGGLE_BUTTONS, TABLE_COLOUMN } from './constants'
-import { useListProducts } from '@/src/routes/catalog/hooks/catalog'
-import type { ProductListOut, ProductStatus } from '@/src/api/types/admin/catalog'
+import { useListProductDrafts, useListProducts } from '@/src/routes/catalog/hooks/catalog'
+import type { DraftListOut, ProductListOut, ProductStatus } from '@/src/api/types/admin/catalog'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 
 export const PRODUCT_LIST_DUMMY: TablerowProps[] = [
@@ -133,6 +133,18 @@ const mapProductOutToRow = (product: ProductListOut): TablerowData => ({
     status: product.status,
 })
 
+const mapDraftToRow = (draft: DraftListOut): TablerowData => ({
+    id: draft.id,
+    productName: draft.label,
+    sku: '—',
+    brand: '—',
+    category: '—',
+    stock: '—',
+    colorCount: 0,
+    sizeCount: 0,
+    status: 'DRAFT',
+})
+
 type ProductListProps = {
     data?: TablerowProps[]
 }
@@ -147,6 +159,8 @@ const ProductList = ({ data: propData }: ProductListProps) => {
             ? statusParam
             : undefined
 
+    const showDrafts = !propData && queryStatus !== 'ACTIVE' && queryStatus !== 'ARCHIVED'
+
     const {
         data: apiData,
         isPending,
@@ -157,6 +171,18 @@ const ProductList = ({ data: propData }: ProductListProps) => {
             q: searchQuery,
         },
         !propData
+    )
+    const {
+        data: draftData,
+        isPending: isDraftsPending,
+        isError: isDraftsError,
+    } = useListProductDrafts(
+        {
+            q: searchQuery,
+            page: 1,
+            page_size: 100,
+        },
+        showDrafts
     )
 
     const products = useMemo(() => {
@@ -187,8 +213,23 @@ const ProductList = ({ data: propData }: ProductListProps) => {
                 })
         }
 
-        return (apiData?.items ?? []).map(mapProductOutToRow)
-    }, [propData, apiData, queryStatus, searchQuery, searchParams])
+        const rows = (apiData?.results ?? []).map(mapProductOutToRow)
+        if (queryStatus === 'ACTIVE' || queryStatus === 'ARCHIVED') return rows
+
+        const query = searchQuery?.toLowerCase()
+        const draftRows = (draftData?.results ?? [])
+            .filter((draft) => draft.status === 'OPEN')
+            .filter(
+                (draft) =>
+                    !query || draft.label.toLowerCase().includes(query)
+            )
+            .map(mapDraftToRow)
+
+        return [...rows, ...draftRows]
+    }, [propData, apiData, draftData, queryStatus, searchQuery, searchParams])
+
+    const listPending = !propData && (isPending || (showDrafts && isDraftsPending))
+    const listError = !propData && isError && (!showDrafts || isDraftsError)
 
     return (
         <div className='flex flex-col gap-3' dir='rtl'>
@@ -200,9 +241,9 @@ const ProductList = ({ data: propData }: ProductListProps) => {
                     toggleButtonValue={PRODUCT_LIST_TOGGLE_BUTTONS}
                 >
                     <div className='rounded-card-lg bg-surface-container-high p-2'>
-                        {isPending && !propData ? (
+                        {listPending ? (
                             <TableLoadingSkeleton isPending rows={5} />
-                        ) : isError && !propData ? (
+                        ) : listError ? (
                             <div className="rounded-card-md bg-surface-container-lowest px-4 py-8 text-center text-label-md text-outline">
                                 دریافت لیست محصولات با خطا مواجه شد.
                             </div>
@@ -225,8 +266,13 @@ const ProductList = ({ data: propData }: ProductListProps) => {
                     </div>
                     <TablePagination
                         className="mt-2"
-                        page={apiData?.page ?? 1}
-                        totalAmount={apiData?.total ?? products.length}
+                        page={apiData?.page ?? draftData?.page ?? 1}
+                        totalAmount={
+                            propData
+                                ? products.length
+                                : (apiData?.total ?? 0) +
+                                  (showDrafts ? (draftData?.total ?? 0) : 0)
+                        }
                     />
                 </TableListLayout>
             </div>

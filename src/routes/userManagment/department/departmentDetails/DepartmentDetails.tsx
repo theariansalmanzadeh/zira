@@ -8,9 +8,12 @@ import TableRow from './components/TableRow'
 import { usePathname, useRouter } from 'next/navigation'
 import { useModalStore } from '@/src/shared/store/modal-store'
 import { ModalTypes } from '@/src/shared/components/modals/types'
-import { useGetDepartment } from '@/src/routes/userManagment/hooks/departments'
+import {
+    useGetDepartment,
+    useListDepartmentUsers,
+} from '@/src/routes/userManagment/hooks/departments'
 import DepartmentHeaderCard from './components/DepartmentHeaderCard'
-import { TABLE_COLOUMN } from './constants'
+import { DEPARTMENT_USERS_TAB, TABLE_COLOUMN } from './constants'
 
 const DepartmentDetails = () => {
     const pathname = usePathname()
@@ -18,6 +21,9 @@ const DepartmentDetails = () => {
     const id = pathname.split('/').pop() ?? ''
     const openModal = useModalStore((state) => state.openModal)
     const { data: department, isPending, isError } = useGetDepartment(id)
+    const { data: departmentUsers, isPending: isUsersPending } =
+        useListDepartmentUsers(id)
+    const users = departmentUsers?.results ?? []
 
     if (isPending) {
         return <TableLoadingSkeleton isPending rows={4} />
@@ -52,24 +58,24 @@ const DepartmentDetails = () => {
                 }
                 onAddUser={() => openModal(ModalTypes.SELECT_USER_AND_GROUPS)}
             />
-            <TableListLayout TableColoumn={TABLE_COLOUMN}>
+            <TableListLayout
+                TableColoumn={TABLE_COLOUMN}
+                value="users"
+                toggleButtonValue={DEPARTMENT_USERS_TAB}
+            >
                 <div className='bg-surface-container-high rounded-card-lg p-2'>
-                    <Table>
-                        <TableHeader />
-                        <TableBody>
-                            <TableRow
-                                data={{
-                                    id: '1',
-                                    idVariant: 'success',
-                                    contact: '09123456789',
-                                    subject: 'تیکت 1',
-                                    department: 'دپارتمان 1',
-                                    status: 'open',
-                                    lastActivity: '2021-01-01',
-                                }}
-                            />
-                        </TableBody>
-                    </Table>
+                    {isUsersPending ? (
+                        <TableLoadingSkeleton isPending rows={4} />
+                    ) : (
+                        <Table>
+                            <TableHeader />
+                            <TableBody>
+                                {users.map((user) => (
+                                    <TableRow key={user.id} data={user} />
+                                ))}
+                            </TableBody>
+                        </Table>
+                    )}
                 </div>
             </TableListLayout>
         </>

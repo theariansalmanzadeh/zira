@@ -278,7 +278,12 @@ export type UpdateUserStatusResponse = User
 
 export type ListUserSessionsResponse = UserSession[]
 
-export type ListUserBranchesResponse = string[]
+export type ListUserBranchesResponse = {
+    total: number
+    page: number
+    page_size: number
+    results: string[]
+}
 
 export type UserBranchAccessRequest = {
     branch_ids: string[]

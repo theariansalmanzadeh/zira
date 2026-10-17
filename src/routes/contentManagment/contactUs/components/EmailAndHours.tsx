@@ -1,25 +1,16 @@
 'use client'
 
+import { useFormContext } from 'react-hook-form'
 import { Input } from '@/src/shared/components/ui/Input'
-import { CONTACT_EMAIL_HOURS_DEFAULT } from '../constants'
+import { registerInput } from '../registerInput'
+import type { ContactUsFormValues } from '../schema'
 
-export type EmailAndHoursValues = {
-    email: string
-    hours: string
-}
-
-type EmailAndHoursProps = {
-    values?: EmailAndHoursValues
-    onChange?: (values: EmailAndHoursValues) => void
-}
-
-const EmailAndHours = ({
-    values = CONTACT_EMAIL_HOURS_DEFAULT,
-    onChange,
-}: EmailAndHoursProps) => {
-    const update = (key: keyof EmailAndHoursValues, value: string) => {
-        onChange?.({ ...values, [key]: value })
-    }
+const EmailAndHours = () => {
+    const {
+        register,
+        formState: { errors },
+    } = useFormContext<ContactUsFormValues>()
+    const emailHoursErrors = errors.emailHours
 
     return (
         <section className="rounded-card-lg border border-outline-variant bg-surface-container-lowest p-5">
@@ -29,15 +20,17 @@ const EmailAndHours = ({
             <div className="flex flex-col gap-3.5">
                 <Input
                     label="ایمیل پشتیبانی"
-                    value={values.email}
-                    onChange={(value) => update('email', value)}
+                    {...registerInput(register('emailHours.email'))}
+                    error={!!emailHoursErrors?.email}
+                    msg={emailHoursErrors?.email?.message}
                     dir="ltr"
                     className="text-left"
                 />
                 <Input
                     label="ساعات کاری"
-                    value={values.hours}
-                    onChange={(value) => update('hours', value)}
+                    {...registerInput(register('emailHours.hours'))}
+                    error={!!emailHoursErrors?.hours}
+                    msg={emailHoursErrors?.hours?.message}
                 />
             </div>
         </section>

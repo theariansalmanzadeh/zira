@@ -4,12 +4,14 @@ import { useRouter } from 'next/navigation'
 import type { AttributeOut } from '@/src/api/types/admin/catalog'
 import { useListAttributes } from '@/src/routes/catalog/hooks/catalog'
 import { Spinner } from '@/src/shared/components/ui/spinner'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import VariableCard from './components/VariableCard'
 
 const Variable = () => {
     const { push } = useRouter()
     const { data, isLoading } = useListAttributes({ page: 1, page_size: 100 })
-    const attributes = data?.items ?? []
+
+    const attributes = data?.results ?? []
 
     if (isLoading) {
         return (
@@ -17,6 +19,10 @@ const Variable = () => {
                 <Spinner className='size-6' />
             </div>
         )
+    }
+
+    if (attributes.length === 0) {
+        return <TableEmptyState title='ویژگی‌ای یافت نشد.' />
     }
 
     return (

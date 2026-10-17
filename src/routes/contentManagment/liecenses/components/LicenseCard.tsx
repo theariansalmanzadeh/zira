@@ -11,7 +11,6 @@ import { useRouter } from 'next/navigation'
 type LicenseCardProps = {
     data: LicenseCardData
     onVisibleChange?: (visible: boolean) => void
-    onView?: () => void
     onEdit?: () => void
     onDelete?: () => void
     className?: string
@@ -20,7 +19,6 @@ type LicenseCardProps = {
 const LicenseCard = ({
     data,
     onVisibleChange,
-    onView,
     onEdit,
     onDelete,
     className,
@@ -112,11 +110,11 @@ const LicenseCard = ({
                         onClick={onEdit}
                     />
                     <IconButton
-                        icon="visibility400Linear"
+                        icon={visibleOnSite ? "visibilityOff400Linear" : "visibility400Linear"}
                         variant="default"
                         className="size-9!"
                         iconClassName="size-5! text-outline"
-                        onClick={onView}
+                        onClick={() => onVisibleChange?.(!visibleOnSite)}
                     />
                 </div>
             </div>

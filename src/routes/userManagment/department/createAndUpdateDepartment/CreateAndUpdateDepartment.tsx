@@ -115,9 +115,9 @@ const CreateAndUpdateDepartment = ({ id }: CreateAndUpdateDepartmentProps) => {
                                 </span>
                                 <CopyableInput
                                     value={field.value}
-                                    onCopy={() => {}}
-                                    readOnly
-                                    groupClassName='bg-surface-container-high h-10 rounded-container-lg border-0'
+                                    onCopy={() => { }}
+                                    onChange={field.onChange}
+                                    groupClassName='bg-surface-container-high! h-10 rounded-container-lg border-0'
                                 />
                             </div>
                         )}

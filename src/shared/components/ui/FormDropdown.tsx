@@ -8,6 +8,7 @@ import {
     DropdownMenuTrigger,
 } from '@shared/components/ui/DropdownMenu'
 import { cn } from '@shared/libs/utils'
+import { Checkbox } from './Checkbox'
 import SearchInput from './SearchInput'
 
 export type FormDropdownOption = {
@@ -21,6 +22,8 @@ export interface FormDropdownProps {
     value?: string
     options: FormDropdownOption[]
     onChange: (value: string) => void
+    checkedValues?: string[]
+    disabled?: boolean
     hasSearch?: boolean
     searchQuery?: string
     onSearch?: (query: string) => void
@@ -33,12 +36,21 @@ const FormDropdown = ({
     value,
     options,
     onChange,
+    checkedValues,
+    disabled = false,
     hasSearch = false,
     searchQuery,
     onSearch,
     className,
 }: FormDropdownProps) => {
-    const selectedLabel = options.find((option) => option.value === value)?.label
+    const isMultiple = checkedValues !== undefined
+    const checkedValueSet = new Set(checkedValues ?? [])
+    const selectedLabel = isMultiple
+        ? options
+              .filter((option) => checkedValueSet.has(option.value))
+              .map((option) => option.label)
+              .join('، ')
+        : options.find((option) => option.value === value)?.label
 
     return (
         <div className={cn("flex flex-col", className)}>
@@ -47,7 +59,8 @@ const FormDropdown = ({
                 <DropdownMenuTrigger asChild>
                     <button
                         type="button"
-                        className="bg-surface-container-high flex w-full flex-row-reverse items-center justify-between gap-1.5 rounded-container-lg text-label-lg px-3 py-3 text-right outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        disabled={disabled}
+                        className="bg-surface-container-high flex w-full flex-row-reverse items-center justify-between gap-1.5 rounded-container-lg text-label-lg px-3 py-3 text-right outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
                     >
                         <Icon label="chevronDown300Broken" className="shrink-0 size-6 text-on-surface-variant" />
                         <span
@@ -65,16 +78,34 @@ const FormDropdown = ({
                     className="bg-surface-container-lowest min-w-(--radix-dropdown-menu-trigger-width) rounded-card-md p-sm shadow-lg ring-4 ring-outline-variant"
                 >
                     {hasSearch && onSearch && <SearchInput searchQuery={searchQuery as string} onSearch={onSearch} placeholder={placeholder} />}
-                    {options.filter((option) => !hasSearch || option.label.toLowerCase().includes(searchQuery?.toLowerCase() ?? '')).map((option) => (
-                        <DropdownMenuItem
-                            data-value={option.value}
-                            key={option.value}
-                            className="cursor-pointer rounded-md px-2 py-1.5 text-on-surface-variant focus:bg-surface-container-high"
-                            onSelect={() => onChange(option.value)}
-                        >
-                            {option.label}
-                        </DropdownMenuItem>
-                    ))}
+                    {options.filter((option) => !hasSearch || option.label.toLowerCase().includes(searchQuery?.toLowerCase() ?? '')).map((option) => {
+                        const isChecked = checkedValueSet.has(option.value)
+                        return (
+                            <DropdownMenuItem
+                                data-value={option.value}
+                                key={option.value}
+                                disabled={disabled}
+                                className="cursor-pointer rounded-md px-2 py-1.5 text-on-surface-variant focus:bg-surface-container-high"
+                                onSelect={(event) => {
+                                    if (isMultiple) event.preventDefault()
+                                    onChange(option.value)
+                                }}
+                            >
+                                {isMultiple ? (
+                                    <span className="flex w-full items-center justify-between gap-3">
+                                        <span>{option.label}</span>
+                                        <Checkbox
+                                            checked={isChecked}
+                                            disabled={disabled}
+                                            className="pointer-events-none"
+                                        />
+                                    </span>
+                                ) : (
+                                    option.label
+                                )}
+                            </DropdownMenuItem>
+                        )
+                    })}
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>

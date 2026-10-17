@@ -12,6 +12,8 @@ import type {
     GetRoleResponse,
     ListRolesParams,
     ListRolesResponse,
+    ListRoleAssignmentsParams,
+    ListRoleAssignmentsResponse,
     UpdateRoleRequest,
     UpdateRoleResponse,
 } from '../types/admin/role'
@@ -37,6 +39,18 @@ export const createRole = (
         body,
         config
     )
+
+export const listRoleAssignments = (
+    params?: ListRoleAssignmentsParams,
+    config?: AxiosRequestConfig
+) =>
+    staffAuthGet<ListRoleAssignmentsResponse>('/rbac/roles/assignments', {
+        ...config,
+        params: {
+            ...config?.params,
+            ...params,
+        },
+    })
 
 export const getRole = (roleId: string, config?: AxiosRequestConfig) =>
     staffAuthGet<GetRoleResponse>(`/rbac/roles/${roleId}`, config)
