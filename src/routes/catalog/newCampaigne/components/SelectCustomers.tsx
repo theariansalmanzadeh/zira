@@ -1,12 +1,30 @@
 'use client'
 
+import { useFormContext } from 'react-hook-form'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { Button } from '@/src/shared/components/ui/button'
 import { ModalTypes } from '@/src/shared/components/modals/types'
+import type { AddCustomerRow } from '@/src/shared/components/modals/components/addCustomer/constants'
 import { useModalStore } from '@/src/shared/store/modal-store'
+import type { CampaignFormValues } from './schema'
 
 const SelectCustomers = ({ hasGroup = true }: { hasGroup?: boolean }) => {
     const { openModal } = useModalStore()
+    const { getValues, setValue, watch } = useFormContext<CampaignFormValues>()
+    const customers = watch('customers')
+
+    const handleCustomersChange = (selected: AddCustomerRow[]) => {
+        const current = getValues('customers')
+        const existingIds = new Set(current.map((customer) => customer.id))
+        setValue(
+            'customers',
+            [
+                ...current,
+                ...selected.filter((customer) => !existingIds.has(customer.id)),
+            ],
+            { shouldDirty: true }
+        )
+    }
 
     return (
         <div
@@ -28,13 +46,29 @@ const SelectCustomers = ({ hasGroup = true }: { hasGroup?: boolean }) => {
                     size='default'
                     className='shrink-0 gap-1.5'
                     onClick={() =>
-                        openModal(ModalTypes.ADD_CUSTOMER, { hasGroup })
+                        openModal(ModalTypes.ADD_CUSTOMER, {
+                            hasGroup,
+                            selectedIds: customers.map((customer) => customer.id),
+                            onChange: handleCustomersChange,
+                        })
                     }
                 >
                     <Icon label='addSm400Broken' className='size-5!' />
                     افزودن مشتری
                 </Button>
             </div>
+            {customers.length > 0 && (
+                <div className='mt-4 flex flex-wrap gap-2'>
+                    {customers.map((customer) => (
+                        <span
+                            key={customer.id}
+                            className='rounded-full bg-surface-container-high px-3 py-1 text-label-md text-on-surface'
+                        >
+                            {customer.name}
+                        </span>
+                    ))}
+                </div>
+            )}
         </div>
     )
 }

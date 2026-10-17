@@ -56,6 +56,16 @@ export const COOPERATION_LEVEL_OPTIONS = [
     { label: 'طلایی', value: 'GOLD' },
 ]
 
+export const campaignCustomerSchema = z.object({
+    id: z.string(),
+    code: z.string(),
+    name: z.string(),
+    level: z.enum(['gold', 'silver', 'bronze']),
+    credit: z.number(),
+    phone: z.string(),
+    email: z.string(),
+})
+
 export const campaignFormSchema = z
     .object({
         name: requiredString('نام کمپین الزامی است'),
@@ -70,6 +80,7 @@ export const campaignFormSchema = z
         scope: z.string(),
         audience: campaignAudienceSchema,
         cooperationLevel: cooperationLevelSchema,
+        customers: z.array(campaignCustomerSchema),
         showInPublicPanel: z.boolean(),
     })
     .superRefine((values, ctx) => {
@@ -115,5 +126,6 @@ export const CAMPAIGN_FORM_DEFAULTS: CampaignFormValues = {
     scope: 'all-products',
     audience: 'CUSTOMER',
     cooperationLevel: 'BRONZE',
+    customers: [],
     showInPublicPanel: true,
 }

@@ -20,13 +20,11 @@ type BlogsProps = {
 
 const Blogs = ({ posts }: BlogsProps) => {
     const cards = posts.map(toBlogCard);
-    const carouselPosts = cards.slice(0, 5);
-    console.log(carouselPosts);
-    console.log(cards);
+    const carouselPosts = cards.length > 5 ? cards.slice(0, 5) : cards;
 
     return <div>
         <Carousel className="h-[80vh]! lg:h-40vh!">
-            <CarouselContent className="h-full">
+            <CarouselContent dir="rtl" className="h-full">
                 {carouselPosts.map((blog) => (
                     <CarouselItem key={blog.href} className="h-full overflow-hidden">
                         <BlogCard

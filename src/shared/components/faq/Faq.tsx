@@ -23,7 +23,7 @@ const Faq = ({ items }: FaqProps) => {
         }));
 
     return (
-        <div className="flex flex-col md:flex-row gap-4xl w-full justify-between py-10 lg:py-6xl bg-surface-container-lowest">
+        <div className="flex flex-col md:flex-col gap-4xl w-full justify-between py-10 lg:py-6xl bg-surface-container-lowest">
             <h2 className="text-on-surface font-bold text-title-lg whitespace-nowrap basis-1/2">
                 سوال‌های پرتکرار
             </h2>

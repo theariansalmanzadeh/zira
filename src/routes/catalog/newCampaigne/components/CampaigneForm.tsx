@@ -3,7 +3,7 @@
 import { useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, FormProvider, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import type { AudienceIn, CampaignCreateIn } from '@/src/api/types/admin/pricing'
 import { useCreateCampaign } from '@/src/routes/catalog/hooks/pricing'
@@ -56,6 +56,13 @@ const toAudience = (values: CampaignFormValues): AudienceIn[] => {
         ]
     }
 
+    if (values.audience === 'GROUP') {
+        return values.customers.map((customer) => ({
+            audience_type: 'CUSTOMER' as const,
+            customer_id: customer.id,
+        }))
+    }
+
     return [{ audience_type: values.audience }]
 }
 
@@ -75,11 +82,12 @@ const CampaigneForm = () => {
     const { push } = useRouter()
     const bannerInputRef = useRef<HTMLInputElement>(null)
     const { mutate: createCampaign, isPending } = useCreateCampaign()
-    const { control, handleSubmit } = useForm<CampaignFormValues>({
+    const methods = useForm<CampaignFormValues>({
         resolver: zodResolver(campaignFormSchema),
         defaultValues: CAMPAIGN_FORM_DEFAULTS,
         mode: 'onSubmit',
     })
+    const { control, handleSubmit } = methods
 
     const onSubmit = (values: CampaignFormValues) => {
         createCampaign(toCampaignCreateIn(values), {
@@ -91,6 +99,7 @@ const CampaigneForm = () => {
     }
 
     return (
+        <FormProvider {...methods}>
         <form
             className='flex flex-col gap-6'
             dir='rtl'
@@ -425,6 +434,7 @@ const CampaigneForm = () => {
                 ثبت کمپین
             </Button>
         </form>
+        </FormProvider>
     )
 }
 
