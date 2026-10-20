@@ -1,6 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
+import type { DiscountCreateIn } from '@/src/api/types/admin/pricing'
+import { useCreateDiscount } from '@/src/routes/catalog/hooks/pricing'
 import { Button } from '@/src/shared/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/shared/components/ui/Tabs'
 import CashPurchaseDiscountForm from './components/CashPurchaseDiscountForm'
@@ -22,6 +25,14 @@ type NewDiscountProps = {
 
 const NewDiscount = (_props: NewDiscountProps) => {
     const [tab, setTab] = useState<DiscountTab>('combined')
+    const { mutate: createDiscount, isPending } = useCreateDiscount()
+
+    const handleCreateDiscount = (input: DiscountCreateIn) => {
+        createDiscount(input, {
+            onSuccess: () => toast.success('تخفیف ثبت شد'),
+            onError: () => toast.error('ثبت تخفیف انجام نشد'),
+        })
+    }
 
     return (
         <div className='flex flex-col gap-4' dir='rtl'>
@@ -40,14 +51,23 @@ const NewDiscount = (_props: NewDiscountProps) => {
                     </TabsTrigger>
                 </TabsList>
                 <TabsContent value='combined' className='mt-0'>
-                    <CombinedDiscountForm />
+                    <CombinedDiscountForm onCreate={handleCreateDiscount} />
                 </TabsContent>
                 <TabsContent value='cash' className='mt-0'>
-                    <CashPurchaseDiscountForm showSubmitButton={false} />
+                    <CashPurchaseDiscountForm
+                        showSubmitButton={false}
+                        onCreate={handleCreateDiscount}
+                    />
                 </TabsContent>
             </Tabs>
             <div className='flex justify-end'>
-                <Button type='submit' form={FORM_ID[tab]} variant='primary' size='lg'>
+                <Button
+                    type='submit'
+                    form={FORM_ID[tab]}
+                    variant='primary'
+                    size='lg'
+                    disabled={isPending}
+                >
                     ثبت تخفیف
                 </Button>
             </div>

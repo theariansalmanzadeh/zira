@@ -1,6 +1,10 @@
 'use client'
 
+import { useMemo } from 'react'
+import Link from 'next/link'
 import { Icon } from '@/src/shared/components/Icons/Icon'
+import { Button } from '@/src/shared/components/ui/button'
+import { randomColorGenerator } from '@/src/shared/libs/color'
 import { cn } from '@shared/libs/utils'
 
 type OverViewProps = {
@@ -10,22 +14,28 @@ type OverViewProps = {
     sku?: string
     price?: string
     description?: string
-    image?: string
-    imageInitial?: string
+    image?: string | null
+    editHref?: string
     className?: string
 }
 
 const OverView = ({
-    brand = 'لمیس',
-    title = 'سوتین بدون فنر مدل لوسی',
-    category = 'لباس زیر زنانه',
-    sku = 'ZM-1042',
-    price = '۴۸۵,۰۰۰',
-    description = 'پارچه نخی با دوخت طبی و فاقد حساسیت، مناسب استفاده روزمره در چهار فصل.',
+    brand = '—',
+    title = '—',
+    category = '—',
+    sku = '—',
+    price,
+    description,
     image,
-    imageInitial = 'س',
+    editHref,
     className,
 }: OverViewProps) => {
+    const imageInitial = title.trim().charAt(0) || '—'
+    const avatarColor = useMemo(
+        () => randomColorGenerator(),
+        [title]
+    )
+
     return (
         <div
             className={cn(
@@ -34,7 +44,12 @@ const OverView = ({
             )}
             dir="rtl"
         >
-            <div className="relative size-40 shrink-0 overflow-hidden rounded-card-lg bg-primary/70 sm:size-48">
+            <div
+                className={cn(
+                    'relative size-40 shrink-0 overflow-hidden rounded-card-lg sm:size-48',
+                    !image && avatarColor.background
+                )}
+            >
                 {image ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -44,7 +59,12 @@ const OverView = ({
                     />
                 ) : (
                     <div className="flex size-full items-center justify-center">
-                        <span className="text-display-md font-bold text-on-primary">
+                        <span
+                            className={cn(
+                                'text-display-md font-bold',
+                                avatarColor.text
+                            )}
+                        >
                             {imageInitial}
                         </span>
                     </div>
@@ -52,22 +72,33 @@ const OverView = ({
             </div>
 
             <div className="flex min-w-0 flex-1 flex-col gap-2 text-right">
-                <span className="text-label-md text-outline">{brand}</span>
+                <div className="flex items-start justify-between gap-3">
+                    <span className="text-label-md text-outline">{brand}</span>
+                    {editHref ? (
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href={editHref}>ویرایش</Link>
+                        </Button>
+                    ) : null}
+                </div>
                 <h2 className="text-title-lg font-bold text-on-surface">
                     {title}
                 </h2>
                 <p className="text-label-md text-outline">
                     {category} • {sku}
                 </p>
-                <div className="mt-1 flex items-baseline gap-1.5">
-                    <span className="text-title-lg font-bold text-primary">
-                        {price}
-                    </span>
-                    <Icon label="currency" className="size-5 text-outline" />
-                </div>
-                <p className="mt-1 text-label-md leading-6 text-outline">
-                    {description}
-                </p>
+                {price ? (
+                    <div className="mt-1 flex items-baseline gap-1.5">
+                        <span className="text-title-lg font-bold text-primary">
+                            {price}
+                        </span>
+                        <Icon label="currency" className="size-5 text-outline" />
+                    </div>
+                ) : null}
+                {description ? (
+                    <p className="mt-1 text-label-md leading-6 text-outline">
+                        {description}
+                    </p>
+                ) : null}
             </div>
         </div>
     )

@@ -182,6 +182,28 @@ function parseExistingIconLabels(fileContent) {
     return matches.map((match) => match[1]);
 }
 
+/**
+ * Parses existing ICON_PATHS entries so new SVGs can merge without wiping old icons.
+ */
+function parseExistingIconEntries(fileContent) {
+    const entries = [];
+    const blockRegex =
+        /^\s{2}([A-Za-z0-9_]+):\s*\{\s*\n\s*viewBox:\s*"([^"]*)",\s*\n\s*paths:\s*\[([\s\S]*?)\],?\s*\n\s*\}/gm;
+
+    for (const match of fileContent.matchAll(blockRegex)) {
+        const paths = [...match[3].matchAll(/"((?:\\.|[^"\\])*)"/g)].map(
+            (pathMatch) => JSON.parse(`"${pathMatch[1]}"`),
+        );
+        entries.push({
+            label: match[1],
+            viewBox: match[2],
+            paths,
+        });
+    }
+
+    return entries;
+}
+
 module.exports = {
     SVGS_DIR,
     ICON_PATHS_FILE,
@@ -194,4 +216,5 @@ module.exports = {
     formatIconPathsFile,
     formatIconTypesFile,
     parseExistingIconLabels,
+    parseExistingIconEntries,
 };

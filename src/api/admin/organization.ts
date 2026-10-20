@@ -27,6 +27,8 @@ import type {
     GetWarehouseResponse,
     LinkBranchWarehouseRequest,
     ListBranchAssortmentResponse,
+    ListBranchBankAccountsParams,
+    ListBranchBankAccountsResponse,
     ListBranchEmployeesResponse,
     ListBranchesParams,
     ListBranchesResponse,
@@ -125,6 +127,19 @@ export const getBranchNetwork = (
     staffAuthGet<GetBranchNetworkResponse>(
         `/organization/branches/${branchId}/network`,
         config
+    )
+
+export const listBranchBankAccounts = (
+    branchId: string,
+    params?: ListBranchBankAccountsParams,
+    config?: AxiosRequestConfig
+) =>
+    staffAuthGet<ListBranchBankAccountsResponse>(
+        `/organization/branches/${branchId}/bank-accounts`,
+        {
+            ...config,
+            params: toParams(params),
+        }
     )
 
 export const listBranchEmployees = (

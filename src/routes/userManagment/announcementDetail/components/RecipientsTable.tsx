@@ -2,12 +2,13 @@
 
 import { useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
+import type { NotificationSeenUser } from '@/src/api/types/admin/notification'
+import { useListNotificationSeenUsers } from '@/src/routes/userManagment/hooks/notification'
 import { Table, TableBody } from '@/src/shared/components/ui/Table'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import TableHeader from './TableHeader'
 import TableRow from './TableRow'
 import {
-    ANNOUNCEMENT_RECIPIENTS_DUMMY,
     RECIPIENT_TABLE_COLUMNS,
     RECIPIENT_TOGGLE_BUTTONS,
     type AnnouncementRecipientRowData,
@@ -15,18 +16,32 @@ import {
 } from '../constants'
 
 type RecipientsTableProps = {
-    data?: AnnouncementRecipientRowData[]
+    notificationId: string
 }
 
-const RecipientsTable = ({
-    data = ANNOUNCEMENT_RECIPIENTS_DUMMY,
-}: RecipientsTableProps) => {
+const toRecipient = (
+    user: NotificationSeenUser
+): AnnouncementRecipientRowData => ({
+    id: user.user_id,
+    name:
+        [user.first_name, user.last_name].filter(Boolean).join(' ') ||
+        user.username,
+    personnelCode: user.username,
+    role: '—',
+    branch: '—',
+    status: 'seen',
+    viewedOrClosedAt: user.seen_at,
+})
+
+const RecipientsTable = ({ notificationId }: RecipientsTableProps) => {
     const searchParams = useSearchParams()
     const activeFilter = searchParams.get('cat') ?? 'all'
+    const { data } = useListNotificationSeenUsers(notificationId)
 
     const recipients = useMemo(() => {
-        if (activeFilter === 'all') return data
-        return data.filter(
+        const rows = (data?.results ?? []).map(toRecipient)
+        if (activeFilter === 'all') return rows
+        return rows.filter(
             (item) =>
                 item.status === (activeFilter as AnnouncementRecipientStatus)
         )

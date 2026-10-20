@@ -54,7 +54,6 @@ import type {
     ContractRoundingEnum,
     ContractStatusEnum,
     ContractCreateIn,
-    ContractScopeIn,
     ContractDetailOut,
     ContractScopeOut,
     ContractUpdateIn,
@@ -115,10 +114,10 @@ import type {
 const toParams = <T extends object>(params?: T) =>
     params
         ? Object.fromEntries(
-              Object.entries(params).filter(
-                  ([, value]) => value !== undefined && value !== null
-              )
-          )
+            Object.entries(params).filter(
+                ([, value]) => value !== undefined && value !== null
+            )
+        )
         : undefined
 
 const multipartConfig = (

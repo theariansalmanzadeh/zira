@@ -1,6 +1,10 @@
 'use client'
 
-import type { DiscountOut, DiscountStatusEnum } from '@/src/api/types/admin/pricing'
+import type {
+    DiscountKindEnum,
+    DiscountOut,
+    DiscountStatusEnum,
+} from '@/src/api/types/admin/pricing'
 import { Table, TableBody, TableCell, TableRow as UiTableRow } from '@/src/shared/components/ui/Table'
 import { Pill } from '@/src/shared/components/ui/Pill'
 import { Spinner } from '@/src/shared/components/ui/spinner'
@@ -18,6 +22,14 @@ const STATUS_LABEL: Record<DiscountStatusEnum, string> = {
     INACTIVE: 'غیرفعال',
     ARCHIVED: 'بایگانی',
 }
+
+const COMBINED_KINDS = new Set<DiscountKindEnum>([
+    'ITEM',
+    'ITEM_CUSTOMER',
+    'ITEM_TIME',
+    'CUSTOMER_TIME',
+    'ALL_THREE',
+])
 
 const formatDate = (value?: string | null) => (value ? formatFaDate(value) : '—')
 
@@ -62,9 +74,10 @@ const CombinedTable = () => {
     const { data, isPending, isError } = useListDiscounts({
         page: 1,
         page_size: 100,
-        kind: 'BUNDLE',
     })
-    const discounts = data?.results ?? []
+    const discounts = (data?.results ?? []).filter((discount) =>
+        COMBINED_KINDS.has(discount.kind)
+    )
 
     return (
     <TableListLayout TableColoumn={COMBINED_TABLE_COLUMNS} hasHeaderActions={false}>

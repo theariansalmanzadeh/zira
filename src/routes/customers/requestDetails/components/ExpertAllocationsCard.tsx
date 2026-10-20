@@ -1,8 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
+import type { RegistrationRequestStatus } from '@/src/api/types/admin/customers'
+import { useAssignCustomerMarketer } from '@/src/routes/customers/hooks/customers'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { Avatar, AvatarFallback } from '@/src/shared/components/ui/Avatar'
+import { Button } from '@/src/shared/components/ui/button'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 import { cn } from '@/src/shared/libs/utils'
 import {
@@ -12,20 +16,44 @@ import {
 } from '../constants'
 
 type ExpertAllocationsCardProps = {
+    customerId?: string
+    status?: RegistrationRequestStatus
     marketers?: MarketerOption[]
     percentOptions?: readonly number[]
 }
 
 const ExpertAllocationsCard = ({
+    customerId = '',
+    status,
     marketers = MARKETER_OPTIONS_DUMMY,
     percentOptions = MARKETER_PERCENT_OPTIONS,
 }: ExpertAllocationsCardProps) => {
+    const { mutate: assignMarketer, isPending } = useAssignCustomerMarketer()
     const [selectedMarketerId, setSelectedMarketerId] = useState(
         marketers[0]?.id ?? ''
     )
     const [selectedPercent, setSelectedPercent] = useState<number>(
         percentOptions.includes(3) ? 3 : (percentOptions[0] ?? 0)
     )
+    const isActive = status === 'APPROVED'
+
+    const handleAssign = () => {
+        if (!customerId || !selectedMarketerId) return
+        assignMarketer(
+            {
+                customerId,
+                body: {
+                    marketer_id: selectedMarketerId,
+                    percent: selectedPercent,
+                },
+            },
+            {
+                onSuccess: () => {
+                    toast.success('بازاریاب تخصیص داده شد')
+                },
+            }
+        )
+    }
 
     return (
         <div
@@ -119,6 +147,20 @@ const ExpertAllocationsCard = ({
                         })}
                     </div>
                 </div>
+
+                {isActive && (
+                    <Button
+                        type="button"
+                        variant="primary"
+                        size="lg"
+                        className="w-full text-label-lg"
+                        disabled={!customerId || !selectedMarketerId}
+                        isLoading={isPending}
+                        onClick={handleAssign}
+                    >
+                        تخصیص بازاریاب
+                    </Button>
+                )}
             </div>
         </div>
     )

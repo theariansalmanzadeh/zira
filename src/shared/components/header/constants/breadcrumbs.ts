@@ -34,6 +34,12 @@ export const ROUTE_BREADCRUMBS: Record<string, string[]> = {
     'branches/branch-transfer/[slug]': ['شعب', 'جزئیات انتقال بین شعب'],
     'branches/pos-device/new': ['شعب', 'دستگاه پوز جدید'],
     'branches/pos-device/[id]/edit': ['شعب', 'ویرایش دستگاه پوز'],
+    'branches/details/[id]/new': ['شعب', 'انبار جدید'],
+    'branches/details/[id]/updateInventory/[id]': ['شعب', 'ویرایش انبار'],
+    'branches/details/[id]/updateInventory/[warehouseId]': ['شعب', 'ویرایش انبار'],
+    'branches/details/[id]/pos-device/new': ['شعب', 'دستگاه پوز جدید'],
+    'branches/details/[id]/updatePosDevice/[id]': ['شعب', 'ویرایش دستگاه پوز'],
+    'branches/details/[id]/updatePosDevice/[posDeviceId]': ['شعب', 'ویرایش دستگاه پوز'],
 
     // Purchase
     purchase: ['خرید و تامین'],
@@ -63,7 +69,8 @@ export const ROUTE_BREADCRUMBS: Record<string, string[]> = {
     'catalog?sub=discount-codes': ['مدیریت کالا'],
     'catalog?sub=campaigns': ['مدیریت کالا'],
     'catalog?sub=bundles': ['مدیریت کالا'],
-    'catalog/addProduct': ['مدیریت کالا', 'محصول جدید'],
+    'catalog/addAndUpdateProduct': ['مدیریت کالا', 'محصول جدید'],
+    'catalog/addAndUpdateProduct/[id]': ['مدیریت کالا', 'ویرایش محصول'],
     'catalog/addPack': ['مدیریت کالا', 'پک جدید'],
     'catalog/addCategory': ['مدیریت کالا', 'دسته‌بندی جدید'],
     'catalog/brands': ['مدیریت کالا', 'برندها'],
@@ -99,6 +106,7 @@ export const ROUTE_BREADCRUMBS: Record<string, string[]> = {
     support: ['پشتیبانی'],
     'support?sub=dashboard': ['پشتیبانی'],
     'support?sub=ticket': ['پشتیبانی'],
+    'support?sub=colleague-messages': ['پشتیبانی', 'پیام همکاران'],
     'support/ticket': ['پشتیبانی', 'صندوق تیکت‌ها'],
     'support/ticket/new': ['پشتیبانی', 'پیام جدید'],
     'support/ticket/[id]': ['پشتیبانی', 'جزئیات تیکت'],
@@ -221,7 +229,6 @@ export const ROUTE_BREADCRUMBS: Record<string, string[]> = {
     'user-management/role-details/[id]': ['مدیریت کاربران', 'جزئیات نقش'],
     'user-management/department/[id]': ['مدیریت کاربران', 'جزئیات دپارتمان'],
     'user-management/preferences': ['مدیریت کاربران', 'ترجیحات'],
-    'user-management/notification': ['مدیریت کاربران', 'اعلان‌ها'],
 
     // Settings
     settings: ['تنظیمات'],
@@ -253,7 +260,12 @@ function isLikelyDynamicSegment(segment: string) {
 
 function toLookupCandidates(path: string) {
     const segments = path.split('/').filter(Boolean)
-    const candidates = [path]
+    const candidates = [
+        path,
+        segments
+            .map((segment) => (isLikelyDynamicSegment(segment) ? '[id]' : segment))
+            .join('/'),
+    ]
 
     // brands/abc/edit → brands/[id]/edit
     if (segments.length >= 3 && segments[segments.length - 1] === 'edit') {

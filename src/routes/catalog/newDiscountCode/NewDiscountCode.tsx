@@ -3,7 +3,7 @@
 import { Button } from '@/src/shared/components/ui/button'
 import IconButton from '@/src/shared/components/ui/IconButton'
 import React from 'react'
-import ProductFieldsLayout from '../addProducts/components/Layout'
+import ProductFieldsLayout from '../addAndUpdateProduct/components/Layout'
 import DiscountCodeForm from './components/NewDiscountCodeForm'
 import PreviewCode from './components/PreviewCode'
 import { useRouter } from 'next/navigation'

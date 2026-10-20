@@ -87,3 +87,44 @@ export const getAddAndUpdateVariableDefaultValues = (
         })),
     }
 }
+
+export const COLOR_CODE_PATTERN = /^[A-Z0-9-]+$/
+
+export const colorFormSchema = z.object({
+    code: requiredString('کد الزامی است').regex(
+        COLOR_CODE_PATTERN,
+        'کد فقط می‌تواند شامل حروف بزرگ انگلیسی، اعداد و خط تیره باشد'
+    ),
+    name: requiredString('نام الزامی است'),
+    hex_code: requiredString('کد رنگ الزامی است').regex(
+        /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
+        'کد رنگ باید به صورت هگز معتبر باشد (مثلاً #F4B86E)'
+    ),
+    is_active: z.boolean(),
+})
+
+export type ColorFormValues = z.infer<typeof colorFormSchema>
+
+export const COLOR_FORM_DEFAULT_VALUES: ColorFormValues = {
+    code: '',
+    name: '',
+    hex_code: '#F4B86E',
+    is_active: true,
+}
+
+export const sizeFormSchema = z.object({
+    code: requiredString('کد الزامی است').regex(
+        COLOR_CODE_PATTERN,
+        'کد فقط می‌تواند شامل حروف بزرگ انگلیسی، اعداد و خط تیره باشد'
+    ),
+    name: requiredString('نام الزامی است'),
+    is_active: z.boolean(),
+})
+
+export type SizeFormValues = z.infer<typeof sizeFormSchema>
+
+export const SIZE_FORM_DEFAULT_VALUES: SizeFormValues = {
+    code: '',
+    name: '',
+    is_active: true,
+}

@@ -1,0 +1,132 @@
+[
+  {
+    "name": "بانک ملی ایران",
+    "slug": "melli",
+    "logo": "logos/melli.svg"
+  },
+  {
+    "name": "بانک سپه",
+    "slug": "sepah",
+    "logo": "logos/sepah.svg"
+  },
+  {
+    "name": "بانک ملت",
+    "slug": "mellat",
+    "logo": "logos/mellat.svg"
+  },
+  {
+    "name": "بانک تجارت",
+    "slug": "tejarat",
+    "logo": "logos/tejarat.svg"
+  },
+  {
+    "name": "بانک صادرات ایران",
+    "slug": "saderat",
+    "logo": "logos/saderat.svg"
+  },
+  {
+    "name": "بانک رفاه کارگران",
+    "slug": "refah",
+    "logo": "logos/refah.svg"
+  },
+  {
+    "name": "بانک کشاورزی",
+    "slug": "keshavarzi",
+    "logo": "logos/keshavarzi.svg"
+  },
+  {
+    "name": "بانک پاسارگاد",
+    "slug": "pasargad",
+    "logo": "logos/pasargad.svg"
+  },
+  {
+    "name": "بانک پارسیان",
+    "slug": "parsian",
+    "logo": "logos/parsian.svg"
+  },
+  {
+    "name": "بانک آینده",
+    "slug": "ayandeh",
+    "logo": "logos/ayandeh.svg"
+  },
+  {
+    "name": "بانک شهر",
+    "slug": "shahr",
+    "logo": "logos/shahr.svg"
+  },
+  {
+    "name": "بانک اقتصاد نوین",
+    "slug": "eghtesad-novin",
+    "logo": "logos/eghtesad-novin.svg"
+  },
+  {
+    "name": "بانک سینا",
+    "slug": "sina",
+    "logo": "logos/sina.svg"
+  },
+  {
+    "name": "بانک گردشگری",
+    "slug": "gardeshgari",
+    "logo": "logos/gardeshgari.svg"
+  },
+  {
+    "name": "بانک توسعه صادرات ایران",
+    "slug": "tosee-saderat",
+    "logo": "logos/tosee-saderat.svg"
+  },
+  {
+    "name": "بانک توسعه تعاون",
+    "slug": "tosee-taavon",
+    "logo": "logos/tosee-taavon.svg"
+  },
+  {
+    "name": "بانک دی",
+    "slug": "dey",
+    "logo": "logos/dey.svg"
+  },
+  {
+    "name": "بانک کارآفرین",
+    "slug": "karafarin",
+    "logo": "logos/karafarin.svg"
+  },
+  {
+    "name": "بانک سامان",
+    "slug": "saman",
+    "logo": "logos/saman.svg"
+  },
+  {
+    "name": "بانک سرمایه",
+    "slug": "sarmayeh",
+    "logo": "logos/sarmayeh.svg"
+  },
+  {
+    "name": "بانک ایران زمین",
+    "slug": "iran-zamin",
+    "logo": "logos/iran-zamin.svg"
+  },
+  {
+    "name": "بانک خاورمیانه",
+    "slug": "khavar-mianeh",
+    "logo": "logos/khavar-mianeh.svg"
+  },
+  {
+    "name": "بانک صنعت و معدن",
+    "slug": "sanat-madan",
+    "logo": "logos/sanat-madan.svg"
+  },
+  {
+    "name": "بانک قرضالحسنه مهر ایران",
+    "slug": "mehr-iran",
+    "logo": "logos/mehr-iran.svg"
+  },
+  {
+    "name": "بانک قرضالحسنه رسالت",
+    "slug": "resalat",
+    "logo": "logos/resalat.svg"
+  },
+  {
+    "name": "بانک ایران و ونزوئلا",
+    "slug": "iran-venezuela",
+    "logo": "logos/iran-venezuela.svg"
+  }
+]

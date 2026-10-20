@@ -24,7 +24,7 @@ const PRODUCTS_LIST_HEADING: SectionHeading = {
         {
             label: 'محصول جدید',
             icon: 'addSm400Broken',
-            href: '/admin/catalog/addProduct',
+            href: '/admin/catalog/addAndUpdateProduct',
             variant: 'primary',
         },
     ],
@@ -50,13 +50,13 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
             {
                 label: 'محصول جدید',
                 icon: 'addSm400Broken',
-                href: '/admin/catalog/addProduct',
+                href: '/admin/catalog/addAndUpdateProduct',
                 variant: 'primary',
             },
             {
                 label: 'محصول جدید',
                 icon: 'addSm400Broken',
-                href: '/admin/catalog/addProduct',
+                href: '/admin/catalog/addAndUpdateProduct',
                 variant: 'default',
             },
         ],
@@ -67,13 +67,6 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
         title: 'جزئیات محصول',
         subtitle: 'مشاهده مشخصات، موجودی و وضعیت محصول',
         hasBackButton: true,
-        buttons: [
-            {
-                label: 'ویرایش',
-                variant: 'default',
-                href: '/admin/catalog/addProduct',
-            },
-        ],
     },
     'category-types': {
         title: 'دسته‌بندی‌ها',
@@ -157,16 +150,6 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
         title: 'ایجاد تخفیف جدید',
         subtitle: 'تعریف تخفیف خودکار بر اساس محصول، مشتری و زمان',
         hasBackButton: true,
-        buttons: [
-            {
-                label: 'ذخیره پیش‌نویس',
-                variant: 'primary',
-            },
-            {
-                label: 'ذخیره و انتشار',
-                variant: 'default',
-            },
-        ],
     },
     'discounts-detail': {
         title: 'ویرایش کد تخفیف',
@@ -348,6 +331,11 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
         subtitle: 'ثبت محصول جدید در کاتالوگ',
         hasBackButton: true,
     },
+    'add-product-edit': {
+        title: 'ویرایش محصول',
+        subtitle: 'ویرایش اطلاعات محصول در کاتالوگ',
+        hasBackButton: true,
+    },
 }
 
 export const getCategoriesSectionKeyFromPath = (pathname: string): string => {
@@ -382,7 +370,9 @@ export const getCategoriesSectionKeyFromPath = (pathname: string): string => {
         return 'discount-codes-new'
     }
     if (section === 'new-campaign') return 'campaigns-new'
-    if (section === 'addProduct') return 'add-product'
+    if (section === 'addProduct' || section === 'addAndUpdateProduct') {
+        return nested ? 'add-product-edit' : 'add-product'
+    }
     if (section === 'addPack') return 'addPack'
     if (section === 'addCategory') return 'add-category'
 

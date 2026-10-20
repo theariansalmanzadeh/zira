@@ -10,11 +10,7 @@ export default function AdminLayout({
     const pathname = usePathname()
 
     if (pathname === '/admin/login') {
-        return (
-            <div className='flex h-screen w-full items-center justify-center'>
-                {children}
-            </div>
-        )
+        return <div className='h-screen w-full overflow-auto'>{children}</div>
     }
 
     return children

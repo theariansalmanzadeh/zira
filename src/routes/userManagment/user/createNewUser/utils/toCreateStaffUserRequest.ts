@@ -35,10 +35,10 @@ export const toCreateStaffUserRequest = (
     city: text(values.city),
     full_address: text(values.fullAddress),
     postal_code: text(values.postalCode),
-    phone: text(values.landlinePhone) || text(values.contactLandline),
-    email: text(values.addressEmail) || text(values.contactEmail),
-    mobile_1: text(values.mobilePhone1) || text(values.mobilePhone),
-    mobile_2: text(values.mobilePhone2),
+    phone: text(values.landlinePhone),
+    email: text(values.addressEmail),
+    mobile_1: text(values.mobilePhone),
+    mobile_2: '',
     next_of_kin: [
         {
             full_name: `${text(values.contact1FirstName)} ${text(values.contact1LastName)}`.trim(),
@@ -57,7 +57,7 @@ export const toCreateStaffUserRequest = (
     bank_name: text(values.bankName),
     iban: toIban(values.shebaNumber),
     card_no: text(values.cardNumber),
-    phone_number: text(values.mobilePhone) || text(values.mobilePhone1),
+    phone_number: text(values.mobilePhone),
     password: values.initialPassword,
     user_type: text(values.userType),
     role_id: text(values.userRole),
@@ -70,7 +70,9 @@ export const toCreateStaffUserRequest = (
     job_title: text(values.jobTitle),
     job_description: '',
     has_commission_contract: values.hasPercentageSalesContract,
-    commission_percent: 0,
+    commission_percent: values.hasPercentageSalesContract
+        ? Number(values.commissionPercent) || 0
+        : 0,
     documents: (values.documents ?? []).map((document) => ({
         slot: document.slot,
         file: document.file,

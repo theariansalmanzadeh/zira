@@ -16,7 +16,7 @@ const Sort = () => {
 
     return (
         <Popover>
-            <PopoverTrigger>
+            <PopoverTrigger asChild>
                 <IconButton icon="sort400Linear" />
             </PopoverTrigger>
             <PopoverContent side="left">

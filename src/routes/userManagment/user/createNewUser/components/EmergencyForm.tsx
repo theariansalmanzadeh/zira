@@ -22,9 +22,10 @@ const ContactSection = ({ title, children }: ContactSectionProps) => (
 
 type EmergencyFormProps = {
     onContinue?: () => void
+    onBack?: () => void
 }
 
-const EmergencyForm = ({ onContinue }: EmergencyFormProps) => {
+const EmergencyForm = ({ onContinue, onBack }: EmergencyFormProps) => {
     const {
         control,
         trigger,
@@ -185,15 +186,28 @@ const EmergencyForm = ({ onContinue }: EmergencyFormProps) => {
             </ContactSection>
 
             {onContinue ? (
-                <Button
-                    type="button"
-                    variant="primary"
-                    size="lg"
-                    className="w-full text-label-lg"
-                    onClick={handleContinue}
-                >
-                    ادامه
-                </Button>
+                <div className="flex flex-row-reverse gap-3">
+                    <Button
+                        type="button"
+                        variant="primary"
+                        size="lg"
+                        className="w-full text-label-lg"
+                        onClick={handleContinue}
+                    >
+                        ادامه
+                    </Button>
+                    {onBack ? (
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="lg"
+                            className="text-label-lg"
+                            onClick={onBack}
+                        >
+                            بازگشت
+                        </Button>
+                    ) : null}
+                </div>
             ) : null}
         </div>
     )

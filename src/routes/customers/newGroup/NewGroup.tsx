@@ -14,7 +14,6 @@ import { customerKeys, useCreateCustomerGroup } from '../hooks/customers'
 import {
     GROUP_CHEQUE_LEVEL_OPTIONS,
     GROUP_GOLD_LEVEL_OPTIONS,
-    GROUP_MARKETER_OPTIONS,
     GROUP_USER_LEVEL_OPTIONS,
     GROUP_USER_STATUS_OPTIONS,
     NEW_GROUP_DEFAULT_VALUES,
@@ -49,8 +48,6 @@ const NewGroup = () => {
             default_payment_due_days: 0,
             default_golden_credit_amount: Number(values.goldLevel) || 0,
             default_max_cheque_maturity_months: Number(values.chequeLevel) || 0,
-            marketer_id: values.marketerId || null,
-            marketer_percent: Number(values.marketerPercent) || 0,
         }
 
         mutate(payload, {
@@ -115,48 +112,6 @@ const NewGroup = () => {
                                     value={field.value}
                                     options={GROUP_USER_LEVEL_OPTIONS}
                                     onChange={field.onChange}
-                                />
-                            )}
-                        />
-                        <Controller
-                            name="marketerId"
-                            control={control}
-                            render={({ field }) => (
-                                <FormDropdown
-                                    label="نام بازاریاب"
-                                    placeholder="انتخاب بازاریاب"
-                                    value={field.value}
-                                    options={GROUP_MARKETER_OPTIONS}
-                                    onChange={field.onChange}
-                                    hasSearch
-                                />
-                            )}
-                        />
-
-                        <Controller
-                            name="marketerPercent"
-                            control={control}
-                            render={({ field }) => (
-                                <Input
-                                    label="درصد بازاریاب"
-                                    placeholder={formatFaNumber(3, {
-                                        useGrouping: false,
-                                    })}
-                                    inputMode="decimal"
-                                    value={
-                                        field.value
-                                            ? formatFaNumber(field.value, {
-                                                useGrouping: false,
-                                            })
-                                            : ''
-                                    }
-                                    onChange={(value) =>
-                                        field.onChange(
-                                            sanitizeNumericInput(value)
-                                        )
-                                    }
-                                    error={!!errors.marketerPercent}
-                                    msg={errors.marketerPercent?.message}
                                 />
                             )}
                         />

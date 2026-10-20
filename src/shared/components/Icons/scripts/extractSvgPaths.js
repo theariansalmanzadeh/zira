@@ -9,10 +9,20 @@ const {
     fileNameToIconLabel,
     extractSvgPathData,
     formatIconPathsFile,
+    parseExistingIconEntries,
 } = require("./utils");
 
 function extractSvgPaths() {
-    const iconEntries = [];
+    const existingByLabel = new Map();
+
+    if (fs.existsSync(ICON_PATHS_FILE)) {
+        const existingContent = fs.readFileSync(ICON_PATHS_FILE, "utf8");
+        for (const entry of parseExistingIconEntries(existingContent)) {
+            existingByLabel.set(entry.label, entry);
+        }
+    }
+
+    const updatedLabels = new Set();
 
     return gulp
         .src(path.join(SVGS_DIR, "*.svg"))
@@ -26,18 +36,23 @@ function extractSvgPaths() {
                     console.warn(`No paths found in ${file.basename}`);
                 }
 
-                iconEntries.push({ label, viewBox, paths });
+                existingByLabel.set(label, { label, viewBox, paths });
+                updatedLabels.add(label);
                 cb();
             }),
         )
         .on("end", () => {
-            iconEntries.sort((a, b) => a.label.localeCompare(b.label));
+            const iconEntries = [...existingByLabel.values()].sort((a, b) =>
+                a.label.localeCompare(b.label),
+            );
 
             const output = formatIconPathsFile(iconEntries);
             fs.mkdirSync(path.dirname(ICON_PATHS_FILE), { recursive: true });
             fs.writeFileSync(ICON_PATHS_FILE, output, "utf8");
 
-            console.log(`Generated ${iconEntries.length} icons → ${ICON_PATHS_FILE}`);
+            console.log(
+                `Generated ${iconEntries.length} icons (${updatedLabels.size} from SVGs) → ${ICON_PATHS_FILE}`,
+            );
         });
 }
 

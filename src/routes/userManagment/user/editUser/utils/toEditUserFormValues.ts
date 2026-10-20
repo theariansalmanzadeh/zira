@@ -39,10 +39,6 @@ export const toEditUserFormValues = (user: User): NewUserFormValues => {
         addressEmail: user.email,
         mobilePhone: user.phone_number,
         landlinePhone: address?.phone ?? '',
-        mobilePhone1: address?.mobile_1 || user.phone_number,
-        mobilePhone2: address?.mobile_2 ?? '',
-        contactLandline: address?.phone ?? '',
-        contactEmail: user.email,
         contact1FirstName: firstKin.first,
         contact1LastName: firstKin.last,
         contact1Mobile: user.next_of_kin[0]?.phone ?? '',
@@ -67,6 +63,10 @@ export const toEditUserFormValues = (user: User): NewUserFormValues => {
         destinationBranch: user.primary_branch_id,
         assignedBranch: user.primary_branch_id,
         hasPercentageSalesContract: user.has_commission_contract,
+        commissionPercent:
+            user.commission_percent == null
+                ? ''
+                : String(user.commission_percent),
     }
 }
 
@@ -75,7 +75,7 @@ export const toUpdateUserRequest = (
 ): UpdateUserRequest => ({
     first_name: values.firstName.trim(),
     last_name: values.lastName.trim(),
-    email: values.addressEmail.trim() || values.contactEmail.trim(),
+    email: values.addressEmail.trim(),
     national_id: values.nationalId.trim(),
     job_title: values.jobTitle.trim(),
     user_type: values.userType.trim(),

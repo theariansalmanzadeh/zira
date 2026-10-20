@@ -4,14 +4,35 @@ import { Controller, useFormContext } from 'react-hook-form'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Button } from '@/src/shared/components/ui/button'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
-import { BANK_OPTIONS } from '../constants'
+import { formatPrice } from '@/src/shared/libs/formatter'
+import { toEnglishDigits } from '@/src/shared/schema/generalSchema'
+import { BANK_OPTIONS } from '@/src/shared/constants/bank'
 import { BANK_INFO_FIELDS, type NewUserFormValues } from '../schema'
+
+const toDigits = (value: string) => toEnglishDigits(value).replace(/\D/g, '')
+
+const formatBankValue = (value: string) => {
+    const digits = toDigits(value)
+    if (!digits) return ''
+
+    return digits
+        .split('')
+        .map((digit, index) => {
+            const formatted = formatPrice(Number(digit))
+            const remaining = digits.length - index
+            return remaining > 1 && remaining % 3 === 1
+                ? `${formatted},`
+                : formatted
+        })
+        .join('')
+}
 
 type BankInfoProps = {
     onContinue?: () => void
+    onBack?: () => void
 }
 
-const BankInfo = ({ onContinue }: BankInfoProps) => {
+const BankInfo = ({ onContinue, onBack }: BankInfoProps) => {
     const {
         control,
         trigger,
@@ -53,8 +74,8 @@ const BankInfo = ({ onContinue }: BankInfoProps) => {
                                 <Input
                                     label='شماره حساب *'
                                     placeholder='شماره حساب'
-                                    value={field.value}
-                                    onChange={field.onChange}
+                                    value={formatBankValue(field.value)}
+                                    onChange={(value) => field.onChange(toDigits(value))}
                                     inputMode='numeric'
                                     error={!!errors.accountNumber}
                                     msg={errors.accountNumber?.message}
@@ -68,8 +89,8 @@ const BankInfo = ({ onContinue }: BankInfoProps) => {
                                 <Input
                                     label='شماره کارت *'
                                     placeholder='۱۶ رقم'
-                                    value={field.value}
-                                    onChange={field.onChange}
+                                    value={formatBankValue(field.value)}
+                                    onChange={(value) => field.onChange(toDigits(value))}
                                     inputMode='numeric'
                                     error={!!errors.cardNumber}
                                     msg={errors.cardNumber?.message}
@@ -80,14 +101,34 @@ const BankInfo = ({ onContinue }: BankInfoProps) => {
                             name='shebaNumber'
                             control={control}
                             render={({ field }) => (
-                                <Input
-                                    label='شماره شبا *'
-                                    placeholder='IR...'
-                                    value={field.value}
-                                    onChange={field.onChange}
-                                    error={!!errors.shebaNumber}
-                                    msg={errors.shebaNumber?.message}
-                                />
+                                <div className='flex flex-col'>
+                                    <span className='mb-1.5 text-label-md text-on-surface-variant'>
+                                        شماره شبا *
+                                    </span>
+                                    <div className='flex flex-row items-start gap-2'>
+                                        <Input
+                                            containerClassName='min-w-0 flex-1'
+                                            placeholder='۲۴ رقم'
+                                            dir='ltr'
+                                            value={formatBankValue(
+                                                field.value.replace(/^IR/i, '')
+                                            )}
+                                            onChange={(value) =>
+                                                field.onChange(
+                                                    toDigits(value).replace(
+                                                        /^IR/i,
+                                                        ''
+                                                    )
+                                                )
+                                            }
+                                            error={!!errors.shebaNumber}
+                                            msg={errors.shebaNumber?.message}
+                                        />
+                                        <div className='flex shrink-0 items-center rounded-container-lg px-3 py-3 text-label-lg text-on-surface'>
+                                            IR
+                                        </div>
+                                    </div>
+                                </div>
                             )}
                         />
                     </div>
@@ -95,15 +136,28 @@ const BankInfo = ({ onContinue }: BankInfoProps) => {
             </div>
 
             {onContinue ? (
-                <Button
-                    type='button'
-                    variant='primary'
-                    size='lg'
-                    className='w-full text-label-lg'
-                    onClick={handleContinue}
-                >
-                    ادامه
-                </Button>
+                <div className='flex flex-row-reverse gap-3'>
+                    <Button
+                        type='button'
+                        variant='primary'
+                        size='lg'
+                        className='w-full text-label-lg'
+                        onClick={handleContinue}
+                    >
+                        ادامه
+                    </Button>
+                    {onBack ? (
+                        <Button
+                            type='button'
+                            variant='outline'
+                            size='lg'
+                            className='text-label-lg'
+                            onClick={onBack}
+                        >
+                            بازگشت
+                        </Button>
+                    ) : null}
+                </div>
             ) : null}
         </div>
     )

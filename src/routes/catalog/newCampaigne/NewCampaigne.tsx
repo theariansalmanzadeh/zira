@@ -1,6 +1,6 @@
 'use client'
 
-import ProductFieldsLayout from '../addProducts/components/Layout'
+import ProductFieldsLayout from '../addAndUpdateProduct/components/Layout'
 import CampaigneForm from './components/CampaigneForm'
 import PreviewCode from './components/PreviewCode'
 

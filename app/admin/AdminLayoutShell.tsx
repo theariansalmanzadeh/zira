@@ -16,11 +16,7 @@ const AdminLayoutShell = ({
     const isLoginPage = pathname === '/admin/login'
 
     if (isLoginPage) {
-        return (
-            <div className='flex h-screen w-full items-center justify-center'>
-                {children}
-            </div>
-        )
+        return <div className='h-screen w-full overflow-auto'>{children}</div>
     }
 
     return (

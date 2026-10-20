@@ -27,7 +27,7 @@ const TableRow = ({ data, branchId }: TableRowProps) => {
     const [isExpanded, setIsExpanded] = useState(false)
 
     const onEdit = () => {
-        push(`/admin/branches/pos-device/${data.id}/edit`)
+        push(`/admin/branches/details/${branchId}/updatePosDevice/${data.id}`)
         closeModal()
     }
 

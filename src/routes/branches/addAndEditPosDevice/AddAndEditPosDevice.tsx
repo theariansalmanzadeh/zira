@@ -1,15 +1,17 @@
 'use client'
 
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import {
     useCreatePosDevice,
     useGetPosDevice,
+    useListBranchBankAccounts,
     useUpdatePosDevice,
 } from '@/src/routes/branches/hooks/organization'
 import { Button } from '@/src/shared/components/ui/button'
+import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Switch } from '@/src/shared/components/ui/Switch'
 import {
@@ -19,12 +21,21 @@ import {
     type AddAndEditPosDeviceFormValues,
 } from './schema'
 
-const PosDeviceForm = ({ editId }: { editId: string | null }) => {
+const PosDeviceForm = ({
+    editId,
+    branchId,
+}: {
+    editId: string | null
+    branchId: string
+}) => {
     const { back } = useRouter()
-    const searchParams = useSearchParams()
-    const branchId = searchParams.get('branchId') ?? ''
     const isEditing = Boolean(editId)
     const { data: device } = useGetPosDevice(editId ?? '', isEditing)
+    const { data: bankAccounts = [] } = useListBranchBankAccounts(branchId)
+    const bankAccountOptions = bankAccounts.map((account) => ({
+        label: account.card_number?.trim() || account.bank_account_id,
+        value: account.bank_account_id,
+    }))
     const { mutate: updatePosDevice, isPending: isUpdating } = useUpdatePosDevice()
     const { mutate: createPosDevice, isPending: isCreating } = useCreatePosDevice()
     const isPending = isUpdating || isCreating
@@ -138,14 +149,20 @@ const PosDeviceForm = ({ editId }: { editId: string | null }) => {
                     control={control}
                     name="bank_account_id"
                     render={({ field, fieldState }) => (
-                        <Input
-                            label="شناسه حساب بانکی"
-                            value={field.value}
-                            onChange={field.onChange}
-                            dir="ltr"
-                            error={Boolean(fieldState.error)}
-                            msg={fieldState.error?.message}
-                        />
+                        <div className="flex flex-col gap-1">
+                            <FormDropdown
+                                label="حساب بانکی"
+                                value={field.value}
+                                onChange={field.onChange}
+                                options={bankAccountOptions}
+                                placeholder="انتخاب کارت"
+                            />
+                            {fieldState.error?.message && (
+                                <span className="text-label-sm text-error">
+                                    {fieldState.error.message}
+                                </span>
+                            )}
+                        </div>
                     )}
                 />
                 <Controller
@@ -166,11 +183,27 @@ const PosDeviceForm = ({ editId }: { editId: string | null }) => {
     )
 }
 
-const AddAndEditPosDevice = () => {
-    const params = useParams<{ id?: string }>()
-    const editId = params?.id ?? null
+type AddAndEditPosDeviceProps = {
+    id?: string
+}
 
-    return <PosDeviceForm key={editId ?? 'new'} editId={editId} />
+const AddAndEditPosDevice = ({ id }: AddAndEditPosDeviceProps) => {
+    const pathname = usePathname()
+    const params = useParams<{ id?: string; posDeviceId?: string }>()
+    const searchParams = useSearchParams()
+    const isLegacyEdit = /\/branches\/pos-device\/[^/]+\/edit$/.test(pathname)
+    const editId = id ?? params.posDeviceId ?? (isLegacyEdit ? params.id ?? null : null)
+    const branchId = isLegacyEdit
+        ? (searchParams.get('branchId') ?? '')
+        : (params.id ?? searchParams.get('branchId') ?? '')
+
+    return (
+        <PosDeviceForm
+            key={editId ?? 'new'}
+            editId={editId}
+            branchId={branchId}
+        />
+    )
 }
 
 export default AddAndEditPosDevice

@@ -1,17 +1,24 @@
+'use client'
+
+import { useParams } from 'next/navigation'
 import { Icon } from '@/src/shared/components/Icons/Icon'
+import { ModalTypes } from '@/src/shared/components/modals/types'
 import { Button } from '@/src/shared/components/ui/button'
 import { Progress } from '@/src/shared/components/ui/ProgressBar'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
+import { useModalStore } from '@/src/shared/store/modal-store'
 import { cn } from '@shared/libs/utils'
 import type { CreditCardItem } from '../constants/credits'
 import CreditAmount from './CreditAmount'
 
 type CreditCardProps = {
     card: CreditCardItem
-    onChangeCredit?: () => void
 }
 
-const CreditCard = ({ card, onChangeCredit }: CreditCardProps) => {
+const CreditCard = ({ card }: CreditCardProps) => {
+    const params = useParams<{ id: string }>()
+    const customerId = params.id ?? ''
+    const openModal = useModalStore((state) => state.openModal)
     const remain =
         card.cap === null || card.used === null ? null : card.cap - card.used
     const usedPercent =
@@ -91,7 +98,14 @@ const CreditCard = ({ card, onChangeCredit }: CreditCardProps) => {
                     <Button
                         type="button"
                         className={cn('flex-1', card.theme.increaseClassName)}
-                        onClick={onChangeCredit}
+                        onClick={() =>
+                            openModal(ModalTypes.CUSTOMER_CHANGE_CREDIT, {
+                                customerId,
+                                cardId: card.id,
+                                cardTitle: card.title,
+                                currentCap: card.cap ?? undefined,
+                            })
+                        }
                     >
                         تغییر اعتبار
                     </Button>

@@ -69,8 +69,8 @@ export const ROUTE_CONFIGS = {
     },
     contracts: {
         TOGGLE_BUTTON_VALUE: [
-            { label: "پیش‌نویس", value: "DRAFT" },
-            { label: "اعمال‌شده", value: "APPLIED" },
+            { label: "همه", value: "all" },
+            { label: "فعال", value: "ACTIVE" },
             { label: "لغو شده", value: "CANCELLED" },
         ],
     },
@@ -313,6 +313,13 @@ export const ROUTE_CONFIGS = {
             { label: "همه رخدادها", value: "all" },
             { label: "حساس", value: "sensitive" },
             { label: "ناموفق", value: "failed" },
+        ],
+    },
+    units: {
+        TOGGLE_BUTTON_VALUE: [
+            { label: "همه", value: "all" },
+            { label: "فعال", value: "active" },
+            { label: "غیرفعال", value: "inactive" },
         ],
     },
 }

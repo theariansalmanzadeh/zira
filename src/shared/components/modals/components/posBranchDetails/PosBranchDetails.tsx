@@ -23,13 +23,13 @@ const toDeviceItem = (
     index: index + 1,
     name: device.title,
     code: device.terminal_no,
-    model: '—',
-    bank: '—',
-    bankAccount: device.bank_account_id,
+    model: device.device_model || '—',
+    bank: device.bank_name || '—',
+    bankAccount: device.bank_account_number || device.bank_account_id,
     terminalNumber: device.terminal_no,
     terminalPassword: '—',
-    cashRegister: '—',
-    todayTransactionsMillion: 0,
+    cashRegister: device.cash_box_title || '—',
+    todayTransactionsMillion: Number(device.today_transactions_amount) || 0,
 })
 
 const toValueItem = (title: string, index: number): PosDeviceItem => ({
@@ -67,7 +67,7 @@ const PosBranchDetails = ({ closeModal, data }: BaseModalProps) => {
                     className='gap-1.5'
                     onClick={() =>
                         openDeviceForm(
-                            `/admin/branches/pos-device/new?branchId=${modalData?.branchId ?? ''}`
+                            `/admin/branches/details/${modalData?.branchId ?? ''}/pos-device/new`
                         )
                     }
                 >

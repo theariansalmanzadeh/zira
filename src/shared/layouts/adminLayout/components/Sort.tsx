@@ -10,7 +10,7 @@ const SORT_OPTIONS = ["جدیدترین", "جدیدترین", "جدیدترین"
 const Sort = () => {
     return (
         <Popover>
-            <PopoverTrigger>
+            <PopoverTrigger asChild>
                 <IconButton icon="sort" />
             </PopoverTrigger>
             <PopoverContent side="left">

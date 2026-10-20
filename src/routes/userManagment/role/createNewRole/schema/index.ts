@@ -3,10 +3,10 @@ import { z } from 'zod'
 const requiredString = (message: string) => z.string().trim().min(1, message)
 
 export const ROLE_LEVEL_OPTIONS = [
-    { label: 'کاربر', value: '0' },
-    { label: 'کارشناس', value: '1' },
-    { label: 'سرپرست', value: '2' },
-    { label: 'مدیر', value: '3' },
+    { label: 'سطح 0', value: '0' },
+    { label: 'سطح 1', value: '1' },
+    { label: 'سطح 2', value: '2' },
+    { label: 'سطح 3', value: '3' },
 ] as const
 
 const roleLevelValues = ROLE_LEVEL_OPTIONS.map((option) => option.value) as [

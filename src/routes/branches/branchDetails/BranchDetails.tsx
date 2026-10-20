@@ -3,33 +3,25 @@
 import { useParams, useSearchParams } from 'next/navigation'
 import InfoCardField from '@/src/shared/components/infoCard/components/InfoCardField'
 import { Avatar, AvatarFallback } from '@/src/shared/components/ui/Avatar'
-import QuickAccessCard, {
-    QuickAccessCardContent,
-    QuickAccessCardItem,
-    QuickAccessCardList,
-} from '@/src/shared/components/quickAccessCard'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
-import { Table, TableBody } from '@/src/shared/components/ui/Table'
-import { useModalStore } from '@/src/shared/store/modal-store'
-import { useSearchParam } from '@/src/shared/hooks/useSearchParam'
+import { Table, TableBody, TableCell, TableRow } from '@/src/shared/components/ui/Table'
 import { ROUTE_CONFIGS } from '@/src/shared/constants/routeConfigs'
 import { useGetBranch } from '@/src/routes/branches/hooks/organization'
 import ProductTableHeader from './components/TableHeader'
 import ProductTableRow from './components/TableRow'
-import CashRegisterTableHeader from './components/CashRegisterTableHeader'
-import CashRegisterTableRow from './components/CashRegisterTableRow'
+import CashBoxTable from './components/CashBoxTable'
+import EmployeeTableHeader from './components/EmployeeTableHeader'
+import EmployeeTableRow from './components/EmployeeTableRow'
 import BankAccountTableHeader from './components/BankAccountTableHeader'
 import BankAccountTableRow from './components/BankAccountTableRow'
 import Header from './components/Header'
+import BranchQuickAccess from './components/BranchQuickAccess'
 import {
     BANK_ACCOUNT_DUMMY,
     BANK_ACCOUNT_TABLE_COLOUMN,
-    CASH_REGISTER_DUMMY,
+    CASH_BOX_TABLE_COLOUMN,
+    EMPLOYEE_TABLE_COLOUMN,
     PRODUCT_TABLE_COLOUMN,
-    TABLE_COLOUMN,
-    mapQuickAccessItems,
-    quickAccessSummary,
-    type QuickAccessStat,
 } from './constants'
 
 const SectionDivider = () => (
@@ -37,14 +29,13 @@ const SectionDivider = () => (
 )
 
 const getTableColumns = (tableView: string) => {
-    if (tableView === 'cashRegisters') return TABLE_COLOUMN
+    if (tableView === 'cashRegisters') return CASH_BOX_TABLE_COLOUMN
     if (tableView === 'bankAccounts') return BANK_ACCOUNT_TABLE_COLOUMN
+    if (tableView === 'employees') return EMPLOYEE_TABLE_COLOUMN
     return PRODUCT_TABLE_COLOUMN
 }
 
 const BranchDetails = () => {
-    const { openModal } = useModalStore()
-    const { addSearchParam } = useSearchParam()
     const searchParams = useSearchParams()
     const params = useParams<{ id: string }>()
     const branchId = params.id ?? ''
@@ -52,29 +43,13 @@ const BranchDetails = () => {
     const tableView = searchParams.get('cat') ?? 'products'
     const isCashRegisters = tableView === 'cashRegisters'
     const isBankAccounts = tableView === 'bankAccounts'
-    const quickAccessItems = mapQuickAccessItems(branch)
+    const isEmployees = tableView === 'employees'
+    const employees = branch?.employees ?? []
     const address =
         branch?.full_address ||
         [branch?.province, branch?.city, branch?.address_details]
             .filter(Boolean)
             .join('، ')
-
-    const handleQuickAccessClick = (item: QuickAccessStat) => {
-        if (!branch) return
-        if (item.modalType) {
-            openModal(item.modalType, {
-                values: item.values,
-                branchId,
-                warehouses: branch.warehouses,
-                posDevices: branch.pos_devices ?? [],
-                permit: branch.permit,
-            })
-            return
-        }
-        if (item.tableValue) {
-            addSearchParam('cat', item.tableValue)
-        }
-    }
 
     return (
         <div dir='rtl'>
@@ -120,29 +95,7 @@ const BranchDetails = () => {
                         />
                     </div>
                     <SectionDivider />
-                    <div className='pt-6'>
-                        <QuickAccessCard>
-                            <QuickAccessCardContent>
-                                <QuickAccessCardList className='gap-2'>
-                                    {quickAccessItems.map((item) => (
-                                        <QuickAccessCardItem
-                                            key={item.label}
-                                            label={item.label}
-                                            value={quickAccessSummary(
-                                                item.label,
-                                                item.values
-                                            )}
-                                            href={item.href}
-                                            className='max-w-[186px] cursor-pointer'
-                                            onClick={() =>
-                                                handleQuickAccessClick(item)
-                                            }
-                                        />
-                                    ))}
-                                </QuickAccessCardList>
-                            </QuickAccessCardContent>
-                        </QuickAccessCard>
-                    </div>
+                    <BranchQuickAccess branchId={branchId} branch={branch} />
                 </div>
                 <div className='mt-auto'>
                     <TableListLayout
@@ -168,20 +121,36 @@ const BranchDetails = () => {
                                 </div>
                             ) : (
                                 <Table className='border-collapse border-spacing-y-4'>
-                                    {isCashRegisters ? (
+                                    {isEmployees ? (
                                         <>
-                                            <CashRegisterTableHeader />
+                                            <EmployeeTableHeader />
                                             <TableBody>
-                                                {CASH_REGISTER_DUMMY.map(
-                                                    (item) => (
-                                                        <CashRegisterTableRow
-                                                            key={item.id}
-                                                            data={item}
+                                                {employees.length === 0 ? (
+                                                    <TableRow>
+                                                        <TableCell
+                                                            colSpan={9}
+                                                            className='py-6 text-center text-label-lg text-outline'
+                                                        >
+                                                            کارمندی ثبت نشده است.
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ) : (
+                                                    employees.map((employee) => (
+                                                        <EmployeeTableRow
+                                                            key={
+                                                                employee?.id ||
+                                                                employee?.user_id
+                                                            }
+                                                            data={employee}
                                                         />
-                                                    )
+                                                    ))
                                                 )}
                                             </TableBody>
                                         </>
+                                    ) : isCashRegisters ? (
+                                        <CashBoxTable
+                                            cashBoxes={branch?.cash_boxes}
+                                        />
                                     ) : (
                                         <>
                                             <ProductTableHeader />

@@ -25,8 +25,6 @@ export const newGroupFormSchema = z.object({
     groupCode: requiredString('کد گروه الزامی است'),
     groupName: requiredString('نام گروه الزامی است'),
     userLevel: dropdownValue('سطح کاربران گروه الزامی است'),
-    marketerId: dropdownValue('انتخاب بازاریاب الزامی است'),
-    marketerPercent: percentSchema('درصد بازاریاب الزامی است'),
     discountPercent: percentSchema('درصد تخفیف گروه الزامی است'),
     chequeLevel: dropdownValue('سطح اعتبار چک الزامی است'),
     goldLevel: dropdownValue('سطح اعتبار طلایی الزامی است'),
@@ -39,8 +37,6 @@ export const NEW_GROUP_DEFAULT_VALUES: NewGroupFormValues = {
     groupCode: '',
     groupName: '',
     userLevel: '2',
-    marketerId: '',
-    marketerPercent: '3',
     discountPercent: '9',
     chequeLevel: '4',
     goldLevel: '3',
@@ -51,12 +47,6 @@ export const GROUP_USER_LEVEL_OPTIONS: FormDropdownOption[] = [
     { label: 'سطح ۱', value: '1' },
     { label: 'سطح ۲', value: '2' },
     { label: 'سطح ۳', value: '3' },
-]
-
-export const GROUP_MARKETER_OPTIONS: FormDropdownOption[] = [
-    { label: 'رضا کریمی', value: 'reza-karimi' },
-    { label: 'مهدی رشیدی', value: 'mehdi-rashidi' },
-    { label: 'سحر نوری', value: 'sahar-nouri' },
 ]
 
 export const GROUP_CHEQUE_LEVEL_OPTIONS: FormDropdownOption[] = [

@@ -44,10 +44,6 @@ export const addressFormSchema = z.object({
     addressEmail: optionalEmailSchema,
     mobilePhone: optionalMobileSchema,
     landlinePhone: optionalLandlineSchema,
-    mobilePhone1: optionalMobileSchema,
-    mobilePhone2: optionalMobileSchema,
-    contactLandline: optionalLandlineSchema,
-    contactEmail: optionalEmailSchema,
 })
 
 export type AddressFormValues = z.infer<typeof addressFormSchema>

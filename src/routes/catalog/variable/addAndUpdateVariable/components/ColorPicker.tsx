@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Colorful, validHex, type ColorResult } from '@uiw/react-color'
 import { Input } from '@/src/shared/components/ui/Input'
 
@@ -21,7 +21,11 @@ const toHex = (value: string) => {
 const ColorPicker = ({ value = DEFAULT_HEX, onChange }: ColorPickerProps) => {
     const [hex, setHex] = useState(toHex(value) ?? DEFAULT_HEX)
 
-    // TODO: fix this issue
+    useEffect(() => {
+        const parsed = toHex(value)
+        if (parsed) setHex(parsed)
+    }, [value])
+
     const commit = (next: string) => {
         setHex(toHex(next) ?? DEFAULT_HEX)
         onChange?.(next)

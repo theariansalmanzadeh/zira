@@ -18,7 +18,7 @@ const AnnouncementDetail = ({ id }: AnnouncementDetailProps) => {
                 <Header data={data} />
                 <Summary data={data} />
             </div>
-            <RecipientsTable />
+            <RecipientsTable notificationId={id} />
         </div>
     )
 }

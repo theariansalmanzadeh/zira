@@ -101,7 +101,7 @@ const UploadedDocuments = ({ requestId }: UploadedDocumentsProps) => {
     }
 
     return (
-        <section className="flex flex-col gap-3" dir="rtl">
+        <section className="flex flex-col gap-3 bg-surface-container-lowest p-3 rounded-card-md" dir="rtl">
             <h2 className="text-right text-title-lg font-semibold text-on-surface">
                 مدارک بارگذاری‌شده
             </h2>

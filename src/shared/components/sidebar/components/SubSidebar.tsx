@@ -14,6 +14,8 @@ type SubSidebarProps = {
     header: string
     subheader: string
     itemsList: readonly SubSidebarSection[]
+    hideHeading?: boolean
+    tabIndexDisabled?: boolean
 }
 
 const getSubFromHref = (href: string) => {
@@ -54,19 +56,41 @@ const isLinkActive = (
     return pathname === pathOnly || pathname.startsWith(`${pathOnly}/`)
 }
 
-const SubSidebar = ({ icon, header, subheader, itemsList }: SubSidebarProps) => {
+const SubSidebar = ({
+    icon,
+    header,
+    subheader,
+    itemsList,
+    hideHeading = false,
+    tabIndexDisabled = false,
+}: SubSidebarProps) => {
     const searchParams = useSearchParams()
     const pathname = usePathname()
     const currentSub = searchParams.get('sub')
 
     return (
-        <div className='min-w-51 h-full rounded-card-lg bg-surface-container-high px-2 py-4'>
-            <div className='flex h-full flex-col items-start gap-2 rounded-card-lg bg-surface-container-lowest p-2'>
-                <SubSidebarHeading
-                    icon={icon}
-                    header={header}
-                    subheader={subheader}
-                />
+        <div
+            className={cn(
+                hideHeading
+                    ? 'flex w-full flex-1 flex-col'
+                    : 'min-w-51 h-full rounded-card-lg bg-surface-container-high px-2 py-4'
+            )}
+        >
+            <div
+                className={cn(
+                    'flex flex-col items-start gap-2',
+                    hideHeading
+                        ? 'w-full'
+                        : 'h-full rounded-card-lg bg-surface-container-lowest p-2'
+                )}
+            >
+                {!hideHeading ? (
+                    <SubSidebarHeading
+                        icon={icon}
+                        header={header}
+                        subheader={subheader}
+                    />
+                ) : null}
 
                 <div className='flex w-full flex-1 flex-col gap-4'>
                     {itemsList.map((section) => (
@@ -88,6 +112,7 @@ const SubSidebar = ({ icon, header, subheader, itemsList }: SubSidebarProps) => 
                                     <Link
                                         href={link.href}
                                         key={link.href}
+                                        tabIndex={tabIndexDisabled ? -1 : 0}
                                         className={cn(
                                             'group flex w-full items-center justify-between gap-2 rounded-card-md px-4 py-2 text-label-lg transition-colors',
                                             isActive

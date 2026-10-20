@@ -3,6 +3,8 @@
 import { useMemo } from 'react'
 import { useParams } from 'next/navigation'
 import { useGetCustomerGroup, useListCustomerGroupMembers } from '../hooks/customers'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
+import { Spinner } from '@/src/shared/components/ui/spinner'
 import GroupUsers from './components/GroupUsers'
 import Header from './components/Header'
 import { mapGroupToHeader, mapMemberToRow } from './utils/groupMaps'
@@ -37,24 +39,22 @@ const GroupDetails = () => {
         <div className="flex flex-col gap-4">
             <div className="rounded-card-md bg-surface-container-lowest p-6">
                 {isGroupPending ? (
-                    <div className="py-6 text-center text-label-md text-outline">
-                        در حال دریافت اطلاعات گروه...
+                    <div className="flex justify-center py-10">
+                        <Spinner className="size-6" />
                     </div>
                 ) : isGroupError || !headerProps ? (
-                    <div className="py-6 text-center text-label-md text-outline">
-                        دریافت اطلاعات گروه با خطا مواجه شد.
-                    </div>
+                    <TableEmptyState title="دریافت اطلاعات گروه با خطا مواجه شد." />
                 ) : (
                     <Header {...headerProps} />
                 )}
             </div>
             {isMembersPending ? (
-                <div className="rounded-card-md bg-surface-container-lowest px-4 py-6 text-center text-label-md text-outline">
-                    در حال دریافت اعضای گروه...
+                <div className="flex justify-center rounded-card-md bg-surface-container-lowest py-10">
+                    <Spinner className="size-6" />
                 </div>
             ) : isMembersError ? (
-                <div className="rounded-card-md bg-surface-container-lowest px-4 py-6 text-center text-label-md text-outline">
-                    دریافت اعضای گروه با خطا مواجه شد.
+                <div className="rounded-card-md bg-surface-container-lowest">
+                    <TableEmptyState title="دریافت اعضای گروه با خطا مواجه شد." />
                 </div>
             ) : (
                 <GroupUsers groupId={groupId} members={members} />

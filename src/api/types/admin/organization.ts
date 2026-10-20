@@ -63,13 +63,54 @@ export type BranchWarehouseLink = {
     priority: number
 }
 
-export type BranchEmployee = {
+export type BranchWarehouse = {
+    warehouse_id: string
+    code: string
+    name: string
+    is_primary: boolean
+}
+
+export type BranchBankAccount = {
     id: string
-    branch_id: string
+    bank_account_id: string
+    is_default: boolean
+    is_active: boolean
+    bank_name?: string | null
+    account_type?: string | null
+    account_number?: string | null
+    sheba?: string | null
+    card_number?: string | null
+    holder_name?: string | null
+    bank_branch_name?: string | null
+    balance?: string | null
+}
+
+export type ListBranchBankAccountsParams = {
+    page?: number
+    page_size?: number
+    query?: string
+}
+
+export type ListBranchBankAccountsResponse = {
+    total: number
+    page: number
+    page_size: number
+    results: BranchBankAccount[]
+}
+
+export type BranchEmployee = {
+    first_name: string
+    last_name: string
+    full_name: string
+    phone_number: string
+    national_id: string
+    personnel_code: string
+    address: string
+    id: string
     user_id: string
     position: string
-    shift?: string
-    start_date?: string
+    shift: string
+    start_date: string
     assigned_at: string
     is_active: boolean
 }
@@ -78,8 +119,32 @@ export type BranchPosDevice = {
     id: string
     terminal_no: string
     title: string
+    device_model: string
+    serial_no: string
     bank_account_id: string
+    cash_box_id: string
+    cash_box_title: string
     is_active: boolean
+    bank_name: string
+    bank_account_number: string
+    today_transactions_amount: string
+    last_transaction_at: string
+}
+
+export type BranchCashBox = {
+    id: string
+    code: string
+    title: string
+    opening_balance: string
+    opened_at: string
+    detail_account_id: string
+    is_active: boolean
+    is_open: boolean
+    shift: string
+    cashier_user_id: string
+    cashier_name: string
+    pos_devices: BranchPosDevice[]
+    current_cash_balance: string
 }
 
 export type Branch = {
@@ -92,21 +157,22 @@ export type Branch = {
     phone: string
     status: BranchStatus
     status_display: string
+    employees: BranchEmployee[]
     county: string
     address_details: string
     postal_code: string
-    latitude: string | null
-    longitude: string | null
-    manager_id: string | null
-    working_hours: WorkingHours | null
-    activity_start_date: string | null
+    latitude: string
+    longitude: string
+    manager_id: string
+    working_hours: CreateBranchWorkingHours
+    activity_start_date: string
     company_id: string
-    permit: BranchPermit | null
+    permit: BranchPermit
     created_at: string
     updated_at: string
-    warehouses: BranchWarehouseLink[]
-    employees: BranchEmployee[]
-    pos_devices?: BranchPosDevice[]
+    warehouses: BranchWarehouse[]
+    cash_boxes: BranchCashBox[]
+    pos_devices: BranchPosDevice[]
 }
 
 export type BranchNetwork = {

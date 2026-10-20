@@ -58,6 +58,10 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
         title: 'دپارتمان‌ها',
         subtitle: SUPPORT_SUBTITLE,
     },
+    'colleague-messages': {
+        title: 'پیام همکاران',
+        subtitle: 'گفتگوهای داخلی بین همکاران پشتیبانی',
+    },
 }
 
 export const getSupportSectionKey = (sub: string) => sub || 'dashboard'

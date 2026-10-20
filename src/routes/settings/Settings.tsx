@@ -1,4 +1,5 @@
 import HeadingWithActions from '@/src/shared/components/ui/HeadingWithActions'
+import UnitList from './unitList/UnitList'
 
 const Settings = () => {
     return (
@@ -9,9 +10,7 @@ const Settings = () => {
                     پیکربندی سامانه
                 </HeadingWithActions.SubTitle>
             </HeadingWithActions>
-            <div className="flex min-h-48 items-center justify-center rounded-card-md bg-surface-container-lowest p-6">
-                <span className="text-label-lg text-outline">به زودی</span>
-            </div>
+            <UnitList />
         </div>
     )
 }

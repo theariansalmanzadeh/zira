@@ -5,6 +5,7 @@ import OrderHistory from '../components/OrderHistory'
 import Dashboard from '../components/Dashboard'
 import Transactions from '../components/Transactions'
 import Groups from '../components/Groups'
+import BusinessLicense from '../components/BusinessLicense'
 
 export const CUSTOMER_DETAIL_TABS = [
     { value: 'infos', label: 'اطلاعات', tabContent: Infos },
@@ -17,6 +18,7 @@ export const CUSTOMER_DETAIL_TABS = [
     { value: 'dashboard', label: 'داشبورد', tabContent: Dashboard },
     { value: 'transactions', label: 'معین', tabContent: Transactions },
     { value: 'groups', label: 'گروه‌ها', tabContent: Groups },
+    { value: 'business-license', label: 'پروانه کسب', tabContent: BusinessLicense },
 ] as const satisfies ReadonlyArray<{
     value: string
     label: string

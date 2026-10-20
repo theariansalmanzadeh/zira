@@ -31,7 +31,7 @@ const IdentityForm = ({ onContinue }: IdentityFormProps) => {
     }
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 w-full">
             <div className="flex flex-col gap-3">
                 <span className="text-label-lg text-on-surface">
                     اطلاعات هویتی

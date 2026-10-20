@@ -39,11 +39,11 @@ const Faq = ({ items }: FaqProps) => {
                         value={item.id}
                         className="border-b border-outline-variant"
                     >
-                        <AccordionTrigger className="text-on-surface text-right">
+                        <AccordionTrigger className="text-on-surface text-right text-body-lg">
                             {item.question}
                         </AccordionTrigger>
-                        <AccordionContent>
-                            <p className="text-on-surface-variant! text-body-lg">
+                        <AccordionContent className="pt-4">
+                            <p className="text-on-surface-variant! text-body-md">
                                 {item.answer}
                             </p>
                         </AccordionContent>

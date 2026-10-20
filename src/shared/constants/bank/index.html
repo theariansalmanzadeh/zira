@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوگوی رسمی بانک‌های ایران (SVG)</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-hover: #273549;
+      --card-border: #334155;
+      --card-border-hover: #3b82f6;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --badge-bg: rgba(59, 130, 246, 0.15);
+      --badge-text: #60a5fa;
+      --btn-bg: #334155;
+      --btn-hover: #475569;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Vazirmatn", Tahoma, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 2.5rem 1rem;
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 0.6rem;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+    }
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
+    }
+    .search-wrapper {
+      max-width: 500px;
+      margin: 0 auto 1.5rem auto;
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      padding: 0.85rem 1.25rem;
+      border-radius: 9999px;
+      border: 1.5px solid var(--card-border);
+      background: var(--card-bg);
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+      text-align: right;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25);
+    }
+    .stats {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .stats span {
+      background: var(--badge-bg);
+      color: var(--badge-text);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+    .bank-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1.25rem;
+      padding: 1.5rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .bank-card:hover {
+      transform: translateY(-5px);
+      background: var(--card-hover);
+      border-color: var(--card-border-hover);
+      box-shadow: 0 12px 28px -6px rgba(59, 130, 246, 0.2);
+    }
+    .logo-box {
+      width: 84px;
+      height: 84px;
+      background: #ffffff;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.85rem;
+      margin-bottom: 1.1rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+    .logo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .bank-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      color: #f1f5f9;
+    }
+    .bank-slug {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      direction: ltr;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      margin-bottom: 1rem;
+    }
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
+      margin-top: auto;
+    }
+    .btn {
+      flex: 1;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-secondary {
+      background: var(--btn-bg);
+      color: #e2e8f0;
+    }
+    .btn-secondary:hover {
+      background: var(--btn-hover);
+      color: #ffffff;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+    .empty-state {
+      grid-column: 1 / -1;
+      padding: 3rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      background: var(--card-bg);
+      border-radius: 1rem;
+      border: 1px dashed var(--card-border);
+    }
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #10b981;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 100;
+      pointer-events: none;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>لوگوی رسمی بانک‌های ایران</h1>
+      <p class="subtitle">مجموعه کامل ۲۶ نماد بانکی با فرمت وکتور SVG با کیفیت بالا</p>
+      
+      <div class="search-wrapper">
+        <input 
+          type="text" 
+          id="searchInput" 
+          class="search-input" 
+          placeholder="جستجوی نام یا شناسه بانک (مثلا: ملی، ملت، صادرات، تجارت، sepah...)"
+          autofocus
+        >
+      </div>
+
+      <div class="stats" id="statsText">
+        <span>۲۶ بانک بارگذاری شد</span>
+      </div>
+    </header>
+
+    <div class="grid" id="banksGrid"></div>
+  </div>
+
+  <div class="toast" id="toast">مسیر کپی شد!</div>
+
+  <script>
+    // داده‌های بانک‌ها به صورت مستقیم درون اسکریپت تعبیه شده‌اند
+    // تا بدون نیاز به وب سرور و حتی در حالت file:/// مستقیماً در مرورگر باز شوند
+    const BANKS_DATA = [
+      { name: "بانک ملی ایران", slug: "melli", logo: "logos/melli.svg" },
+      { name: "بانک سپه", slug: "sepah", logo: "logos/sepah.svg" },
+      { name: "بانک ملت", slug: "mellat", logo: "logos/mellat.svg" },
+      { name: "بانک تجارت", slug: "tejarat", logo: "logos/tejarat.svg" },
+      { name: "بانک صادرات ایران", slug: "saderat", logo: "logos/saderat.svg" },
+      { name: "بانک رفاه کارگران", slug: "refah", logo: "logos/refah.svg" },
+      { name: "بانک کشاورزی", slug: "keshavarzi", logo: "logos/keshavarzi.svg" },
+      { name: "بانک پاسارگاد", slug: "pasargad", logo: "logos/pasargad.svg" },
+      { name: "بانک پارسیان", slug: "parsian", logo: "logos/parsian.svg" },
+      { name: "بانک آینده", slug: "ayandeh", logo: "logos/ayandeh.svg" },
+      { name: "بانک شهر", slug: "shahr", logo: "logos/shahr.svg" },
+      { name: "بانک اقتصاد نوین", slug: "eghtesad-novin", logo: "logos/eghtesad-novin.svg" },
+      { name: "بانک سینا", slug: "sina", logo: "logos/sina.svg" },
+      { name: "بانک گردشگری", slug: "gardeshgari", logo: "logos/gardeshgari.svg" },
+      { name: "بانک توسعه صادرات ایران", slug: "tosee-saderat", logo: "logos/tosee-saderat.svg" },
+      { name: "بانک توسعه تعاون", slug: "tosee-taavon", logo: "logos/tosee-taavon.svg" },
+      { name: "بانک دی", slug: "dey", logo: "logos/dey.svg" },
+      { name: "بانک کارآفرین", slug: "karafarin", logo: "logos/karafarin.svg" },
+      { name: "بانک سامان", slug: "saman", logo: "logos/saman.svg" },
+      { name: "بانک سرمایه", slug: "sarmayeh", logo: "logos/sarmayeh.svg" },
+      { name: "بانک ایران زمین", slug: "iran-zamin", logo: "logos/iran-zamin.svg" },
+      { name: "بانک خاورمیانه", slug: "khavar-mianeh", logo: "logos/khavar-mianeh.svg" },
+      { name: "بانک صنعت و معدن", slug: "sanat-madan", logo: "logos/sanat-madan.svg" },
+      { name: "بانک قرضالحسنه مهر ایران", slug: "mehr-iran", logo: "logos/mehr-iran.svg" },
+      { name: "بانک قرضالحسنه رسالت", slug: "resalat", logo: "logos/resalat.svg" },
+      { name: "بانک ایران و ونزوئلا", slug: "iran-venezuela", logo: "logos/iran-venezuela.svg" }
+    ];
+
+    const grid = document.getElementById('banksGrid');
+    const searchInput = document.getElementById('searchInput');
+    const statsText = document.getElementById('statsText');
+    const toast = document.getElementById('toast');
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function copyToClipboard(text, msg) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(msg || 'کپی شد!');
+      }).catch(() => {
+        const input = document.createElement('input');
+        input.value = text;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        showToast(msg || 'کپی شد!');
+      });
+    }
+
+    // تابع هوشمند نرمال‌سازی حروف فارسی و عربی جهت سرچ دقیق
+    function normalize(text) {
+      if (!text) return '';
+      return text
+        .toLowerCase()
+        .replace(/[\u200c\u200b\u200e\u200f\s\-_]/g, '') // حذف نیم‌فاصله، فاصله و خط تیره
+        .replace(/[يئي]/g, 'ی')
+        .replace(/[ك]/g, 'ک')
+        .replace(/[آأإ]/g, 'ا')
+        .replace(/[ة]/g, 'ه')
+        .replace(/[\u064B-\u065F]/g, ''); // حذف اعراب
+    }
+
+    function renderBanks(list) {
+      if (list.length === 0) {
+        grid.innerHTML = '<div class="empty-state">بانکی با این مشخصات پیدا نشد.</div>';
+        statsText.innerHTML = '<span>نتیجه‌ای یافت نشد</span>';
+        return;
+      }
+
+      statsText.innerHTML = `<span>نمایش ${list.length} از ۲۶ بانک</span>`;
+      grid.innerHTML = list.map(bank => `
+        <div class="bank-card">
+          <div class="logo-box">
+            <img src="${bank.logo}" alt="${bank.name}" loading="lazy">
+          </div>
+          <div class="bank-name">${bank.name}</div>
+          <div class="bank-slug">${bank.slug}</div>
+          <div class="actions">
+            <button class="btn btn-secondary" onclick="copyToClipboard('${bank.logo}', 'آدرس لوگو کپی شد!')">کپی مسیر</button>
+            <a class="btn btn-primary" href="${bank.logo}" target="_blank" download="${bank.slug}.svg">دانلود SVG</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // فیلتر و جستجوی بانک‌ها
+    function filterBanks() {
+      const query = normalize(searchInput.value.trim());
+      if (!query) {
+        renderBanks(BANKS_DATA);
+        return;
+      }
+
+      const filtered = BANKS_DATA.filter(bank => {
+        const normName = normalize(bank.name);
+        const normSlug = normalize(bank.slug);
+        return normName.includes(query) || normSlug.includes(query);
+      });
+
+      renderBanks(filtered);
+    }
+
+    searchInput.addEventListener('input', filterBanks);
+
+    // بارگذاری اولیه
+    renderBanks(BANKS_DATA);
+  </script>
+</body>
+</html>

@@ -142,6 +142,16 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
         subtitle: 'ویرایش اطلاعات کارت‌خوان شعبه',
         hasBackButton: true,
     },
+    'inventory-new': {
+        title: 'انبار جدید',
+        subtitle: 'ثبت انبار جدید برای شعبه',
+        hasBackButton: true,
+    },
+    'inventory-edit': {
+        title: 'ویرایش انبار',
+        subtitle: 'ویرایش اطلاعات انبار شعبه',
+        hasBackButton: true,
+    },
 }
 
 export const getBranchesSectionKey = (sub: string) => sub || 'dashboard'
@@ -168,6 +178,18 @@ export const getBranchesSectionKeyFromPath = (
         return 'pos-device-new'
     }
     if (/^\/admin\/branches\/pos-device\/[^/]+\/edit$/.test(pathname)) {
+        return 'pos-device-edit'
+    }
+    if (/^\/admin\/branches\/details\/[^/]+\/new$/.test(pathname)) {
+        return 'inventory-new'
+    }
+    if (/^\/admin\/branches\/details\/[^/]+\/updateInventory\/[^/]+$/.test(pathname)) {
+        return 'inventory-edit'
+    }
+    if (/^\/admin\/branches\/details\/[^/]+\/pos-device\/new$/.test(pathname)) {
+        return 'pos-device-new'
+    }
+    if (/^\/admin\/branches\/details\/[^/]+\/updatePosDevice\/[^/]+$/.test(pathname)) {
         return 'pos-device-edit'
     }
 

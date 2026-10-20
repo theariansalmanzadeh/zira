@@ -48,7 +48,7 @@ type WorkWithUsContextValue = {
     sections: WorkWithUsSectionItem[]
     addSection: () => void
     updateSection: (id: string, patch: Partial<WorkWithUsSectionItem>) => void
-    saveAndPublish: (id: string) => Promise<PageSectionOut>
+    saveAndPublish: (id: string, bodyOverride?: string) => Promise<PageSectionOut>
     setSectionVisible: (id: string, visible: boolean) => void
     moveSection: (index: number, direction: -1 | 1) => void
     removeSection: (id: string) => void
@@ -112,7 +112,7 @@ const WorkWithUsProvider = ({ children }: WorkWithUsProviderProps) => {
     }, [data?.page_display])
 
     const saveAndPublish = useCallback(
-        async (id: string) => {
+        async (id: string, bodyOverride?: string) => {
             const section = sections.find((item) => item.id === id)
             if (!section) {
                 throw new Error('Section not found')
@@ -122,7 +122,7 @@ const WorkWithUsProvider = ({ children }: WorkWithUsProviderProps) => {
                 section.page_display ?? data?.page_display ?? ''
             const body = {
                 title: section.title,
-                body: section.body,
+                body: bodyOverride ?? section.body,
                 is_visible: section.visible,
             }
 

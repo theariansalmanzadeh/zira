@@ -1,14 +1,14 @@
 export type RelatedWarehouseItem = {
-    id: string
-    name: string
-    code: string
-    type: string
-    area: number
-    fillPercent: number
-    manager: string
-    phone: string
-    itemCount: number
-    stock: number
+    id?: string
+    name?: string
+    code?: string
+    type?: string
+    area?: number
+    fillPercent?: number
+    manager?: string
+    phone?: string
+    itemCount?: number
+    stock?: number
 }
 
 export const RELATED_WAREHOUSE_COLUMNS = [
@@ -24,7 +24,7 @@ export const RELATED_WAREHOUSE_COLUMNS = [
 ] as const
 
 export const RELATED_WAREHOUSE_GRID_CLASS =
-    'grid grid-cols-[minmax(0,1.6fr)_minmax(0,0.9fr)_minmax(0,0.8fr)_minmax(0,0.6fr)_minmax(0,1fr)_minmax(0,1.15fr)_minmax(0,0.7fr)_minmax(0,1fr)_2.5rem] items-center gap-3'
+    'grid grid-cols-[minmax(0,1.6fr)_minmax(0,0.9fr)_minmax(0,0.8fr)_minmax(0,0.6fr)_minmax(0,1fr)_minmax(0,1.15fr)_minmax(0,0.7fr)_minmax(0,1fr)_4.5rem] items-center gap-3'
 
 export const RELATED_WAREHOUSES_DUMMY: RelatedWarehouseItem[] = [
     {

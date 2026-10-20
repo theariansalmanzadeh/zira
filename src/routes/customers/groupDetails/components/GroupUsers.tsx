@@ -6,6 +6,7 @@ import { Icon } from '@/src/shared/components/Icons/Icon'
 import { Button } from '@/src/shared/components/ui/button'
 import IconButton from '@/src/shared/components/ui/IconButton'
 import { Pill } from '@/src/shared/components/ui/Pill'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import type { AddCustomerRow } from '@/src/shared/components/modals/components/addCustomer/constants'
 import { ModalTypes } from '@/src/shared/components/modals/types'
 import {
@@ -100,6 +101,9 @@ const GroupUsers = ({
                 </Button>
             </div>
             <div className="overflow-hidden rounded-card-md border border-outline-variant">
+                {members.length === 0 ? (
+                    <TableEmptyState title="عضوی در این گروه ثبت نشده است." />
+                ) : null}
                 {members.map((member, index) => {
                     const memberKey = member.membershipId || member.code
                     const isRemoving =

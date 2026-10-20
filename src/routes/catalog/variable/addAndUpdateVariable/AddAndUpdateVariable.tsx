@@ -20,11 +20,14 @@ import {
     useUpdateAttribute,
 } from '@/src/routes/catalog/hooks/catalog'
 import { Button } from '@/src/shared/components/ui/button'
-import { Checkbox } from '@/src/shared/components/ui/Checkbox'
+import {
+    ToggleGroup,
+    ToggleGroupItem,
+} from '@/src/shared/components/ui/ToggleGroup'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { Input } from '@/src/shared/components/ui/Input'
-import { RadioGroup, RadioGroupItem } from '@/src/shared/components/ui/RadioGroup'
-import ColorPicker from './components/ColorPicker'
+import ColorTab from './components/ColorTab'
+import SizeTab from './components/SizeTab'
 import VariableSettings from './components/VariableSettings'
 import VariableValues from './components/VariableValues'
 import {
@@ -105,7 +108,6 @@ const VariableForm = ({ editId }: { editId: string | null }) => {
         control: methods.control,
         name: 'formDisplayControl',
     })
-    const [colorHex, setColorHex] = useState('#d64545')
     const [presetEnabled, setPresetEnabled] = useState(false)
     const [presetCode, setPresetCode] = useState('')
 
@@ -175,40 +177,12 @@ const VariableForm = ({ editId }: { editId: string | null }) => {
         <FormProvider {...methods}>
             <form
                 id="add-update-variable-form"
-                className="flex w-full flex-col gap-4"
+                className="flex w-full flex-col gap-4 bg-surface-container-lowest p-6"
                 dir="rtl"
                 onSubmit={methods.handleSubmit(onSubmit)}
             >
-                <div className="flex flex-row items-center justify-end gap-2">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => push('/admin/catalog?sub=variable')}
-                    >
-                        انصراف
-                    </Button>
-                    {isEditing && (
-                        <Button
-                            type="button"
-                            variant="error"
-                            onClick={handleDelete}
-                            isLoading={isDeleting}
-                            disabled={isPending}
-                        >
-                            حذف ویژگی
-                        </Button>
-                    )}
-                    <Button
-                        type="submit"
-                        variant="primary"
-                        isLoading={isPending}
-                        disabled={isPending}
-                    >
-                        {isEditing ? 'ذخیره تغییرات' : 'ثبت ویژگی'}
-                    </Button>
-                </div>
 
-                <div className="grid grid-cols-1 gap-4 rounded-card-lg bg-surface-container-lowest p-6 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 rounded-card-lg sm:grid-cols-2">
                     <Controller
                         control={methods.control}
                         name="name"
@@ -222,38 +196,7 @@ const VariableForm = ({ editId }: { editId: string | null }) => {
                             />
                         )}
                     />
-                    <div className="flex flex-col gap-3 sm:col-span-2">
-                        <label className="flex items-center gap-2 text-label-md text-on-surface">
-                            <Checkbox
-                                checked={presetEnabled}
-                                onCheckedChange={(checked) => {
-                                    const enabled = checked === true
-                                    setPresetEnabled(enabled)
-                                    if (!enabled) setPresetCode('')
-                                }}
-                            />
-                            استفاده از کد آماده
-                        </label>
-                        <RadioGroup
-                            value={presetCode}
-                            onValueChange={applyPreset}
-                            disabled={!presetEnabled}
-                            className="grid grid-cols-2 gap-3 sm:grid-cols-5"
-                        >
-                            {PRESET_ATTRIBUTES.map((preset) => (
-                                <label
-                                    key={preset.code}
-                                    className="flex items-center gap-2 rounded-container-lg bg-surface-container-high px-3 py-3 text-label-md text-on-surface"
-                                >
-                                    <RadioGroupItem
-                                        value={preset.code}
-                                        disabled={!presetEnabled}
-                                    />
-                                    {preset.name}
-                                </label>
-                            ))}
-                        </RadioGroup>
-                    </div>
+
                     <Controller
                         control={methods.control}
                         name="inputType"
@@ -307,19 +250,8 @@ const VariableForm = ({ editId }: { editId: string | null }) => {
                             />
                         )}
                     />
-                    {formDisplayControl === 'SWATCH' && (
-                        <div className="sm:col-span-2">
-                            <ColorPicker
-                                value={colorHex}
-                                onChange={(hex) => {
-                                    if (hex) setColorHex(hex)
-                                }}
-                            />
-                        </div>
-                    )}
                     <VariableValues
                         formDisplayControl={formDisplayControl ?? ''}
-                        colorHex={colorHex}
                     />
                     <Controller
                         control={methods.control}
@@ -338,16 +270,81 @@ const VariableForm = ({ editId }: { editId: string | null }) => {
                 </div>
 
                 <VariableSettings />
+                <div className="flex flex-row items-center justify-end gap-2">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => push('/admin/catalog?sub=variable')}
+                    >
+                        انصراف
+                    </Button>
+                    {isEditing && (
+                        <Button
+                            type="button"
+                            variant="error"
+                            onClick={handleDelete}
+                            isLoading={isDeleting}
+                            disabled={isPending}
+                        >
+                            حذف ویژگی
+                        </Button>
+                    )}
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        isLoading={isPending}
+                        disabled={isPending}
+                    >
+                        {isEditing ? 'ذخیره تغییرات' : 'ثبت ویژگی'}
+                    </Button>
+                </div>
             </form>
         </FormProvider>
     )
 }
 
+const VARIABLE_SECTIONS = [
+    { value: 'variable', label: 'ویژگی' },
+    { value: 'size', label: 'سایز' },
+    { value: 'color', label: 'رنگ' },
+] as const
+
+type VariableSection = (typeof VARIABLE_SECTIONS)[number]['value']
+
 const AddAndUpdateVariable = () => {
     const params = useParams<{ id?: string }>()
     const editId = params?.id ?? null
+    const [section, setSection] = useState<VariableSection>('variable')
 
-    return <VariableForm key={editId ?? 'new'} editId={editId} />
+    return (
+        <div className="flex w-full flex-col gap-4" dir="rtl">
+            <ToggleGroup
+                type="single"
+                value={section}
+                onValueChange={(value) => {
+                    if (value) setSection(value as VariableSection)
+                }}
+                variant="filled"
+                className="w-full rounded-container-md! bg-surface-container-lowest p-2"
+            >
+                {VARIABLE_SECTIONS.map((item) => (
+                    <ToggleGroupItem
+                        key={item.value}
+                        value={item.value}
+                        className="flex-1"
+                    >
+                        {item.label}
+                    </ToggleGroupItem>
+                ))}
+            </ToggleGroup>
+
+            {section === 'variable' ? (
+                <VariableForm key={editId ?? 'new'} editId={editId} />
+            ) : null}
+            {section === 'size' ? <SizeTab /> : null}
+            {section === 'color' ? <ColorTab /> : null}
+        </div>
+    )
 }
 
 export default AddAndUpdateVariable

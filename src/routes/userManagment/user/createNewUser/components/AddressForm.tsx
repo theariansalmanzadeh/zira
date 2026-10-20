@@ -27,9 +27,10 @@ const FormSection = ({ title, children }: FormSectionProps) => (
 
 type AddressFormProps = {
     onContinue?: () => void
+    onBack?: () => void
 }
 
-const AddressForm = ({ onContinue }: AddressFormProps) => {
+const AddressForm = ({ onContinue, onBack }: AddressFormProps) => {
     const {
         control,
         trigger,
@@ -169,75 +170,29 @@ const AddressForm = ({ onContinue }: AddressFormProps) => {
                 />
             </FormSection>
 
-            <FormSection title="تماس">
-                <Controller
-                    name="mobilePhone1"
-                    control={control}
-                    render={({ field }) => (
-                        <Input
-                            label="تلفن همراه ۱"
-                            placeholder={PHONE_PLACEHOLDER}
-                            value={field.value ?? ''}
-                            onChange={field.onChange}
-                            error={!!errors.mobilePhone1}
-                            msg={errors.mobilePhone1?.message}
-                        />
-                    )}
-                />
-                <Controller
-                    name="mobilePhone2"
-                    control={control}
-                    render={({ field }) => (
-                        <Input
-                            label="تلفن همراه ۲"
-                            placeholder={PHONE_PLACEHOLDER}
-                            value={field.value ?? ''}
-                            onChange={field.onChange}
-                            error={!!errors.mobilePhone2}
-                            msg={errors.mobilePhone2?.message}
-                        />
-                    )}
-                />
-                <Controller
-                    name="contactLandline"
-                    control={control}
-                    render={({ field }) => (
-                        <Input
-                            label="تلفن ثابت"
-                            placeholder={PHONE_PLACEHOLDER}
-                            value={field.value ?? ''}
-                            onChange={field.onChange}
-                            error={!!errors.contactLandline}
-                            msg={errors.contactLandline?.message}
-                        />
-                    )}
-                />
-                <Controller
-                    name="contactEmail"
-                    control={control}
-                    render={({ field }) => (
-                        <Input
-                            label="ایمیل"
-                            type="email"
-                            value={field.value ?? ''}
-                            onChange={field.onChange}
-                            error={!!errors.contactEmail}
-                            msg={errors.contactEmail?.message}
-                        />
-                    )}
-                />
-            </FormSection>
-
             {onContinue ? (
-                <Button
-                    type="button"
-                    variant="primary"
-                    size="lg"
-                    className="w-full text-label-lg"
-                    onClick={handleContinue}
-                >
-                    ادامه
-                </Button>
+                <div className="flex flex-row-reverse gap-3">
+                    <Button
+                        type="button"
+                        variant="primary"
+                        size="lg"
+                        className="w-full text-label-lg"
+                        onClick={handleContinue}
+                    >
+                        ادامه
+                    </Button>
+                    {onBack ? (
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="lg"
+                            className="text-label-lg"
+                            onClick={onBack}
+                        >
+                            بازگشت
+                        </Button>
+                    ) : null}
+                </div>
             ) : null}
         </div>
     )

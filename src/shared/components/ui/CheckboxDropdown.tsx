@@ -9,13 +9,18 @@ import {
 } from '@shared/components/ui/DropdownMenu'
 import { cn } from '@shared/libs/utils'
 import { Checkbox } from './Checkbox'
+import ColorPill from './ColorPill'
 import type { FormDropdownOption } from './FormDropdown'
 import { Pill } from './Pill'
+
+export type CheckboxDropdownOption = FormDropdownOption & {
+    hex?: string
+}
 
 export type CheckboxDropdownProps = {
     label: string
     placeholder?: string
-    options: FormDropdownOption[]
+    options: CheckboxDropdownOption[]
     values: string[]
     onChange: (values: string[]) => void
 }
@@ -83,7 +88,15 @@ const CheckboxDropdown = ({
                                 toggleValue(option.value)
                             }}
                         >
-                            {option.label}
+                            <span className="flex items-center gap-2">
+                                {option.hex ? (
+                                    <span
+                                        className="size-4 shrink-0 rounded-md border border-outline-variant"
+                                        style={{ backgroundColor: option.hex }}
+                                    />
+                                ) : null}
+                                {option.label}
+                            </span>
                             <Checkbox
                                 checked={values.includes(option.value)}
                                 className="pointer-events-none"
@@ -94,14 +107,23 @@ const CheckboxDropdown = ({
             </DropdownMenu>
             {selectedOptions.length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-2">
-                    {selectedOptions.map((option) => (
-                        <Pill
-                            key={option.value}
-                            variant="primary"
-                            text={option.label}
-                            onClose={() => toggleValue(option.value)}
-                        />
-                    ))}
+                    {selectedOptions.map((option) =>
+                        option.hex ? (
+                            <ColorPill
+                                key={option.value}
+                                hex={option.hex}
+                                label={option.label}
+                                onClose={() => toggleValue(option.value)}
+                            />
+                        ) : (
+                            <Pill
+                                key={option.value}
+                                variant="primary"
+                                text={option.label}
+                                onClose={() => toggleValue(option.value)}
+                            />
+                        )
+                    )}
                 </div>
             )}
         </div>

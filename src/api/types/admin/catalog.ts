@@ -303,7 +303,19 @@ export type CellIn = {
   size_id: string;
   color_id: string;
   base_code?: string;
+  display_name?: string;
 };
+
+export type ProductNamePart =
+  | 'MAIN_CATEGORY'
+  | 'MID_CATEGORY'
+  | 'SUB_CATEGORY'
+  | 'BRAND'
+  | 'MATERIAL'
+  | 'MODEL'
+  | 'SIZE'
+  | 'COLOR'
+  | 'CUSTOM';
 
 export type ColorIn = {
   code: string;
@@ -643,12 +655,13 @@ export type ProductCellsIn = {
 export type ProductCreateIn = {
   category_id: string;
   brand_id: string;
-  material_id: string;
-  model_line: string;
   unit_id: string;
   size_ids: Array<string>;
   color_ids: Array<string>;
   cells: Array<CellIn>;
+  attributes?: Array<AttributeRowIn>;
+  name_parts?: Array<ProductNamePart | string>;
+  name?: string | null;
   draft_id?: string | null;
   base_code?: string;
 };

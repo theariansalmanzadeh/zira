@@ -406,7 +406,7 @@ export type ContractDirectionEnum = "INCREASE" | "DECREASE"
 
 export type ContractRoundingEnum = "NONE" | "R1000" | "R10000" | "R100000"
 
-export type ContractStatusEnum = "DRAFT" | "APPLIED" | "CANCELLED"
+export type ContractStatusEnum = "DRAFT" | "APPLIED" | "ACTIVE" | "CANCELLED"
 
 export type ContractCreateIn = {
     name: string
@@ -420,13 +420,6 @@ export type ContractCreateIn = {
     valid_to: string
     supplier_id?: string | null
     description?: string
-    scopes: Array<ContractScopeIn>
-}
-
-export type ContractScopeIn = {
-    brand_id?: string | null
-    category_id?: string | null
-    item_id?: string | null
 }
 
 export type ContractDetailOut = {
@@ -472,7 +465,6 @@ export type ContractUpdateIn = {
     valid_to?: string | null
     supplier_id?: string | null
     description?: string | null
-    scopes?: Array<ContractScopeIn> | null
 }
 
 export type ContractPreviewOut = {

@@ -11,13 +11,15 @@ import type { BranchListItem } from '@/src/api/types/admin/organization'
 import { useListBranches } from '@/src/routes/branches/hooks/organization'
 import { useListDepartments } from '@/src/routes/userManagment/hooks/departments'
 import { useListStaffUsers } from '@/src/routes/userManagment/hooks/user'
+import { toEnglishDigits } from '@/src/shared/schema/generalSchema'
 import { OCCUPATION_INFO_FIELDS, type NewUserFormValues } from '../schema'
 
 type OccupationInfoProps = {
     onContinue?: () => void
+    onBack?: () => void
 }
 
-const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
+const OccupationInfo = ({ onContinue, onBack }: OccupationInfoProps) => {
     const {
         control,
         setValue,
@@ -27,6 +29,10 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
     const { data: departments } = useListDepartments()
     const { data: staffUsers } = useListStaffUsers()
     const { data: branchesData } = useListBranches()
+    const hasPercentageSalesContract = useWatch({
+        control,
+        name: 'hasPercentageSalesContract',
+    })
 
     const departmentOptions = useMemo(
         () =>
@@ -52,7 +58,7 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
         const branches: BranchListItem[] = Array.isArray(branchesData)
             ? branchesData
             : ((branchesData as { results?: BranchListItem[] } | undefined)
-                  ?.results ?? [])
+                ?.results ?? [])
 
         return branches.map((branch) => ({
             label: branch.name,
@@ -145,7 +151,7 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
                         </div>
                     </div>
                     {errors.activityDepartment?.message ||
-                    errors.directManager?.message ? (
+                        errors.directManager?.message ? (
                         <div className='flex flex-col gap-1'>
                             {errors.activityDepartment?.message ? (
                                 <span className='text-label-sm text-error'>
@@ -168,13 +174,6 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
                             <span className='text-label-md text-outline'>
                                 هر کاربر تنها عضو یک شعبه است؛ تخصیص جدید جایگزین
                                 شعبه فعلی می‌شود.
-                            </span>
-                        </div>
-
-                        <div className='flex flex-row flex-wrap items-center gap-2 text-label-md text-on-surface-variant'>
-                            <span>شعبه فعلی:</span>
-                            <span className='rounded-full bg-surface-container-high px-2.5 py-0.5 text-label-sm text-on-surface-variant'>
-                                {assignedBranchLabel || 'تخصیص داده نشده'}
                             </span>
                         </div>
 
@@ -205,6 +204,12 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
                                 />
                                 تخصیص به شعبه
                             </Button>
+                            <div className='flex flex-row flex-wrap items-center gap-2 text-label-md text-on-surface-variant'>
+                                <span>شعبه فعلی:</span>
+                                <span className='rounded-full bg-surface-container-high px-2.5 py-0.5 text-label-sm text-on-surface-variant'>
+                                    {assignedBranchLabel || 'تخصیص داده نشده'}
+                                </span>
+                            </div>
                         </div>
                         {errors.assignedBranch?.message ? (
                             <span className='text-label-sm text-error'>
@@ -213,26 +218,50 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
                         ) : null}
                     </div>
 
-                    <div className='flex flex-row items-center justify-between gap-4 rounded-card-md border border-outline-variant px-4 py-3'>
-                        <div className='flex flex-col gap-1'>
-                            <span className='text-label-lg font-semibold text-on-surface'>
-                                قرارداد فروش درصدی
-                            </span>
-                            <span className='text-label-md text-outline'>
-                                با فعال‌سازی، امکان تعیین درصد پورسانت فروش فراهم
-                                می‌شود.
-                            </span>
+                    <div className='flex flex-col gap-4 rounded-card-md border border-outline-variant px-4 py-3'>
+                        <div className='flex flex-row items-center justify-between gap-4'>
+                            <div className='flex flex-col gap-1'>
+                                <span className='text-label-lg font-semibold text-on-surface'>
+                                    قرارداد فروش درصدی
+                                </span>
+                                <span className='text-label-md text-outline'>
+                                    با فعال‌سازی، امکان تعیین درصد پورسانت فروش فراهم
+                                    می‌شود.
+                                </span>
+                            </div>
+                            <Controller
+                                name='hasPercentageSalesContract'
+                                control={control}
+                                render={({ field }) => (
+                                    <Switch
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                )}
+                            />
                         </div>
-                        <Controller
-                            name='hasPercentageSalesContract'
-                            control={control}
-                            render={({ field }) => (
-                                <Switch
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                />
-                            )}
-                        />
+                        {hasPercentageSalesContract ? (
+                            <Controller
+                                name='commissionPercent'
+                                control={control}
+                                render={({ field }) => (
+                                    <Input
+                                        type='text'
+                                        inputMode='numeric'
+                                        label='درصد فروش'
+                                        value={field.value}
+                                        onChange={(value) => {
+                                            const digits = toEnglishDigits(value)
+                                            if (/^\d*$/.test(digits)) {
+                                                field.onChange(digits)
+                                            }
+                                        }}
+                                        error={!!errors.commissionPercent}
+                                        msg={errors.commissionPercent?.message}
+                                    />
+                                )}
+                            />
+                        ) : null}
                         {errors.activityDepartment?.message ? (
                             <span className='text-label-sm text-error'>
                                 {errors.activityDepartment.message}
@@ -248,15 +277,28 @@ const OccupationInfo = ({ onContinue }: OccupationInfoProps) => {
             </div>
 
             {onContinue ? (
-                <Button
-                    type='button'
-                    variant='primary'
-                    size='lg'
-                    className='w-full text-label-lg'
-                    onClick={handleContinue}
-                >
-                    ادامه
-                </Button>
+                <div className='flex flex-row-reverse gap-3'>
+                    <Button
+                        type='button'
+                        variant='primary'
+                        size='lg'
+                        className='w-full text-label-lg'
+                        onClick={handleContinue}
+                    >
+                        ادامه
+                    </Button>
+                    {onBack ? (
+                        <Button
+                            type='button'
+                            variant='outline'
+                            size='lg'
+                            className='text-label-lg'
+                            onClick={onBack}
+                        >
+                            بازگشت
+                        </Button>
+                    ) : null}
+                </div>
             ) : null}
         </div>
     )

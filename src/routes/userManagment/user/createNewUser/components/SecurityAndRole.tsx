@@ -16,13 +16,14 @@ import { SECURITY_AND_ROLE_FIELDS, type NewUserFormValues } from '../schema'
 
 type SecurityAndRoleProps = {
     onContinue?: () => void
+    onBack?: () => void
 }
 
 const FieldHint = ({ children }: { children: React.ReactNode }) => (
     <span className='mt-1.5 text-label-sm text-outline'>{children}</span>
 )
 
-const SecurityAndRole = ({ onContinue }: SecurityAndRoleProps) => {
+const SecurityAndRole = ({ onContinue, onBack }: SecurityAndRoleProps) => {
     const {
         control,
         trigger,
@@ -180,15 +181,28 @@ const SecurityAndRole = ({ onContinue }: SecurityAndRoleProps) => {
             </div>
 
             {onContinue ? (
-                <Button
-                    type='button'
-                    variant='primary'
-                    size='lg'
-                    className='w-full text-label-lg'
-                    onClick={handleContinue}
-                >
-                    ادامه
-                </Button>
+                <div className='flex flex-row-reverse gap-3'>
+                    <Button
+                        type='button'
+                        variant='primary'
+                        size='lg'
+                        className='w-full text-label-lg'
+                        onClick={handleContinue}
+                    >
+                        ادامه
+                    </Button>
+                    {onBack ? (
+                        <Button
+                            type='button'
+                            variant='outline'
+                            size='lg'
+                            className='text-label-lg'
+                            onClick={onBack}
+                        >
+                            بازگشت
+                        </Button>
+                    ) : null}
+                </div>
             ) : null}
         </div>
     )

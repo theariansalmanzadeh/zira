@@ -14,6 +14,10 @@ export const EVENTS_SUB_SIDEBAR_SECTIONS: readonly SubSidebarSection[] = [
         title: 'سامانه',
         links: [
             {
+                label: 'امنیت',
+                href: '/admin/events/security',
+            },
+            {
                 label: 'نگه‌داری و آرشیو',
                 href: '/admin/events?sub=maintenance',
             },
@@ -78,6 +82,11 @@ export const sectionToHeading: Record<string, SectionHeading | null> = {
         subtitle: 'مشاهده اطلاعات نشست کاربر',
         hasBackButton: true,
     },
+    security: {
+        title: 'سیاست امنیتی',
+        subtitle: 'پیکربندی رمز عبور، ورود و محدودیت IP',
+        hasBackButton: true,
+    },
 }
 
 export const getEventsSectionKey = (sub: string): EventsSubParam =>
@@ -89,6 +98,9 @@ export const getEventsSectionKeyFromPath = (
     pathname: string,
     searchParams: Pick<URLSearchParams, 'get'>
 ): string => {
+    if (pathname.startsWith('/admin/events/security')) {
+        return 'security'
+    }
     if (pathname.startsWith('/admin/events/session/')) {
         return 'session-details'
     }

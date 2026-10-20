@@ -15,10 +15,15 @@ const DepartmentList = dynamic(
     () => import('@/src/routes/support/department/departmentList/DepartmentList'),
     { loading: () => <TableLoadingSkeleton isPending /> }
 )
+const ColleagueMessages = dynamic(
+    () => import('@/src/routes/support/colleagueMessages/ColleagueMessages'),
+    { loading: () => <TableLoadingSkeleton isPending /> }
+)
 const SUPPORT_PAGE_COMPONENTS: Record<string, ComponentType> = {
     dashboard: SupportDashboard,
     ticket: TicketsList,
     department: DepartmentList,
+    'colleague-messages': ColleagueMessages,
 }
 
 async function SupportPage({

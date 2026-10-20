@@ -60,6 +60,10 @@ const CustomerChangeCredit = dynamic(
   () => import('./components/CustomerChangeCredit'),
   { ssr: false }
 );
+const NewCredit = dynamic(
+  () => import('@/src/routes/customers/newCredit/NewCredit'),
+  { ssr: false }
+);
 const AddCustomer = dynamic(
   () => import('./components/addCustomer/AddCustomer'),
   { ssr: false }
@@ -151,6 +155,13 @@ const SelectUsers = dynamic(
   () => import('./components/selectUsers'),
   { ssr: false }
 );
+const NewColleagueMessage = dynamic(
+  () =>
+    import(
+      '@/src/routes/support/colleagueMessages/components/NewColleagueMessage'
+    ),
+  { ssr: false }
+);
 
 const MODAL_COMPONENTS: Record<
   ModalType,
@@ -169,6 +180,7 @@ const MODAL_COMPONENTS: Record<
   [ModalTypes.EDIT_CUSTOMER]: EditCustomer,
   [ModalTypes.CHANGE_CUSTOMER_LEVEL]: ChangeCustomerLevel,
   [ModalTypes.CUSTOMER_CHANGE_CREDIT]: CustomerChangeCredit,
+  [ModalTypes.NEW_CREDIT]: NewCredit,
   [ModalTypes.ADD_CUSTOMER]: AddCustomer,
   [ModalTypes.ADD_CUSTOMER_DOCUMENTS]: AddCustomerDocuments,
   [ModalTypes.ADD_CUSTOMER_GUARANTEE]: AddCustomerGuarantee,
@@ -191,6 +203,7 @@ const MODAL_COMPONENTS: Record<
   [ModalTypes.EXCEL_OUTPUT]: ExcelOutput,
   [ModalTypes.SELECT_BASED_ON_ROLE]: SelectBasedOnRole,
   [ModalTypes.SELECT_USERS]: SelectUsers,
+  [ModalTypes.NEW_COLLEAGUE_MESSAGE]: NewColleagueMessage,
 };
 
 const MODAL_CONFIG: Record<
@@ -267,6 +280,12 @@ const MODAL_CONFIG: Record<
   },
   [ModalTypes.CUSTOMER_CHANGE_CREDIT]: {
     title: 'تغییر اعتبار کاربر',
+    showCloseButton: true,
+    className:
+      'min-w-[480px]! max-h-[90vh] w-full max-w-[520px]! overflow-y-auto border-0 sm:max-w-[520px]!',
+  },
+  [ModalTypes.NEW_CREDIT]: {
+    title: 'حساب اعتباری جدید',
     showCloseButton: true,
     className:
       'min-w-[480px]! max-h-[90vh] w-full max-w-[520px]! overflow-y-auto border-0 sm:max-w-[520px]!',
@@ -401,6 +420,12 @@ const MODAL_CONFIG: Record<
     showCloseButton: true,
     className:
       'min-w-0! max-h-[90vh] w-full max-w-[720px]! overflow-y-auto border-0 sm:max-w-[720px]!',
+  },
+  [ModalTypes.NEW_COLLEAGUE_MESSAGE]: {
+    title: 'پیام جدید',
+    showCloseButton: true,
+    className:
+      'min-w-[480px]! max-h-[90vh] w-full max-w-[520px]! overflow-y-auto border-0 sm:max-w-[520px]!',
   },
 };
 

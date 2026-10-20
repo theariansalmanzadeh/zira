@@ -219,7 +219,10 @@ const RequestDetails = () => {
                 <UploadedDocuments requestId={requestId} />
             </div>
             <div className="flex flex-col gap-4">
-                <ExpertAllocationsCard />
+                <ExpertAllocationsCard
+                    customerId={customerId}
+                    status={request?.status}
+                />
                 {isPendingStatus && <DecisionCard />}
             </div>
         </div>

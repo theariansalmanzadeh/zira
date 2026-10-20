@@ -149,10 +149,6 @@ export const sectionToHeading: Record<string, SectionHeading> = {
         title: 'ترجیحات',
         subtitle: 'اطلاعات حساب و تنظیم اعلان‌ها',
     },
-    notification: {
-        title: 'اعلان‌ها',
-        subtitle: 'اعلان‌ها و هشدارها',
-    },
 }
 
 export const getUserManagementSectionKey = (
@@ -177,7 +173,6 @@ export const getUserManagementSectionKey = (
     if (pathname.includes('/announcement/new')) return 'create-announcement'
     if (pathname.includes('/announcement/')) return 'announcement-details'
     if (pathname.includes('/preferences')) return 'preferences'
-    if (pathname.includes('/notification')) return 'notification'
 
     const isIndex =
         pathname === '/admin/user-management' ||
@@ -223,10 +218,6 @@ export const USER_MANAGEMENT_SUB_SIDEBAR_SECTIONS: readonly SubSidebarSection[] 
                 {
                     label: 'ترجیحات',
                     href: '/admin/user-management/preferences',
-                },
-                {
-                    label: 'اعلان‌ها و هشدارها',
-                    href: '/admin/user-management/notification',
                 },
             ],
         },

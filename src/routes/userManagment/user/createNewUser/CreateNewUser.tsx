@@ -4,7 +4,7 @@ import { Button } from '@/src/shared/components/ui/button'
 import { Spinner } from '@/src/shared/components/ui/spinner'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, type FieldErrors } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { useCreateStaffUser } from '@/src/routes/userManagment/hooks/user'
@@ -46,6 +46,37 @@ const CREATE_USER_STEPS: StepperStatusStep[] = [
     { id: FormSteps.documents, label: 'مدارک', status: 'not_reached' },
 ]
 
+const STEP_ORDER: FormStep[] = [
+    FormSteps.identity,
+    FormSteps.ADDRESS,
+    FormSteps.emergencyContact,
+    FormSteps.bankInfo,
+    FormSteps.securityAndRole,
+    FormSteps.occupationInfo,
+    FormSteps.documents,
+]
+
+const collectErrorMessages = (errors: FieldErrors): string[] => {
+    const messages: string[] = []
+
+    const walk = (value: unknown) => {
+        if (!value || typeof value !== 'object') return
+
+        const record = value as Record<string, unknown>
+        if (typeof record.message === 'string' && record.message) {
+            messages.push(record.message)
+        }
+
+        Object.entries(record).forEach(([key, entry]) => {
+            if (key === 'ref' || key === 'message' || key === 'type') return
+            walk(entry)
+        })
+    }
+
+    walk(errors)
+    return [...new Set(messages)]
+}
+
 const toFormSteps = (activeStep: FormStep): StepperStatusStep[] => {
     const activeIndex = CREATE_USER_STEPS.findIndex((step) => step.id === activeStep)
 
@@ -69,12 +100,20 @@ const CreateNewUser = () => {
 
     const activeStep = formStep.find((step) => step.status === 'pending')?.id
 
+    const goBack = () => {
+        const index = STEP_ORDER.indexOf(activeStep as FormStep)
+        if (index <= 0) return
+        setFormStep(toFormSteps(STEP_ORDER[index - 1]))
+    }
+
     const methods = useForm<NewUserFormValues>({
         resolver: zodResolver(newUserFormSchema),
         defaultValues: NEW_USER_DEFAULT_VALUES,
         mode: 'onSubmit',
         reValidateMode: 'onBlur',
     })
+
+    const validationErrors = collectErrorMessages(methods.formState.errors)
 
     const onSubmit = (values: NewUserFormValues) => {
         createStaffUser(toCreateStaffUserRequest(values), {
@@ -91,12 +130,12 @@ const CreateNewUser = () => {
     return (
         <FormProvider {...methods}>
             <div
-                className='mx-auto flex w-full max-w-[900px] flex-col gap-6'
+                className='mx-auto flex w-full max-w-7/8 flex-col gap-6'
                 dir='rtl'
             >
                 <StepperStatus steps={formStep} indexBased />
 
-                <div className='mx-auto w-full max-w-[900px] pt-3'>
+                <div className='mx-auto w-full pt-3'>
                     {activeStep === FormSteps.identity && (
                         <IdentityForm
                             onContinue={() =>
@@ -106,6 +145,7 @@ const CreateNewUser = () => {
                     )}
                     {activeStep === FormSteps.ADDRESS && (
                         <AddressForm
+                            onBack={goBack}
                             onContinue={() =>
                                 setFormStep(toFormSteps(FormSteps.emergencyContact))
                             }
@@ -113,6 +153,7 @@ const CreateNewUser = () => {
                     )}
                     {activeStep === FormSteps.emergencyContact && (
                         <EmergencyForm
+                            onBack={goBack}
                             onContinue={() =>
                                 setFormStep(toFormSteps(FormSteps.bankInfo))
                             }
@@ -120,6 +161,7 @@ const CreateNewUser = () => {
                     )}
                     {activeStep === FormSteps.bankInfo && (
                         <BankInfo
+                            onBack={goBack}
                             onContinue={() =>
                                 setFormStep(toFormSteps(FormSteps.securityAndRole))
                             }
@@ -127,6 +169,7 @@ const CreateNewUser = () => {
                     )}
                     {activeStep === FormSteps.securityAndRole && (
                         <SecurityAndRole
+                            onBack={goBack}
                             onContinue={() =>
                                 setFormStep(toFormSteps(FormSteps.occupationInfo))
                             }
@@ -134,6 +177,7 @@ const CreateNewUser = () => {
                     )}
                     {activeStep === FormSteps.occupationInfo && (
                         <OccupationInfo
+                            onBack={goBack}
                             onContinue={() =>
                                 setFormStep(toFormSteps(FormSteps.documents))
                             }
@@ -142,20 +186,41 @@ const CreateNewUser = () => {
                     {activeStep === FormSteps.documents && (
                         <>
                             <DocumentsForm />
-                            <Button
-                                type='button'
-                                variant='primary'
-                                size='lg'
-                                className='w-full text-label-lg'
-                                disabled={isPending}
-                                onClick={methods.handleSubmit(onSubmit)}
-                            >
-                                {isPending ? (
-                                    <Spinner className='size-4' />
-                                ) : (
-                                    'ثبت کاربر'
-                                )}
-                            </Button>
+                            {validationErrors.length > 0 && (
+                                <ul className='mb-3 list-disc rounded-container-lg bg-warning-container px-6 py-3 text-warning'>
+                                    {validationErrors.map((message) => (
+                                        <li key={message} className='text-label-md text-warning'>
+                                            {message}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                            <div className='flex flex-row-reverse gap-3'>
+                                <Button
+                                    type='button'
+                                    variant='primary'
+                                    size='lg'
+                                    className='w-full text-label-lg'
+                                    disabled={isPending}
+                                    onClick={methods.handleSubmit(onSubmit)}
+                                >
+                                    {isPending ? (
+                                        <Spinner className='size-4' />
+                                    ) : (
+                                        'ثبت کاربر'
+                                    )}
+                                </Button>
+                                <Button
+                                    type='button'
+                                    variant='outline'
+                                    size='lg'
+                                    className='text-label-lg'
+                                    disabled={isPending}
+                                    onClick={goBack}
+                                >
+                                    بازگشت
+                                </Button>
+                            </div>
                         </>
                     )}
                 </div>

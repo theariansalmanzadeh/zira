@@ -9,10 +9,8 @@ import { z } from 'zod'
 const requiredString = (message: string) => z.string().trim().min(1, message)
 const optionalString = z.string().trim().optional().or(z.literal(''))
 
-const toIban = (value: string) => {
-    const compact = toEnglishDigits(value).replace(/[\s-]/g, '').toUpperCase()
-    return compact.startsWith('IR') ? compact : `IR${compact}`
-}
+const toShebaDigits = (value: string) =>
+    toEnglishDigits(value).replace(/[\s-]/g, '').replace(/^IR/i, '')
 
 export const bankInfoSchema = z.object({
     bankName: requiredString('نام بانک الزامی است'),
@@ -22,10 +20,10 @@ export const bankInfoSchema = z.object({
         .string()
         .trim()
         .min(1, 'شماره شبا الزامی است')
-        .transform(toIban)
+        .transform(toShebaDigits)
         .refine(
-            (value) => /^IR\d{24}$/.test(value),
-            'شماره شبا باید با IR شروع شود و ۲۶ کاراکتر باشد'
+            (value) => /^\d{24}$/.test(value),
+            'شماره شبا باید ۲۴ رقم باشد'
         ),
 })
 
@@ -49,6 +47,7 @@ export const occupationInfoSchema = z.object({
     destinationBranch: optionalString,
     assignedBranch: requiredString('شعبه تخصیص‌یافته الزامی است'),
     hasPercentageSalesContract: z.boolean(),
+    commissionPercent: z.string(),
 })
 
 const requiredDocumentSlots = REQUIRED_DOCUMENT_SLOTS.map((slot) => slot.value)
@@ -79,6 +78,16 @@ export const newUserFormSchema = identityFormSchema
     .merge(securityAndRoleSchema)
     .merge(occupationInfoSchema)
     .merge(documentsFormSchema)
+    .superRefine((values, ctx) => {
+        if (!values.hasPercentageSalesContract) return
+        if (!/^\d+$/.test(values.commissionPercent)) {
+            ctx.addIssue({
+                code: 'custom',
+                path: ['commissionPercent'],
+                message: 'درصد فروش باید فقط عدد باشد',
+            })
+        }
+    })
 
 export type NewUserFormValues = z.infer<typeof newUserFormSchema>
 
@@ -104,10 +113,6 @@ export const NEW_USER_DEFAULT_VALUES: NewUserFormValues = {
     addressEmail: '',
     mobilePhone: '',
     landlinePhone: '',
-    mobilePhone1: '',
-    mobilePhone2: '',
-    contactLandline: '',
-    contactEmail: '',
     contact1FirstName: '',
     contact1LastName: '',
     contact1Landline: '',
@@ -135,6 +140,7 @@ export const NEW_USER_DEFAULT_VALUES: NewUserFormValues = {
     destinationBranch: '',
     assignedBranch: '',
     hasPercentageSalesContract: false,
+    commissionPercent: '',
     documents: [],
 }
 
@@ -160,10 +166,6 @@ export const EDIT_USER_DEFAULT_VALUES: NewUserFormValues = {
     addressEmail: 'ali.rezaei@example.com',
     mobilePhone: '09121234567',
     landlinePhone: '02188776655',
-    mobilePhone1: '09121234567',
-    mobilePhone2: '',
-    contactLandline: '02188776655',
-    contactEmail: 'ali.rezaei@example.com',
     contact1FirstName: 'سارا',
     contact1LastName: 'رضایی',
     contact1Landline: '02144112233',
@@ -177,7 +179,7 @@ export const EDIT_USER_DEFAULT_VALUES: NewUserFormValues = {
     bankName: 'melli',
     accountNumber: '0102030405',
     cardNumber: '6037991234567890',
-    shebaNumber: 'IR120170000000123456789001',
+    shebaNumber: '120170000000123456789012',
     username: 'ali.rezaei',
     initialPassword: 'Password1',
     userType: 'STAFF',
@@ -191,6 +193,7 @@ export const EDIT_USER_DEFAULT_VALUES: NewUserFormValues = {
     destinationBranch: 'vanak',
     assignedBranch: 'vanak',
     hasPercentageSalesContract: true,
+    commissionPercent: '10',
     documents: [],
 }
 
@@ -219,10 +222,6 @@ export const ADDRESS_FIELDS = [
     'addressEmail',
     'mobilePhone',
     'landlinePhone',
-    'mobilePhone1',
-    'mobilePhone2',
-    'contactLandline',
-    'contactEmail',
 ] as const satisfies readonly FieldPath<NewUserFormValues>[]
 
 export const EMERGENCY_FIELDS = [
@@ -262,4 +261,5 @@ export const OCCUPATION_INFO_FIELDS = [
     'destinationBranch',
     'assignedBranch',
     'hasPercentageSalesContract',
+    'commissionPercent',
 ] as const satisfies readonly FieldPath<NewUserFormValues>[]

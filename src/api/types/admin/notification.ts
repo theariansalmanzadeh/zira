@@ -32,3 +32,23 @@ export type SendNotificationRequest = {
 }
 
 export type SendNotificationResponse = Notification
+
+export type NotificationSeenUser = {
+    user_id: string
+    username: string
+    first_name: string
+    last_name: string
+    seen_at: string
+}
+
+export type ListNotificationSeenUsersParams = {
+    page?: number
+    page_size?: number
+}
+
+export type ListNotificationSeenUsersResponse = {
+    total: number
+    page: number
+    page_size: number
+    results: NotificationSeenUser[]
+}

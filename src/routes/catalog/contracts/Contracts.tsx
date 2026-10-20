@@ -13,11 +13,7 @@ import TableHeader from './components/TableHeader'
 import ContractRow, { PricingRowProps } from './components/TableRow'
 import { TABLE_COLOUMN } from './constants'
 
-const CONTRACT_STATUSES: ContractStatusEnum[] = [
-    'DRAFT',
-    'APPLIED',
-    'CANCELLED',
-]
+const CONTRACT_STATUSES: ContractStatusEnum[] = ['ACTIVE', 'CANCELLED']
 
 const toContractRow = (contract: ContractOut): PricingRowProps => ({
     data: {
@@ -40,7 +36,7 @@ const Contracts = () => {
     const category = searchParams.get('cat')
     const status = CONTRACT_STATUSES.includes(category as ContractStatusEnum)
         ? (category as ContractStatusEnum)
-        : 'DRAFT'
+        : undefined
     const { data, isPending } = useListContracts({
         page: 1,
         page_size: 100,
@@ -52,7 +48,7 @@ const Contracts = () => {
         <div className='flex flex-col gap-3' dir='rtl'>
             <TableListLayout
                 TableColoumn={TABLE_COLOUMN}
-                value={status}
+                value={status ?? 'all'}
                 toggleButtonValue={ROUTE_CONFIGS.contracts.TOGGLE_BUTTON_VALUE}
             >
                 <div className='bg-surface-container-high rounded-card-lg p-2'>

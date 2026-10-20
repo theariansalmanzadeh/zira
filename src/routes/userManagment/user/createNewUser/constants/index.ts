@@ -31,27 +31,23 @@ export const CITY_OPTIONS: FormDropdownOption[] = [
     { label: 'شیراز', value: 'shiraz' },
 ]
 
-export const BANK_OPTIONS: FormDropdownOption[] = [
-    { label: 'ملی', value: 'melli' },
-    { label: 'ملت', value: 'mellat' },
-    { label: 'صادرات', value: 'saderat' },
-    { label: 'تجارت', value: 'tejarat' },
-    { label: 'پارسیان', value: 'parsian' },
-    { label: 'پاسارگاد', value: 'pasargad' },
-]
-
 export const USER_TYPE_OPTIONS: FormDropdownOption[] = [
     { label: 'کارمند', value: 'STAFF' },
     { label: 'مدیر ارشد', value: 'SUPERADMIN' },
 ]
 
 export const REQUIRED_DOCUMENT_SLOTS = [
-    { label: 'شناسنامه صفحه ۱', value: 'BIRTH_CERTIFICATE_PAGE_1' },
-    { label: 'شناسنامه صفحه ۲', value: 'BIRTH_CERTIFICATE_PAGE_2' },
-    { label: 'شناسنامه صفحه ۳', value: 'BIRTH_CERTIFICATE_PAGE_3' },
-    { label: 'شناسنامه صفحه ۴', value: 'BIRTH_CERTIFICATE_PAGE_4' },
-    { label: 'قرارداد', value: 'CONTRACT' },
-    { label: 'ضمانت', value: 'GUARANTEE' },
+    { label: 'تصویر کارت ملی', value: 'NATIONAL_CARD' },
+    { label: 'تصویر شناسنامه ۱', value: 'BIRTH_CERTIFICATE_PAGE_1' },
+    { label: 'تصویر شناسنامه ۲', value: 'BIRTH_CERTIFICATE_PAGE_2' },
+    { label: 'تصویر شناسنامه ۳', value: 'BIRTH_CERTIFICATE_PAGE_3' },
+    { label: 'تصویر شناسنامه ۴', value: 'BIRTH_CERTIFICATE_PAGE_4' },
+    { label: 'تصویر مدرک تحصیلی', value: 'EDUCATION_CERTIFICATE' },
+    { label: 'تصویر تاییدیه کد پستی', value: 'POSTAL_CODE_CONFIRMATION' },
+    { label: 'تصویر ضمانت', value: 'GUARANTEE' },
+    { label: 'تصویر قرارداد', value: 'CONTRACT' },
+    { label: 'عکس پرسنلی', value: 'PERSONNEL_PHOTO' },
+    { label: 'تصویر دوره‌ها', value: 'COURSES' },
 ] as const
 
 export const USER_ROLE_OPTIONS: FormDropdownOption[] = [

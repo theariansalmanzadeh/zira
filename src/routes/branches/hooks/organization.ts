@@ -21,6 +21,7 @@ import {
     getWarehouse,
     linkBranchWarehouse,
     listBranchAssortment,
+    listBranchBankAccounts,
     listBranchEmployees,
     listBranches,
     listBranchWarehouses,
@@ -44,6 +45,7 @@ import type {
     CreatePosDeviceRequest,
     CreateWarehouseRequest,
     LinkBranchWarehouseRequest,
+    ListBranchBankAccountsParams,
     ListBranchesParams,
     ListCashBoxesParams,
     ListPosDevicesParams,
@@ -74,6 +76,15 @@ export const organizationKeys = {
             [
                 ...organizationKeys.branches.detail(branchId),
                 'employees',
+            ] as const,
+        bankAccounts: (
+            branchId: string,
+            params?: ListBranchBankAccountsParams
+        ) =>
+            [
+                ...organizationKeys.branches.detail(branchId),
+                'bank-accounts',
+                params ?? {},
             ] as const,
         warehouses: (branchId: string) =>
             [
@@ -239,6 +250,24 @@ export const useGetBranchNetwork = (branchId: string, enabled = true) => {
             const result = await getBranchNetwork(branchId)
             if (!result.success) throw result.error
             return result.data
+        },
+    })
+}
+
+export const useListBranchBankAccounts = (
+    branchId: string,
+    params?: ListBranchBankAccountsParams,
+    enabled = true
+) => {
+    const queryParams = { page: 1, page_size: 100, ...params }
+
+    return useQuery({
+        queryKey: organizationKeys.branches.bankAccounts(branchId, queryParams),
+        enabled: Boolean(branchId) && enabled,
+        queryFn: async () => {
+            const result = await listBranchBankAccounts(branchId, queryParams)
+            if (!result.success) throw result.error
+            return result.data.results
         },
     })
 }

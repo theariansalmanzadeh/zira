@@ -104,7 +104,7 @@ const AddAndEditContract = ({ id }: AddAndEditContractProps) => {
             return
         }
 
-        createContract({ ...body, scopes: [] }, { onSuccess, onError })
+        createContract(body, { onSuccess, onError })
     }
 
     if (id && isPending) {

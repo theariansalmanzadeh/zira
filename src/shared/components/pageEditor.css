@@ -1,0 +1,113 @@
+.editor-shell {
+    min-height: 70vh;
+}
+
+.page-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 100%;
+}
+
+.grid-section {
+    min-height: 160px;
+    border: 1px dashed #d4d4d4;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.content-grid > [data-puck-component] {
+    min-width: 0;
+    width: auto;
+}
+
+.editor-block-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 22px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    background: #f3f3f3;
+    color: #444;
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: -1px;
+    cursor: grab;
+    user-select: none;
+}
+
+.editor-block-handle:active {
+    cursor: grabbing;
+}
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 16px;
+    align-items: start;
+    min-height: 120px;
+    width: 100%;
+}
+
+.content-grid [data-puck-component]:has([data-span='1']) {
+    grid-column: span 1;
+}
+.content-grid [data-puck-component]:has([data-span='2']) {
+    grid-column: span 2;
+}
+.content-grid [data-puck-component]:has([data-span='3']) {
+    grid-column: span 3;
+}
+.content-grid [data-puck-component]:has([data-span='4']) {
+    grid-column: span 4;
+}
+.content-grid [data-puck-component]:has([data-span='5']) {
+    grid-column: span 5;
+}
+.content-grid [data-puck-component]:has([data-span='6']) {
+    grid-column: span 6;
+}
+.content-grid [data-puck-component]:has([data-span='7']) {
+    grid-column: span 7;
+}
+.content-grid [data-puck-component]:has([data-span='8']) {
+    grid-column: span 8;
+}
+
+.image-block {
+    width: 100%;
+}
+
+.image-resize-wrapper {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+}
+
+.image-resize-handle {
+    position: absolute;
+    right: -6px;
+    bottom: -6px;
+    width: 14px;
+    height: 14px;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    background: #111;
+    cursor: ew-resize;
+}
+
+.text-format-menu {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.text-format-size {
+    height: 28px;
+    border: 1px solid #d4d4d4;
+    border-radius: 6px;
+    background: #fff;
+    padding: 0 8px;
+    font-size: 12px;
+}

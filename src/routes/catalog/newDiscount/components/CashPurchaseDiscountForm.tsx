@@ -2,6 +2,9 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
+import type { DiscountCreateIn } from '@/src/api/types/admin/pricing'
+import { formatPrice } from '@/src/shared/libs/formatter'
+import { onlyNumber } from '@/src/shared/schema/generalSchema'
 import AdornedInput from '@/src/shared/components/ui/AdornedInput'
 import CalendarButton from '@/src/shared/components/ui/CalendarButton'
 import { Button } from '@/src/shared/components/ui/button'
@@ -13,10 +16,17 @@ import {
 
 type CashPurchaseDiscountFormProps = {
     showSubmitButton?: boolean
+    onCreate: (input: DiscountCreateIn) => void
 }
+
+const toIso = (value?: Date) => (value ? value.toISOString() : null)
+
+const priceValue = (value: string) =>
+    value === '' ? '' : formatPrice(Number(value))
 
 const CashPurchaseDiscountForm = ({
     showSubmitButton = true,
+    onCreate,
 }: CashPurchaseDiscountFormProps) => {
     const { control, handleSubmit } = useForm<CashPurchaseDiscountValues>({
         resolver: zodResolver(cashPurchaseDiscountSchema),
@@ -24,7 +34,15 @@ const CashPurchaseDiscountForm = ({
     })
 
     const onSubmit = (data: CashPurchaseDiscountValues) => {
-        console.log(data)
+        onCreate({
+            kind: 'CASH',
+            value_type: 'PERCENT',
+            percent: data.discountAmount,
+            min_amount: data.minPurchaseAmount,
+            start_at: toIso(data.startDate),
+            end_at: toIso(data.endDate),
+            payment_scope: 'CASH',
+        })
     }
 
     return (
@@ -54,8 +72,8 @@ const CashPurchaseDiscountForm = ({
                         <AdornedInput
                             label='میزان تخفیف'
                             required
-                            value={field.value}
-                            onChange={field.onChange}
+                            value={priceValue(field.value)}
+                            onChange={(value) => field.onChange(onlyNumber(value))}
                             suffix='%'
                             msg={fieldState.error?.message}
                         />
@@ -68,8 +86,8 @@ const CashPurchaseDiscountForm = ({
                         <AdornedInput
                             label='حداقل مبلغ خرید'
                             required
-                            value={field.value}
-                            onChange={field.onChange}
+                            value={priceValue(field.value)}
+                            onChange={(value) => field.onChange(onlyNumber(value))}
                             suffix='تومان'
                             msg={fieldState.error?.message}
                         />

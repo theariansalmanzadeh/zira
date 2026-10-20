@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm, useWatch } from 'react-hook-form'
+import type { DiscountCreateIn } from '@/src/api/types/admin/pricing'
 import AdornedInput from '@/src/shared/components/ui/AdornedInput'
 import CalendarButton from '@/src/shared/components/ui/CalendarButton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/shared/components/ui/Tabs'
@@ -19,7 +20,13 @@ import {
 const tabTriggerClassName =
     'rounded-container-md flex-1 border-0 px-4 py-2 data-[state=active]:-mb-0 data-[state=active]:bg-surface-container-lowest data-[state=active]:text-on-surface data-[state=active]:shadow-sm data-[state=active]:after:hidden'
 
-const CombinedDiscountForm = () => {
+type CombinedDiscountFormProps = {
+    onCreate: (input: DiscountCreateIn) => void
+}
+
+const toIso = (value?: Date) => (value ? value.toISOString() : null)
+
+const CombinedDiscountForm = ({ onCreate }: CombinedDiscountFormProps) => {
     const { control, handleSubmit } = useForm<CombinedDiscountValues>({
         resolver: zodResolver(combinedDiscountSchema),
         defaultValues: COMBINED_DISCOUNT_DEFAULTS,
@@ -27,7 +34,17 @@ const CombinedDiscountForm = () => {
     const discountType = useWatch({ control, name: 'discountType' })
 
     const onSubmit = (data: CombinedDiscountValues) => {
-        console.log(data)
+        const isAmount = data.discountType === 'amount'
+
+        onCreate({
+            kind: 'BUNDLE',
+            value_type: isAmount ? 'AMOUNT' : 'PERCENT',
+            percent: isAmount ? null : data.discountValue,
+            fixed_amount: isAmount ? data.discountValue : null,
+            min_qty: data.minPurchaseCount,
+            start_at: toIso(data.startDate),
+            end_at: toIso(data.endDate),
+        })
     }
 
     return (

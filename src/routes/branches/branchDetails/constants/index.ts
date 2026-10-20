@@ -32,11 +32,11 @@ export const quickAccessValuesByLabel = (
 
     switch (label) {
         case 'انبارهای مربوطه':
-            return branch.warehouses.map((warehouse) => warehouse.warehouse_name)
+            return branch.warehouses.map((warehouse) => warehouse.name)
         case 'کالاهای مجاز':
             return []
         case 'دستگاه های POS':
-            return (branch.pos_devices ?? []).map((device) => device.title)
+            return branch.pos_devices.map((device) => device.title)
         case 'مجوزها':
             return (Object.keys(PERMIT_VALUE_LABELS) as (keyof typeof PERMIT_VALUE_LABELS)[])
                 .filter((key) => Boolean(branch.permit?.[key]))
@@ -92,6 +92,38 @@ export const TABLE_COLOUMN: TableFilterItem[] = [
     { id: 'initialBalance', header_label: 'موجودی اولیه', isChecked: true },
     { id: 'edit', header_label: 'ویرایش', isChecked: true },
     { id: 'remove', header_label: 'حذف', isChecked: true },
+]
+
+export const CASH_BOX_TABLE_COLOUMN: TableFilterItem[] = [
+    { id: 'code', header_label: 'کد', isChecked: true },
+    { id: 'title', header_label: 'عنوان', isChecked: true },
+    { id: 'opening_balance', header_label: 'موجودی اولیه', isChecked: true },
+    { id: 'is_active', header_label: 'وضعیت', isChecked: true },
+    { id: 'shift', header_label: 'شیفت', isChecked: true },
+    { id: 'cashier_name', header_label: 'صندوق‌دار', isChecked: true },
+    {
+        id: 'current_cash_balance',
+        header_label: 'موجودی فعلی',
+        isChecked: true,
+    },
+]
+
+export const CASH_BOX_SHIFT_LABEL: Record<string, string> = {
+    MORNING: 'صبح',
+    EVENING: 'عصر',
+    NIGHT: 'شب',
+}
+
+export const EMPLOYEE_TABLE_COLOUMN: TableFilterItem[] = [
+    { id: 'full_name', header_label: 'نام', isChecked: true },
+    { id: 'phone_number', header_label: 'شماره تماس', isChecked: true },
+    { id: 'national_id', header_label: 'کد ملی', isChecked: true },
+    { id: 'personnel_code', header_label: 'کد پرسنلی', isChecked: true },
+    { id: 'position', header_label: 'سمت', isChecked: true },
+    { id: 'shift', header_label: 'شیفت', isChecked: true },
+    { id: 'start_date', header_label: 'تاریخ شروع', isChecked: true },
+    { id: 'is_active', header_label: 'وضعیت', isChecked: true },
+    { id: 'chevron', header_label: '', isChecked: true },
 ]
 
 export const BANK_ACCOUNT_TABLE_COLOUMN: TableFilterItem[] = [
