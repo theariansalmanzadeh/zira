@@ -1,3 +1,5 @@
+import type { PaginatedResponse } from './common'
+
 export type UnitOut = {
     id: string
     code: string
@@ -36,12 +38,7 @@ export type ListUnitsParams = {
     base_unit_id?: string | null
 }
 
-export type ListUnitsResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: UnitOut[]
-}
+export type ListUnitsResponse = PaginatedResponse<UnitOut>
 
 export type CreateUnitRequest = UnitIn
 export type CreateUnitResponse = UnitDetailOut
@@ -72,12 +69,7 @@ export type ListSequencesParams = {
     query?: string | null
 }
 
-export type ListSequencesResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: SequenceOut[]
-}
+export type ListSequencesResponse = PaginatedResponse<SequenceOut>
 
 export type GetSequenceResponse = SequenceOut
 export type UpdateSequenceRequest = SequenceUpdateIn
@@ -222,12 +214,7 @@ export type ListScoreFormulaParams = {
     query?: string | null
 }
 
-export type ListScoreFormulaResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: ScoreFactorOut[]
-}
+export type ListScoreFormulaResponse = PaginatedResponse<ScoreFactorOut>
 
 export type UpdateScoreFormulaRequest = ScoreFormulaUpdateIn
 export type UpdateScoreFormulaResponse = ScoreFactorOut[]
@@ -259,12 +246,7 @@ export type ListNamingRuleParams = {
     query?: string | null
 }
 
-export type ListNamingRuleResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: NamingPartOut[]
-}
+export type ListNamingRuleResponse = PaginatedResponse<NamingPartOut>
 
 export type SetNamingRuleRequest = NamingRuleIn
 export type SetNamingRuleResponse = NamingPartOut[]
@@ -285,12 +267,7 @@ export type ListGradePoliciesParams = {
     query?: string | null
 }
 
-export type ListGradePoliciesResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: GradePricePolicyOut[]
-}
+export type ListGradePoliciesResponse = PaginatedResponse<GradePricePolicyOut>
 
 export type SetGradePolicyRequest = GradePolicyUpdateIn
 export type SetGradePolicyResponse = GradePricePolicyOut

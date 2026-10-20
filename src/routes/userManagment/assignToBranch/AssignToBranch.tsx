@@ -1,7 +1,6 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import type { BranchListItem } from '@/src/api/types/admin/organization'
 import type { StaffUser } from '@/src/api/types/admin/user'
 import { useListBranches } from '@/src/routes/branches/hooks/organization'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
@@ -44,10 +43,10 @@ const AssignToBranch = () => {
         useRevokeUserBranches()
     const isUpdatingBranches = isGranting || isRevoking
 
-    const branches: BranchListItem[] = Array.isArray(branchesData)
-        ? branchesData
-        : ((branchesData as { results?: BranchListItem[] } | undefined)
-            ?.results ?? [])
+    const branches = useMemo(
+        () => branchesData?.results ?? [],
+        [branchesData?.results]
+    )
 
     const branchOptions = useMemo(
         () =>

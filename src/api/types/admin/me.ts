@@ -1,3 +1,4 @@
+import type { PaginatedResponse } from './common'
 import type { UserDepartment } from './user'
 
 export type AdminProfile = {
@@ -44,12 +45,8 @@ export type StaffNotificationDelivery = {
     created_at: string
 }
 
-export type ListStaffNotificationsResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: StaffNotificationDelivery[]
-}
+export type ListStaffNotificationsResponse =
+    PaginatedResponse<StaffNotificationDelivery>
 
 export type DeliveryActionRequest = {
     delivery_ids: string[]

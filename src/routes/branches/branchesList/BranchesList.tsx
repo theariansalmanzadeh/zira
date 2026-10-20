@@ -54,9 +54,7 @@ const BranchesList = () => {
     })
 
     const filteredBranches = useMemo(() => {
-        let list: BranchListItem[] = Array.isArray(data)
-            ? data
-            : ((data as unknown as { results?: BranchListItem[] })?.results ?? [])
+        let list: BranchListItem[] = data?.results ?? []
 
         if (activeFilter === 'active') {
             list = list.filter((b) => b.status?.toUpperCase() === 'ACTIVE')

@@ -55,10 +55,7 @@ const OccupationInfo = ({ onContinue, onBack }: OccupationInfoProps) => {
         [staffUsers]
     )
     const branchOptions = useMemo(() => {
-        const branches: BranchListItem[] = Array.isArray(branchesData)
-            ? branchesData
-            : ((branchesData as { results?: BranchListItem[] } | undefined)
-                ?.results ?? [])
+        const branches: BranchListItem[] = branchesData?.results ?? []
 
         return branches.map((branch) => ({
             label: branch.name,

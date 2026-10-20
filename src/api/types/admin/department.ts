@@ -1,3 +1,5 @@
+import type { PaginatedResponse } from './common'
+
 export type DepartmentPickerItem = {
     id: string
     code: string
@@ -15,7 +17,7 @@ export type Department = {
     updated_at: string
 }
 
-export type ListDepartmentPickerResponse = DepartmentPickerItem[]
+export type ListDepartmentPickerResponse = PaginatedResponse<DepartmentPickerItem>
 
 export type CreateDepartmentRequest = {
     code: string
@@ -25,12 +27,7 @@ export type CreateDepartmentRequest = {
 
 export type CreateDepartmentResponse = Department
 
-export type ListDepartmentsResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: Department[]
-}
+export type ListDepartmentsResponse = PaginatedResponse<Department>
 
 export type GetDepartmentResponse = Department
 
@@ -47,9 +44,4 @@ export type DepartmentUser = {
     display_name: string
 }
 
-export type ListDepartmentUsersResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: DepartmentUser[]
-}
+export type ListDepartmentUsersResponse = PaginatedResponse<DepartmentUser>

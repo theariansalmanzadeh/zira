@@ -1,3 +1,5 @@
+import type { PaginatedResponse } from './common'
+
 export type UserDepartment = {
     id: string
     code: string
@@ -132,7 +134,14 @@ export type MessageResponse = {
     message: string
 }
 
-export type ListUsersResponse = User[]
+export type ListUsersParams = {
+    page?: number | null
+    page_size?: number | null
+    search?: string | null
+    is_active?: boolean | null
+}
+
+export type ListUsersResponse = PaginatedResponse<User>
 
 export type StaffUser = {
     id: string
@@ -229,12 +238,14 @@ export type CreateStaffUserRequest = {
     documents: StaffDocument[]
 }
 
-export type ListStaffUsersResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: StaffUser[]
+export type ListStaffUsersParams = {
+    page?: number | null
+    page_size?: number | null
+    search?: string | null
+    is_active?: boolean | null
 }
+
+export type ListStaffUsersResponse = PaginatedResponse<StaffUser>
 
 export type CreateStaffUserResponse = StaffUser
 
@@ -276,14 +287,14 @@ export type UpdateUserStatusRequest = {
 
 export type UpdateUserStatusResponse = User
 
-export type ListUserSessionsResponse = UserSession[]
-
-export type ListUserBranchesResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: string[]
+export type ListUserSessionsParams = {
+    page?: number | null
+    page_size?: number | null
 }
+
+export type ListUserSessionsResponse = PaginatedResponse<UserSession>
+
+export type ListUserBranchesResponse = PaginatedResponse<string>
 
 export type UserBranchAccessRequest = {
     branch_ids: string[]

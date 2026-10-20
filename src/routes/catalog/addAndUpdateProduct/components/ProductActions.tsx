@@ -121,24 +121,18 @@ const ProductActions = () => {
         },
     })
 
-    const createBody = (): ProductCreateIn => {
-        const unitFromAttributes = Object.values(attributeSelections).find(
-            (selection) => selection.code === 'unit'
-        )?.values[0]
-
-        return {
-            category_id: subCategory || midCategory || mainCategory,
-            brand_id: brand,
-            unit_id: unitFromAttributes || salesUnit,
-            size_ids: sizeIds,
-            color_ids: colorIds,
-            cells: cellsPayload,
-            attributes: attributesPayload,
-            name_parts: ['MAIN_CATEGORY'],
-            name: productTitle.trim(),
-            base_code: productCode.trim(),
-        }
-    }
+    const createBody = (): ProductCreateIn => ({
+        category_id: subCategory || midCategory || mainCategory,
+        brand_id: brand,
+        unit_id: salesUnit,
+        size_ids: sizeIds,
+        color_ids: colorIds,
+        cells: cellsPayload,
+        attributes: attributesPayload,
+        name_parts: ['MAIN_CATEGORY'],
+        name: productTitle.trim(),
+        base_code: productCode.trim(),
+    })
 
     const updateBody = (): ProductUpdateIn => ({
         category_id: subCategory || midCategory || mainCategory || null,

@@ -1,3 +1,6 @@
+import type { PaginatedResponse } from './common'
+export type { PaginatedResponse } from './common'
+
 export type CustomerStatus = 'ACTIVE' | 'SUSPENDED' | 'RELEASED'
 export type CustomerLifecycleStatus = 'ACTIVE' | 'INACTIVE'
 export type CooperationLevel = 'BRONZE' | 'SILVER' | 'GOLD'
@@ -22,13 +25,6 @@ export type CustomerDocumentType =
     | 'ECONOMIC_CODE_CERT'
     | 'OTHER'
 export type DocumentReviewStatus = 'PENDING' | 'VERIFIED' | 'REJECTED'
-
-export type PaginatedResponse<T> = {
-    total: number
-    page: number
-    page_size: number
-    results: T[]
-}
 
 export type CustomerIdentity = {
     first_name?: string | null

@@ -1,3 +1,7 @@
+import type { PaginatedResponse } from './common'
+
+export type Paginated<T> = PaginatedResponse<T>
+
 export type SessionListItem = {
     id: string
     user_id: string
@@ -22,19 +26,7 @@ export type ListActiveSessionsParams = {
     device_type?: string
 }
 
-export type ListActiveSessionsResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: SessionListItem[]
-}
-
-export type Paginated<T> = {
-    total: number
-    page: number
-    page_size: number
-    results: T[]
-}
+export type ListActiveSessionsResponse = PaginatedResponse<SessionListItem>
 
 export type ActivityResult = 'SUCCESS' | 'FAILURE' | 'DENIED'
 export type EventSeverity = 'INFO' | 'WARNING' | 'CRITICAL'

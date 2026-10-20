@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Controller, useForm, useWatch } from 'react-hook-form'
+import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form'
 import type { DiscountCreateIn } from '@/src/api/types/admin/pricing'
 import AdornedInput from '@/src/shared/components/ui/AdornedInput'
 import CalendarButton from '@/src/shared/components/ui/CalendarButton'
@@ -16,6 +16,9 @@ import {
     combinedDiscountSchema,
     type CombinedDiscountValues,
 } from '@/src/routes/catalog/discount/schema'
+import { toDiscountCreatePayload } from '../utils/toDiscountCreatePayload'
+import ByLevelFields from './ByLevelFields'
+import SelectedCategoryFields from './SelectedCategoryFields'
 
 const tabTriggerClassName =
     'rounded-container-md flex-1 border-0 px-4 py-2 data-[state=active]:-mb-0 data-[state=active]:bg-surface-container-lowest data-[state=active]:text-on-surface data-[state=active]:shadow-sm data-[state=active]:after:hidden'
@@ -24,30 +27,20 @@ type CombinedDiscountFormProps = {
     onCreate: (input: DiscountCreateIn) => void
 }
 
-const toIso = (value?: Date) => (value ? value.toISOString() : null)
-
 const CombinedDiscountForm = ({ onCreate }: CombinedDiscountFormProps) => {
-    const { control, handleSubmit } = useForm<CombinedDiscountValues>({
+    const methods = useForm<CombinedDiscountValues>({
         resolver: zodResolver(combinedDiscountSchema),
         defaultValues: COMBINED_DISCOUNT_DEFAULTS,
     })
+    const { control, handleSubmit } = methods
     const discountType = useWatch({ control, name: 'discountType' })
 
     const onSubmit = (data: CombinedDiscountValues) => {
-        const isAmount = data.discountType === 'amount'
-
-        onCreate({
-            kind: 'BUNDLE',
-            value_type: isAmount ? 'AMOUNT' : 'PERCENT',
-            percent: isAmount ? null : data.discountValue,
-            fixed_amount: isAmount ? data.discountValue : null,
-            min_qty: data.minPurchaseCount,
-            start_at: toIso(data.startDate),
-            end_at: toIso(data.endDate),
-        })
+        onCreate(toDiscountCreatePayload(data))
     }
 
     return (
+        <FormProvider {...methods}>
         <form
             id='combined-discount-form'
             className='flex flex-col gap-4 bg-surface-container-lowest'
@@ -79,6 +72,18 @@ const CombinedDiscountForm = ({ onCreate }: CombinedDiscountFormProps) => {
                                     </TabsTrigger>
                                 ))}
                             </TabsList>
+                            <TabsContent value='selected-category' className='mt-0'>
+                                <Controller
+                                    name='categoryIds'
+                                    control={control}
+                                    render={({ field: categoryField }) => (
+                                        <SelectedCategoryFields
+                                            value={categoryField.value}
+                                            onChange={categoryField.onChange}
+                                        />
+                                    )}
+                                />
+                            </TabsContent>
                             <TabsContent value='selected-products' className='mt-0'>
                                 <SelectProduct />
                             </TabsContent>
@@ -112,6 +117,18 @@ const CombinedDiscountForm = ({ onCreate }: CombinedDiscountFormProps) => {
                                     </TabsTrigger>
                                 ))}
                             </TabsList>
+                            <TabsContent value='by-level' className='mt-0'>
+                                <Controller
+                                    name='customerLevels'
+                                    control={control}
+                                    render={({ field: levelField }) => (
+                                        <ByLevelFields
+                                            value={levelField.value}
+                                            onChange={levelField.onChange}
+                                        />
+                                    )}
+                                />
+                            </TabsContent>
                             <TabsContent value='selected-customers' className='mt-0'>
                                 <SelectCustomers />
                             </TabsContent>
@@ -205,6 +222,7 @@ const CombinedDiscountForm = ({ onCreate }: CombinedDiscountFormProps) => {
                 />
             </div>
         </form>
+        </FormProvider>
     )
 }
 

@@ -2,16 +2,10 @@
 
 import type { ReactNode } from 'react'
 import { Checkbox } from '@/src/shared/components/ui/Checkbox'
-import ColorPill from '@/src/shared/components/ui/ColorPill'
 import { Input } from '@/src/shared/components/ui/Input'
 import { useTable } from '@/src/shared/context/TableProvider'
-import { formatFaNumber, formatPrice } from '@/src/shared/libs/formatter'
-import {
-    COLOR_LABEL,
-    SIZE_LABEL,
-    usePricingGridStyle,
-    type PricingItem,
-} from './pricingTableShared'
+import { formatFaNumber } from '@/src/shared/libs/formatter'
+import { usePricingGridStyle, type PricingItem } from './pricingTableShared'
 
 type PricingTableRowProps = {
     item: PricingItem
@@ -45,19 +39,17 @@ const PricingTableRow = ({
             </label>
         ),
         name: <span className='truncate'>{item.name}</span>,
-        size: SIZE_LABEL[item.size],
-        color: (
-            <ColorPill
-                hex={item.colorHex}
-                label={COLOR_LABEL[item.color]}
-            />
+        category: (
+            <span className='truncate'>{item.categoryName || '—'}</span>
         ),
-        price: formatPrice(item.price),
-        stock: (
-            <span className={item.stock === 0 ? 'text-error' : 'text-success'}>
-                {formatFaNumber(item.stock)}
-            </span>
+        brand: <span className='truncate'>{item.brandName || '—'}</span>,
+        material: (
+            <span className='truncate'>{item.materialName || '—'}</span>
         ),
+        model: (
+            <span className='truncate'>{item.modelLineName || '—'}</span>
+        ),
+        items: formatFaNumber(item.itemCount),
     }
 
     return (

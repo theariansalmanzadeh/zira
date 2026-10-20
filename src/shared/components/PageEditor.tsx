@@ -1,6 +1,7 @@
 'use client'
 
 import {
+    createUsePuck,
     Puck,
     RichTextMenu,
     registerOverlayPortal,
@@ -11,6 +12,7 @@ import type { Config } from '@puckeditor/core'
 import { FontSize, TextStyle } from '@tiptap/extension-text-style'
 import type { Editor } from '@tiptap/react'
 import { useEffect, useRef, type PointerEvent as ReactPointerEvent, type ReactNode, type SyntheticEvent } from 'react'
+import { Button } from '@/src/shared/components/ui/button'
 import '@puckeditor/core/puck.css'
 import './pageEditor.css'
 
@@ -37,12 +39,50 @@ type GridProps = {
     gap: number
 }
 
+type CardProps = {
+    title: string
+    body: string
+    imageSrc: string
+    span: number
+}
+
+type CardsRowProps = {
+    gap: number
+    cards: Array<{
+        title: string
+        body: string
+        imageSrc: string
+    }>
+}
+
+type TableProps = {
+    span: number
+    headers: Array<{ label: string }>
+    rows: Array<{
+        cells: Array<{ value: string }>
+    }>
+}
+
 type Components = {
     Heading: HeadingProps
     Text: TextProps
     Image: ImageProps
     Grid: GridProps
+    Card: CardProps
+    CardsRow: CardsRowProps
+    Table: TableProps
 }
+
+const usePuckStore = createUsePuck<Config<Components>>()
+
+const GRID_ALLOWED = [
+    'Heading',
+    'Text',
+    'Image',
+    'Card',
+    'CardsRow',
+    'Table',
+] as const
 
 const FONT_SIZES = ['14px', '16px', '18px', '20px', '24px', '32px']
 
@@ -350,7 +390,7 @@ const config: Config<Components> = {
                 <div className="grid-section">
                     {puck.renderDropZone({
                         zone: 'grid-content',
-                        allow: ['Heading', 'Text', 'Image'],
+                        allow: [...GRID_ALLOWED],
                         collisionAxis: 'dynamic',
                         className: 'content-grid',
                         style: {
@@ -360,6 +400,192 @@ const config: Config<Components> = {
                         },
                     })}
                 </div>
+            ),
+        },
+        Card: {
+            label: 'کارت',
+            fields: {
+                title: { type: 'text', label: 'عنوان' },
+                body: textField,
+                imageSrc: { type: 'text', label: 'آدرس تصویر' },
+                span: spanField,
+            },
+            defaultProps: {
+                title: 'عنوان کارت',
+                body: 'توضیحات کارت را اینجا بنویسید.',
+                imageSrc: '',
+                span: 4,
+            },
+            render: ({ title, body, imageSrc, span }) => (
+                <BlockFrame span={span}>
+                    <article className="editor-card" dir="rtl">
+                        {imageSrc ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                                src={imageSrc}
+                                alt=""
+                                className="editor-card-image"
+                            />
+                        ) : null}
+                        <h3 className="editor-card-title">{title}</h3>
+                        <div className="editor-card-body">{body}</div>
+                    </article>
+                </BlockFrame>
+            ),
+        },
+        CardsRow: {
+            label: '۳ کارت در یک ردیف',
+            fields: {
+                gap: { type: 'number', label: 'فاصله', min: 0, max: 64 },
+                cards: {
+                    type: 'array',
+                    label: 'کارت‌ها',
+                    min: 3,
+                    max: 3,
+                    getItemSummary: (item) => item.title || 'کارت',
+                    defaultItemProps: {
+                        title: 'عنوان کارت',
+                        body: 'توضیحات کارت را اینجا بنویسید.',
+                        imageSrc: '',
+                    },
+                    arrayFields: {
+                        title: { type: 'text', label: 'عنوان' },
+                        body: { type: 'textarea', label: 'متن' },
+                        imageSrc: { type: 'text', label: 'آدرس تصویر' },
+                    },
+                },
+            },
+            defaultProps: {
+                gap: 16,
+                cards: [
+                    {
+                        title: 'کارت ۱',
+                        body: 'توضیحات کارت را اینجا بنویسید.',
+                        imageSrc: '',
+                    },
+                    {
+                        title: 'کارت ۲',
+                        body: 'توضیحات کارت را اینجا بنویسید.',
+                        imageSrc: '',
+                    },
+                    {
+                        title: 'کارت ۳',
+                        body: 'توضیحات کارت را اینجا بنویسید.',
+                        imageSrc: '',
+                    },
+                ],
+            },
+            render: ({ gap, cards }) => (
+                <div
+                    className="cards-row"
+                    dir="rtl"
+                    style={{ gap }}
+                >
+                    {(cards ?? []).map((card, index) => (
+                        <article key={index} className="editor-card">
+                            {card.imageSrc ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                    src={card.imageSrc}
+                                    alt=""
+                                    className="editor-card-image"
+                                />
+                            ) : null}
+                            <h3 className="editor-card-title">{card.title}</h3>
+                            <div className="editor-card-body">{card.body}</div>
+                        </article>
+                    ))}
+                </div>
+            ),
+        },
+        Table: {
+            label: 'جدول',
+            fields: {
+                span: spanField,
+                headers: {
+                    type: 'array',
+                    label: 'ستون‌ها',
+                    min: 1,
+                    getItemSummary: (item) => item.label || 'ستون',
+                    defaultItemProps: { label: 'ستون' },
+                    arrayFields: {
+                        label: { type: 'text', label: 'عنوان ستون' },
+                    },
+                },
+                rows: {
+                    type: 'array',
+                    label: 'ردیف‌ها',
+                    getItemSummary: (_item, index) => `ردیف ${(index ?? 0) + 1}`,
+                    defaultItemProps: {
+                        cells: [
+                            { value: '' },
+                            { value: '' },
+                            { value: '' },
+                        ],
+                    },
+                    arrayFields: {
+                        cells: {
+                            type: 'array',
+                            label: 'سلول‌ها',
+                            getItemSummary: (item) => item.value || 'سلول',
+                            defaultItemProps: { value: '' },
+                            arrayFields: {
+                                value: { type: 'text', label: 'مقدار' },
+                            },
+                        },
+                    },
+                },
+            },
+            defaultProps: {
+                span: 8,
+                headers: [
+                    { label: 'ستون ۱' },
+                    { label: 'ستون ۲' },
+                    { label: 'ستون ۳' },
+                ],
+                rows: [
+                    {
+                        cells: [
+                            { value: 'مقدار ۱' },
+                            { value: 'مقدار ۲' },
+                            { value: 'مقدار ۳' },
+                        ],
+                    },
+                    {
+                        cells: [
+                            { value: 'مقدار ۴' },
+                            { value: 'مقدار ۵' },
+                            { value: 'مقدار ۶' },
+                        ],
+                    },
+                ],
+            },
+            render: ({ span, headers, rows }) => (
+                <BlockFrame span={span}>
+                    <div className="editor-table-wrap" dir="rtl">
+                        <table className="editor-table">
+                            <thead>
+                                <tr>
+                                    {(headers ?? []).map((header, index) => (
+                                        <th key={index}>{header.label}</th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {(rows ?? []).map((row, rowIndex) => (
+                                    <tr key={rowIndex}>
+                                        {(headers ?? []).map((_, cellIndex) => (
+                                            <td key={cellIndex}>
+                                                {row.cells?.[cellIndex]?.value ??
+                                                    ''}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </BlockFrame>
             ),
         },
     },
@@ -443,6 +669,26 @@ type PageEditorProps = {
     onPublish?: (data: Data) => void | Promise<void>
 }
 
+function PublishHeaderActions({
+    onPublish,
+}: {
+    onPublish?: (data: Data) => void | Promise<void>
+}) {
+    const data = usePuckStore((s) => s.appState.data)
+
+    return (
+        <Button
+            type="button"
+            variant="primary"
+            onClick={() => {
+                void onPublish?.(data)
+            }}
+        >
+            ثبت
+        </Button>
+    )
+}
+
 const PageEditor = ({
     data = initialPageData,
     onChange,
@@ -457,6 +703,11 @@ const PageEditor = ({
             dnd={{ behavior: 'fluid' }}
             onChange={onChange}
             onPublish={onPublish}
+            overrides={{
+                headerActions: () => (
+                    <PublishHeaderActions onPublish={onPublish} />
+                ),
+            }}
         />
     </div>
 )

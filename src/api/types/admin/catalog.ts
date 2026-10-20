@@ -602,6 +602,45 @@ export type ModelLineOut = {
   is_active: boolean;
 };
 
+export type ItemComponentIn = {
+  item_id: string;
+  quantity: number;
+};
+
+export type ItemCreateIn = {
+  /** خانواده‌ی کالا */
+  product_id: string;
+  /** الگوی تنوع آیتم */
+  variation_pattern: 'FIXED_COLOR' | 'FIXED_SIZE' | 'FREE' | ItemVariationPattern;
+  /** واحد مشتق با ضریب = جمع تعداد کالاها */
+  unit_id: string;
+  /** کالاهای تکی و تعداد هر کدام */
+  components: Array<ItemComponentIn>;
+  /** خالی ⇐ نام خودکار */
+  display_name?: string | null;
+  base_code?: string | null;
+  description?: string | null;
+  slug?: string | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  show_in_public?: boolean | null;
+  allow_preorder?: boolean | null;
+  related_mode?: ItemLinkMode | null;
+  similar_mode?: ItemLinkMode | null;
+  visibility?: VisibilityIn | null;
+  policy?: ItemPolicyIn | null;
+  /** فقط وقتی related_mode = MANUAL */
+  related_item_ids?: Array<string> | null;
+  /** فقط وقتی similar_mode = MANUAL */
+  similar_item_ids?: Array<string> | null;
+  /** ویژگی‌های ITEM و DESCRIPTIVE؛ برای MULTI یک ردیف برای هر مقدار */
+  attributes?: Array<AttributeRowIn> | null;
+  /** درصد تعدیل قیمت آیتم */
+  adjustment_pct?: number | string | null;
+  /** DRAFT پیش‌نویس، ACTIVE نمایش در فروشگاه، HIDDEN عدم نمایش */
+  status?: 'DRAFT' | 'ACTIVE' | 'HIDDEN';
+};
+
 export type PackComponentIn = {
   item_id: string;
   quantity: number;

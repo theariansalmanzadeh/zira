@@ -1,3 +1,5 @@
+import type { PaginatedResponse } from './common'
+
 export type Notification = {
     id: string
     title: string
@@ -11,12 +13,7 @@ export type Notification = {
     created_at: string
 }
 
-export type ListNotificationsResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: Notification[]
-}
+export type ListNotificationsResponse = PaginatedResponse<Notification>
 
 export type GetNotificationResponse = Notification
 
@@ -46,9 +43,5 @@ export type ListNotificationSeenUsersParams = {
     page_size?: number
 }
 
-export type ListNotificationSeenUsersResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: NotificationSeenUser[]
-}
+export type ListNotificationSeenUsersResponse =
+    PaginatedResponse<NotificationSeenUser>

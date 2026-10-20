@@ -10,6 +10,7 @@ import {
     useListColors,
     useListSizes,
 } from '@/src/routes/catalog/hooks/catalog'
+import { useListUnits } from '@/src/routes/settings/hooks/settings'
 import type { AttributeOut } from '@/src/api/types/admin/catalog'
 import { useCreateProducts } from '../../provider/createProductsProvider'
 import {
@@ -20,7 +21,7 @@ import {
     toAttributeOptions,
 } from '../../utils/attributes'
 
-const PRESET_ATTRIBUTE_CODES = ['material', 'pack', 'unit', 'color'] as const
+const PRESET_ATTRIBUTE_CODES = ['material', 'pack', 'color'] as const
 
 const AttributesTab = () => {
     const { push } = useRouter()
@@ -33,10 +34,16 @@ const AttributesTab = () => {
         colors,
         setColors,
         setPacks,
+        salesUnit,
         setSalesUnit,
     } = useCreateProducts()
     const { data: sizesPage } = useListSizes({ page: 1, page_size: 100 })
     const { data: colorsPage } = useListColors({ page: 1, page_size: 100 })
+    const { data: unitsPage } = useListUnits({
+        page: 1,
+        page_size: 100,
+        is_active: true,
+    })
     const sizeOptions = (sizesPage?.results ?? []).map((size) => ({
         label: size.name,
         value: size.id,
@@ -45,6 +52,10 @@ const AttributesTab = () => {
         label: color.name,
         value: color.id,
         hex: color.hex_code,
+    }))
+    const unitOptions = (unitsPage?.results ?? []).map((unit) => ({
+        label: unit.name,
+        value: unit.id,
     }))
 
     const attributes = useMemo(
@@ -73,14 +84,12 @@ const AttributesTab = () => {
                 values,
             })
             if (attribute.code === 'pack') setPacks(values)
-            if (attribute.code === 'unit') setSalesUnit(values[0] ?? '')
         }
     }, [
         attributes,
         attributeSelections,
         setAttributeSelection,
         setPacks,
-        setSalesUnit,
     ])
 
     const applySelection = (attribute: AttributeOut, values: string[]) => {
@@ -93,7 +102,6 @@ const AttributesTab = () => {
             setColors(values)
         }
         if (attribute.code === 'pack') setPacks(values)
-        if (attribute.code === 'unit') setSalesUnit(values[0] ?? '')
     }
 
     return (
@@ -111,44 +119,52 @@ const AttributesTab = () => {
                     values={colors}
                     onChange={setColors}
                 />
+                <FormDropdown
+                    label='واحد'
+                    placeholder='انتخاب واحد'
+                    options={unitOptions}
+                    value={salesUnit || undefined}
+                    onChange={setSalesUnit}
+                />
                 {attributes
                     .filter(
                         (attribute) =>
                             attribute.code !== 'size' &&
                             attribute.code !== 'color' &&
+                            attribute.code !== 'unit' &&
                             !isColorAttribute(attribute)
                     )
                     .map((attribute) => {
-                    const options = toAttributeOptions(attribute)
-                    const selected = attributeSelections[attribute.id]?.values ?? []
+                        const options = toAttributeOptions(attribute)
+                        const selected = attributeSelections[attribute.id]?.values ?? []
 
-                    if (isMultiAttribute(attribute)) {
+                        if (isMultiAttribute(attribute)) {
+                            return (
+                                <CheckboxDropdown
+                                    key={attribute.id}
+                                    label={attribute.name}
+                                    options={options}
+                                    values={selected}
+                                    onChange={(values) =>
+                                        applySelection(attribute, values)
+                                    }
+                                />
+                            )
+                        }
+
                         return (
-                            <CheckboxDropdown
+                            <FormDropdown
                                 key={attribute.id}
                                 label={attribute.name}
+                                placeholder='انتخاب'
+                                value={selected[0]}
                                 options={options}
-                                values={selected}
-                                onChange={(values) =>
-                                    applySelection(attribute, values)
+                                onChange={(value) =>
+                                    applySelection(attribute, value ? [value] : [])
                                 }
                             />
                         )
-                    }
-
-                    return (
-                        <FormDropdown
-                            key={attribute.id}
-                            label={attribute.name}
-                            placeholder='انتخاب'
-                            value={selected[0]}
-                            options={options}
-                            onChange={(value) =>
-                                applySelection(attribute, value ? [value] : [])
-                            }
-                        />
-                    )
-                })}
+                    })}
             </div>
             <Button
                 type='button'

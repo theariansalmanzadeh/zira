@@ -6,36 +6,28 @@ export type PricingItem = {
     id: string
     code: string
     name: string
-    size: string
-    color: string
-    colorHex: string
-    price: number
-    stock: number
-    mainCategory: string
-    midCategory: string
-    subCategory: string
-    brand: string
-}
-
-export const COLOR_LABEL: Record<string, string> = {
-    red: 'قرمز',
-    blue: 'آبی',
-    green: 'سبز',
-}
-
-export const SIZE_LABEL: Record<string, string> = {
-    xs: 'XS',
-    s: 'S',
-    m: 'M',
+    categoryId: string
+    categoryName: string
+    brandId: string
+    brandName: string
+    materialName: string
+    modelLineName: string
+    sizeCount: number
+    colorCount: number
+    itemCount: number
 }
 
 const COLUMN_SIZES: Record<string, string> = {
     code: 'minmax(0, 1.2fr)',
     name: 'minmax(0, 2fr)',
+    category: 'minmax(0, 1.2fr)',
+    brand: 'minmax(0, 0.9fr)',
+    material: 'minmax(0, 0.9fr)',
+    model: 'minmax(0, 0.9fr)',
+    items: 'minmax(0, 0.7fr)',
     size: 'minmax(0, 0.6fr)',
     color: 'minmax(0, 0.8fr)',
-    price: 'minmax(0, 0.9fr)',
-    stock: 'minmax(0, 0.7fr)',
+    grade: 'minmax(0, 0.6fr)',
     amount: 'minmax(0, 0.9fr)',
 }
 

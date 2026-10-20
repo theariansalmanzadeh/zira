@@ -16,6 +16,7 @@ import {
     createColor,
     createColorSet,
     createDraft,
+    createItem,
     createLabel,
     createMaterial,
     createPack,
@@ -120,6 +121,7 @@ import type {
     DraftOut,
     ExportItemsParams,
     ExportProductsParams,
+    ItemCreateIn,
     ItemDetailOut,
     ItemListOut,
     ItemPolicyIn,
@@ -1030,6 +1032,21 @@ export const useCreatePack = () => {
         onSuccess: (_, { productId }) => {
             queryClient.invalidateQueries({ queryKey: catalogKeys.products.detail(productId) })
             queryClient.invalidateQueries({ queryKey: catalogKeys.items.all() })
+        },
+    })
+}
+
+export const useCreateItem = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: async (body: ItemCreateIn) => {
+            const result = await createItem(body)
+            if (!result.success) throw result.error
+            return result.data
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: catalogKeys.items.all() })
+            queryClient.invalidateQueries({ queryKey: catalogKeys.products.all() })
         },
     })
 }

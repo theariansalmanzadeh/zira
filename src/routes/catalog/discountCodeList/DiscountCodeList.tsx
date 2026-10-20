@@ -2,14 +2,14 @@
 
 import { useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
-import type { DiscountOut, DiscountStatusEnum } from '@/src/api/types/admin/pricing'
-import { useListDiscounts } from '@/src/routes/catalog/hooks/pricing'
+import type { CouponOut, CouponStatusEnum } from '@/src/api/types/admin/pricing'
+import { useListCoupons } from '@/src/routes/catalog/hooks/pricing'
 import { Table, TableBody } from '@/src/shared/components/ui/Table'
 import { Spinner } from '@/src/shared/components/ui/spinner'
 import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
 import TableHeader from './components/TableHeader'
-import DiscountRow, { DiscountRowProps } from './components/TableRow'
+import DiscountRow, { type DiscountRowProps } from './components/TableRow'
 import { TABLE_COLOUMN } from './constants'
 
 export type DiscountStatus = 'valid' | 'invalid' | 'draft'
@@ -21,17 +21,10 @@ const DISCOUNT_CODE_TOGGLE = [
     { label: 'پیش‌نویس', value: 'draft' },
 ]
 
-const STATUS_QUERY: Record<string, DiscountStatusEnum | undefined> = {
+const STATUS_QUERY: Record<string, CouponStatusEnum | undefined> = {
     valid: 'ACTIVE',
-    invalid: 'INACTIVE',
-    draft: 'DRAFT',
+    invalid: 'DISABLED',
 }
-
-const PAYMENT_SCOPE_LABEL = {
-    ALL: 'همه',
-    CASH: 'نقدی',
-    CREDIT: 'اعتباری',
-} as const
 
 const remainingDays = (endAt?: string | null) => {
     if (!endAt) return '—'
@@ -41,25 +34,25 @@ const remainingDays = (endAt?: string | null) => {
     return String(Math.max(days, 0))
 }
 
-const toRowStatus = (discount: DiscountOut): DiscountStatus => {
-    if (discount.status === 'DRAFT') return 'draft'
-    if (discount.status === 'ACTIVE' && discount.validity !== 'EXPIRED') {
-        return 'valid'
-    }
-    return 'invalid'
+const toRowStatus = (coupon: CouponOut): DiscountStatus => {
+    if (coupon.status === 'DISABLED' || coupon.is_expired) return 'invalid'
+    if (coupon.status === 'ACTIVE') return 'valid'
+    return 'draft'
 }
 
-const toDiscountRow = (discount: DiscountOut): DiscountRowProps => ({
+const toDiscountRow = (coupon: CouponOut): DiscountRowProps => ({
     data: {
-        title: discount.title,
-        contractId: discount.kind_display,
-        date: PAYMENT_SCOPE_LABEL[discount.payment_scope],
-        scope: discount.value_display,
-        discountPercent: discount.value_display,
-        status: toRowStatus(discount),
-        startDate: discount.start_at || '',
-        endDate: discount.end_at || '',
-        remainingDays: remainingDays(discount.end_at),
+        id: coupon.id,
+        title: coupon.code_text,
+        contractId: coupon.discount_kind_display || '—',
+        date: coupon.source_display || '—',
+        scope: coupon.value_display || '—',
+        discountPercent: coupon.value_display || '—',
+        status: toRowStatus(coupon),
+        startDate: coupon.created_at || '',
+        endDate: coupon.expires_at || '',
+        remainingDays: remainingDays(coupon.expires_at),
+        enabled: coupon.status === 'ACTIVE' && !coupon.is_expired,
     },
 })
 
@@ -90,20 +83,17 @@ const DiscountTable = ({
                             colSpan={9}
                             className='py-6 text-center text-label-md text-outline'
                         >
-                            دریافت تخفیف‌ها با خطا مواجه شد.
+                            دریافت کدهای تخفیف با خطا مواجه شد.
                         </td>
                     </tr>
                 ) : data.length === 0 ? (
                     <TableEmptyState
                         colSpan={TABLE_COLOUMN.length}
-                        title='تخفیفی یافت نشد.'
+                        title='کد تخفیفی یافت نشد.'
                     />
                 ) : (
-                    data.map((item, index) => (
-                        <DiscountRow
-                            key={`${item.data.title}-${item.data.startDate}-${index}`}
-                            data={item.data}
-                        />
+                    data.map((item) => (
+                        <DiscountRow key={item.data.id} data={item.data} />
                     ))
                 )}
             </TableBody>
@@ -114,16 +104,19 @@ const DiscountTable = ({
 const DiscountCodeList = () => {
     const searchParams = useSearchParams()
     const statusFilter = searchParams.get('cat') ?? 'all'
-    const { data, isPending, isError } = useListDiscounts({
+    const { data, isPending, isError } = useListCoupons({
         page: 1,
         page_size: 100,
         status: STATUS_QUERY[statusFilter],
     })
 
-    const discounts = useMemo(
-        () => (data?.results ?? []).map(toDiscountRow),
-        [data?.results]
-    )
+    const discounts = useMemo(() => {
+        const rows = (data?.results ?? []).map(toDiscountRow)
+        if (statusFilter === 'draft') {
+            return rows.filter((row) => row.data.status === 'draft')
+        }
+        return rows
+    }, [data?.results, statusFilter])
 
     return (
         <TableListLayout

@@ -1,11 +1,11 @@
 import { Suspense } from 'react'
 import TableLoadingSkeleton from '@/src/shared/components/loading/TableLoadingSkeleton'
-import NewDiscount from '@/src/routes/catalog/newDiscount/NewDiscount'
+import NewDiscountCode from '@/src/routes/catalog/newDiscountCode/NewDiscountCode'
 
 export default function NewDiscountCodePage() {
     return (
         <Suspense fallback={<TableLoadingSkeleton isPending />}>
-            <NewDiscount />
+            <NewDiscountCode />
         </Suspense>
     )
 }

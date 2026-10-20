@@ -1,3 +1,5 @@
+import type { PaginatedResponse } from './common'
+
 export type ChatContact = {
     user_id: string
     display_name: string
@@ -111,19 +113,9 @@ export type ConversationRead = {
     peer_last_read_sequence: number
 }
 
-export type ListChatContactsResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: ChatContact[]
-}
+export type ListChatContactsResponse = PaginatedResponse<ChatContact>
 
-export type ListChatConversationsResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: Conversation[]
-}
+export type ListChatConversationsResponse = PaginatedResponse<Conversation>
 
 export type OpenDirectConversationResponse = Conversation
 export type GetChatConversationResponse = Conversation

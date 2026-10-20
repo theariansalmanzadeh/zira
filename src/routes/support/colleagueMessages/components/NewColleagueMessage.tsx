@@ -1,11 +1,13 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { Textarea } from '@/src/shared/components/ui/TextArea'
 import { Button } from '@/src/shared/components/ui/button'
 import type { BaseModalProps } from '@/src/shared/components/modals/types'
 import {
+    chatKeys,
     useListChatContacts,
     useOpenDirectConversation,
     useSendChatMessage,
@@ -17,6 +19,7 @@ export type NewColleagueMessageModalData = {
 
 const NewColleagueMessage = ({ closeModal, data }: BaseModalProps) => {
     const modalData = (data as NewColleagueMessageModalData | null) ?? {}
+    const queryClient = useQueryClient()
     const [peerUserId, setPeerUserId] = useState('')
     const [body, setBody] = useState('')
     const [contactQuery, setContactQuery] = useState('')
@@ -58,11 +61,20 @@ const NewColleagueMessage = ({ closeModal, data }: BaseModalProps) => {
                                     conversationId: conversation.id,
                                     body: {
                                         body: body.trim(),
-                                        client_message_id: crypto.randomUUID(),
+                                        client_message_id: conversation.last_message?.client_message_id as string,
                                     },
                                 },
                                 {
                                     onSuccess: () => {
+                                        queryClient.invalidateQueries({
+                                            queryKey: chatKeys.conversations(),
+                                        })
+                                        queryClient.invalidateQueries({
+                                            queryKey:
+                                                chatKeys.conversationDetail(
+                                                    conversation.id
+                                                ),
+                                        })
                                         modalData.onOpened?.(conversation.id)
                                         closeModal()
                                     },

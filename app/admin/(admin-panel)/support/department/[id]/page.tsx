@@ -42,9 +42,15 @@ const DepartmentDetailsPage = async ({ params }: DepartmentDetailsPageProps) => 
             <DepartmentDetails
                 id={id}
                 departments={
-                    departmentsResult.success ? departmentsResult.data : []
+                    departmentsResult.success
+                        ? departmentsResult.data.results
+                        : []
                 }
-                assignees={assigneesResult.success ? assigneesResult.data : []}
+                assignees={
+                    assigneesResult.success
+                        ? assigneesResult.data.results
+                        : []
+                }
                 calendar={calendarResult.success ? calendarResult.data : null}
                 departmentRecord={
                     departmentResult.success ? departmentResult.data : null

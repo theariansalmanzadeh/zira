@@ -85,6 +85,7 @@ export const ModalTypes = {
   SELECT_BASED_ON_ROLE: "SELECT_BASED_ON_ROLE",
   SELECT_USERS: "SELECT_USERS",
   NEW_COLLEAGUE_MESSAGE: "NEW_COLLEAGUE_MESSAGE",
+  ADD_UNIT: "ADD_UNIT",
 } as const;
 
 export type ModalType = (typeof ModalTypes)[keyof typeof ModalTypes];

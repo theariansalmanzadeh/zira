@@ -3,9 +3,10 @@
 import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/shared/components/ui/Tabs'
 import { cn } from '@/src/shared/libs/utils'
-import Kardex from './Kardex'
-import PriceAndStock from './PriceAndStock'
+import type { SpecificationsProps } from '../types'
 import Gallery from './Gallery'
+import Kardex from './Kardex'
+import PriceAndStock, { type PriceAndStockProps } from './PriceAndStock'
 import Specifications from './Specifications'
 import WarehouseAndGrade from './WarehouseAndGrade'
 
@@ -22,12 +23,16 @@ type SpesificationTabsProps = {
     className?: string
     warehouseLabel?: string
     showGallery?: boolean
+    priceAndStock?: PriceAndStockProps
+    specifications?: SpecificationsProps
 }
 
 const SpesificationTabs = ({
     className,
     warehouseLabel = 'انبار و گرید',
     showGallery = false,
+    priceAndStock,
+    specifications,
 }: SpesificationTabsProps) => {
     const [tab, setTab] = useState<string>('specs')
     const tabs = [
@@ -43,7 +48,7 @@ const SpesificationTabs = ({
             dir='rtl'
             className={cn('w-full gap-4', className)}
         >
-            <TabsList className='h-auto w-full gap-1 rounded-container-md border-0 bg-surface-container-highest p-1.5 mb-3'>
+            <TabsList className='mb-3 h-auto w-full gap-1 rounded-container-md border-0 bg-surface-container-highest p-1.5'>
                 {tabs.map((item) => (
                     <TabsTrigger
                         key={item.value}
@@ -54,21 +59,15 @@ const SpesificationTabs = ({
                     </TabsTrigger>
                 ))}
             </TabsList>
-
             <TabsContent value='specs' className='mt-0'>
-                <Specifications />
+                <Specifications {...specifications} />
             </TabsContent>
             <TabsContent value='price-stock' className='mt-0'>
-                <PriceAndStock />
+                <PriceAndStock {...priceAndStock} />
             </TabsContent>
             <TabsContent value='kardex' className='mt-0'>
                 <Kardex />
             </TabsContent>
-            {/* {showGallery && (
-                <TabsContent value='images' className='mt-0'>
-                    <Gallery />
-                </TabsContent>
-            )} */}
             <TabsContent value='warehouse-grid' className='mt-0'>
                 <WarehouseAndGrade />
             </TabsContent>

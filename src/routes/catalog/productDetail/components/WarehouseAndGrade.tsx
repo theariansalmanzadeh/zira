@@ -41,41 +41,8 @@ const GRADE_BADGE_CLASS: Record<WarehouseGradeLevel, string> = {
     3: 'border-0 bg-surface-container-high text-on-surface-variant',
 }
 
-export const WAREHOUSE_GRADE_DUMMY: WarehouseGradeItem[] = [
-    {
-        id: '1',
-        warehouseName: 'انبار مرکزی تهران',
-        address: 'راهرو B • قفسه ۱۲ • طبقه ۳',
-        stock: 86,
-        discountPercent: 10,
-        grade: 1,
-        description:
-            'انبار اصلی توزیع کالاهای پوشاک زنانه با ظرفیت نگهداری بالا و دسترسی سریع به فروشگاه‌های تهران.',
-    },
-    {
-        id: '2',
-        warehouseName: 'انبار کرج',
-        address: 'راهرو A • قفسه ۴ • طبقه ۱',
-        stock: 48,
-        discountPercent: null,
-        grade: 2,
-        description:
-            'انبار پشتیبانی غرب تهران برای تامین موجودی فروشگاه‌های البرز و کرج.',
-    },
-    {
-        id: '3',
-        warehouseName: 'انبار فروشگاه',
-        address: 'ویترین • کشو ۲',
-        stock: 42,
-        discountPercent: 25,
-        grade: 3,
-        description:
-            'موجودی ویترینی فروشگاه برای نمایش و فروش سریع محصولات پرفروش.',
-    },
-]
-
 const WarehouseAndGrade = ({
-    items = WAREHOUSE_GRADE_DUMMY,
+    items = [],
     className,
 }: WarehouseAndGradeProps) => {
     const { openModal } = useModalStore()

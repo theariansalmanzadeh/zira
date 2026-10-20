@@ -15,24 +15,24 @@ type MetricCardMeta = {
     valueClassName?: string
 }
 
-type DetailItem = {
+export type DetailItem = {
     label: string
     value: string
     valueClassName?: string
 }
 
-type PriceAndStockProps = {
-    sellPrice?: number
-    buyPrice?: number
-    profitMargin?: number
-    costPrice?: number
-    lastPurchaseAt?: string
-    lastSaleAt?: string
-    stockCount?: number
-    stockStatus?: 'in-stock' | 'out-of-stock'
-    displayStatus?: string
-    showInPublic?: boolean
-    publicAudience?: string
+export type PriceAndStockProps = {
+    sellPrice?: number | null
+    buyPrice?: number | null
+    profitMargin?: number | null
+    costPrice?: number | null
+    lastPurchaseAt?: string | null
+    lastSaleAt?: string | null
+    stockCount?: number | null
+    stockStatus?: 'in-stock' | 'out-of-stock' | null
+    displayStatus?: string | null
+    showInPublic?: boolean | null
+    publicAudience?: string | null
     details?: DetailItem[]
     className?: string
 }
@@ -49,19 +49,10 @@ const METRIC_META: MetricCardMeta[] = [
     { label: 'نمایش در پابلیک', valueClassName: 'text-on-surface' },
 ]
 
-const DETAILS_DUMMY: DetailItem[] = [
-    { label: 'واحد اصلی', value: 'عدد' },
-    { label: 'واحد فرعی', value: 'پک ۶ عددی' },
-    {
-        label: 'ضریب تبدیل',
-        value: '۱ پک = ۶ عدد',
-        valueClassName: 'text-primary',
-    },
-    { label: 'حداقل تعداد سفارش', value: '۱ عدد' },
-    { label: 'آستانه خرید', value: 'حداقل ۱ عدد' },
-    { label: 'سقف انباشت', value: 'حداکثر ۲۰ عدد' },
-]
+const DASH = '—'
 
+const hasValue = (value: unknown) =>
+    value !== undefined && value !== null && value !== ''
 
 const MetricCard = ({
     label,
@@ -76,46 +67,57 @@ const MetricCard = ({
     </div>
 )
 
+const PriceValue = ({
+    value,
+    className,
+}: {
+    value?: number | null
+    className?: string
+}) => {
+    if (!hasValue(value)) {
+        return (
+            <span className={cn('text-title-md font-bold', className)}>
+                {DASH}
+            </span>
+        )
+    }
+
+    return (
+        <span className={cn('text-title-md font-bold', className)}>
+            <span className='inline-flex items-center gap-1'>
+                {formatPrice(Number(value))}
+                <Icon label='currency' className='size-5 text-outline' />
+            </span>
+        </span>
+    )
+}
+
 const PriceAndStock = ({
-    sellPrice = 485000,
-    buyPrice = 301000,
-    profitMargin = 38,
-    costPrice = 325000,
-    lastPurchaseAt = '2025-10-27T00:00:00.000Z',
-    lastSaleAt = '2025-12-05T00:00:00.000Z',
-    stockCount = 124,
-    stockStatus = 'in-stock',
-    displayStatus = 'نمایش عمومی',
-    showInPublic = true,
-    publicAudience = 'همه مشتریان',
-    details = DETAILS_DUMMY,
+    sellPrice,
+    buyPrice,
+    profitMargin,
+    costPrice,
+    lastPurchaseAt,
+    lastSaleAt,
+    stockCount,
+    stockStatus,
+    displayStatus,
+    showInPublic,
+    publicAudience,
+    details = [],
     className,
 }: PriceAndStockProps) => {
     const metricValues: React.ReactNode[] = [
-        <span
+        <PriceValue
             key='sell'
-            className={cn(
-                'text-title-md font-bold',
-                METRIC_META[0].valueClassName
-            )}
-        >
-            <span className='inline-flex items-center gap-1'>
-                {formatPrice(sellPrice)}
-                <Icon label='currency' className='size-5 text-outline' />
-            </span>
-        </span>,
-        <span
+            value={sellPrice}
+            className={METRIC_META[0].valueClassName}
+        />,
+        <PriceValue
             key='buy'
-            className={cn(
-                'text-title-md font-bold',
-                METRIC_META[1].valueClassName
-            )}
-        >
-            <span className='inline-flex items-center gap-1'>
-                {formatPrice(buyPrice)}
-                <Icon label='currency' className='size-5 text-outline' />
-            </span>
-        </span>,
+            value={buyPrice}
+            className={METRIC_META[1].valueClassName}
+        />,
         <span
             key='margin'
             className={cn(
@@ -123,20 +125,15 @@ const PriceAndStock = ({
                 METRIC_META[2].valueClassName
             )}
         >
-            {formatFaNumber(profitMargin)}٪
+            {hasValue(profitMargin)
+                ? `${formatFaNumber(Number(profitMargin))}٪`
+                : DASH}
         </span>,
-        <span
+        <PriceValue
             key='cost'
-            className={cn(
-                'text-title-md font-bold',
-                METRIC_META[3].valueClassName
-            )}
-        >
-            <span className='inline-flex items-center gap-1'>
-                {formatPrice(costPrice)}
-                <Icon label='currency' className='size-5 text-outline' />
-            </span>
-        </span>,
+            value={costPrice}
+            className={METRIC_META[3].valueClassName}
+        />,
         <span
             key='last-buy'
             className={cn(
@@ -144,7 +141,7 @@ const PriceAndStock = ({
                 METRIC_META[4].valueClassName
             )}
         >
-            {formatFaDate(lastPurchaseAt)}
+            {hasValue(lastPurchaseAt) ? formatFaDate(String(lastPurchaseAt)) : DASH}
         </span>,
         <span
             key='last-sale'
@@ -153,25 +150,39 @@ const PriceAndStock = ({
                 METRIC_META[5].valueClassName
             )}
         >
-            {formatFaDate(lastSaleAt)}
+            {hasValue(lastSaleAt) ? formatFaDate(String(lastSaleAt)) : DASH}
         </span>,
         <div key='stock' className='flex flex-wrap items-center gap-2'>
+            {hasValue(stockStatus) ? (
+                <Pill
+                    text={stockStatus === 'in-stock' ? 'موجود' : 'ناموجود'}
+                    variant={stockStatus === 'in-stock' ? 'success' : 'error'}
+                    hasDot
+                    className='border-0'
+                />
+            ) : (
+                <span className='text-title-md font-bold text-on-surface'>
+                    {DASH}
+                </span>
+            )}
+            {hasValue(stockCount) ? (
+                <span className='text-title-md font-bold text-on-surface'>
+                    {formatFaNumber(Number(stockCount))} عدد
+                </span>
+            ) : null}
+        </div>,
+        hasValue(displayStatus) ? (
             <Pill
-                text={stockStatus === 'in-stock' ? 'موجود' : 'ناموجود'}
-                variant={stockStatus === 'in-stock' ? 'success' : 'error'}
-                hasDot
+                key='display'
+                text={String(displayStatus)}
+                variant='success'
                 className='border-0'
             />
-            <span className='text-title-md font-bold text-on-surface'>
-                {formatFaNumber(stockCount)} عدد
+        ) : (
+            <span key='display' className='text-title-md font-bold text-on-surface'>
+                {DASH}
             </span>
-        </div>,
-        <Pill
-            key='display'
-            text={displayStatus}
-            variant='success'
-            className='border-0'
-        />,
+        ),
         <div key='public' className='flex flex-col gap-0.5'>
             <span
                 className={cn(
@@ -179,9 +190,11 @@ const PriceAndStock = ({
                     METRIC_META[8].valueClassName
                 )}
             >
-                {showInPublic ? 'بله' : 'خیر'}
+                {hasValue(showInPublic) ? (showInPublic ? 'بله' : 'خیر') : DASH}
             </span>
-            <span className='text-label-md text-outline'>{publicAudience}</span>
+            <span className='text-label-md text-outline'>
+                {hasValue(publicAudience) ? String(publicAudience) : DASH}
+            </span>
         </div>,
     ]
 
@@ -203,23 +216,25 @@ const PriceAndStock = ({
                 ))}
             </div>
 
-            <div className='mt-5 grid grid-cols-1 gap-x-6 gap-y-4 border-0 border-t border-surface-container-high pt-5 sm:grid-cols-3'>
-                {details.map((item) => (
-                    <div key={item.label} className='flex flex-col gap-1'>
-                        <span className='text-label-md text-outline'>
-                            {item.label}
-                        </span>
-                        <span
-                            className={cn(
-                                'text-label-lg font-semibold text-on-surface',
-                                item.valueClassName
-                            )}
-                        >
-                            {item.value}
-                        </span>
-                    </div>
-                ))}
-            </div>
+            {details.length > 0 ? (
+                <div className='mt-5 grid grid-cols-1 gap-x-6 gap-y-4 border-0 border-t border-surface-container-high pt-5 sm:grid-cols-3'>
+                    {details.map((item) => (
+                        <div key={item.label} className='flex flex-col gap-1'>
+                            <span className='text-label-md text-outline'>
+                                {item.label}
+                            </span>
+                            <span
+                                className={cn(
+                                    'text-label-lg font-semibold text-on-surface',
+                                    item.valueClassName
+                                )}
+                            >
+                                {item.value || DASH}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            ) : null}
         </div>
     )
 }

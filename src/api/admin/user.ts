@@ -14,9 +14,12 @@ import type {
     CreateUserResponse,
     GetUserDepartmentsResponse,
     GetUserResponse,
+    ListStaffUsersParams,
     ListStaffUsersResponse,
     ListUserBranchesResponse,
+    ListUserSessionsParams,
     ListUserSessionsResponse,
+    ListUsersParams,
     ListUsersResponse,
     MessageResponse,
     SetUserDepartmentsRequest,
@@ -32,8 +35,17 @@ import type {
     UserBranchAccessRequest,
 } from '../types/admin/user'
 
-export const listStaffUsers = (config?: AxiosRequestConfig) =>
-    staffAuthGet<ListStaffUsersResponse>('/auth/staff', config)
+export const listStaffUsers = (
+    params?: ListStaffUsersParams,
+    config?: AxiosRequestConfig
+) =>
+    staffAuthGet<ListStaffUsersResponse>('/auth/staff', {
+        ...config,
+        params: {
+            ...config?.params,
+            ...params,
+        },
+    })
 
 export const createStaffUser = (
     body: CreateStaffUserRequest,
@@ -71,8 +83,17 @@ export const uploadStaffDocument = (
         }
     )
 
-export const listUsers = (config?: AxiosRequestConfig) =>
-    staffAuthGet<ListUsersResponse>('/auth/users', config)
+export const listUsers = (
+    params?: ListUsersParams,
+    config?: AxiosRequestConfig
+) =>
+    staffAuthGet<ListUsersResponse>('/auth/users', {
+        ...config,
+        params: {
+            ...config?.params,
+            ...params,
+        },
+    })
 
 export const createUser = (
     body: CreateUserRequest,
@@ -121,11 +142,18 @@ export const resetUserPassword = (
 
 export const listUserSessions = (
     userId: string,
+    params?: ListUserSessionsParams,
     config?: AxiosRequestConfig
 ) =>
     staffAuthGet<ListUserSessionsResponse>(
         `/auth/users/${userId}/sessions`,
-        config
+        {
+            ...config,
+            params: {
+                ...config?.params,
+                ...params,
+            },
+        }
     )
 
 export const listUserBranches = (

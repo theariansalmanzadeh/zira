@@ -68,6 +68,13 @@ const CalendarButton = ({
                 value={value ?? null}
                 label={null}
                 locale="fa"
+                className="rjd-calendar-lg"
+                style={{
+                    width: '28rem',
+                    minWidth: '28rem',
+                    maxWidth: '28rem',
+                    fontSize: '1.0625rem',
+                }}
                 onConfirm={(date) => {
                     onChange?.(date ?? undefined)
                     setOpen(false)

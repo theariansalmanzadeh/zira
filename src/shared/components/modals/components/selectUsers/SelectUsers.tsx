@@ -42,8 +42,8 @@ const SelectUsers = ({ closeModal, data }: BaseModalProps) => {
     )
 
     const users = useMemo(
-        () => (Array.isArray(usersData) ? usersData : []),
-        [usersData]
+        () => usersData?.results ?? [],
+        [usersData?.results]
     )
     const filteredUsers = useMemo(
         () => filterUsers(users, filter).map(toSelectableUser),

@@ -31,7 +31,7 @@ const SessionManagement = () => {
         Boolean(userId)
     )
 
-    const sessions = useMemo(() => data ?? [], [data])
+    const sessions = useMemo(() => data?.results ?? [], [data?.results])
 
     if (isPending) {
         return <TableLoadingSkeleton isPending rows={4} />

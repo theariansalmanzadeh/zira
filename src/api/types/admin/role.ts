@@ -1,3 +1,5 @@
+import type { PaginatedResponse } from './common'
+
 export type Role = {
     id: string
     code: string
@@ -14,14 +16,11 @@ export type ListRolesParams = {
     search?: string | null
     department?: string | null
     is_active?: boolean | null
+    page?: number | null
+    page_size?: number | null
 }
 
-export type ListRolesResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: Role[]
-}
+export type ListRolesResponse = PaginatedResponse<Role>
 
 export type GetRoleResponse = Role
 
@@ -63,4 +62,4 @@ export type ListRoleAssignmentsParams = {
     page_size?: number | null
 }
 
-export type ListRoleAssignmentsResponse = UserRoleAssignment[]
+export type ListRoleAssignmentsResponse = PaginatedResponse<UserRoleAssignment>

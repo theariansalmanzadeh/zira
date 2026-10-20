@@ -1,3 +1,5 @@
+import type { PaginatedResponse } from './common'
+
 export type BranchStatus = 'ACTIVE' | 'INACTIVE' | 'CLOSED'
 export type BranchUpdateStatus = 'ACTIVE' | 'INACTIVE'
 
@@ -91,12 +93,8 @@ export type ListBranchBankAccountsParams = {
     query?: string
 }
 
-export type ListBranchBankAccountsResponse = {
-    total: number
-    page: number
-    page_size: number
-    results: BranchBankAccount[]
-}
+export type ListBranchBankAccountsResponse =
+    PaginatedResponse<BranchBankAccount>
 
 export type BranchEmployee = {
     first_name: string
@@ -198,6 +196,8 @@ export type ListBranchesParams = {
     county?: string
     city?: string
     status?: BranchStatus | string
+    page?: number
+    page_size?: number
 }
 
 export type BranchDayHours = {
@@ -286,18 +286,18 @@ export type SetBranchAssortmentRequest = {
     items?: SetBranchAssortmentItem[]
 }
 
-export type ListBranchesResponse = BranchListItem[]
+export type ListBranchesResponse = PaginatedResponse<BranchListItem>
 export type CreateBranchResponse = Branch
 export type GetBranchResponse = Branch
 export type UpdateBranchResponse = Branch
 export type GetBranchNetworkResponse = BranchNetwork
-export type ListBranchEmployeesResponse = BranchEmployee[]
+export type ListBranchEmployeesResponse = PaginatedResponse<BranchEmployee>
 export type AssignBranchEmployeeResponse = BranchEmployee
-export type ListBranchWarehousesResponse = BranchWarehouseLink[]
+export type ListBranchWarehousesResponse = PaginatedResponse<BranchWarehouseLink>
 export type GetBranchPermitsResponse = BranchPermit
 export type UpdateBranchPermitsRequest = BranchPermit
 export type UpdateBranchPermitsResponse = BranchPermit
-export type ListBranchAssortmentResponse = BranchAssortmentItem[]
+export type ListBranchAssortmentResponse = PaginatedResponse<BranchAssortmentItem>
 
 export type WarehouseListItem = {
     id: string
@@ -345,6 +345,8 @@ export type ListWarehousesParams = {
     insurance_status?: InsuranceStatus | string
     is_active?: boolean
     branch_id?: string
+    page?: number
+    page_size?: number
 }
 
 export type CreateWarehouseRequest = {
@@ -368,7 +370,7 @@ export type UpdateWarehouseRequest = {
     is_active?: boolean
 }
 
-export type ListWarehousesResponse = WarehouseListItem[]
+export type ListWarehousesResponse = PaginatedResponse<WarehouseListItem>
 export type CreateWarehouseResponse = Warehouse
 export type GetWarehouseResponse = Warehouse
 export type UpdateWarehouseResponse = Warehouse
@@ -396,6 +398,8 @@ export type ListCashBoxesParams = {
     title?: string
     branch_id?: string
     is_active?: boolean
+    page?: number
+    page_size?: number
 }
 
 export type CreateCashBoxRequest = {
@@ -414,7 +418,7 @@ export type UpdateCashBoxRequest = {
     is_active?: boolean
 }
 
-export type ListCashBoxesResponse = CashBoxListItem[]
+export type ListCashBoxesResponse = PaginatedResponse<CashBoxListItem>
 export type CreateCashBoxResponse = CashBox
 export type GetCashBoxResponse = CashBox
 export type UpdateCashBoxResponse = CashBox
@@ -440,6 +444,8 @@ export type ListPosDevicesParams = {
     title?: string
     branch_id?: string
     is_active?: boolean
+    page?: number
+    page_size?: number
 }
 
 export type CreatePosDeviceRequest = {
@@ -456,7 +462,7 @@ export type UpdatePosDeviceRequest = {
     is_active?: boolean
 }
 
-export type ListPosDevicesResponse = PosDeviceListItem[]
+export type ListPosDevicesResponse = PaginatedResponse<PosDeviceListItem>
 export type CreatePosDeviceResponse = PosDevice
 export type GetPosDeviceResponse = PosDevice
 export type UpdatePosDeviceResponse = PosDevice

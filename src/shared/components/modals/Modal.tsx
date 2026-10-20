@@ -162,6 +162,10 @@ const NewColleagueMessage = dynamic(
     ),
   { ssr: false }
 );
+const AddUnit = dynamic(
+  () => import('./components/addUnit/AddUnit'),
+  { ssr: false }
+);
 
 const MODAL_COMPONENTS: Record<
   ModalType,
@@ -204,6 +208,7 @@ const MODAL_COMPONENTS: Record<
   [ModalTypes.SELECT_BASED_ON_ROLE]: SelectBasedOnRole,
   [ModalTypes.SELECT_USERS]: SelectUsers,
   [ModalTypes.NEW_COLLEAGUE_MESSAGE]: NewColleagueMessage,
+  [ModalTypes.ADD_UNIT]: AddUnit,
 };
 
 const MODAL_CONFIG: Record<
@@ -423,6 +428,12 @@ const MODAL_CONFIG: Record<
   },
   [ModalTypes.NEW_COLLEAGUE_MESSAGE]: {
     title: 'پیام جدید',
+    showCloseButton: true,
+    className:
+      'min-w-[480px]! max-h-[90vh] w-full max-w-[520px]! overflow-y-auto border-0 sm:max-w-[520px]!',
+  },
+  [ModalTypes.ADD_UNIT]: {
+    title: 'افزودن واحد جدید',
     showCloseButton: true,
     className:
       'min-w-[480px]! max-h-[90vh] w-full max-w-[520px]! overflow-y-auto border-0 sm:max-w-[520px]!',

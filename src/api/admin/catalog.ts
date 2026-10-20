@@ -38,6 +38,7 @@ import type {
     ExportItemsParams,
     ExportProductsParams,
     ItemBriefOut,
+    ItemCreateIn,
     ItemDetailOut,
     ItemListOut,
     ItemPolicyIn,
@@ -828,6 +829,15 @@ export const listItems = (
         ...config,
         params: toParams(params),
     })
+
+/**
+ * Create Item Endpoint
+ */
+export const createItem = (
+    body: ItemCreateIn,
+    config?: AxiosRequestConfig
+) =>
+    staffAuthPost<ItemDetailOut, ItemCreateIn>(`/catalog/items`, body, config)
 
 /**
  * Export Items Endpoint

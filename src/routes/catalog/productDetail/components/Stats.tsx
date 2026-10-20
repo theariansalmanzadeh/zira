@@ -9,7 +9,7 @@ export type StatMeta = {
 }
 
 type StatsProps = {
-    values?: number[]
+    values?: Array<number | null | undefined>
     meta?: StatMeta[]
     className?: string
 }
@@ -35,7 +35,9 @@ export const STATS_META: StatMeta[] = [
 
 export const STATS_VALUES_DUMMY = [124, 18, 485000, 38]
 
-const formatStatValue = (value: number, index: number) => {
+const formatStatValue = (value: number | null | undefined, index: number) => {
+    if (value === null || value === undefined) return '—'
+
     switch (index) {
         case 2:
             return formatPrice(value)

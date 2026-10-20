@@ -37,9 +37,13 @@ export const COMBINED_DISCOUNT_TYPE_OPTIONS = [
     { label: 'مبلغی', value: 'amount' },
 ] as const
 
+export const CUSTOMER_LEVEL_VALUES = ['GOLD', 'SILVER', 'BRONZE'] as const
+
 export const combinedDiscountSchema = z.object({
     scope: z.enum(['all-products', 'selected-category', 'selected-products']),
     audience: z.enum(['all-customers', 'by-level', 'selected-customers']),
+    categoryIds: z.array(z.string()),
+    customerLevels: z.array(z.enum(CUSTOMER_LEVEL_VALUES)),
     startDate: z.date().optional(),
     endDate: z.date().optional(),
     discountType: z.enum(['percent', 'amount']),
@@ -52,6 +56,8 @@ export type CombinedDiscountValues = z.infer<typeof combinedDiscountSchema>
 export const COMBINED_DISCOUNT_DEFAULTS: CombinedDiscountValues = {
     scope: 'all-products',
     audience: 'all-customers',
+    categoryIds: [],
+    customerLevels: [],
     startDate: undefined,
     endDate: undefined,
     discountType: 'percent',

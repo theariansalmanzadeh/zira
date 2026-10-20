@@ -32,7 +32,8 @@ const InventoryForm = ({
     const { back } = useRouter()
     const isEditing = Boolean(id)
     const { data: warehouse } = useGetWarehouse(id ?? '', isEditing)
-    const { data: employees = [] } = useListBranchEmployees(branchId)
+    const { data: employeesPage } = useListBranchEmployees(branchId)
+    const employees = employeesPage?.results ?? []
     const { mutate: updateWarehouse, isPending: isUpdating } =
         useUpdateWarehouse()
     const { mutate: createWarehouse, isPending: isCreating } =

@@ -30,7 +30,7 @@ const RoleDetail = () => {
             (staffUsers?.results ?? []).map((user) => [user.id, user])
         )
 
-        return (assignments ?? []).map((assignment) => {
+        return (assignments?.results ?? []).map((assignment) => {
             const user = staffById.get(assignment.user_id)
             const name = user
                 ? `${user.first_name} ${user.last_name}`.trim() || user.username
@@ -50,7 +50,7 @@ const RoleDetail = () => {
                 },
             }
         })
-    }, [assignments, role?.name, staffUsers?.results])
+    }, [assignments?.results, role?.name, staffUsers?.results])
 
     if (isPending) {
         return <TableLoadingSkeleton isPending rows={4} />

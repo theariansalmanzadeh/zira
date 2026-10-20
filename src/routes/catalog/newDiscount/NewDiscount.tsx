@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { toast } from 'sonner'
-import type { DiscountCreateIn } from '@/src/api/types/admin/pricing'
-import { useCreateDiscount } from '@/src/routes/catalog/hooks/pricing'
+import type { CouponCreateIn, DiscountCreateIn } from '@/src/api/types/admin/pricing'
+import { useCreateCoupon } from '@/src/routes/catalog/hooks/pricing'
 import { Button } from '@/src/shared/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/shared/components/ui/Tabs'
 import CashPurchaseDiscountForm from './components/CashPurchaseDiscountForm'
@@ -23,14 +23,22 @@ type NewDiscountProps = {
     id?: string
 }
 
+const toCouponCreatePayload = (input: DiscountCreateIn): CouponCreateIn => ({
+    discount: {
+        ...input,
+        trigger: 'COUPON',
+    },
+    coupon: {},
+})
+
 const NewDiscount = (_props: NewDiscountProps) => {
     const [tab, setTab] = useState<DiscountTab>('combined')
-    const { mutate: createDiscount, isPending } = useCreateDiscount()
+    const { mutate: createCoupon, isPending } = useCreateCoupon()
 
     const handleCreateDiscount = (input: DiscountCreateIn) => {
-        createDiscount(input, {
-            onSuccess: () => toast.success('تخفیف ثبت شد'),
-            onError: () => toast.error('ثبت تخفیف انجام نشد'),
+        createCoupon(toCouponCreatePayload(input), {
+            onSuccess: () => toast.success('کد تخفیف ثبت شد'),
+            onError: () => toast.error('ثبت کد تخفیف انجام نشد'),
         })
     }
 

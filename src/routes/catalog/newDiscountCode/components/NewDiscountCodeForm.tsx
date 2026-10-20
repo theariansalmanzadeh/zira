@@ -1,6 +1,17 @@
 'use client'
 
 import { useState, type ChangeEvent } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import {
+    COMBINED_AUDIENCE_OPTIONS,
+    COMBINED_SCOPE_OPTIONS,
+} from '@/src/routes/catalog/discount/schema'
+import type { CustomerLevel } from '@/src/routes/catalog/newDiscount/constant'
+import ByLevelFields from '@/src/routes/catalog/newDiscount/components/ByLevelFields'
+import SelectedCategoryFields from '@/src/routes/catalog/newDiscount/components/SelectedCategoryFields'
+import SelectCustomers from '@/src/routes/catalog/newCampaigne/components/SelectCustomers'
+import SelectProduct from '@/src/routes/catalog/newCampaigne/components/SelectProduct'
+import type { AddCustomerRow } from '@/src/shared/components/modals/components/addCustomer/constants'
 import CalendarButton from '@/src/shared/components/ui/CalendarButton'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { Input } from '@/src/shared/components/ui/Input'
@@ -18,6 +29,9 @@ const STATUS_OPTIONS = [
     { label: 'فعال', value: 'active' },
     { label: 'غیرفعال', value: 'inactive' },
 ]
+
+const tabTriggerClassName =
+    'rounded-container-md flex-1 border-0 px-4 py-2 data-[state=active]:-mb-0 data-[state=active]:bg-surface-container-lowest data-[state=active]:text-on-surface data-[state=active]:shadow-sm data-[state=active]:after:hidden'
 
 const handleInputChange =
     (setter: (value: string) => void) =>
@@ -130,13 +144,95 @@ const DiscountCodeFormFields = () => {
 }
 
 const DiscountCodeForm = () => {
-
     const [selectedDiscountType, setSelectedDiscountType] = useState<'percentage' | 'fixed'>('percentage')
+    const [scope, setScope] = useState<string>('all-products')
+    const [audience, setAudience] = useState<string>('all-customers')
+    const [categoryIds, setCategoryIds] = useState<string[]>([])
+    const [customerLevels, setCustomerLevels] = useState<CustomerLevel[]>([])
+    const customersForm = useForm<{ customers: AddCustomerRow[] }>({
+        defaultValues: { customers: [] },
+    })
+
     return (
+        <FormProvider {...customersForm}>
         <div className='flex flex-col gap-3' dir='rtl'>
-            <div className='rounded-card-lg bg-surface-container-lowest p-6 flex flex-row gap-2'>
-                <SelectItem title='تخفیف ترکیبی' description='بر اساس ترکیب کالا, مشتری, زمان' icon='product400Linear' selected={selectedDiscountType === 'percentage'} onClick={() => setSelectedDiscountType('percentage')} />
-                <SelectItem title='تخفیف کلی' description='درصد ثابت روی کالا یا دسته' icon='interaction400Linear' selected={selectedDiscountType === 'fixed'} onClick={() => setSelectedDiscountType('fixed')} />
+            <div className='flex flex-row gap-2 rounded-card-lg bg-surface-container-lowest p-6'>
+                <SelectItem
+                    title='تخفیف ترکیبی'
+                    description='بر اساس ترکیب کالا, مشتری, زمان'
+                    icon='product400Linear'
+                    selected={selectedDiscountType === 'percentage'}
+                    onClick={() => setSelectedDiscountType('percentage')}
+                />
+                <SelectItem
+                    title='تخفیف کلی'
+                    description='درصد ثابت روی کالا یا دسته'
+                    icon='interaction400Linear'
+                    selected={selectedDiscountType === 'fixed'}
+                    onClick={() => setSelectedDiscountType('fixed')}
+                />
+            </div>
+
+            <div className='flex flex-col gap-1.5 rounded-card-lg bg-surface-container-lowest p-6'>
+                <span className='text-label-md text-on-surface-variant'>دامنه اعمال</span>
+                <Tabs
+                    value={scope}
+                    onValueChange={setScope}
+                    dir='rtl'
+                    className='w-full gap-4'
+                >
+                    <TabsList className='h-auto w-full gap-1 rounded-container-md border-0 bg-surface-container-high p-1.5'>
+                        {COMBINED_SCOPE_OPTIONS.map((option) => (
+                            <TabsTrigger
+                                key={option.value}
+                                value={option.value}
+                                className={tabTriggerClassName}
+                            >
+                                {option.label}
+                            </TabsTrigger>
+                        ))}
+                    </TabsList>
+                    <TabsContent value='selected-category' className='mt-0'>
+                        <SelectedCategoryFields
+                            value={categoryIds}
+                            onChange={setCategoryIds}
+                        />
+                    </TabsContent>
+                    <TabsContent value='selected-products' className='mt-0'>
+                        <SelectProduct />
+                    </TabsContent>
+                </Tabs>
+            </div>
+
+            <div className='flex flex-col gap-1.5 rounded-card-lg bg-surface-container-lowest p-6'>
+                <span className='text-label-md text-on-surface-variant'>مخاطب</span>
+                <Tabs
+                    value={audience}
+                    onValueChange={setAudience}
+                    dir='rtl'
+                    className='w-full gap-4'
+                >
+                    <TabsList className='h-auto w-full gap-1 rounded-container-md border-0 bg-surface-container-high p-1.5'>
+                        {COMBINED_AUDIENCE_OPTIONS.map((option) => (
+                            <TabsTrigger
+                                key={option.value}
+                                value={option.value}
+                                className={tabTriggerClassName}
+                            >
+                                {option.label}
+                            </TabsTrigger>
+                        ))}
+                    </TabsList>
+                    <TabsContent value='by-level' className='mt-0'>
+                        <ByLevelFields
+                            value={customerLevels}
+                            onChange={setCustomerLevels}
+                        />
+                    </TabsContent>
+                    <TabsContent value='selected-customers' className='mt-0'>
+                        <SelectCustomers />
+                    </TabsContent>
+                </Tabs>
             </div>
 
             <div className='rounded-card-lg bg-surface-container-lowest p-6'>
@@ -144,13 +240,13 @@ const DiscountCodeForm = () => {
                     <TabsList className='h-auto w-full gap-1 rounded-container-md border-0 bg-surface-container-high p-1.5'>
                         <TabsTrigger
                             value='percentage'
-                            className='rounded-container-md flex-1 border-0 px-4 py-2 data-[state=active]:-mb-0 data-[state=active]:bg-surface-container-lowest data-[state=active]:text-on-surface data-[state=active]:shadow-sm data-[state=active]:after:hidden'
+                            className={tabTriggerClassName}
                         >
                             درصدی
                         </TabsTrigger>
                         <TabsTrigger
                             value='fixed'
-                            className='rounded-container-md flex-1 border-0 px-4 py-2 data-[state=active]:-mb-0 data-[state=active]:bg-surface-container-lowest data-[state=active]:text-on-surface data-[state=active]:shadow-sm data-[state=active]:after:hidden'
+                            className={tabTriggerClassName}
                         >
                             مبلغ ثابت
                         </TabsTrigger>
@@ -165,6 +261,7 @@ const DiscountCodeForm = () => {
                 </Tabs>
             </div>
         </div>
+        </FormProvider>
     )
 }
 

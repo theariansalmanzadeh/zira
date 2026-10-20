@@ -1,3 +1,5 @@
+import type { PaginatedResponse } from './common'
+
 export type TicketStatus = 'WAITING' | 'ANSWERED' | 'CLOSED'
 
 export type TicketStatusQuery = TicketStatus | 'active'
@@ -199,8 +201,10 @@ export type EvaluateSlaResponse = {
     new_breaches: number
 }
 
-export type ListSupportDepartmentsResponse = SupportDepartmentChoice[]
-export type ListDepartmentAssigneesResponse = SupportEligibleAssignee[]
+export type ListSupportDepartmentsResponse =
+    PaginatedResponse<SupportDepartmentChoice>
+export type ListDepartmentAssigneesResponse =
+    PaginatedResponse<SupportEligibleAssignee>
 export type GetSupportCalendarResponse = SupportCalendar
 export type UpdateSupportCalendarResponse = SupportCalendar
 export type ListSlaBreachesResponse = TicketAdminPage

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { AxiosInstance } from 'axios'
-import { apiClient, staffApiClient } from '@/src/api/config'
+import { staffApiClient } from '@/src/api/config'
 import { listStaffNotifications } from '@/src/api/admin/me'
 import { refreshSession, refreshStaffSession } from '@/src/api/register'
 import type { StaffNotificationDelivery } from '@/src/api/types/admin/me'
@@ -21,8 +21,7 @@ type UseNotificationSSEOptions = {
 
 const STREAM_PATH = 'auth/me/notifications/stream'
 
-const getClient = (isAdmin: boolean): AxiosInstance =>
-    isAdmin ? staffApiClient : apiClient
+const getClient = (): AxiosInstance => staffApiClient
 
 const toReadableStream = (data: unknown): ReadableStream<Uint8Array> | null => {
     if (data instanceof ReadableStream) return data
@@ -38,6 +37,7 @@ export function useNotificationSSE({
     const [isLoadingMessages, setIsLoadingMessages] = useState(true)
     const [isMessagesError, setIsMessagesError] = useState(false)
     const abortRef = useRef<AbortController | null>(null)
+    const lastUnreadCountRef = useRef(0)
 
     const refreshMessages = useCallback(async () => {
         if (!isAdmin) {
@@ -64,7 +64,7 @@ export function useNotificationSSE({
     useEffect(() => {
         let isMounted = true
         let attempt = 0
-        const client = getClient(isAdmin)
+        const client = getClient()
 
         const refreshAuth = async () => {
             try {
@@ -147,10 +147,19 @@ export function useNotificationSSE({
                                 if (currentEvent === 'notifications.sync') {
                                     const state: NotificationSyncState =
                                         JSON.parse(rawData)
+                                    const nextUnread = state.unread_count
+                                    const previousUnread =
+                                        lastUnreadCountRef.current
+                                    const unreadIncreased =
+                                        nextUnread > previousUnread
+
+                                    lastUnreadCountRef.current = nextUnread
+
                                     if (isMounted) {
-                                        setUnreadCount(state.unread_count)
+                                        setUnreadCount(nextUnread)
                                     }
-                                    if (state.refresh_required) {
+
+                                    if (unreadIncreased) {
                                         await refreshMessages()
                                     }
                                 } else if (currentEvent === 'auth.required') {

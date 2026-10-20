@@ -19,7 +19,7 @@ export type DepartmentRowData = {
 const TableRow = ({ data }: { data: DepartmentRowData }) => {
     const { TableColoumn } = useTable()
     const { data: assignees } = useListDepartmentAssignees(data.id)
-    const manager = assignees?.[0]?.display_name || '—'
+    const manager = assignees?.results?.[0]?.display_name || '—'
 
     return (
         <>
