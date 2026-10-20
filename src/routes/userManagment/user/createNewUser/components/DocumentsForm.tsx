@@ -1,29 +1,31 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { useUploadStaffDocument } from '@/src/routes/userManagment/hooks/user'
+import {
+    useDeleteUserDocument,
+    useUploadStaffDocument,
+} from '@/src/routes/userManagment/hooks/user'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { Button } from '@/src/shared/components/ui/button'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
+import IconButton from '@/src/shared/components/ui/IconButton'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 import { cn } from '@/src/shared/libs/utils'
-import { REQUIRED_DOCUMENT_SLOTS } from '../constants'
+import {
+    DOCUMENT_SLOT_OPTIONS,
+    type StaffDocumentSlot,
+} from '../constants'
+import {
+    useNewUser,
+    type UploadedDocument,
+} from '../provider/NewUserProvider'
 import type { NewUserFormValues } from '../schema'
 
-const DOCUMENT_TYPE_OPTIONS = REQUIRED_DOCUMENT_SLOTS.map((slot) => ({
+const DOCUMENT_TYPE_OPTIONS = DOCUMENT_SLOT_OPTIONS.map((slot) => ({
     label: slot.label,
     value: slot.value,
 }))
-
-type UploadedDocument = {
-    file: string
-    slot: string
-    label: string
-    name: string
-    previewUrl: string
-    isImage: boolean
-}
 
 const DocumentsForm = () => {
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -32,22 +34,61 @@ const DocumentsForm = () => {
         setValue,
         formState: { errors },
     } = useFormContext<NewUserFormValues>()
+    const {
+        userId,
+        slot,
+        setSlot,
+        file,
+        setFile,
+        documents,
+        setDocuments,
+    } = useNewUser()
     const { mutateAsync: uploadStaffDocument, isPending } =
         useUploadStaffDocument()
-    const [slot, setSlot] = useState('')
-    const [file, setFile] = useState<File | null>(null)
-    const [documents, setDocuments] = useState<UploadedDocument[]>([])
+    const { mutateAsync: deleteUserDocument, isPending: isDeleting } =
+        useDeleteUserDocument()
 
     const slotLabel =
         DOCUMENT_TYPE_OPTIONS.find((option) => option.value === slot)?.label ??
         slot
+
+    const removeDocumentLocally = (document: UploadedDocument) => {
+        setDocuments((prev) =>
+            prev.filter((item) => item.file !== document.file)
+        )
+        setValue(
+            'documents',
+            (getValues('documents') ?? []).filter(
+                (item) => item.file !== document.file
+            ),
+            { shouldDirty: true, shouldValidate: true }
+        )
+        if (document.previewUrl.startsWith('blob:')) {
+            URL.revokeObjectURL(document.previewUrl)
+        }
+    }
+
+    const handleRemove = async (document: UploadedDocument) => {
+        if (userId && document.id) {
+            try {
+                await deleteUserDocument({
+                    userId,
+                    documentId: document.id,
+                })
+            } catch {
+                return
+            }
+        }
+        removeDocumentLocally(document)
+    }
 
     const handleUpload = async () => {
         if (!file || !slot) return
 
         try {
             const uploaded = await uploadStaffDocument({ file, slot })
-            const storedSlot = uploaded.slot || slot
+            const storedSlot = (uploaded.slot ||
+                slot) as StaffDocumentSlot
 
             const nextDocuments = [
                 ...(getValues('documents') ?? []).filter(
@@ -163,7 +204,7 @@ const DocumentsForm = () => {
                     <ul className='flex flex-col'>
                         {documents.map((document) => (
                             <li
-                                key={document.file}
+                                key={document.id ?? document.file}
                                 className='flex items-center gap-3 border-b border-outline-variant/60 px-4 py-3 last:border-b-0'
                             >
                                 <div
@@ -186,7 +227,7 @@ const DocumentsForm = () => {
                                         />
                                     )}
                                 </div>
-                                <div className='flex min-w-0 flex-col'>
+                                <div className='flex min-w-0 flex-1 flex-col'>
                                     <span className='truncate text-label-md text-on-surface'>
                                         {document.label}
                                     </span>
@@ -197,6 +238,16 @@ const DocumentsForm = () => {
                                         {document.name}
                                     </span>
                                 </div>
+                                <IconButton
+                                    type='button'
+                                    icon='closeSm400Linear'
+                                    variant='ghost'
+                                    className='size-8 shrink-0'
+                                    iconClassName='size-4!'
+                                    disabled={isDeleting}
+                                    onClick={() => handleRemove(document)}
+                                    aria-label='حذف مدرک'
+                                />
                             </li>
                         ))}
                     </ul>

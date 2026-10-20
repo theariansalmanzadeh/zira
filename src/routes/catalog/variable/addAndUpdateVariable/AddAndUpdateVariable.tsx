@@ -1,7 +1,12 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import {
+    useParams,
+    usePathname,
+    useRouter,
+    useSearchParams,
+} from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form'
@@ -311,10 +316,28 @@ const VARIABLE_SECTIONS = [
 
 type VariableSection = (typeof VARIABLE_SECTIONS)[number]['value']
 
+const isVariableSection = (value: string | null): value is VariableSection =>
+    VARIABLE_SECTIONS.some((item) => item.value === value)
+
 const AddAndUpdateVariable = () => {
     const params = useParams<{ id?: string }>()
+    const searchParams = useSearchParams()
+    const pathname = usePathname()
+    const { replace } = useRouter()
     const editId = params?.id ?? null
-    const [section, setSection] = useState<VariableSection>('variable')
+    const cat = searchParams.get('cat')
+    const section: VariableSection = isVariableSection(cat) ? cat : 'variable'
+
+    const setSection = (value: VariableSection) => {
+        const next = new URLSearchParams(searchParams.toString())
+        if (value === 'variable') {
+            next.delete('cat')
+        } else {
+            next.set('cat', value)
+        }
+        const query = next.toString()
+        replace(query ? `${pathname}?${query}` : pathname)
+    }
 
     return (
         <div className="flex w-full flex-col gap-4" dir="rtl">
@@ -322,7 +345,7 @@ const AddAndUpdateVariable = () => {
                 type="single"
                 value={section}
                 onValueChange={(value) => {
-                    if (value) setSection(value as VariableSection)
+                    if (value && isVariableSection(value)) setSection(value)
                 }}
                 variant="filled"
                 className="w-full rounded-container-md! bg-surface-container-lowest p-2"

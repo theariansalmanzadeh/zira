@@ -1,4 +1,5 @@
 import type { UpdateUserRequest, User } from '@/src/api/types/admin/user'
+import type { StaffDocumentSlot } from '../../createNewUser/constants'
 import {
     EDIT_USER_DEFAULT_VALUES,
     type NewUserFormValues,
@@ -67,6 +68,10 @@ export const toEditUserFormValues = (user: User): NewUserFormValues => {
             user.commission_percent == null
                 ? ''
                 : String(user.commission_percent),
+        documents: (user.documents ?? []).map((document) => ({
+            slot: document.slot as StaffDocumentSlot,
+            file: document.file,
+        })),
     }
 }
 

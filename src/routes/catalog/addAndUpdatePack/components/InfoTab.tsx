@@ -19,18 +19,26 @@ const InfoTab = () => {
         formState: { errors },
     } = useFormContext<AddAndUpdatePackFormValues>()
     const unitId = useWatch({ control, name: 'unit_id' })
-    const { data: unitsData } = useListUnits({ page: 1, page_size: 100 })
+    const { data: unitsData } = useListUnits({
+        page: 1,
+        page_size: 100,
+        is_active: true,
+        is_base: false,
+    })
 
     const unitOptions = (unitsData?.results ?? [])
-        .filter((unit) => unit.is_active)
+        .filter((unit) => unit.is_active && !unit.is_base)
         .map((unit) => ({
             label: unit.name,
             value: unit.id,
         }))
 
     useEffect(() => {
-        if (unitId) return
-        const firstUnitId = unitsData?.results?.find((unit) => unit.is_active)?.id
+        const derivedUnits = (unitsData?.results ?? []).filter(
+            (unit) => unit.is_active && !unit.is_base
+        )
+        if (derivedUnits.some((unit) => unit.id === unitId)) return
+        const firstUnitId = derivedUnits[0]?.id
         if (!firstUnitId) return
         setValue('unit_id', firstUnitId, { shouldValidate: true })
     }, [unitId, unitsData, setValue])

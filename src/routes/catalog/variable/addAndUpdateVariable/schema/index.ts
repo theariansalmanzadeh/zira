@@ -14,11 +14,9 @@ export const INPUT_TYPE_OPTIONS = [
 ]
 
 export const PRODUCT_ROLE_OPTIONS = [
-    { label: 'متغیرساز', value: 'VARIANT' },
     { label: 'مشترک', value: 'COMMON' },
     { label: 'قلم کالا', value: 'ITEM' },
     { label: 'توصیفی', value: 'DESCRIPTIVE' },
-    { label: 'سیستمی', value: 'SYSTEM' },
 ]
 
 export const FORM_DISPLAY_OPTIONS = [
@@ -53,17 +51,17 @@ export type AddAndUpdateVariableFormValues = z.infer<
 >
 
 export const ADD_AND_UPDATE_VARIABLE_DEFAULT_VALUES: AddAndUpdateVariableFormValues =
-    {
-        name: '',
-        inputType: '',
-        productRole: '',
-        formDisplayControl: '',
-        shortDescription: '',
-        required: true,
-        showInStoreFilters: true,
-        showOnPublicProductPage: true,
-        values: [],
-    }
+{
+    name: '',
+    inputType: '',
+    productRole: '',
+    formDisplayControl: '',
+    shortDescription: '',
+    required: true,
+    showInStoreFilters: true,
+    showOnPublicProductPage: true,
+    values: [],
+}
 
 export const getAddAndUpdateVariableDefaultValues = (
     attribute?: AttributeOut | null

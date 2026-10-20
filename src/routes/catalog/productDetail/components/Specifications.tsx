@@ -37,10 +37,10 @@ export const PRODUCT_LABELS_DUMMY = [
 ]
 
 const Specifications = ({
-    colors = COLORS_DUMMY,
-    sizes = SIZES_DUMMY,
-    saleUnits = SALE_UNITS_DUMMY,
-    fields = TECH_SPECS_DUMMY,
+    colors,
+    sizes,
+    saleUnits,
+    fields,
     className,
 }: SpecificationsProps) => {
     return (
@@ -53,7 +53,7 @@ const Specifications = ({
                             رنگ‌ها (رنگ‌های پایه)
                         </span>
                         <div className='flex flex-wrap gap-2'>
-                            {colors.map((item) => (
+                            {colors?.map((item) => (
                                 <ColorPill
                                     key={item.label}
                                     hex={item.color}
@@ -68,7 +68,7 @@ const Specifications = ({
                             سایزها (حروفی (SX-XXL))
                         </span>
                         <div className='flex flex-wrap gap-2'>
-                            {sizes.map((size) => (
+                            {sizes?.map((size) => (
                                 <Badge
                                     key={size}
                                     variant='default'
@@ -85,7 +85,7 @@ const Specifications = ({
                             واحد فروش
                         </span>
                         <div className='flex flex-wrap gap-2'>
-                            {saleUnits.map((unit) => (
+                            {saleUnits?.map((unit) => (
                                 <Badge
                                     key={unit}
                                     variant='default'
@@ -102,7 +102,7 @@ const Specifications = ({
             <div className='rounded-card-lg border border-outline-variant bg-surface-container-lowest p-5'>
                 <SectionTitle>مشخصات فنی</SectionTitle>
                 <div className='grid grid-cols-1 gap-x-8 gap-y-0 sm:grid-cols-2'>
-                    {fields.map((field, index) => (
+                    {fields?.map((field, index) => (
                         <div
                             key={field.label}
                             className={cn(

@@ -2,7 +2,10 @@ import { addressFormSchema } from '@/src/shared/schema/admin/addressFormSchema'
 import { emergencyFormFlatSchema } from '@/src/shared/schema/admin/emergencyFormSchema'
 import { identityFormSchema } from '@/src/shared/schema/admin/identityFormSchema'
 import { toEnglishDigits } from '@/src/shared/schema/generalSchema'
-import { REQUIRED_DOCUMENT_SLOTS } from '../constants'
+import {
+    REQUIRED_DOCUMENT_SLOTS,
+    STAFF_DOCUMENT_SLOTS,
+} from '../constants'
 import type { FieldPath } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -51,18 +54,21 @@ export const occupationInfoSchema = z.object({
 })
 
 const requiredDocumentSlots = REQUIRED_DOCUMENT_SLOTS.map((slot) => slot.value)
+const staffDocumentSlotSchema = z.enum(STAFF_DOCUMENT_SLOTS)
 
 export const documentsFormSchema = z.object({
     documents: z
         .array(
             z.object({
-                slot: z.string(),
+                slot: staffDocumentSlotSchema,
                 file: z.string(),
             })
         )
         .superRefine((documents, context) => {
             const uploaded = new Set(documents.map((document) => document.slot))
-            const missing = requiredDocumentSlots.filter((slot) => !uploaded.has(slot))
+            const missing = requiredDocumentSlots.filter(
+                (slot) => !uploaded.has(slot)
+            )
             if (missing.length === 0) return
             context.addIssue({
                 code: 'custom',

@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
+import { Icon } from '@/src/shared/components/Icons/Icon'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Button } from '@/src/shared/components/ui/button'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
@@ -68,21 +69,32 @@ const SecurityAndRole = ({ onContinue, onBack }: SecurityAndRoleProps) => {
                                 />
                             )}
                         />
-                        <Controller
-                            name='initialPassword'
-                            control={control}
-                            render={({ field }) => (
-                                <Input
-                                    label='رمز عبور اولیه *'
-                                    type='password'
-                                    placeholder='حداقل ۸ کاراکتر'
-                                    value={field.value}
-                                    onChange={field.onChange}
-                                    error={!!errors.initialPassword}
-                                    msg={errors.initialPassword?.message}
+                        <div className='flex flex-col'>
+                            <Controller
+                                name='initialPassword'
+                                control={control}
+                                render={({ field }) => (
+                                    <Input
+                                        label='رمز عبور اولیه *'
+                                        type='password'
+                                        placeholder='حداقل ۸ کاراکتر'
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        error={!!errors.initialPassword}
+                                        msg={errors.initialPassword?.message}
+                                    />
+                                )}
+                            />
+                            <div className='mt-1.5 flex items-start gap-1.5 text-outline'>
+                                <Icon
+                                    label='info400Linear'
+                                    className='mt-0.5 size-3.5 shrink-0'
                                 />
-                            )}
-                        />
+                                <span className='text-label-sm'>
+                                    حداقل ۸ کاراکتر و حداقل یک رقم
+                                </span>
+                            </div>
+                        </div>
                         <Controller
                             name='userType'
                             control={control}

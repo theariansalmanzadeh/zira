@@ -83,6 +83,17 @@ export const uploadStaffDocument = (
         }
     )
 
+export const deleteUserDocument = (
+    userId: string,
+    documentId: string,
+    config?: AxiosRequestConfig
+) =>
+    staffAuthDelete<MessageResponse>(
+        `/auth/users/${userId}/documents/${documentId}`,
+        undefined,
+        config
+    )
+
 export const listUsers = (
     params?: ListUsersParams,
     config?: AxiosRequestConfig

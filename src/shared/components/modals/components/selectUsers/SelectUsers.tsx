@@ -1,8 +1,8 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import type { User } from '@/src/api/types/admin/user'
-import { useListUsers } from '@/src/routes/userManagment/hooks/user'
+import type { StaffUser } from '@/src/api/types/admin/user'
+import { useListStaffUsers } from '@/src/routes/userManagment/hooks/user'
 import { Button } from '@/src/shared/components/ui/button'
 import { Checkbox } from '@/src/shared/components/ui/Checkbox'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
@@ -21,21 +21,21 @@ export type {
     SelectUsersModalData,
 } from './types'
 
-const toSelectableUser = (user: User): SelectAnnouncementUserItem => ({
+const toSelectableUser = (user: StaffUser): SelectAnnouncementUserItem => ({
     id: user.id,
     name:
         [user.first_name, user.last_name].filter(Boolean).join(' ') ||
         user.username,
     personnelCode: user.personnel_code || user.username,
     role: user.job_title || '—',
-    branch: user.department || '—',
+    branch: user.primary_branch_id || '—',
     status: user.is_active ? 'active' : 'inactive',
     phone: user.phone_number,
 })
 
 const SelectUsers = ({ closeModal, data }: BaseModalProps) => {
     const modalData = data as SelectUsersModalData | null | undefined
-    const { data: usersData, isPending, isError } = useListUsers()
+    const { data: usersData, isPending, isError } = useListStaffUsers()
     const [filter, setFilter] = useState<UserListFilter>(EMPTY_USER_LIST_FILTER)
     const [selectedIds, setSelectedIds] = useState<Set<string>>(
         () => new Set(modalData?.selectedIds ?? [])

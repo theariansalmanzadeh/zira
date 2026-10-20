@@ -1,4 +1,4 @@
-import type { User } from '@/src/api/types/admin/user'
+import type { StaffUser } from '@/src/api/types/admin/user'
 
 export type UserListFilter = {
     job_title: string
@@ -20,7 +20,7 @@ const includes = (value: string | undefined, query: string) => {
     return (value ?? '').toLowerCase().includes(needle)
 }
 
-export const filterUsers = (users: User[], filter: UserListFilter) =>
+export const filterUsers = (users: StaffUser[], filter: UserListFilter) =>
     users.filter(
         (user) =>
             includes(user.job_title, filter.job_title) &&

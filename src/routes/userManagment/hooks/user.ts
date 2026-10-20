@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
     createStaffUser,
     createUser,
+    deleteUserDocument,
     getUser,
     getUserDepartments,
     grantUserBranches,
@@ -38,6 +39,8 @@ export const userKeys = {
     staff: () => [...userKeys.all, 'staff'] as const,
     details: () => [...userKeys.all, 'detail'] as const,
     detail: (userId: string) => [...userKeys.details(), userId] as const,
+    documents: (userId: string) =>
+        [...userKeys.detail(userId), 'documents'] as const,
     sessions: (userId: string) =>
         [...userKeys.detail(userId), 'sessions'] as const,
     branches: (userId: string) =>
@@ -78,6 +81,32 @@ export const useUploadStaffDocument = () => {
             const result = await uploadStaffDocument(body)
             if (!result.success) throw result.error
             return result.data
+        },
+    })
+}
+
+export const useDeleteUserDocument = () => {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: async ({
+            userId,
+            documentId,
+        }: {
+            userId: string
+            documentId: string
+        }) => {
+            const result = await deleteUserDocument(userId, documentId)
+            if (!result.success) throw result.error
+            return result.data
+        },
+        onSuccess: (_data, { userId }) => {
+            queryClient.invalidateQueries({
+                queryKey: userKeys.documents(userId),
+            })
+            queryClient.invalidateQueries({
+                queryKey: userKeys.detail(userId),
+            })
         },
     })
 }

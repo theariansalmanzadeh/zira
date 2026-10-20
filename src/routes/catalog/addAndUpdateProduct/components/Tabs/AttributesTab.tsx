@@ -14,7 +14,6 @@ import { useListUnits } from '@/src/routes/settings/hooks/settings'
 import type { AttributeOut } from '@/src/api/types/admin/catalog'
 import { useCreateProducts } from '../../provider/createProductsProvider'
 import {
-    PRODUCT_ATTRIBUTE_LIST_PARAMS,
     isColorAttribute,
     isMultiAttribute,
     isSelectableAttribute,
@@ -25,7 +24,7 @@ const PRESET_ATTRIBUTE_CODES = ['material', 'pack', 'color'] as const
 
 const AttributesTab = () => {
     const { push } = useRouter()
-    const { data } = useListAttributes(PRODUCT_ATTRIBUTE_LIST_PARAMS)
+    const { data } = useListAttributes()
     const {
         attributeSelections,
         setAttributeSelection,
@@ -62,6 +61,11 @@ const AttributesTab = () => {
         () =>
             [...(data?.results ?? [])]
                 .filter(isSelectableAttribute)
+                .filter(
+                    (attribute) =>
+                        attribute.role === 'COMMON' ||
+                        attribute.role === 'VARIANT'
+                )
                 .sort((left, right) => left.sort_order - right.sort_order),
         [data]
     )

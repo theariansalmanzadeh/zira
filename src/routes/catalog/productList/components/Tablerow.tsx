@@ -77,7 +77,12 @@ const Tablerow = ({
                                     />
                                 )}
                             </div>
-                            <span>{productName}</span>
+                            <span
+                                className="max-w-[180px] truncate"
+                                title={productName}
+                            >
+                                {productName}
+                            </span>
                         </div>
                     </TableCell>
                 )}

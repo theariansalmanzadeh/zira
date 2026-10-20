@@ -54,10 +54,20 @@ const Variable = () => {
                 </div>
             )}
             <div className='grid w-full grid-cols-2 gap-3'>
-                <VariableCard title='سایز' items={sizes} />
-            </div>
-            <div className='grid w-full grid-cols-2 gap-3'>
-                <VariableCard title='رنگ' items={colors} />
+                <VariableCard
+                    title='سایز'
+                    items={sizes}
+                    onManage={() =>
+                        push('/admin/catalog/variable/new?cat=size')
+                    }
+                />
+                <VariableCard
+                    title='رنگ'
+                    items={colors}
+                    onManage={() =>
+                        push('/admin/catalog/variable/new?cat=color')
+                    }
+                />
             </div>
         </div>
     )

@@ -36,19 +36,45 @@ export const USER_TYPE_OPTIONS: FormDropdownOption[] = [
     { label: 'مدیر ارشد', value: 'SUPERADMIN' },
 ]
 
-export const REQUIRED_DOCUMENT_SLOTS = [
+export const STAFF_DOCUMENT_SLOTS = [
+    'BIRTH_CERTIFICATE_PAGE_1',
+    'BIRTH_CERTIFICATE_PAGE_2',
+    'BIRTH_CERTIFICATE_PAGE_3',
+    'BIRTH_CERTIFICATE_PAGE_4',
+    'CONTRACT',
+    'EDUCATIONAL_DEGREE',
+    'GUARANTEE',
+    'NATIONAL_CARD',
+    'OTHER',
+    'PERSONNEL_PHOTO',
+    'POSTAL_CODE_CONFIRMATION',
+    'TRAINING_CERTIFICATE',
+] as const
+
+export type StaffDocumentSlot = (typeof STAFF_DOCUMENT_SLOTS)[number]
+
+export const DOCUMENT_SLOT_OPTIONS: {
+    label: string
+    value: StaffDocumentSlot
+}[] = [
     { label: 'تصویر کارت ملی', value: 'NATIONAL_CARD' },
     { label: 'تصویر شناسنامه ۱', value: 'BIRTH_CERTIFICATE_PAGE_1' },
     { label: 'تصویر شناسنامه ۲', value: 'BIRTH_CERTIFICATE_PAGE_2' },
     { label: 'تصویر شناسنامه ۳', value: 'BIRTH_CERTIFICATE_PAGE_3' },
     { label: 'تصویر شناسنامه ۴', value: 'BIRTH_CERTIFICATE_PAGE_4' },
-    { label: 'تصویر مدرک تحصیلی', value: 'EDUCATION_CERTIFICATE' },
+    { label: 'تصویر مدرک تحصیلی', value: 'EDUCATIONAL_DEGREE' },
     { label: 'تصویر تاییدیه کد پستی', value: 'POSTAL_CODE_CONFIRMATION' },
     { label: 'تصویر ضمانت', value: 'GUARANTEE' },
     { label: 'تصویر قرارداد', value: 'CONTRACT' },
     { label: 'عکس پرسنلی', value: 'PERSONNEL_PHOTO' },
-    { label: 'تصویر دوره‌ها', value: 'COURSES' },
-] as const
+    { label: 'گواهی دوره آموزشی', value: 'TRAINING_CERTIFICATE' },
+    { label: 'سایر', value: 'OTHER' },
+]
+
+/** مدارک الزامی برای ثبت کاربر (بدون OTHER) */
+export const REQUIRED_DOCUMENT_SLOTS = DOCUMENT_SLOT_OPTIONS.filter(
+    (slot) => slot.value !== 'OTHER'
+)
 
 export const USER_ROLE_OPTIONS: FormDropdownOption[] = [
     { label: 'مدیر سیستم', value: 'system_admin' },

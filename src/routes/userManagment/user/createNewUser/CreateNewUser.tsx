@@ -17,6 +17,7 @@ import EmergencyForm from './components/EmergencyForm'
 import IdentityForm from './components/IdentityForm'
 import OccupationInfo from './components/OccupationInfo'
 import SecurityAndRole from './components/SecurityAndRole'
+import { NewUserProvider } from './provider/NewUserProvider'
 import {
     NEW_USER_DEFAULT_VALUES,
     newUserFormSchema,
@@ -121,111 +122,119 @@ const CreateNewUser = () => {
                 toast.success('کاربر ایجاد شد')
                 push('/admin/user-management?sub=user')
             },
-            onError: () => {
-                toast.error('ایجاد کاربر انجام نشد')
-            },
         })
     }
 
     return (
-        <FormProvider {...methods}>
-            <div
-                className='mx-auto flex w-full max-w-7/8 flex-col gap-6'
-                dir='rtl'
-            >
-                <StepperStatus steps={formStep} indexBased />
+        <NewUserProvider>
+            <FormProvider {...methods}>
+                <div
+                    className='mx-auto flex w-full max-w-7/8 flex-col gap-6'
+                    dir='rtl'
+                >
+                    <StepperStatus steps={formStep} indexBased />
 
-                <div className='mx-auto w-full pt-3'>
-                    {activeStep === FormSteps.identity && (
-                        <IdentityForm
-                            onContinue={() =>
-                                setFormStep(toFormSteps(FormSteps.ADDRESS))
-                            }
-                        />
-                    )}
-                    {activeStep === FormSteps.ADDRESS && (
-                        <AddressForm
-                            onBack={goBack}
-                            onContinue={() =>
-                                setFormStep(toFormSteps(FormSteps.emergencyContact))
-                            }
-                        />
-                    )}
-                    {activeStep === FormSteps.emergencyContact && (
-                        <EmergencyForm
-                            onBack={goBack}
-                            onContinue={() =>
-                                setFormStep(toFormSteps(FormSteps.bankInfo))
-                            }
-                        />
-                    )}
-                    {activeStep === FormSteps.bankInfo && (
-                        <BankInfo
-                            onBack={goBack}
-                            onContinue={() =>
-                                setFormStep(toFormSteps(FormSteps.securityAndRole))
-                            }
-                        />
-                    )}
-                    {activeStep === FormSteps.securityAndRole && (
-                        <SecurityAndRole
-                            onBack={goBack}
-                            onContinue={() =>
-                                setFormStep(toFormSteps(FormSteps.occupationInfo))
-                            }
-                        />
-                    )}
-                    {activeStep === FormSteps.occupationInfo && (
-                        <OccupationInfo
-                            onBack={goBack}
-                            onContinue={() =>
-                                setFormStep(toFormSteps(FormSteps.documents))
-                            }
-                        />
-                    )}
-                    {activeStep === FormSteps.documents && (
-                        <>
-                            <DocumentsForm />
-                            {validationErrors.length > 0 && (
-                                <ul className='mb-3 list-disc rounded-container-lg bg-warning-container px-6 py-3 text-warning'>
-                                    {validationErrors.map((message) => (
-                                        <li key={message} className='text-label-md text-warning'>
-                                            {message}
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                            <div className='flex flex-row-reverse gap-3'>
-                                <Button
-                                    type='button'
-                                    variant='primary'
-                                    size='lg'
-                                    className='w-full text-label-lg'
-                                    disabled={isPending}
-                                    onClick={methods.handleSubmit(onSubmit)}
-                                >
-                                    {isPending ? (
-                                        <Spinner className='size-4' />
-                                    ) : (
-                                        'ثبت کاربر'
-                                    )}
-                                </Button>
-                                <Button
-                                    type='button'
-                                    variant='outline'
-                                    size='lg'
-                                    className='text-label-lg'
-                                    disabled={isPending}
-                                    onClick={goBack}
-                                >
-                                    بازگشت
-                                </Button>
-                            </div>
-                        </>
-                    )}
+                    <div className='mx-auto w-full pt-3'>
+                        {activeStep === FormSteps.identity && (
+                            <IdentityForm
+                                onContinue={() =>
+                                    setFormStep(toFormSteps(FormSteps.ADDRESS))
+                                }
+                            />
+                        )}
+                        {activeStep === FormSteps.ADDRESS && (
+                            <AddressForm
+                                onBack={goBack}
+                                onContinue={() =>
+                                    setFormStep(
+                                        toFormSteps(FormSteps.emergencyContact)
+                                    )
+                                }
+                            />
+                        )}
+                        {activeStep === FormSteps.emergencyContact && (
+                            <EmergencyForm
+                                onBack={goBack}
+                                onContinue={() =>
+                                    setFormStep(toFormSteps(FormSteps.bankInfo))
+                                }
+                            />
+                        )}
+                        {activeStep === FormSteps.bankInfo && (
+                            <BankInfo
+                                onBack={goBack}
+                                onContinue={() =>
+                                    setFormStep(
+                                        toFormSteps(FormSteps.securityAndRole)
+                                    )
+                                }
+                            />
+                        )}
+                        {activeStep === FormSteps.securityAndRole && (
+                            <SecurityAndRole
+                                onBack={goBack}
+                                onContinue={() =>
+                                    setFormStep(
+                                        toFormSteps(FormSteps.occupationInfo)
+                                    )
+                                }
+                            />
+                        )}
+                        {activeStep === FormSteps.occupationInfo && (
+                            <OccupationInfo
+                                onBack={goBack}
+                                onContinue={() =>
+                                    setFormStep(toFormSteps(FormSteps.documents))
+                                }
+                            />
+                        )}
+                        {activeStep === FormSteps.documents && (
+                            <>
+                                <DocumentsForm />
+                                {validationErrors.length > 0 && (
+                                    <ul className='mb-3 list-disc rounded-container-lg bg-warning-container px-6 py-3 text-warning'>
+                                        {validationErrors.map((message) => (
+                                            <li
+                                                key={message}
+                                                className='text-label-md text-warning'
+                                            >
+                                                {message}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                                <div className='flex flex-row-reverse gap-3'>
+                                    <Button
+                                        type='button'
+                                        variant='primary'
+                                        size='lg'
+                                        className='w-full text-label-lg'
+                                        disabled={isPending}
+                                        onClick={methods.handleSubmit(onSubmit)}
+                                    >
+                                        {isPending ? (
+                                            <Spinner className='size-4' />
+                                        ) : (
+                                            'ثبت کاربر'
+                                        )}
+                                    </Button>
+                                    <Button
+                                        type='button'
+                                        variant='outline'
+                                        size='lg'
+                                        className='text-label-lg'
+                                        disabled={isPending}
+                                        onClick={goBack}
+                                    >
+                                        بازگشت
+                                    </Button>
+                                </div>
+                            </>
+                        )}
+                    </div>
                 </div>
-            </div>
-        </FormProvider>
+            </FormProvider>
+        </NewUserProvider>
     )
 }
 

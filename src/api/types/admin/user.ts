@@ -178,14 +178,28 @@ export type StaffNextOfKin = {
     address: string
 }
 
+export type StaffDocumentSlot =
+    | 'BIRTH_CERTIFICATE_PAGE_1'
+    | 'BIRTH_CERTIFICATE_PAGE_2'
+    | 'BIRTH_CERTIFICATE_PAGE_3'
+    | 'BIRTH_CERTIFICATE_PAGE_4'
+    | 'CONTRACT'
+    | 'EDUCATIONAL_DEGREE'
+    | 'GUARANTEE'
+    | 'NATIONAL_CARD'
+    | 'OTHER'
+    | 'PERSONNEL_PHOTO'
+    | 'POSTAL_CODE_CONFIRMATION'
+    | 'TRAINING_CERTIFICATE'
+
 export type StaffDocument = {
-    slot: string
+    slot: StaffDocumentSlot | string
     file: string
 }
 
 export type UploadStaffDocumentRequest = {
     file: File
-    slot?: string | null
+    slot?: StaffDocumentSlot | string | null
 }
 
 export type UploadStaffDocumentResponse = {

@@ -2,7 +2,7 @@ import * as z from 'zod'
 
 export const DISPLAY_STATUS_OPTIONS = [
     { label: 'نمایش در فروشگاه', value: 'ACTIVE' },
-    { label: 'مخفی', value: 'HIDDEN' },
+    { label: 'عدم نمایش', value: 'HIDDEN' },
     { label: 'پیش‌نویس', value: 'DRAFT' },
 ] as const
 

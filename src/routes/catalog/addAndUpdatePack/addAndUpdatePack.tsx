@@ -15,6 +15,7 @@ import DomainTab from './components/DomainTab'
 import GalleryTab from './components/GalleryTab'
 import InfoTab from './components/InfoTab'
 import Pricing from './components/pricing'
+import SalesRulesTab from './components/SalesRulesTab'
 import {
     ADD_AND_UPDATE_PACK_DEFAULT_VALUES,
     addAndUpdatePackSchema,
@@ -114,6 +115,7 @@ const AddAndUpdatePack = () => {
                                 ['domain', 'دامنه نمایش'],
                                 ['info', 'اطلاعات پایه'],
                                 ['pricing', 'قیمت‌گذاری'],
+                                ['sales-rules', 'قوانین فروش'],
                                 ['seo', 'سئو'],
                             ] as const
                         ).map(([value, label]) => (
@@ -138,6 +140,9 @@ const AddAndUpdatePack = () => {
                     </TabsContent>
                     <TabsContent value='pricing' className='p-4 pt-xl'>
                         <Pricing />
+                    </TabsContent>
+                    <TabsContent value='sales-rules' className='p-4 pt-xl'>
+                        <SalesRulesTab />
                     </TabsContent>
                     <TabsContent value='seo' className='p-4 pt-xl'>
                         <AdditionalSettingsTab />

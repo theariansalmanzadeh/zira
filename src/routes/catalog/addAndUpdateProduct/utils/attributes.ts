@@ -8,6 +8,8 @@ export const PRODUCT_ATTRIBUTE_LIST_PARAMS: ListAttributesParams = {
     page: 1,
     page_size: 100,
     is_active: true,
+    /** فقط ویژگی‌های مشترک روی خانواده کالا مجازند */
+    role: 'COMMON',
 }
 
 export const SIZE_BASIS_ID = 'size'

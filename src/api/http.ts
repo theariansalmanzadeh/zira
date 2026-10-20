@@ -13,7 +13,10 @@ export type ApiError = {
 
 export type ApiErrorResponseBody = {
     message?: string
-    detail?: string
+    detail?: unknown
+    code?: string
+    status_code?: number
+    request_id?: string
 }
 
 export type ApiAxiosError = AxiosError<ApiErrorResponseBody>
@@ -29,6 +32,42 @@ export type ApiResponse<T> =
         data?: undefined
     }
 
+export function formatErrorDetail(detail: unknown): string | null {
+    if (detail == null || detail === '') return null
+    if (typeof detail === 'string') return detail
+    if (typeof detail === 'number' || typeof detail === 'boolean') {
+        return String(detail)
+    }
+    if (Array.isArray(detail)) {
+        const parts = detail
+            .map((item) => formatErrorDetail(item))
+            .filter(Boolean)
+        return parts.length > 0 ? parts.join('\n') : null
+    }
+    if (typeof detail === 'object') {
+        const parts = Object.entries(detail as Record<string, unknown>)
+            .map(([key, value]) => {
+                const text = formatErrorDetail(value)
+                if (!text) return null
+                return Array.isArray(value) ? text : `${key}: ${text}`
+            })
+            .filter(Boolean)
+        return parts.length > 0 ? parts.join('\n') : null
+    }
+    return null
+}
+
+function getResponseErrorMessage(error: unknown): string | null {
+    if (!isAxiosError(error)) return null
+    const axiosError = error as ApiAxiosError
+    const responseData = axiosError.response?.data
+    return (
+        formatErrorDetail(responseData?.detail) ||
+        formatErrorDetail(responseData?.message) ||
+        null
+    )
+}
+
 export function toApiError(error: unknown): ApiError {
     if (isAxiosError(error)) {
         const axiosError = error as ApiAxiosError
@@ -36,8 +75,7 @@ export function toApiError(error: unknown): ApiError {
 
         return {
             message:
-                (responseData && responseData.message) ||
-                (responseData && responseData.detail) ||
+                getResponseErrorMessage(error) ||
                 axiosError.message ||
                 'Request failed',
             status: axiosError.response?.status,
@@ -57,18 +95,12 @@ function showRequestErrorToast(error: unknown) {
     const status = axiosError.response?.status ?? axiosError.status
 
     if (status === 429) {
-        toast.error('خطا در ارسال درخواست', {
-            description: ERROR_MESSAGES.TOO_MANY_REQUESTS,
-        })
+        toast.error(ERROR_MESSAGES.TOO_MANY_REQUESTS)
         return
     }
 
-    toast.error('خطا در ارسال درخواست', {
-        description:
-            axiosError.response?.data?.detail ||
-            axiosError.response?.data?.message ||
-            ERROR_MESSAGES.REQUEST_FAILED,
-    })
+    const detailMessage = getResponseErrorMessage(error)
+    toast.error(detailMessage || ERROR_MESSAGES.REQUEST_FAILED)
 }
 
 export async function publicGet<T>(
@@ -202,7 +234,8 @@ export async function authPost<T, TBody = unknown>(
 export async function authPatch<T, TBody = unknown>(
     url: string,
     body?: TBody,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
+    isToastError = true
 ): Promise<ApiResponse<T>> {
     try {
         const response = await apiClient.patch(url, body, config)
@@ -211,6 +244,32 @@ export async function authPatch<T, TBody = unknown>(
             data: response.data,
         }
     } catch (error) {
+        if (isToastError) {
+            showRequestErrorToast(error)
+        }
+        return {
+            success: false,
+            error: toApiError(error),
+        }
+    }
+}
+
+export async function authPut<T, TBody = unknown>(
+    url: string,
+    body?: TBody,
+    config?: AxiosRequestConfig,
+    isToastError = true
+): Promise<ApiResponse<T>> {
+    try {
+        const response = await apiClient.put(url, body, config)
+        return {
+            success: true,
+            data: response.data,
+        }
+    } catch (error) {
+        if (isToastError) {
+            showRequestErrorToast(error)
+        }
         return {
             success: false,
             error: toApiError(error),

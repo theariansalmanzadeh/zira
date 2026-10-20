@@ -5,19 +5,15 @@ import { Input } from '@/src/shared/components/ui/Input'
 import { Textarea } from '@/src/shared/components/ui/TextArea'
 import type { AddAndUpdatePackFormValues } from '../schema'
 
-const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-    <h3 className='mb-4 text-title-sm font-bold text-on-surface'>{children}</h3>
-)
-
-const SectionDivider = () => <hr className='border-outline-variant border-dashed' />
-
 const AdditionalSettingsTab = () => {
     const { control } = useFormContext<AddAndUpdatePackFormValues>()
 
     return (
         <div className='flex flex-col gap-6'>
             <section>
-                <SectionTitle>سئو</SectionTitle>
+                <h3 className='mb-4 text-title-sm font-bold text-on-surface'>
+                    سئو
+                </h3>
                 <div className='grid grid-cols-2 gap-6'>
                     <Controller
                         control={control}
@@ -62,53 +58,6 @@ const AdditionalSettingsTab = () => {
                             )}
                         />
                     </div>
-                </div>
-            </section>
-
-            <SectionDivider />
-
-            <section>
-                <SectionTitle>قوانین فروش</SectionTitle>
-                <div className='grid grid-cols-2 gap-6'>
-                    <Controller
-                        control={control}
-                        name='min_order_qty'
-                        render={({ field }) => (
-                            <Input
-                                label='حداقل تعداد قابل سفارش'
-                                placeholder='انتخاب'
-                                type='number'
-                                value={field.value ?? ''}
-                                onChange={field.onChange}
-                            />
-                        )}
-                    />
-                    <Controller
-                        control={control}
-                        name='max_order_qty'
-                        render={({ field }) => (
-                            <Input
-                                label='حداکثر تعداد قابل سفارش'
-                                placeholder='انتخاب'
-                                type='number'
-                                value={field.value ?? ''}
-                                onChange={field.onChange}
-                            />
-                        )}
-                    />
-                    <Controller
-                        control={control}
-                        name='max_preorder_qty'
-                        render={({ field }) => (
-                            <Input
-                                label='حداکثر تعداد پیش سفارش'
-                                placeholder='انتخاب'
-                                type='number'
-                                value={field.value ?? ''}
-                                onChange={field.onChange}
-                            />
-                        )}
-                    />
                 </div>
             </section>
         </div>
