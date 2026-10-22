@@ -502,6 +502,8 @@ export type ItemListOut = {
   grade: number;
   unit_id: string;
   pack_size: string;
+  /** تعداد کالا در پک */
+  goods_count?: number | string | null;
   /** الگوی تنوع کالا */
   variation_pattern: ItemVariationPattern | string;
   barcode: string;
@@ -612,7 +614,9 @@ export type ItemCreateIn = {
   /** الگوی تنوع آیتم */
   variation_pattern: 'FIXED_COLOR' | 'FIXED_SIZE' | 'FREE' | ItemVariationPattern;
   /** واحد مشتق با ضریب = جمع تعداد کالاها */
-  unit_id: string;
+  unit_id?: string | null;
+  /** ساخت خودکار واحد مشتق */
+  create_unit?: boolean;
   /** کالاهای تکی و تعداد هر کدام */
   components: Array<ItemComponentIn>;
   /** خالی ⇐ نام خودکار */

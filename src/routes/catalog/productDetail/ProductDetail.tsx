@@ -94,11 +94,11 @@ const ProductDetail = () => {
     return (
         <div className="flex w-full flex-col gap-4" dir="rtl">
             <OverView
+                productId={product.id}
                 brand={product.brand_name || DASH}
                 title={product.name || DASH}
                 category={categoryLabel}
                 sku={product.code || product.base_code || DASH}
-                editHref={`/admin/catalog/addAndUpdateProduct/${product.id}`}
             />
             <Stats
                 values={[

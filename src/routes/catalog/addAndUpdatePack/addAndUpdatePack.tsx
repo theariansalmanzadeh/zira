@@ -46,7 +46,8 @@ const toCreateItemBody = (values: AddAndUpdatePackFormValues): ItemCreateIn => {
     return {
         product_id: values.product_id,
         variation_pattern: values.variation_pattern,
-        unit_id: values.unit_id,
+        unit_id: values.unit_id || null,
+        create_unit: true,
         components: values.components,
         display_name: toOptional(values.display_name),
         base_code: toOptional(values.base_code),

@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import {
     DropdownMenu,
@@ -10,7 +10,10 @@ import {
 } from '@/src/shared/components/ui/DropdownMenu'
 import { Button } from '@/src/shared/components/ui/button'
 import { Input } from '@/src/shared/components/ui/Input'
+import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { useListAttributes } from '@/src/routes/catalog/hooks/catalog'
+import { formatPrice } from '@/src/shared/libs/formatter'
+import { onlyNumber } from '@/src/shared/schema/generalSchema'
 import { useCreateProducts } from '../../../provider/createProductsProvider'
 import { DropdownOption } from '../../../types'
 import {
@@ -19,7 +22,9 @@ import {
     SIZE_BASIS_ID,
 } from '../../../utils/attributes'
 import PriceInputSection from './components/priceInputSection'
-import FormDropdown from '@/src/shared/components/ui/FormDropdown'
+
+const formatMoneyInput = (value: string) =>
+    value === '' ? '' : formatPrice(Number(value))
 
 interface FormMultiSelectProps {
     label: string
@@ -115,11 +120,16 @@ const FormMultiSelect = ({
 }
 
 const PricingTab = () => {
-    const [discountType, setDiscountType] = useState('percentage')
     const {
         attributeSelections,
         basePriceBasis,
         setBasePriceBasis,
+        unitPrice,
+        setUnitPrice,
+        discountType,
+        setDiscountType,
+        discountValue,
+        setDiscountValue,
         sizes,
         colors,
     } = useCreateProducts()
@@ -157,7 +167,12 @@ const PricingTab = () => {
     return (
         <div className='flex flex-col gap-6'>
             <div className='grid grid-cols-3 gap-6'>
-                <Input label='قیمت واحد' placeholder='قیمت واحد' />
+                <Input
+                    label='قیمت واحد'
+                    placeholder='قیمت واحد'
+                    value={formatMoneyInput(unitPrice)}
+                    onChange={(value) => setUnitPrice(onlyNumber(value))}
+                />
 
                 <FormDropdown
                     label='نوع تخفیف'
@@ -166,7 +181,20 @@ const PricingTab = () => {
                     onChange={setDiscountType}
                 />
 
-                <Input label='درصد تخفیف' placeholder='درصد تخفیف' />
+                <Input
+                    label={
+                        discountType === 'amount' ? 'مبلغ تخفیف' : 'درصد تخفیف'
+                    }
+                    placeholder={
+                        discountType === 'amount' ? 'مبلغ تخفیف' : 'درصد تخفیف'
+                    }
+                    value={
+                        discountType === 'amount'
+                            ? formatMoneyInput(discountValue)
+                            : discountValue
+                    }
+                    onChange={(value) => setDiscountValue(onlyNumber(value))}
+                />
             </div>
 
             <FormMultiSelect

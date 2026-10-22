@@ -6,7 +6,6 @@ import type {
     RoleMatrixResource,
 } from '@/src/api/types/admin/role'
 import { useGetRoleMatrix } from '@/src/routes/userManagment/hooks/role'
-import { Icon } from '@/src/shared/components/Icons/Icon'
 import {
     Accordion,
     AccordionContent,
@@ -22,33 +21,27 @@ type RolePermissionMatrixProps = {
 
 const PermissionPill = ({ permission }: { permission: RoleMatrixPermission }) => {
     const isDelete = permission.action_code.toLowerCase() === 'delete'
+    const isGranted = permission.is_granted
 
     return (
-        <div className='inline-flex items-center gap-1.5 rounded-full bg-success-container pe-2.5'>
-            <Pill
-                text={permission.action_name}
-                icon='checkCircle400Linear'
-                variant='success'
-                size='sm'
-                className='border-0 bg-transparent pe-0'
-            />
-            {isDelete ? (
-                <Icon
-                    label='warning400Linear'
-                    className='size-3.5 shrink-0 text-warning'
-                />
-            ) : null}
-            <span className='font-mono text-label-sm text-outline' dir='ltr'>
-                {permission.action_code}
-            </span>
-        </div>
+        <Pill
+            text={permission.action_name}
+            size='sm'
+            icon={isGranted ? 'checkCircle400Linear' : undefined}
+            variant={
+                !isGranted
+                    ? 'outlined'
+                    : isDelete
+                      ? 'warning'
+                      : 'success'
+            }
+            className={!isGranted ? 'opacity-60' : undefined}
+        />
     )
 }
 
 const ResourceRow = ({ resource }: { resource: RoleMatrixResource }) => {
-    const grantedPermissions = (resource.permissions ?? []).filter(
-        (permission) => permission.is_granted
-    )
+    const permissions = resource.permissions ?? []
 
     return (
         <div className='flex flex-col gap-3 border-b border-outline-variant/60 py-4 last:border-b-0 sm:flex-row sm:items-start sm:justify-between sm:gap-6'>
@@ -61,12 +54,12 @@ const ResourceRow = ({ resource }: { resource: RoleMatrixResource }) => {
                 </p>
             </div>
             <div className='flex flex-1 flex-wrap items-center justify-start gap-2 sm:justify-end'>
-                {grantedPermissions.length === 0 ? (
+                {permissions.length === 0 ? (
                     <span className='text-label-sm text-outline'>
-                        دسترسی اعطا نشده
+                        دسترسی‌ای تعریف نشده
                     </span>
                 ) : (
-                    grantedPermissions.map((permission) => (
+                    permissions.map((permission) => (
                         <PermissionPill
                             key={permission.permission_id || permission.code}
                             permission={permission}

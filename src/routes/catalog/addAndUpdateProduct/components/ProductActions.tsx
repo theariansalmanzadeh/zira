@@ -1,8 +1,9 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { listItems } from '@/src/api/admin/catalog'
 import type {
     AttributeRowIn,
     CellIn,
@@ -16,8 +17,10 @@ import {
     useCreateProductDraft,
     useUpdateProduct,
 } from '@/src/routes/catalog/hooks/catalog'
+import { useBulkSetPrices } from '@/src/routes/catalog/hooks/pricing'
 import { Button } from '@/src/shared/components/ui/button'
 import { useCreateProducts } from '../provider/createProductsProvider'
+import { buildBulkPriceRows } from '../utils/pricing'
 
 const CATALOG_LIST_PATH = '/admin/catalog?sub=list'
 
@@ -38,17 +41,28 @@ const ProductActions = () => {
         packs,
         attributeSelections,
         pricingRows,
+        unitPrice,
+        discountType,
+        discountValue,
     } = useCreateProducts()
     const { mutate: saveDraft, isPending: isSavingDraft } =
         useCreateProductDraft()
-    const { mutate: publishProduct, isPending: isPublishing } =
+    const { mutateAsync: publishProduct, isPending: isPublishing } =
         useCreateProduct()
     const { mutate: updateProduct, isPending: isUpdating } = useUpdateProduct()
     const { mutate: activateProduct, isPending: isActivating } =
         useActivateProduct()
+    const { mutateAsync: bulkSetPrices, isPending: isSettingPrices } =
+        useBulkSetPrices()
+    const [isPublishingFlow, setIsPublishingFlow] = useState(false)
 
     const isPending =
-        isSavingDraft || isPublishing || isUpdating || isActivating
+        isSavingDraft ||
+        isPublishing ||
+        isUpdating ||
+        isActivating ||
+        isSettingPrices ||
+        isPublishingFlow
 
     const sizeIds = sizes
     const colorIds = colors
@@ -122,6 +136,9 @@ const ProductActions = () => {
             packs,
             attributeSelections,
             pricingRows,
+            unitPrice,
+            discountType,
+            discountValue,
         },
     })
 
@@ -144,6 +161,27 @@ const ProductActions = () => {
         base_code: productCode.trim() || null,
     })
 
+    const applyPricesForProduct = async (createdProductId: string) => {
+        const itemsResult = await listItems({
+            product_id: createdProductId,
+            page: 1,
+            page_size: 200,
+        })
+        if (!itemsResult.success) throw itemsResult.error
+
+        const priceRows = buildBulkPriceRows({
+            items: itemsResult.data.results ?? [],
+            pricingRows,
+            unitPrice,
+            discountType,
+            discountValue,
+        })
+
+        if (priceRows.length === 0) return
+
+        await bulkSetPrices({ rows: priceRows })
+    }
+
     const handleSaveDraft = () => {
         if (!hasTitleAndCode()) return
 
@@ -155,7 +193,7 @@ const ProductActions = () => {
         })
     }
 
-    const handlePublish = () => {
+    const handlePublish = async () => {
         if (!hasTitleAndCode()) return
 
         if (isEditing && productId) {
@@ -207,12 +245,27 @@ const ProductActions = () => {
             return
         }
 
-        publishProduct(body, {
-            onSuccess: () => {
-                toast.success('محصول با موفقیت ایجاد شد')
-                push(CATALOG_LIST_PATH)
-            },
-        })
+        setIsPublishingFlow(true)
+        try {
+            const product = await publishProduct(body)
+            await applyPricesForProduct(product.id)
+            toast.success('محصول با موفقیت ایجاد شد')
+            push(CATALOG_LIST_PATH)
+        } catch (error) {
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : typeof error === 'object' &&
+                        error &&
+                        'message' in error &&
+                        typeof (error as { message: unknown }).message ===
+                            'string'
+                      ? (error as { message: string }).message
+                      : null
+            if (message) toast.error(message)
+        } finally {
+            setIsPublishingFlow(false)
+        }
     }
 
     return (
@@ -234,7 +287,13 @@ const ProductActions = () => {
                     type="button"
                     variant="primary"
                     size="default"
-                    isLoading={isPublishing || isUpdating || isActivating}
+                    isLoading={
+                        isPublishing ||
+                        isUpdating ||
+                        isActivating ||
+                        isSettingPrices ||
+                        isPublishingFlow
+                    }
                     disabled={isPending}
                     onClick={handlePublish}
                 >

@@ -23,6 +23,17 @@ const CategoriesLayoutContent = ({ children }: { children: React.ReactNode }) =>
         : getCategoriesSectionKeyFromPath(pathname)
 
     const heading = sectionToHeading[sectionKey]
+    const pathProductId = pathname.match(
+        /^\/admin\/catalog\/products\/([^/]+)/
+    )?.[1]
+
+    const resolveHeadingHref = (href?: string) => {
+        if (!href) return href
+        if (href.includes('{id}') && pathProductId) {
+            return href.replaceAll('{id}', pathProductId)
+        }
+        return href
+    }
 
     return (
         <div className='flex flex-col gap-3' dir='rtl'>
@@ -36,6 +47,7 @@ const CategoriesLayoutContent = ({ children }: { children: React.ReactNode }) =>
                     {heading.buttons && heading.buttons.length > 0 && (
                         <HeadingWithActions.ButtonWrapper>
                             {heading.buttons.map((button, index) => {
+                                const href = resolveHeadingHref(button.href)
                                 const content = (
                                     <>
                                         {button.icon && (
@@ -60,14 +72,14 @@ const CategoriesLayoutContent = ({ children }: { children: React.ReactNode }) =>
                                     </>
                                 )
 
-                                if (button.href) {
+                                if (href) {
                                     return (
                                         <Button
                                             key={index}
                                             variant={button.variant}
                                             asChild
                                         >
-                                            <Link href={button.href}>{content}</Link>
+                                            <Link href={href}>{content}</Link>
                                         </Button>
                                     )
                                 }

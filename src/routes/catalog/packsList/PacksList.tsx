@@ -36,7 +36,10 @@ const mapItemToPack = (item: ItemListOut): PackListItem => {
                 ? 'customer-group'
                 : 'public'
     const pattern = VARIATION_LABEL[item.variation_pattern as ItemVariationPattern]
-    const packSize = item.pack_size?.trim()
+    const goodsCount =
+        item.goods_count != null && String(item.goods_count).trim() !== ''
+            ? String(item.goods_count).trim()
+            : item.pack_size?.trim() || ''
 
     return {
         id: item.id,
@@ -46,7 +49,7 @@ const mapItemToPack = (item: ItemListOut): PackListItem => {
         brand: item.brand_name || '—',
         model: item.product_code || '—',
         variety: pattern || item.variation_pattern || '—',
-        packCount: packSize ? `${formatFaNumber(packSize)} عدد` : '—',
+        packCount: goodsCount ? `${formatFaNumber(goodsCount)} عدد` : '—',
         price: '—',
         available: '—',
         visibility,
