@@ -8,11 +8,17 @@ import { toast } from 'sonner'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import type { BrandIn } from '@/src/api/types/admin/catalog'
 import DocumentFileUpload from '@/src/routes/contentManagment/liecense/new/components/DocumentFileUpload'
-import { catalogKeys, useCreateBrand, useUpdateBrand } from '@/src/routes/catalog/hooks/catalog'
+import {
+    catalogKeys,
+    useCreateBrand,
+    useGetBrand,
+    useUpdateBrand,
+} from '@/src/routes/catalog/hooks/catalog'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
 import { Input } from '@/src/shared/components/ui/Input'
 import { Textarea } from '@/src/shared/components/ui/TextArea'
 import { Button } from '@/src/shared/components/ui/button'
+import { Spinner } from '@/src/shared/components/ui/spinner'
 import {
     ToggleGroup,
     ToggleGroupItem,
@@ -24,6 +30,7 @@ import {
     COUNTRY_OPTIONS,
     addAndEditBrandSchema,
     getAddAndEditBrandDefaultValues,
+    mapBrandToFormValues,
     type AddAndEditBrandFormValues,
 } from './schema'
 
@@ -50,19 +57,29 @@ const AddAndEditBrands = ({ id }: AddAndEditBrandsProps) => {
     const { push } = useRouter()
     const queryClient = useQueryClient()
     const isEditing = Boolean(id)
+    const { data: brand, isPending: isLoadingBrand, isError } = useGetBrand(
+        id ?? '',
+        isEditing
+    )
     const { mutate: createBrand, isPending: isCreating } = useCreateBrand()
     const { mutate: updateBrand, isPending: isUpdating } = useUpdateBrand()
     const isPending = isCreating || isUpdating
-    const { control, handleSubmit, setValue } = useForm<AddAndEditBrandFormValues>({
-        resolver: zodResolver(addAndEditBrandSchema),
-        defaultValues: getAddAndEditBrandDefaultValues(),
-        mode: 'onChange',
-    })
+    const { control, handleSubmit, setValue, reset } =
+        useForm<AddAndEditBrandFormValues>({
+            resolver: zodResolver(addAndEditBrandSchema),
+            defaultValues: getAddAndEditBrandDefaultValues(),
+            mode: 'onChange',
+        })
 
     const persianName = useWatch({ control, name: 'persianName' })
     const latinName = useWatch({ control, name: 'latinName' })
     const logo = useWatch({ control, name: 'logo' })
     const [logoPreview, setLogoPreview] = useState<string | null>(null)
+
+    useEffect(() => {
+        if (!brand) return
+        reset(mapBrandToFormValues(brand))
+    }, [brand, reset])
 
     useEffect(() => {
         if (!logo) {
@@ -81,11 +98,18 @@ const AddAndEditBrands = ({ id }: AddAndEditBrandsProps) => {
             queryClient.invalidateQueries({
                 queryKey: catalogKeys.brands.lists(),
             })
+            if (id) {
+                queryClient.invalidateQueries({
+                    queryKey: catalogKeys.brands.detail(id),
+                })
+            }
             toast.success(isEditing ? 'برند به‌روزرسانی شد' : 'برند ایجاد شد')
             push('/admin/catalog/brands')
         }
         const onError = () => {
-            toast.error(isEditing ? 'به‌روزرسانی برند انجام نشد' : 'ایجاد برند انجام نشد')
+            toast.error(
+                isEditing ? 'به‌روزرسانی برند انجام نشد' : 'ایجاد برند انجام نشد'
+            )
         }
 
         if (id) {
@@ -94,6 +118,22 @@ const AddAndEditBrands = ({ id }: AddAndEditBrandsProps) => {
         }
 
         createBrand(body, { onSuccess, onError })
+    }
+
+    if (isEditing && isLoadingBrand) {
+        return (
+            <div className='flex justify-center py-16'>
+                <Spinner className='size-6' />
+            </div>
+        )
+    }
+
+    if (isEditing && (isError || !brand)) {
+        return (
+            <div className='rounded-card-md bg-surface-container-lowest px-4 py-6 text-center text-label-md text-outline'>
+                دریافت اطلاعات برند با خطا مواجه شد.
+            </div>
+        )
     }
 
     return (
@@ -293,7 +333,7 @@ const AddAndEditBrands = ({ id }: AddAndEditBrandsProps) => {
                 className="self-end"
                 isLoading={isPending}
             >
-                ثبت برند
+                {isEditing ? 'ذخیره تغییرات' : 'ثبت برند'}
             </Button>
         </form>
     )

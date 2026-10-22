@@ -1,9 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
-import Link from 'next/link'
 import { Icon } from '@/src/shared/components/Icons/Icon'
-import { Button } from '@/src/shared/components/ui/button'
 import { randomColorGenerator } from '@/src/shared/libs/color'
 import { cn } from '@shared/libs/utils'
 
@@ -15,7 +13,6 @@ type OverViewProps = {
     price?: string
     description?: string
     image?: string | null
-    editHref?: string
     className?: string
 }
 
@@ -27,7 +24,6 @@ const OverView = ({
     price,
     description,
     image,
-    editHref,
     className,
 }: OverViewProps) => {
     const imageInitial = title.trim().charAt(0) || '—'
@@ -74,11 +70,6 @@ const OverView = ({
             <div className="flex min-w-0 flex-1 flex-col gap-2 text-right">
                 <div className="flex items-start justify-between gap-3">
                     <span className="text-label-md text-outline">{brand}</span>
-                    {editHref ? (
-                        <Button variant="outline" size="sm" asChild>
-                            <Link href={editHref}>ویرایش</Link>
-                        </Button>
-                    ) : null}
                 </div>
                 <h2 className="text-title-lg font-bold text-on-surface">
                     {title}

@@ -60,7 +60,7 @@ export type StaffNotificationPreference = {
 }
 
 export type GetStaffNotificationPreferencesResponse =
-    StaffNotificationPreference[]
+    PaginatedResponse<StaffNotificationPreference>
 
 export type UpdateStaffNotificationPreferenceItem = {
     topic: string

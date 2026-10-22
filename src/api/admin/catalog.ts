@@ -246,6 +246,12 @@ export const createBrand = (
           )
 
 /**
+ * Get Brand Endpoint
+ */
+export const getBrand = (brand_id: string, config?: AxiosRequestConfig) =>
+    staffAuthGet<BrandOut>(`/catalog/brands/${brand_id}`, config)
+
+/**
  * Update Brand Endpoint
  */
 export const updateBrand = (

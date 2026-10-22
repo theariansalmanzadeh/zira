@@ -6,6 +6,7 @@ import {
     createRole,
     deleteRole,
     getRole,
+    getRoleMatrix,
     listRoleAssignments,
     listRoles,
     updateRole,
@@ -24,6 +25,8 @@ export const roleKeys = {
         [...roleKeys.lists(), params ?? {}] as const,
     details: () => [...roleKeys.all, 'detail'] as const,
     detail: (roleId: string) => [...roleKeys.details(), roleId] as const,
+    matrix: (roleId: string) =>
+        [...roleKeys.detail(roleId), 'matrix'] as const,
     assignments: (params?: ListRoleAssignmentsParams) =>
         [...roleKeys.all, 'assignments', params ?? {}] as const,
 }
@@ -60,6 +63,18 @@ export const useGetRole = (roleId: string, enabled = true) => {
         enabled: Boolean(roleId) && enabled,
         queryFn: async () => {
             const result = await getRole(roleId)
+            if (!result.success) throw result.error
+            return result.data
+        },
+    })
+}
+
+export const useGetRoleMatrix = (roleId: string, enabled = true) => {
+    return useQuery({
+        queryKey: roleKeys.matrix(roleId),
+        enabled: Boolean(roleId) && enabled,
+        queryFn: async () => {
+            const result = await getRoleMatrix(roleId)
             if (!result.success) throw result.error
             return result.data
         },

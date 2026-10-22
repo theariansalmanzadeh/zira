@@ -30,6 +30,7 @@ export const TABLE_COLOUMN: TableFilterItem[] = [
     { id: 'price', header_label: 'قیمت آیتم', isChecked: true },
     { id: 'available', header_label: 'قابل عرضه', isChecked: true },
     { id: 'visibility', header_label: 'وضعیت نمایش', isChecked: true },
+    { id: 'actions', header_label: '', isChecked: true },
 ]
 
 export const PACKS_LIST_DUMMY: PackListItem[] = [

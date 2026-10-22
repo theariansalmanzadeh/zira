@@ -93,11 +93,11 @@ const PackDetail = () => {
 
     const colors: ColorOption[] = item.color_hex
         ? [
-              {
-                  label: item.color_code || item.color_hex,
-                  color: item.color_hex,
-              },
-          ]
+            {
+                label: item.color_code || item.color_hex,
+                color: item.color_hex,
+            },
+        ]
         : []
 
     const sizes = item.size_code ? [item.size_code] : []
@@ -142,7 +142,6 @@ const PackDetail = () => {
                 }
                 description={item.description || undefined}
                 image={primaryImage}
-                editHref={`/admin/catalog/addAndUpdatePack?id=${item.id}`}
             />
             <Stats
                 values={[
@@ -234,8 +233,8 @@ const PackDetail = () => {
                                     value:
                                         toNumber(price?.base_price) !== null
                                             ? formatPrice(
-                                                  Number(price?.base_price)
-                                              )
+                                                Number(price?.base_price)
+                                            )
                                             : DASH,
                                 },
                                 {

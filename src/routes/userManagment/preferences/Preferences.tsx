@@ -180,11 +180,13 @@ const NotificationsTab = () => {
     const { data, isLoading } = useGetStaffNotificationPreferences()
     const { mutate, isPending } = useUpdateStaffNotificationPreferences()
 
+    const preferences = data?.results ?? []
+
     const updatePreference = (
         topic: string,
         patch: { sms_enabled?: boolean; in_app_enabled?: boolean }
     ) => {
-        const next = (data ?? []).map((item) =>
+        const next = preferences.map((item) =>
             item.topic === topic ? { ...item, ...patch } : item
         )
         mutate(
@@ -206,7 +208,7 @@ const NotificationsTab = () => {
 
     return (
         <div className='flex flex-col gap-3 rounded-2xl bg-surface-container-lowest p-6'>
-            {(data ?? []).map((item) => (
+            {preferences.map((item) => (
                 <div
                     key={item.topic}
                     className='flex items-center justify-between gap-4 border-b border-outline-variant py-3 last:border-b-0'

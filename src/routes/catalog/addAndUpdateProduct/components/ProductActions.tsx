@@ -11,6 +11,7 @@ import type {
     ProductUpdateIn,
 } from '@/src/api/types/admin/catalog'
 import {
+    useActivateProduct,
     useCreateProduct,
     useCreateProductDraft,
     useUpdateProduct,
@@ -43,8 +44,11 @@ const ProductActions = () => {
     const { mutate: publishProduct, isPending: isPublishing } =
         useCreateProduct()
     const { mutate: updateProduct, isPending: isUpdating } = useUpdateProduct()
+    const { mutate: activateProduct, isPending: isActivating } =
+        useActivateProduct()
 
-    const isPending = isSavingDraft || isPublishing || isUpdating
+    const isPending =
+        isSavingDraft || isPublishing || isUpdating || isActivating
 
     const sizeIds = sizes
     const colorIds = colors
@@ -169,8 +173,12 @@ const ProductActions = () => {
                 { productId, body },
                 {
                     onSuccess: () => {
-                        toast.success('محصول با موفقیت به‌روزرسانی شد')
-                        push(`/admin/catalog/products/${productId}`)
+                        activateProduct(productId, {
+                            onSuccess: () => {
+                                toast.success('محصول با موفقیت به‌روزرسانی شد')
+                                push(`/admin/catalog/products/${productId}`)
+                            },
+                        })
                     },
                 }
             )
@@ -226,7 +234,7 @@ const ProductActions = () => {
                     type="button"
                     variant="primary"
                     size="default"
-                    isLoading={isPublishing || isUpdating}
+                    isLoading={isPublishing || isUpdating || isActivating}
                     disabled={isPending}
                     onClick={handlePublish}
                 >

@@ -198,7 +198,6 @@ export type BundleDetailOut = {
 };
 
 export type BundleLineIn = {
-  id?: string;
   item_id: string;
   quantity: number;
 };

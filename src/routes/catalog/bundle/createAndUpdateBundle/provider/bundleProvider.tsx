@@ -14,11 +14,8 @@ import type {
     BundleProduct,
 } from '../types'
 import type { BundlePolicy } from '@/src/api/types/admin/catalog'
-import { BUNDLE_PRODUCTS_DUMMY } from '../constants'
 
 export type { BundleProduct, BundleTurnover } from '../types'
-export { BUNDLE_PRODUCTS_DUMMY } from '../constants'
-
 
 const BundleContext = createContext<BundleContextValue | null>(null)
 
@@ -50,9 +47,7 @@ export default function BundleProvider({
     const [code, setCode] = useState('BND-1006')
     const [policy, setPolicy] = useState<BundlePolicy>('SLOW_WITH_FAST')
     const [description, setDescription] = useState('')
-    const [products, setProducts] = useState<BundleProduct[]>(() =>
-        initialId ? [] : BUNDLE_PRODUCTS_DUMMY
-    )
+    const [products, setProducts] = useState<BundleProduct[]>([])
     const [finalPrice, setFinalPrice] = useState('')
 
     const updateProductQuantity = useCallback((id: string, quantity: number) => {

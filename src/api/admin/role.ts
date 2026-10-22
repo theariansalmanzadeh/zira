@@ -9,6 +9,7 @@ import {
 import type {
     CreateRoleRequest,
     CreateRoleResponse,
+    GetRoleMatrixResponse,
     GetRoleResponse,
     ListRolesParams,
     ListRolesResponse,
@@ -54,6 +55,12 @@ export const listRoleAssignments = (
 
 export const getRole = (roleId: string, config?: AxiosRequestConfig) =>
     staffAuthGet<GetRoleResponse>(`/rbac/roles/${roleId}`, config)
+
+export const getRoleMatrix = (roleId: string, config?: AxiosRequestConfig) =>
+    staffAuthGet<GetRoleMatrixResponse>(
+        `/rbac/roles/${roleId}/matrix`,
+        config
+    )
 
 export const updateRole = (
     roleId: string,

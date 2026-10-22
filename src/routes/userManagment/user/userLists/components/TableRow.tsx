@@ -59,15 +59,28 @@ const TableRow = ({ data }: UserListTableRowProps) => {
                 )}
                 {TableColoumn[8]?.isChecked && (
                     <TableCell className='w-[1%] whitespace-nowrap text-end'>
-                        <IconButton
-                            icon='chevronLeft400Linear'
-                            className='shrink-0'
-                            onClick={() =>
-                                push(
-                                    `/admin/user-management/user-details/${encodeURIComponent(data.id)}`
-                                )
-                            }
-                        />
+                        <div className='flex items-center justify-end gap-0.5'>
+                            <IconButton
+                                icon='edit400Linear'
+                                variant='ghost'
+                                className='size-8! shrink-0'
+                                iconClassName='size-5! text-outline'
+                                onClick={() =>
+                                    push(
+                                        `/admin/user-management/user/${encodeURIComponent(data.id)}/edit`
+                                    )
+                                }
+                            />
+                            <IconButton
+                                icon='chevronLeft400Linear'
+                                className='shrink-0'
+                                onClick={() =>
+                                    push(
+                                        `/admin/user-management/user-details/${encodeURIComponent(data.id)}`
+                                    )
+                                }
+                            />
+                        </div>
                     </TableCell>
                 )}
             </UiTableRow>

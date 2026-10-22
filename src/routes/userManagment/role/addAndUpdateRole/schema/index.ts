@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { Role } from '@/src/api/types/admin/role'
 
 const requiredString = (message: string) => z.string().trim().min(1, message)
 
@@ -14,7 +15,7 @@ const roleLevelValues = ROLE_LEVEL_OPTIONS.map((option) => option.value) as [
     ...(typeof ROLE_LEVEL_OPTIONS)[number]['value'][],
 ]
 
-export const createRoleSchema = z.object({
+export const addAndUpdateRoleSchema = z.object({
     code: requiredString('کد نقش الزامی است'),
     name: requiredString('نام نقش الزامی است'),
     description: z.string(),
@@ -22,12 +23,31 @@ export const createRoleSchema = z.object({
     department: z.string(),
 })
 
-export type CreateRoleFormValues = z.infer<typeof createRoleSchema>
+export type AddAndUpdateRoleFormValues = z.infer<typeof addAndUpdateRoleSchema>
 
-export const CREATE_ROLE_DEFAULTS: CreateRoleFormValues = {
+export const ADD_AND_UPDATE_ROLE_DEFAULTS: AddAndUpdateRoleFormValues = {
     code: '',
     name: '',
     description: '',
     level: '0',
     department: '',
+}
+
+export const mapRoleToFormValues = (
+    role: Role
+): AddAndUpdateRoleFormValues => {
+    const levelValue = String(role.level)
+    const level = roleLevelValues.includes(
+        levelValue as AddAndUpdateRoleFormValues['level']
+    )
+        ? (levelValue as AddAndUpdateRoleFormValues['level'])
+        : '0'
+
+    return {
+        code: role.code,
+        name: role.name,
+        description: role.description ?? '',
+        level,
+        department: role.department ?? '',
+    }
 }

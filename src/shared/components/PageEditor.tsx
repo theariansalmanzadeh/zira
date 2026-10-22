@@ -63,6 +63,13 @@ type TableProps = {
     }>
 }
 
+type LinkProps = {
+    label: string
+    href: string
+    openInNewTab: boolean
+    span: number
+}
+
 type Components = {
     Heading: HeadingProps
     Text: TextProps
@@ -71,6 +78,7 @@ type Components = {
     Card: CardProps
     CardsRow: CardsRowProps
     Table: TableProps
+    Link: LinkProps
 }
 
 const usePuckStore = createUsePuck<Config<Components>>()
@@ -82,6 +90,7 @@ const GRID_ALLOWED = [
     'Card',
     'CardsRow',
     'Table',
+    'Link',
 ] as const
 
 const FONT_SIZES = ['14px', '16px', '18px', '20px', '24px', '32px']
@@ -585,6 +594,46 @@ const config: Config<Components> = {
                             </tbody>
                         </table>
                     </div>
+                </BlockFrame>
+            ),
+        },
+        Link: {
+            label: 'پیوند',
+            fields: {
+                label: { type: 'text', label: 'متن پیوند' },
+                href: { type: 'text', label: 'آدرس پیوند' },
+                openInNewTab: {
+                    type: 'radio',
+                    label: 'باز شدن در تب جدید',
+                    options: [
+                        { label: 'بله', value: true },
+                        { label: 'خیر', value: false },
+                    ],
+                },
+                span: spanField,
+            },
+            defaultProps: {
+                label: 'متن پیوند',
+                href: 'https://',
+                openInNewTab: false,
+                span: 2,
+            },
+            render: ({ label, href, openInNewTab, span }) => (
+                <BlockFrame span={span}>
+                    <a
+                        className="editor-link"
+                        href={href || '#'}
+                        target={openInNewTab ? '_blank' : undefined}
+                        rel={openInNewTab ? 'noopener noreferrer' : undefined}
+                        dir="rtl"
+                        onClick={(event) => {
+                            if (!href || href === 'https://') {
+                                event.preventDefault()
+                            }
+                        }}
+                    >
+                        {label || href || 'پیوند'}
+                    </a>
                 </BlockFrame>
             ),
         },

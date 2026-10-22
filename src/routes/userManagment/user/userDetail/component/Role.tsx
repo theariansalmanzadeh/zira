@@ -1,11 +1,27 @@
+'use client'
+
 import { Icon } from '@/src/shared/components/Icons/Icon'
 import { Pill } from '@/src/shared/components/ui/Pill'
+import { Spinner } from '@/src/shared/components/ui/spinner'
+import { useGetStaffProfile } from '@/src/routes/userManagment/hooks/me'
 
 type RoleProps = {
+    userId: string
     roles: string[]
 }
 
-const Role = ({ roles }: RoleProps) => {
+const Role = ({ userId, roles }: RoleProps) => {
+    const { data: me, isLoading } = useGetStaffProfile()
+    const isSelf = Boolean(me?.id && me.id === userId)
+
+    if (isLoading) {
+        return (
+            <div className='flex justify-center py-10'>
+                <Spinner className='size-6 text-on-surface' />
+            </div>
+        )
+    }
+
     return (
         <div
             className='flex flex-col gap-5 rounded-card-lg bg-surface-container-lowest px-6 py-5'
@@ -23,15 +39,17 @@ const Role = ({ roles }: RoleProps) => {
                 </p>
             </div>
 
-            <div className='flex flex-row items-center justify-center gap-2 rounded-card-md border border-warning/30 bg-warning-container px-4 py-3'>
-                <Icon
-                    label='info400Linear'
-                    className='size-5! shrink-0 text-on-warning-container'
-                />
-                <p className='text-center text-label-md text-on-warning-container'>
-                    شما مجاز به انتساب یا تغییر نقش برای حساب کاربری خود نیستید.
-                </p>
-            </div>
+            {isSelf ? (
+                <div className='flex flex-row items-center justify-center gap-2 rounded-card-md border border-warning/30 bg-warning-container px-4 py-3'>
+                    <Icon
+                        label='info400Linear'
+                        className='size-5! shrink-0 text-on-warning-container'
+                    />
+                    <p className='text-center text-label-md text-on-warning-container'>
+                        شما مجاز به انتساب یا تغییر نقش برای حساب کاربری خود نیستید.
+                    </p>
+                </div>
+            ) : null}
 
             <div className='flex flex-row flex-wrap gap-2'>
                 {roles.map((role) => (

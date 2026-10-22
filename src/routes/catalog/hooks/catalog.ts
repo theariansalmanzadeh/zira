@@ -42,6 +42,7 @@ import {
     exportItems,
     exportProducts,
     getAttribute,
+    getBrand,
     getBundle,
     getCategory,
     getDraft,
@@ -199,6 +200,9 @@ export const catalogKeys = {
         lists: () => [...catalogKeys.brands.all(), 'list'] as const,
         list: (params?: ListBrandsParams) =>
             [...catalogKeys.brands.lists(), params ?? {}] as const,
+        details: () => [...catalogKeys.brands.all(), 'detail'] as const,
+        detail: (brandId: string) =>
+            [...catalogKeys.brands.details(), brandId] as const,
         modelLines: (brandId: string, params?: ListModelLinesParams) =>
             [...catalogKeys.brands.all(), 'model-lines', brandId, params ?? {}] as const,
     },
@@ -415,6 +419,18 @@ export const useListBrands = (params?: ListBrandsParams, enabled = true) => {
     })
 }
 
+export const useGetBrand = (brandId: string, enabled = true) => {
+    return useQuery({
+        queryKey: catalogKeys.brands.detail(brandId),
+        enabled: enabled && Boolean(brandId),
+        queryFn: async () => {
+            const result = await getBrand(brandId)
+            if (!result.success) throw result.error
+            return result.data
+        },
+    })
+}
+
 export const useListModelLines = (brandId: string, params?: ListModelLinesParams, enabled = true) => {
     return useQuery({
         queryKey: catalogKeys.brands.modelLines(brandId, params),
@@ -449,8 +465,11 @@ export const useUpdateBrand = () => {
             if (!result.success) throw result.error
             return result.data
         },
-        onSuccess: () => {
+        onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: catalogKeys.brands.all() })
+            queryClient.invalidateQueries({
+                queryKey: catalogKeys.brands.detail(data.id),
+            })
         },
     })
 }

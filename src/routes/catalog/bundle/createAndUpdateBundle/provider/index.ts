@@ -1,7 +1,2 @@
-export { default, useBundle, BUNDLE_PRODUCTS_DUMMY } from './bundleProvider'
-export type {
-    BundleProduct,
-    BundleTurnover,
-    BundlePricingSummary,
-    BundleContextValue,
-} from '../types'
+export { default, useBundle } from './bundleProvider'
+export type { BundleProduct, BundleTurnover } from './bundleProvider'

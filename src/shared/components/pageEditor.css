@@ -178,3 +178,19 @@
 .editor-table td {
     color: #404040;
 }
+
+.editor-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #2563eb;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    word-break: break-word;
+}
+
+.editor-link:hover {
+    color: #1d4ed8;
+}

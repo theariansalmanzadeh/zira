@@ -3,6 +3,7 @@ import { isAxiosError } from 'axios'
 import { toast } from 'sonner'
 
 import { apiClient, publicApi, staffApiClient } from './config'
+import { getApiFieldLabelFa } from '@shared/constants/API_FIELD_LABELS_FA'
 import { ERROR_MESSAGES } from '@shared/constants/ERROR_MESSAGES'
 
 export type ApiError = {
@@ -32,6 +33,69 @@ export type ApiResponse<T> =
         data?: undefined
     }
 
+type ValidationErrorItem = {
+    loc?: Array<string | number>
+    msg?: string
+    message?: string
+    type?: string
+}
+
+const isValidationErrorItem = (value: unknown): value is ValidationErrorItem => {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return false
+    const record = value as Record<string, unknown>
+    const hasLoc = Array.isArray(record.loc)
+    const hasMsg =
+        typeof record.msg === 'string' || typeof record.message === 'string'
+    return hasLoc || (hasMsg && ('type' in record || 'ctx' in record))
+}
+
+const formatValidationErrorItem = (item: ValidationErrorItem): string | null => {
+    const msg =
+        (typeof item.msg === 'string' && item.msg) ||
+        (typeof item.message === 'string' && item.message) ||
+        ''
+    if (!msg) return null
+
+    const loc = Array.isArray(item.loc) ? item.loc : []
+    const fieldKey = loc.length > 0 ? String(loc[loc.length - 1]) : ''
+    if (!fieldKey || fieldKey === 'body' || fieldKey === 'query' || fieldKey === 'path') {
+        return msg
+    }
+
+    return `${getApiFieldLabelFa(fieldKey)}: ${msg}`
+}
+
+const formatFieldErrorDict = (
+    detail: Record<string, unknown>
+): string | null => {
+    const parts = Object.entries(detail)
+        .map(([key, value]) => {
+            if (
+                key === 'type' ||
+                key === 'loc' ||
+                key === 'msg' ||
+                key === 'message' ||
+                key === 'input' ||
+                key === 'ctx' ||
+                key === 'url'
+            ) {
+                return null
+            }
+            const text = formatErrorDetail(value)
+            if (!text) return null
+            return `${getApiFieldLabelFa(key)}: ${text}`
+        })
+        .filter(Boolean)
+
+    return parts.length > 0 ? parts.join('\n') : null
+}
+
+/**
+ * Formats API `detail` for toasts:
+ * - string → same text
+ * - dict → Persian field label + nested message
+ * - 422 validation list → map `loc[-1]` to Persian field name + `msg`
+ */
 export function formatErrorDetail(detail: unknown): string | null {
     if (detail == null || detail === '') return null
     if (typeof detail === 'string') return detail
@@ -40,19 +104,20 @@ export function formatErrorDetail(detail: unknown): string | null {
     }
     if (Array.isArray(detail)) {
         const parts = detail
-            .map((item) => formatErrorDetail(item))
+            .map((item) => {
+                if (isValidationErrorItem(item)) {
+                    return formatValidationErrorItem(item)
+                }
+                return formatErrorDetail(item)
+            })
             .filter(Boolean)
         return parts.length > 0 ? parts.join('\n') : null
     }
     if (typeof detail === 'object') {
-        const parts = Object.entries(detail as Record<string, unknown>)
-            .map(([key, value]) => {
-                const text = formatErrorDetail(value)
-                if (!text) return null
-                return Array.isArray(value) ? text : `${key}: ${text}`
-            })
-            .filter(Boolean)
-        return parts.length > 0 ? parts.join('\n') : null
+        if (isValidationErrorItem(detail)) {
+            return formatValidationErrorItem(detail)
+        }
+        return formatFieldErrorDict(detail as Record<string, unknown>)
     }
     return null
 }

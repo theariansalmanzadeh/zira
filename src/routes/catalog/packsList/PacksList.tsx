@@ -33,8 +33,8 @@ const mapItemToPack = (item: ItemListOut): PackListItem => {
         item.status === 'HIDDEN' || item.status === 'ARCHIVED'
             ? 'hidden'
             : item.audience === 'GROUPS'
-              ? 'customer-group'
-              : 'public'
+                ? 'customer-group'
+                : 'public'
     const pattern = VARIATION_LABEL[item.variation_pattern as ItemVariationPattern]
     const packSize = item.pack_size?.trim()
 

@@ -77,7 +77,7 @@ const AddressForm = ({ onContinue, onBack }: AddressFormProps) => {
                         control={control}
                         render={({ field }) => (
                             <Input
-                                label="آدرس کامل *"
+                                label="آدرس کامل"
                                 value={field.value}
                                 onChange={field.onChange}
                                 error={!!errors.fullAddress}
@@ -145,7 +145,7 @@ const AddressForm = ({ onContinue, onBack }: AddressFormProps) => {
                     control={control}
                     render={({ field }) => (
                         <Input
-                            label="تلفن همراه"
+                            label="تلفن همراه *"
                             placeholder={PHONE_PLACEHOLDER}
                             value={field.value ?? ''}
                             onChange={field.onChange}
@@ -159,7 +159,7 @@ const AddressForm = ({ onContinue, onBack }: AddressFormProps) => {
                     control={control}
                     render={({ field }) => (
                         <Input
-                            label="تلفن ثابت"
+                            label="تلفن ثابت *"
                             placeholder={PHONE_PLACEHOLDER}
                             value={field.value ?? ''}
                             onChange={field.onChange}

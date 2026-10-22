@@ -7,7 +7,6 @@ import {
     useState,
     type ReactNode,
 } from 'react'
-import { toast } from 'sonner'
 import type { CategoryNodeOut } from '@/src/api/types/admin/catalog'
 import {
     useCreateCategory as useCreateCategoryMutation,
@@ -121,14 +120,7 @@ const CreateCategoryProvider = ({ children }: { children: ReactNode }) => {
     const [selectedSub, setSelectedSub] = useState<string | null>(null)
 
     const createNamedCategory = (name: string, parentId: string | null) => {
-        createCategory(
-            { name, parent_id: parentId },
-            {
-                onError: () => {
-                    toast.error('ایجاد دسته‌بندی انجام نشد')
-                },
-            }
-        )
+        createCategory({ name, parent_id: parentId })
     }
 
     const selectMain = (id: string) => {

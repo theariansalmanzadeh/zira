@@ -63,3 +63,35 @@ export type ListRoleAssignmentsParams = {
 }
 
 export type ListRoleAssignmentsResponse = PaginatedResponse<UserRoleAssignment>
+
+export type RoleMatrixPermission = {
+    permission_id: string
+    code: string
+    action_code: string
+    action_name: string
+    is_granted: boolean
+    is_direct: boolean
+    is_inherited: boolean
+}
+
+export type RoleMatrixResource = {
+    resource_code: string
+    resource_name: string
+    kind: string
+    permissions: RoleMatrixPermission[]
+}
+
+export type RoleMatrixDomain = {
+    domain_code: string
+    domain_name: string
+    resources: RoleMatrixResource[]
+}
+
+export type RolePermissionMatrix = {
+    role_id: string
+    role_code: string
+    role_name: string
+    matrix: RoleMatrixDomain[]
+}
+
+export type GetRoleMatrixResponse = RolePermissionMatrix

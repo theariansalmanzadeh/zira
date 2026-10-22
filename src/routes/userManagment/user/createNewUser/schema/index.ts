@@ -35,7 +35,11 @@ export const securityAndRoleSchema = z.object({
     initialPassword: z
         .string()
         .trim()
-        .min(8, 'رمز عبور باید حداقل ۸ کاراکتر باشد'),
+        .min(8, 'رمز عبور باید حداقل ۸ کاراکتر باشد')
+        .refine(
+            (value) => /\d/.test(toEnglishDigits(value)),
+            'رمز عبور باید حداقل یک رقم داشته باشد'
+        ),
     userType: requiredString('نوع کاربر الزامی است'),
     userRole: requiredString('نقش کاربر الزامی است'),
     roleExpirationDate: optionalString,
@@ -96,6 +100,18 @@ export const newUserFormSchema = identityFormSchema
     })
 
 export type NewUserFormValues = z.infer<typeof newUserFormSchema>
+
+export const editUserFormSchema = newUserFormSchema.extend({
+    initialPassword: z
+        .string()
+        .trim()
+        .refine(
+            (value) =>
+                value === '' ||
+                (value.length >= 8 && /\d/.test(toEnglishDigits(value))),
+            'رمز عبور باید حداقل ۸ کاراکتر و شامل یک رقم باشد'
+        ),
+})
 
 export const NEW_USER_DEFAULT_VALUES: NewUserFormValues = {
     firstName: '',

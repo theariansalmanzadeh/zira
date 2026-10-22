@@ -9,6 +9,7 @@ import { useGetCustomerCreditSummary } from '@/src/routes/customers/hooks/custom
 import { useGetCustomerProfile } from '@/src/routes/customers/hooks/customers'
 import { ModalTypes } from '@/src/shared/components/modals/types'
 import { Button } from '@/src/shared/components/ui/button'
+import { Spinner } from '@/src/shared/components/ui/spinner'
 import { formatFaNumber } from '@/src/shared/libs/formatter'
 import { useModalStore } from '@/src/shared/store/modal-store'
 import {
@@ -71,10 +72,8 @@ const Credits = () => {
         customerId,
         Boolean(customerId)
     )
-    const { data: credit } = useGetCustomerCreditSummary(
-        customerId,
-        Boolean(customerId)
-    )
+    const { data: credit, isPending: isCreditPending } =
+        useGetCustomerCreditSummary(customerId, Boolean(customerId))
     const cards = (credit?.credit_accounts ?? [])
         .slice()
         .sort(
@@ -101,12 +100,18 @@ const Credits = () => {
                     حساب اعتباری جدید
                 </Button>
             </div>
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                {cards.map((card) => (
-                    <CreditCard key={card.id} card={card} />
-                ))}
-                <GuaranteesList customerId={customerId} />
-            </div>
+            {isCreditPending ? (
+                <div className="flex justify-center py-16">
+                    <Spinner className="size-6" />
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                    {cards.map((card) => (
+                        <CreditCard key={card.id} card={card} />
+                    ))}
+                    <GuaranteesList customerId={customerId} />
+                </div>
+            )}
         </div>
     )
 }

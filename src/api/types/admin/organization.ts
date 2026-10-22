@@ -274,6 +274,11 @@ export type BranchAssortmentItem = {
     item_id?: string | null
     category_id?: string | null
     min_stock_qty: string
+    item_name?: string | null
+    item_code?: string | null
+    brand_name?: string | null
+    category_name?: string | null
+    image_url?: string | null
 }
 
 export type SetBranchAssortmentItem = {

@@ -9,7 +9,6 @@ export const mapProductsToBundleLines = (
     products: BundleProduct[]
 ): BundleLineIn[] => {
     return products.map((product) => ({
-        id: product.id,
         item_id: product.id,
         quantity: product.quantity,
     }))

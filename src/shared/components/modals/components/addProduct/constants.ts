@@ -34,65 +34,6 @@ export type AdvancedSearchValues = {
     query: string
 }
 
-export const ADD_PRODUCT_DUMMY: AddProductItem[] = [
-    {
-        id: '1',
-        productName: 'بادی گیپور',
-        imgUrl: '/images/product1.jpg',
-        sku: '۷۶۲۳-۷۳۵۲',
-        brand: 'Lorenzo',
-        category: 'لباس زیر زنانه',
-        colorLabel: 'مشکی',
-        colorHex: '#1A1A1A',
-        stock: '۴۲۰ آیتم در ۲ متغیر',
-        status: 'pending',
-    },
-    {
-        id: '2',
-        productName: 'ست لباس خواب ساتن',
-        imgUrl: '/images/product1.jpg',
-        sku: '۸۴۱۲-۹۰۳۱',
-        brand: 'Victoria',
-        category: 'لباس خواب',
-        colorLabel: 'کرم',
-        colorHex: '#E8D5C4',
-        stock: '۱۵۶ آیتم در ۳ متغیر',
-        status: 'active',
-    },
-    {
-        id: '3',
-        productName: 'شورت کشی مشکی',
-        imgUrl: '/images/product1.jpg',
-        sku: '۵۵۰۱-۲۲۸۷',
-        brand: 'Lorenzo',
-        category: 'لباس زیر زنانه',
-        colorLabel: 'گلبهی',
-        colorHex: '#E8A0A0',
-        stock: '۸۹۰ آیتم در ۱ متغیر',
-        status: 'active',
-    },
-    {
-        id: '4',
-        productName: 'سوتین پوش دار',
-        imgUrl: '/images/product1.jpg',
-        sku: '۳۳۰۹-۶۱۴۴',
-        brand: 'Calvin Klein',
-        category: 'لباس زیر زنانه',
-        stock: '۲۴۵ آیتم در ۴ متغیر',
-        status: 'diactive',
-    },
-    {
-        id: '5',
-        productName: 'تاپ ورزشی زنانه',
-        imgUrl: '/images/product1.jpg',
-        sku: '۹۹۲۰-۴۵۶۳',
-        brand: 'Nike',
-        category: 'لباس ورزشی',
-        stock: '۳۱۲ آیتم در ۲ متغیر',
-        status: 'pending',
-    },
-]
-
 const ALL_OPTION = [{ label: 'همه', value: 'all' }]
 
 export const MAIN_CATEGORY_OPTIONS = [

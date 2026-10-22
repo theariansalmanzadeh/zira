@@ -125,6 +125,11 @@ export const sectionToHeading: Record<string, SectionHeading> = {
         subtitle: 'تعریف نقش جدید و دسترسی‌ها',
         hasBackButton: true,
     },
+    'edit-role': {
+        title: 'ویرایش نقش',
+        subtitle: 'ویرایش اطلاعات نقش',
+        hasBackButton: true,
+    },
     'department-details': {
         title: 'جزئیات دپارتمان',
         subtitle: 'مشاهده اطلاعات دپارتمان',
@@ -156,6 +161,12 @@ export const getUserManagementSectionKey = (
     sub?: string | null
 ) => {
     if (pathname.includes('/user-management/edit/')) return 'edit-user'
+    if (
+        pathname.includes('/user-management/user/') &&
+        pathname.includes('/edit')
+    ) {
+        return 'edit-user'
+    }
     if (pathname.includes('/user-details/')) return 'user-details'
     if (
         pathname.includes('/group-details/') ||
@@ -167,6 +178,8 @@ export const getUserManagementSectionKey = (
     if (pathname.includes('/create-new-user')) return 'create-user'
     if (pathname.includes('/create-new-group')) return 'create-group'
     if (pathname.includes('/create-new-role')) return 'create-role'
+    if (pathname.includes('/role/') && pathname.includes('/edit'))
+        return 'edit-role'
     if (pathname.includes('/department/edit/')) return 'edit-department'
     if (pathname.includes('/department/new')) return 'create-department'
     if (pathname.includes('/department/')) return 'department-details'

@@ -1,9 +1,11 @@
 'use client'
 
+import Link from 'next/link'
+import { VariantProps } from 'class-variance-authority'
+import IconButton from '@/src/shared/components/ui/IconButton'
 import { Pill, PillVariants } from '@/src/shared/components/ui/Pill'
 import { TableCell, TableRow as UiTableRow } from '@/src/shared/components/ui/Table'
 import { useTable } from '@/src/shared/context/TableProvider'
-import { VariantProps } from 'class-variance-authority'
 import {
     PACK_VISIBILITY_LABEL,
     type PackListItem,
@@ -65,6 +67,18 @@ const TableRow = ({ data }: { data: PackListItem }) => {
                             hasDot
                             className="w-fit border-0"
                         />
+                    </TableCell>
+                )}
+                {TableColoumn[7]?.isChecked && (
+                    <TableCell className="w-[1%] whitespace-nowrap">
+                        <Link href={`/admin/catalog/pack/${data.id}`}>
+                            <IconButton
+                                icon="chevronLeft300Broken"
+                                variant="ghost"
+                                className="size-8!"
+                                iconClassName="size-6! text-outline"
+                            />
+                        </Link>
                     </TableCell>
                 )}
             </UiTableRow>

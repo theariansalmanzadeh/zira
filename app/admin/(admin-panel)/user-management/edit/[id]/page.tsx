@@ -1,23 +1,12 @@
-'use client'
+import { redirect } from 'next/navigation'
 
-import { useParams } from 'next/navigation'
-import { useGetUser } from '@/src/routes/userManagment/hooks/user'
-import EditUser from '@/src/routes/userManagment/user/editUser/EditUser'
-import { Spinner } from '@/src/shared/components/ui/spinner'
+type LegacyEditUserPageProps = {
+    params: Promise<{ id: string }>
+}
 
-export default function EditUserPage() {
-    const { id } = useParams<{ id: string }>()
-    const { data: user, isPending } = useGetUser(id)
-
-    if (isPending) {
-        return (
-            <div className='flex justify-center py-10'>
-                <Spinner className='size-6' />
-            </div>
-        )
-    }
-
-    if (!user) return null
-
-    return <EditUser user={user} />
+export default async function LegacyEditUserPage({
+    params,
+}: LegacyEditUserPageProps) {
+    const { id } = await params
+    redirect(`/admin/user-management/user/${encodeURIComponent(id)}/edit`)
 }

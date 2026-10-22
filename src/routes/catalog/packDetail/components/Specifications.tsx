@@ -2,6 +2,7 @@
 
 import { Badge } from '@/src/shared/components/ui/Badge'
 import ColorPill from '@/src/shared/components/ui/ColorPill'
+import { Pill } from '@/src/shared/components/ui/Pill'
 import SectionTitle from '@/src/shared/components/ui/SectionTitle'
 import { cn } from '@shared/libs/utils'
 import type {
@@ -69,13 +70,11 @@ const Specifications = ({
                         </span>
                         <div className='flex flex-wrap gap-2'>
                             {sizes.map((size) => (
-                                <Badge
+                                <Pill
                                     key={size}
-                                    variant='default'
-                                    className='rounded-container-md border-0 bg-surface-container-high px-3 py-1.5 text-label-md text-on-surface'
-                                >
-                                    {size}
-                                </Badge>
+                                    text={size}
+                                    variant='tonal'
+                                />
                             ))}
                         </div>
                     </div>

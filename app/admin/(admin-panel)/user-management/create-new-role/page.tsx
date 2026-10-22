@@ -1,5 +1,5 @@
-import CreateNewRole from '@/src/routes/userManagment/role/createNewRole'
+import AddAndUpdateRole from '@/src/routes/userManagment/role/addAndUpdateRole'
 
 export default function CreateNewRolePage() {
-    return <CreateNewRole />
+    return <AddAndUpdateRole />
 }

@@ -62,6 +62,12 @@ type CreateProductsContextValue = {
     ) => void
     basePriceBasis: string[]
     setBasePriceBasis: (values: string[]) => void
+    unitPrice: string
+    setUnitPrice: (value: string) => void
+    discountType: string
+    setDiscountType: (value: string) => void
+    discountValue: string
+    setDiscountValue: (value: string) => void
     pricingRows: Record<string, PricingMatrixRow>
     updatePricingRow: (
         key: string,
@@ -190,6 +196,9 @@ const CreateProductsProvider = ({
         Record<string, { name: string; code: string; values: string[] }>
     >({})
     const [basePriceBasis, setBasePriceBasis] = useState<string[]>([])
+    const [unitPrice, setUnitPrice] = useState('')
+    const [discountType, setDiscountType] = useState('percentage')
+    const [discountValue, setDiscountValue] = useState('')
     const [pricingRows, setPricingRows] = useState<
         Record<string, PricingMatrixRow>
     >({})
@@ -285,6 +294,12 @@ const CreateProductsProvider = ({
             setAttributeSelection,
             basePriceBasis,
             setBasePriceBasis,
+            unitPrice,
+            setUnitPrice,
+            discountType,
+            setDiscountType,
+            discountValue,
+            setDiscountValue,
             pricingRows,
             updatePricingRow,
         }),
@@ -305,6 +320,9 @@ const CreateProductsProvider = ({
             attributeSelections,
             setAttributeSelection,
             basePriceBasis,
+            unitPrice,
+            discountType,
+            discountValue,
             pricingRows,
             updatePricingRow,
         ]

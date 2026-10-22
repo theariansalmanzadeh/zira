@@ -70,9 +70,6 @@ const AddUnit = ({ closeModal }: BaseModalProps) => {
                     toast.success('واحد با موفقیت ثبت شد')
                     closeModal()
                 },
-                onError: () => {
-                    toast.error('ثبت واحد انجام نشد')
-                },
             }
         )
     }

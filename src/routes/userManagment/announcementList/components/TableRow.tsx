@@ -51,7 +51,7 @@ const TableRow = ({ data }: TableRowProps) => {
             )}
             {TableColoumn[4]?.isChecked && (
                 <span dir='ltr' className='text-right'>
-                    {formatFaDateTime(sentAt, { timeZone: 'UTC' })}
+                    {formatFaDateTime(sentAt)}
                 </span>
             )}
         </Link>

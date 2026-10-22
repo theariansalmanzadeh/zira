@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/src/shared/components/ui/button'
 import CheckboxDropdown from '@/src/shared/components/ui/CheckboxDropdown'
 import FormDropdown from '@/src/shared/components/ui/FormDropdown'
+import { Spinner } from '@/src/shared/components/ui/spinner'
 import {
     useListAttributes,
     useListColors,
@@ -24,7 +25,7 @@ const PRESET_ATTRIBUTE_CODES = ['material', 'pack', 'color'] as const
 
 const AttributesTab = () => {
     const { push } = useRouter()
-    const { data } = useListAttributes()
+    const { data, isPending: isAttributesPending } = useListAttributes()
     const {
         attributeSelections,
         setAttributeSelection,
@@ -36,13 +37,24 @@ const AttributesTab = () => {
         salesUnit,
         setSalesUnit,
     } = useCreateProducts()
-    const { data: sizesPage } = useListSizes({ page: 1, page_size: 100 })
-    const { data: colorsPage } = useListColors({ page: 1, page_size: 100 })
-    const { data: unitsPage } = useListUnits({
+    const { data: sizesPage, isPending: isSizesPending } = useListSizes({
+        page: 1,
+        page_size: 100,
+    })
+    const { data: colorsPage, isPending: isColorsPending } = useListColors({
+        page: 1,
+        page_size: 100,
+    })
+    const { data: unitsPage, isPending: isUnitsPending } = useListUnits({
         page: 1,
         page_size: 100,
         is_active: true,
     })
+    const isLoadingAttributes =
+        isAttributesPending ||
+        isSizesPending ||
+        isColorsPending ||
+        isUnitsPending
     const sizeOptions = (sizesPage?.results ?? []).map((size) => ({
         label: size.name,
         value: size.id,
@@ -106,6 +118,14 @@ const AttributesTab = () => {
             setColors(values)
         }
         if (attribute.code === 'pack') setPacks(values)
+    }
+
+    if (isLoadingAttributes) {
+        return (
+            <div className='flex justify-center py-16' dir='rtl'>
+                <Spinner className='size-6' />
+            </div>
+        )
     }
 
     return (

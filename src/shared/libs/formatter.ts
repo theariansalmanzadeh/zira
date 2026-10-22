@@ -49,15 +49,18 @@ export const formatFaNumber = (
 export const formatPrice = (value: number, options?: Intl.NumberFormatOptions) =>
     formatFaNumber(value, options)
 
+export const TEHRAN_TIME_ZONE = 'Asia/Tehran'
+
 const DEFAULT_FA_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
+    timeZone: TEHRAN_TIME_ZONE,
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
 }
 
 /**
- * Formats an ISO date string or `Date` to Persian calendar `DD/MM/YYYY`
- * (e.g. `۰۹/۱۲/۱۴۰۴`) via `Intl.DateTimeFormat('fa-IR')`.
+ * Formats an ISO date string or `Date` to Persian calendar `YYYY/MM/DD`
+ * in `Asia/Tehran` (e.g. `۱۴۰۴/۱۲/۰۹`) via `Intl.DateTimeFormat('fa-IR')`.
  */
 export const formatFaDate = (
     value: string | Date,
@@ -84,10 +87,11 @@ export const formatFaDate = (
         }).format(date)
     }
 
-    return `${day}/${month}/${year}`
+    return `${year}/${month}/${day}`
 }
 
 const DEFAULT_FA_TIME_OPTIONS: Intl.DateTimeFormatOptions = {
+    timeZone: TEHRAN_TIME_ZONE,
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
@@ -95,7 +99,7 @@ const DEFAULT_FA_TIME_OPTIONS: Intl.DateTimeFormatOptions = {
 
 /**
  * Formats an ISO datetime string or `Date` to Persian `HH:mm`
- * (e.g. `۱۰:۴۲`) via `Intl.DateTimeFormat('fa-IR')`.
+ * in `Asia/Tehran` (e.g. `۱۵:۳۷`) via `Intl.DateTimeFormat('fa-IR')`.
  */
 export const formatFaTime = (
     value: string | Date,
@@ -113,7 +117,8 @@ export const formatFaTime = (
 }
 
 /**
- * Formats an ISO datetime string as `DD/MM/YYYY - HH:mm` in Persian digits.
+ * Formats an ISO datetime string as `YYYY/MM/DD - HH:mm` in Persian digits
+ * using `Asia/Tehran`.
  */
 export const formatFaDateTime = (
     value: string | Date,
@@ -132,7 +137,7 @@ export const formatFaDateTime = (
 
 /**
  * Extracts the Persian weekday name from an ISO/UTC date string or `Date`
- * (e.g. `چهارشنبه`) via `Intl.DateTimeFormat('fa-IR', { weekday: 'long' })`.
+ * in `Asia/Tehran` (e.g. `چهارشنبه`).
  */
 export const formatFaWeekday = (
     value: string | Date,
@@ -144,6 +149,7 @@ export const formatFaWeekday = (
     }
 
     return new Intl.DateTimeFormat('fa-IR', {
+        timeZone: TEHRAN_TIME_ZONE,
         weekday: 'long',
         ...options,
     }).format(date)

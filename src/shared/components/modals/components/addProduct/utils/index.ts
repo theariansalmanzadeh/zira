@@ -1,4 +1,3 @@
-import { ADD_PRODUCT_DUMMY } from '../constants'
 import type { AddProductItem, AddProductModalData } from '../constants'
 
 export const toggleProductSelection = (
@@ -70,7 +69,7 @@ export const confirmAddProductSelection = ({
     hasQuantity,
     modalData,
     closeModal,
-    products = ADD_PRODUCT_DUMMY,
+    products = [],
 }: ConfirmAddProductParams) => {
     const selected = products
         .filter((product) => selectedIds.has(product.id))

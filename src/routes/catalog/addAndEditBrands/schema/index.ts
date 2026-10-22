@@ -1,4 +1,5 @@
 import * as z from 'zod'
+import type { BrandOut } from '@/src/api/types/admin/catalog'
 
 const requiredString = (message: string) => z.string().trim().min(1, message)
 
@@ -56,4 +57,17 @@ export const getAddAndEditBrandDefaultValues = (
 ): AddAndEditBrandFormValues => ({
     ...ADD_AND_EDIT_BRAND_DEFAULT_VALUES,
     ...overrides,
+})
+
+export const mapBrandToFormValues = (
+    brand: BrandOut
+): AddAndEditBrandFormValues => ({
+    persianName: brand.name ?? '',
+    latinName: brand.latin_name ?? '',
+    activityField: brand.scope ?? '',
+    country: brand.country ?? '',
+    origin: brand.origin ?? 'DOMESTIC',
+    status: brand.status ?? 'ACTIVE',
+    description: brand.description ?? '',
+    logo: null,
 })

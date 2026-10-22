@@ -1,12 +1,20 @@
 'use client'
 
+import { useMemo } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
+import type { BranchAssortmentItem } from '@/src/api/types/admin/organization'
+import {
+    useGetBranch,
+    useListBranchAssortment,
+} from '@/src/routes/branches/hooks/organization'
 import InfoCardField from '@/src/shared/components/infoCard/components/InfoCardField'
 import { Avatar, AvatarFallback } from '@/src/shared/components/ui/Avatar'
-import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
+import TableLoadingSkeleton from '@/src/shared/components/loading/TableLoadingSkeleton'
+import TableEmptyState from '@/src/shared/components/ui/TableEmptyState'
 import { Table, TableBody, TableCell, TableRow } from '@/src/shared/components/ui/Table'
 import { ROUTE_CONFIGS } from '@/src/shared/constants/routeConfigs'
-import { useGetBranch } from '@/src/routes/branches/hooks/organization'
+import TableListLayout from '@/src/shared/layouts/tableListLayout/TableListLayout'
+import { formatFaNumber } from '@/src/shared/libs/formatter'
 import ProductTableHeader from './components/TableHeader'
 import ProductTableRow from './components/TableRow'
 import CashBoxTable from './components/CashBoxTable'
@@ -23,6 +31,18 @@ import {
     EMPLOYEE_TABLE_COLOUMN,
     PRODUCT_TABLE_COLOUMN,
 } from './constants'
+
+const DASH = '—'
+
+const mapAssortmentToRow = (item: BranchAssortmentItem) => ({
+    id: item.id,
+    productName: item.item_name || item.item_id || DASH,
+    imgUrl: item.image_url ?? undefined,
+    code: item.item_code || item.item_id || DASH,
+    brand: item.brand_name || DASH,
+    category: item.category_name || DASH,
+    stockInfo: formatFaNumber(item.min_stock_qty || '0'),
+})
 
 const SectionDivider = () => (
     <hr className='border-0 border-t border-dashed border-outline-variant' />
@@ -44,6 +64,17 @@ const BranchDetails = () => {
     const isCashRegisters = tableView === 'cashRegisters'
     const isBankAccounts = tableView === 'bankAccounts'
     const isEmployees = tableView === 'employees'
+    const isProducts =
+        !isCashRegisters && !isBankAccounts && !isEmployees
+    const {
+        data: assortment,
+        isPending: isAssortmentPending,
+        isError: isAssortmentError,
+    } = useListBranchAssortment(branchId, isProducts && Boolean(branchId))
+    const assortmentRows = useMemo(
+        () => (assortment?.results ?? []).map(mapAssortmentToRow),
+        [assortment]
+    )
     const employees = branch?.employees ?? []
     const address =
         branch?.full_address ||
@@ -77,7 +108,14 @@ const BranchDetails = () => {
                                 </span>
                             </div>
                         </div>
-                        <InfoCardField label='تعداد اقلام' value='—' />
+                        <InfoCardField
+                            label='تعداد اقلام'
+                            value={
+                                assortment?.total != null
+                                    ? formatFaNumber(assortment.total)
+                                    : DASH
+                            }
+                        />
                         <InfoCardField label='متراژ' value='—' />
                         <InfoCardField label='موجودی' value='—' />
                         <InfoCardField label='وضعیت بیمه' value='—' />
@@ -151,20 +189,36 @@ const BranchDetails = () => {
                                         <CashBoxTable
                                             cashBoxes={branch?.cash_boxes}
                                         />
+                                    ) : isAssortmentPending ? (
+                                        <TableLoadingSkeleton
+                                            isPending
+                                            rows={5}
+                                        />
+                                    ) : isAssortmentError ? (
+                                        <div className='rounded-card-md bg-surface-container-lowest px-4 py-8 text-center text-label-md text-outline'>
+                                            دریافت لیست کالا با خطا مواجه شد.
+                                        </div>
                                     ) : (
                                         <>
                                             <ProductTableHeader />
                                             <TableBody>
-                                                <ProductTableRow
-                                                    data={{
-                                                        productName: 'محصول 1',
-                                                        imgUrl: 'https://via.placeholder.com/150',
-                                                        code: '1234567890',
-                                                        brand: 'برند 1',
-                                                        category: 'دسته بندی 1',
-                                                        stockInfo: '100',
-                                                    }}
-                                                />
+                                                {assortmentRows.length === 0 ? (
+                                                    <TableEmptyState
+                                                        colSpan={
+                                                            PRODUCT_TABLE_COLOUMN.length
+                                                        }
+                                                        title='کالایی در اسورتمنت شعبه ثبت نشده است.'
+                                                    />
+                                                ) : (
+                                                    assortmentRows.map(
+                                                        (row) => (
+                                                            <ProductTableRow
+                                                                key={row.id}
+                                                                data={row}
+                                                            />
+                                                        )
+                                                    )
+                                                )}
                                             </TableBody>
                                         </>
                                     )}
